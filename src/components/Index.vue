@@ -194,7 +194,7 @@ export default {
   },
   beforeDestroy() {
     // Bruteforcing clearInterval, because I can't pass the intervals from external JS
-    for (let x = 0; x < 1000; x++) {
+    for (let x = 0; x < 100; x++) {
       clearInterval(x);
       clearTimeout(x);
     }

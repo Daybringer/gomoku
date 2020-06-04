@@ -13,6 +13,10 @@
         game
       </canvas>
       <div id="gridOverlay"></div>
+      <div id="winOverlay">
+        <h1 id="winText">Hello</h1>
+        <router-link to="/search" id="winButton">Find new game</router-link>
+      </div>
     </div>
     <div class="game_sub">
       <div>
@@ -29,6 +33,7 @@
 <script>
 let socket;
 let timerInterval;
+let mlTime, timer;
 import io from "socket.io-client";
 import router from "../router";
 export default {
@@ -44,10 +49,15 @@ export default {
     }
   },
   mounted() {
-    // let hostname = window.location.hostname;
     let gameMockScript = document.createElement("script");
     gameMockScript.setAttribute("src", "./scripts/gameMock.js");
     document.getElementById("game_main").append(gameMockScript);
+
+    //gap between overlayGrid must be calculated
+    const overlay = document.getElementById("gridOverlay");
+    overlay.style.rowGap = `${document.body.clientWidth < 1400 ? 5 : 10}px`;
+    overlay.style.columnGap = `${document.body.clientWidth < 1400 ? 5 : 10}px`;
+
     let roomID;
 
     socket = io();
@@ -77,50 +87,59 @@ export default {
       coin.classList.forEach(element => {
         coin.classList.remove(element);
       });
+
       if (socket.id === startingPlayer) {
-        console.log("Yours turn");
         coin.classList.add("heads");
+        setTimeout(() => {
+          changeTimer("timeOne");
+        }, 2500);
       } else {
-        console.log("Enemies turn");
         coin.classList.add("tails");
+        setTimeout(() => {
+          changeTimer("timeSecond");
+        }, 2500);
       }
     });
-    socket.on("startTimer", function(socketID) {
-      let timer =
-        socketID === socket.id
-          ? document.getElementById("timeOne")
-          : document.getElementById("timeSecond");
 
-      // let [min, sec] = timer.innerHTML.split(":");
-      let min = 5;
-      let sec = 0;
-      let mlTime = (min * 60 + sec) * 1000;
-
-      timerInterval = setInterval(timeChange, 1000);
-
-      function timeChange() {
-        mlTime = mlTime - 1000;
-        //conversion for displaying the time
-        let minutes = Math.floor((mlTime % (1000 * 60 * 60)) / (1000 * 60));
-        let seconds = Math.floor((mlTime % (1000 * 60)) / 1000);
-        timer.innerHTML = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-      }
-    });
     socket.on("click success", function(socketID, round, x, y) {
-      if (socketID === socket.id) {
+      const coin = document.getElementById("coin");
+      coin.classList.forEach(element => {
+        coin.classList.remove(element);
+      });
+      if (socketID == socket.id) {
         if (round % 2 === 0) {
           placeCircle(y + 1, x + 1, sett.colors.primary);
         } else {
-          placeCross(y + 1, x + 1, sett.colors.secondary);
+          placeCross(y + 1, x + 1, sett.colors.primary);
         }
+        changeTimer("timeSecond");
+        coin.classList.add("oneHeads");
       } else {
         if (round % 2 === 0) {
-          placeCircle(y + 1, x + 1, sett.colors.primary);
+          placeCircle(y + 1, x + 1, sett.colors.secondary);
         } else {
           placeCross(y + 1, x + 1, sett.colors.secondary);
         }
+        changeTimer("timeOne");
+      }
+      coin.classList.add("oneTails");
+    });
+
+    socket.on("win", function(socketID) {
+      document.getElementById("winOverlay").style.display = "block";
+      if (socket.id === socketID) {
+        console.log("you win");
+        document.getElementById("winText").innerHTML = "You've won";
+      } else {
+        console.log("you loose");
+        document.getElementById("winText").innerHTML = "You've lost";
       }
     });
+
+    socket.on("playerLeft", function(socketID) {
+      console.log(socketID + " has left.");
+    });
+
     let canvas, ctx, sett;
     setTimeout(() => {
       canvas = document.getElementById("gameCanvas");
@@ -130,8 +149,29 @@ export default {
       sett.cellSize = size;
       // mainColor = this.mainColor;
       // secondaryColor = this.colorSecond;
+      document.getElementById("winOverlay").style.width = canvas.width + "px";
+      document.getElementById("winOverlay").style.height = canvas.width + "px";
+      console.log(canvas);
+      console.log(document.getElementById("winOverlay"));
     }, 500);
 
+    function changeTimer(timerID) {
+      clearInterval(timerInterval);
+      timer = document.getElementById(timerID);
+      let splitTime = timer.innerHTML.split(":");
+      let min = Number(splitTime[0]);
+      let sec = Number(splitTime[1]);
+      mlTime = (min * 60 + sec) * 1000;
+      timerInterval = setInterval(timeChange, 1000);
+    }
+
+    function timeChange() {
+      mlTime = mlTime - 1000;
+      //conversion for displaying the time
+      let minutes = Math.floor((mlTime % (1000 * 60 * 60)) / (1000 * 60));
+      let seconds = Math.floor((mlTime % (1000 * 60)) / 1000);
+      timer.innerHTML = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+    }
     let updateSettings = () => {
       let sectionDimensions = document.getElementById("gameContainer");
       let navbarHeight = document.getElementById("navbar").offsetHeight;
@@ -256,18 +296,119 @@ export default {
         });
       }
     }
+    // function placeLine(color, positions) {
+    //   ctx.strokeStyle = color;
+
+    //   const { x: fromX, y: fromY, radius } = calcPosition(
+    //     positions.fromX,
+    //     positions.fromY
+    //   );
+    //   const { x: toX, y: toY } = calcPosition(positions.toX, positions.toY);
+
+    //   const offCenter =
+    //     Math.sqrt(Math.pow(radius, 2) + Math.pow(radius, 2)) -
+    //     ctx.lineWidth / 2 -
+    //     20 / sett.gridLineWidth;
+
+    //   const difX = toX - fromX;
+    //   const difY = toY - fromY;
+
+    //   let xPositive, yPositive;
+    //   if (difX !== 0 && difY !== 0) {
+    //     if (difY < 0) {
+    //       yPositive = [offCenter, -offCenter];
+    //       xPositive = [-offCenter, offCenter];
+    //     } else if (difY > 0) {
+    //       yPositive = [-offCenter, offCenter];
+    //       xPositive = [-offCenter, offCenter];
+    //     }
+    //   } else if (difY === 0) {
+    //     yPositive = [0, 0];
+    //     xPositive = [offCenter, offCenter];
+    //   } else if (difX === 0) {
+    //     yPositive = [-offCenter, offCenter];
+    //     xPositive = [0, 0];
+    //   }
+
+    //   let step = 0;
+    //   animateLine(
+    //     fromX + xPositive[0],
+    //     fromY + yPositive[0],
+    //     toX + xPositive[1],
+    //     toY + yPositive[1],
+    //     step,
+    //     difX,
+    //     difY
+    //   );
+    // }
+
+    // function animateLine(fX, fY, toX, toY, step, difX, difY) {
+    //   ctx.beginPath();
+    //   ctx.moveTo(fX, fY);
+    //   ctx.lineTo(fX + difX * 0.02, fY + difY * 0.02);
+    //   ctx.stroke();
+    //   step += 0.01;
+    //   if (step < 1.15) {
+    //     requestAnimationFrame(function() {
+    //       animateLine(
+    //         fX + difX * 0.01,
+    //         fY + difY * 0.01,
+    //         toX,
+    //         toY,
+    //         step,
+    //         difX,
+    //         difY
+    //       );
+    //     });
+    //   }
+    // }
   },
   beforeDestroy() {
     let queryString = new URLSearchParams(window.location.search);
     let roomID = queryString.get("roomID");
     socket.emit("roomLeft", roomID);
-    socket.close();
-    console.log(socket);
     clearInterval(timerInterval);
   }
 };
 </script>
 <style scoped>
+#winButton {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 1rem;
+  background-color: var(--main);
+  color: white;
+  opacity: 1;
+  border-radius: 10px;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+#winText {
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  opacity: 1;
+  color: var(--main);
+  font-size: 4rem;
+  font-weight: 600;
+}
+
+#winOverlay {
+  position: absolute;
+  z-index: 101;
+  background-color: rgba(70, 71, 71, 0.6);
+  display: none;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border: 15px solid #2e4052;
+  border-radius: 2rem;
+}
+
 #playerOne {
   text-shadow: 3px 3px 0px rgba(70, 71, 71, 0.2);
   font-size: 3vw;
@@ -277,6 +418,7 @@ export default {
   color: #2e4052;
   margin: 0;
 }
+
 #timeOne {
   font-size: 4vw;
   margin: 0;
@@ -356,6 +498,44 @@ export default {
   animation: flipTails 3s ease-out forwards;
 }
 
+#coin.oneTails {
+  -webkit-animation: flipOneTail 1s ease-out forwards;
+  -moz-animation: flipOneTail 1s ease-out forwards;
+  -o-animation: flipOneTail 1s ease-out forwards;
+  animation: flipOneTail 1s ease-out forwards;
+}
+#coin.oneHeads {
+  -webkit-animation: flipOneHeads 1s ease-out forwards;
+  -moz-animation: flipOneHeads 1s ease-out forwards;
+  -o-animation: flipOneHeads 1s ease-out forwards;
+  animation: flipOneHeads 1s ease-out forwards;
+}
+@-webkit-keyframes flipOneHeads {
+  from {
+    -webkit-transform: rotateY(0);
+    -moz-transform: rotateY(0);
+    transform: rotateY(0);
+  }
+  to {
+    -webkit-transform: rotateY(180deg);
+    -moz-transform: rotateY(180deg);
+    transform: rotateY(180deg);
+  }
+}
+
+@-webkit-keyframes flipOneTail {
+  from {
+    -webkit-transform: rotateY(180deg);
+    -moz-transform: rotateY(180deg);
+    transform: rotateY(180deg);
+  }
+  to {
+    -webkit-transform: rotateY(0deg);
+    -moz-transform: rotateY(0deg);
+    transform: rotateY(0deg);
+  }
+}
+
 @-webkit-keyframes flipHeads {
   from {
     -webkit-transform: rotateY(0);
@@ -390,6 +570,7 @@ export default {
   grid-template-columns: repeat(15, 1fr);
   row-gap: 5px;
   column-gap: 5px;
+  opacity: 0.3;
 }
 
 #gameCanvas {

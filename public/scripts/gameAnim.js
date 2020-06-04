@@ -347,22 +347,28 @@ function init() {
       GLOBAL_ANIM_STOP = false;
     }
   };
+  window.onresize = function () {
+    if (window.location.pathname == "/") {
+      console.log(window.location.pathname);
+      clearInterval(GLOBAL_INTERVAL);
+      clearTimeout(GLOBAL_TIMEOUT);
+      // GLOBAL_ANIM_STOP = true;
 
-  window.addEventListener('resize', () => {
-    clearInterval(GLOBAL_INTERVAL);
-    clearTimeout(GLOBAL_TIMEOUT);
-    // GLOBAL_ANIM_STOP = true;
+      GLOBAL_TIMEOUT = setTimeout(() => {
+        console.log("resized");
+        for (let x = 0; x < 100; x++) {
+          clearInterval(x);
+        }
+        const canvas = document.getElementById('gameAnimation');
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    GLOBAL_TIMEOUT = setTimeout(() => {
-      for (let x = 0; x < 100; x++) {
-        clearInterval(x);
-      }
-      const canvas = document.getElementById('gameAnimation');
-      const ctx = canvas.getContext('2d');
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      init()
-    }, 1500);
-  });
+        init()
+      }, 1500);
+    }
+
+  };
+
 
 }
 

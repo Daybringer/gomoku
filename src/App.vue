@@ -108,8 +108,7 @@ export default {
   },
   beforeMount() {
     this.isLogged();
-  },
-  beforeDestroy() {}
+  }
 };
 </script>
 <style>
