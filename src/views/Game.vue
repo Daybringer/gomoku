@@ -1,6 +1,6 @@
 <template>
   <div class="game_main" id="game_main" :style="cssVars">
-    <div class="game_sub">
+    <div class="game_sub" id="game_sub_coin">
       <div id="coin">
         <div class="side-a"></div>
         <div class="side-b"></div>
@@ -18,12 +18,12 @@
         <router-link to="/search" id="winButton">Find new game</router-link>
       </div>
     </div>
-    <div class="game_sub">
-      <div>
+    <div class="game_sub" id="timer_game_sub">
+      <div id="timer_game_sub_sub1">
         <p id="playerOne">You</p>
         <p id="timeOne">5:00</p>
       </div>
-      <div>
+      <div id="timer_game_sub_sub2">
         <p id="playerSecond">An utterly bad bot</p>
         <p id="timeSecond">5:00</p>
       </div>
@@ -126,6 +126,7 @@ export default {
     });
 
     socket.on("win", function(socketID) {
+      clearInterval(timerInterval);
       document.getElementById("winOverlay").style.display = "block";
       if (socket.id === socketID) {
         document.getElementById("winText").innerHTML = "You've won";
@@ -134,7 +135,7 @@ export default {
       }
     });
 
-    socket.on("timeOut", function(socketID, didTimedOut) {
+    socket.on("timedOut", function(socketID, didTimedOut) {
       document.getElementById("winOverlay").style.display = "block";
       if (socketID === socket.id && didTimedOut) {
         document.getElementById("winText").innerHTML =
@@ -186,7 +187,7 @@ export default {
         let seconds = Math.floor((mlTime % (1000 * 60)) / 1000);
         timer.innerHTML = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
       } else {
-        socket.emit("timeOut", timer.id, roomID);
+        // socket.emit("timeOut", timer.id, roomID);
         clearInterval(timerInterval);
         timer.innerHTML = "0:0";
       }
@@ -238,18 +239,22 @@ export default {
       return {
         x: gridX * sett.cellSize - Math.floor(sett.cellSize / 2) + sett.pL,
         y: gridY * sett.cellSize - Math.floor(sett.cellSize / 2) + sett.pT,
-        radius: Math.floor(sett.cellSize / 2) - sett.gridLineWidth,
+        radius: sett.cellSize / 2 - sett.gridLineWidth,
       };
     }
 
     function placeCircle(gX, gY, color) {
       const { x, y, radius } = calcPosition(gX, gY);
-      ctx.lineWidth = Math.floor(sett.gridLineWidth / 2);
-      ctx.strokeStyle = color;
+      ctx.lineWidth = sett.gridLineWidth / 2;
       const offCenter =
         Math.sqrt(Math.pow(radius, 2) + Math.pow(radius, 2)) -
         ctx.lineWidth / 2 -
         20 / sett.gridLineWidth;
+
+      ctx.strokeStyle = color;
+      console.log(offCenter);
+      console.log(sett.gridLineWidth);
+      console.log(radius);
       const clearSize = sett.cellSize - sett.gridLineWidth;
 
       const curPerc = 0;
@@ -271,14 +276,13 @@ export default {
 
     function placeCross(gX, gY, color) {
       const { x, y, radius } = calcPosition(gX, gY);
-
+      ctx.lineWidth = Math.floor(sett.gridLineWidth / 2);
       const offCenter =
         Math.sqrt(Math.pow(radius, 2) + Math.pow(radius, 2)) -
         ctx.lineWidth / 2 -
         20 / sett.gridLineWidth;
       const clearSize = sett.cellSize - sett.gridLineWidth;
       ctx.strokeStyle = color;
-      ctx.lineWidth = Math.floor(sett.gridLineWidth / 2);
 
       animateCrossL(x, y, radius, -1, offCenter, clearSize);
       // animateCrossR(x, y, radius, -1, offCenter, clearSize);
@@ -468,7 +472,7 @@ export default {
   margin-top: 8rem;
   width: 100px;
   height: 100px;
-  cursor: pointer;
+  cursor: default;
 }
 #coin div {
   width: 100%;
@@ -618,5 +622,152 @@ export default {
   position: absolute;
   bottom: 0;
   width: 100%;
+}
+
+@media only screen and (max-width: 600px) {
+  .game_main {
+    display: block;
+    height: calc(100vh - 4em);
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+  }
+  #gridOverlay {
+    display: grid;
+    top: 5rem;
+    left: 0;
+    transform: translate(0, 0);
+    position: absolute;
+    grid-template-columns: repeat(15, 1fr);
+    row-gap: 5px;
+    column-gap: 5px;
+    opacity: 0.3;
+  }
+
+  #gameCanvas {
+    top: 0;
+    left: 0;
+    transform: translate(0, 0);
+    position: relative;
+    width: 95%;
+    margin: 0 auto;
+    margin-top: 5rem;
+    border: 5px solid #2e4052;
+    border-radius: 0.5rem;
+  }
+
+  .game_sub {
+    width: auto;
+    height: auto;
+  }
+
+  #timer_game_sub {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    display: grid;
+  }
+  #winButton {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 1rem;
+    background-color: var(--main);
+    color: white;
+    opacity: 1;
+    border-radius: 10px;
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+
+  #winText {
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    position: absolute;
+    opacity: 1;
+    color: var(--main);
+    font-size: 3rem;
+    padding: 0.5rem;
+    border-radius: 10px;
+    font-weight: 600;
+    background-color: #2e4052;
+  }
+
+  #winOverlay {
+    z-index: 101;
+    background-color: rgba(70, 71, 71, 0.6);
+    top: 0;
+    left: 0;
+    transform: translate(0, 0);
+    position: absolute;
+    margin: 0 auto;
+    margin-top: 5rem;
+    border: 5px solid #2e4052;
+    border-radius: 1rem;
+  }
+
+  #playerOne {
+    text-shadow: 3px 3px 0px rgba(70, 71, 71, 0.2);
+    font-size: 3vw;
+    text-align: right;
+    padding: 0;
+    color: #2e4052;
+    margin: 0;
+  }
+  #timer_game_sub_sub1 {
+    grid-column: 1;
+  }
+  #timer_game_sub_sub2 {
+    grid-column: 2;
+  }
+  #timeOne {
+    font-size: 4vw;
+    margin: 0;
+    text-align: right;
+    padding-right: 3rem;
+    color: var(--main);
+  }
+  #timeSecond {
+    font-size: 4vw;
+    margin: 0;
+    text-align: right;
+    padding-right: 3rem;
+    color: var(--second);
+  }
+  #playerSecond {
+    text-shadow: 3px 3px 0px rgba(70, 71, 71, 0.2);
+    font-size: 2vw;
+    text-align: right;
+    padding: 0;
+    color: #2e4052;
+    margin: 0;
+  }
+
+  #coin {
+    top: 0;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    cursor: default;
+  }
+}
+
+@media only screen and (min-width: 600) and (max-width: 768) {
+}
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) and (max-width: 1200px) {
+}
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
 }
 </style>

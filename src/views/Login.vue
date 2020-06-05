@@ -11,8 +11,15 @@
           <label for="passwordLogin">Password</label>
           <input type="password" name="passwordLogin" id="passwordLogin" />
         </fieldset>
-        <input id="form-footer-submit" type="submit" value="Log in" :style="cssVars" />
-        <router-link :style="cssVars" class="grad-link" to="register">No account yet?</router-link>
+        <input
+          id="form-footer-submit"
+          type="submit"
+          value="Log in"
+          :style="cssVars"
+        />
+        <router-link :style="cssVars" class="grad-link" to="register"
+          >No account yet?</router-link
+        >
       </form>
     </div>
   </div>
@@ -29,9 +36,9 @@ export default {
       return {
         "--main": this.colorMain,
         "--second": this.colorSecond,
-        "--mainDark": this.colorMainDark
+        "--mainDark": this.colorMainDark,
       };
-    }
+    },
   },
   methods: {
     login(e) {
@@ -41,7 +48,7 @@ export default {
       let login = () => {
         let data = {
           email: email,
-          password: password
+          password: password,
         };
         axios
           .post("/api/login", data)
@@ -60,8 +67,8 @@ export default {
           });
       };
       login();
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>
@@ -335,31 +342,5 @@ export default {
 
 /* Extra large devices (large laptops and desktops, 1200px and up) */
 @media only screen and (min-width: 1200px) {
-  /* .page-title {
-    text-align: center;
-    font-weight: 800;
-    color: #2e4052;
-    font-size: 3em;
-    margin-top: -3rem;
-    margin-bottom: 0.5rem;
-  }
-  .form-footer input[type="submit"],
-  .form-footer input[type="button"] {
-    padding: 0.75rem 1rem;
-    font-weight: 600;
-    width: 80%;
-    border-radius: 0.5em;
-  }
-  #successField {
-    margin-bottom: 15px;
-  }
-  #errorField {
-    margin-bottom: 15px;
-  }
-  .footer {
-    font-size: medium;
-    font-weight: 500;
-    padding: 0.5rem;
-  } */
 }
 </style>
