@@ -44,9 +44,9 @@ export default {
     cssVars() {
       return {
         "--main": this.colorMain,
-        "--second": this.colorSecond
+        "--second": this.colorSecond,
       };
-    }
+    },
   },
   mounted() {
     let gameMockScript = document.createElement("script");
@@ -60,14 +60,14 @@ export default {
 
     let roomID;
 
-    socket = io();
+    socket = io("/quick");
     let queryString = new URLSearchParams(window.location.search);
     roomID = queryString.get("roomID");
 
     socket.emit("gameJoined", roomID);
 
     setTimeout(() => {
-      document.getElementsByClassName("overlayCell").forEach(el => {
+      document.getElementsByClassName("overlayCell").forEach((el) => {
         el.addEventListener("click", () => {
           gameClick(el);
         });
@@ -84,7 +84,7 @@ export default {
     });
     socket.on("gameBegun", function(startingPlayer) {
       const coin = document.getElementById("coin");
-      coin.classList.forEach(element => {
+      coin.classList.forEach((element) => {
         coin.classList.remove(element);
       });
 
@@ -103,7 +103,7 @@ export default {
 
     socket.on("click success", function(socketID, round, x, y) {
       const coin = document.getElementById("coin");
-      coin.classList.forEach(element => {
+      coin.classList.forEach((element) => {
         coin.classList.remove(element);
       });
       if (socketID == socket.id) {
@@ -128,16 +128,29 @@ export default {
     socket.on("win", function(socketID) {
       document.getElementById("winOverlay").style.display = "block";
       if (socket.id === socketID) {
-        console.log("you win");
         document.getElementById("winText").innerHTML = "You've won";
       } else {
-        console.log("you loose");
         document.getElementById("winText").innerHTML = "You've lost";
       }
     });
 
-    socket.on("playerLeft", function(socketID) {
-      console.log(socketID + " has left.");
+    socket.on("timeOut", function(socketID, didTimedOut) {
+      document.getElementById("winOverlay").style.display = "block";
+      if (socketID === socket.id && didTimedOut) {
+        document.getElementById("winText").innerHTML =
+          "Time is out\nYou've lost";
+      } else if (socketID !== socket.id && !didTimedOut) {
+        document.getElementById("winText").innerHTML =
+          "Time is out\nYou've lost";
+      } else {
+        document.getElementById("winText").innerHTML =
+          "Time is out\nYou've won";
+      }
+    });
+
+    socket.on("playerLeft", function() {
+      document.getElementById("winOverlay").style.display = "block";
+      document.getElementById("winText").innerHTML = "You've won";
     });
 
     let canvas, ctx, sett;
@@ -164,13 +177,19 @@ export default {
       mlTime = (min * 60 + sec) * 1000;
       timerInterval = setInterval(timeChange, 1000);
     }
-
+    // NAIVE IMPLEMENTATION
     function timeChange() {
-      mlTime = mlTime - 1000;
-      //conversion for displaying the time
-      let minutes = Math.floor((mlTime % (1000 * 60 * 60)) / (1000 * 60));
-      let seconds = Math.floor((mlTime % (1000 * 60)) / 1000);
-      timer.innerHTML = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+      if (mlTime > 0) {
+        mlTime = mlTime - 1000;
+        //conversion for displaying the time
+        let minutes = Math.floor((mlTime % (1000 * 60 * 60)) / (1000 * 60));
+        let seconds = Math.floor((mlTime % (1000 * 60)) / 1000);
+        timer.innerHTML = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+      } else {
+        socket.emit("timeOut", timer.id, roomID);
+        clearInterval(timerInterval);
+        timer.innerHTML = "0:0";
+      }
     }
     let updateSettings = () => {
       let sectionDimensions = document.getElementById("gameContainer");
@@ -192,7 +211,7 @@ export default {
           stroke: "rgba(227, 227, 227, 1)",
           primaryDark: mixColors([255, 255, 255, 1], [58, 134, 255, 0.45]),
           secondaryDark: mixColors([255, 255, 255, 1], [255, 0, 110, 0.45]),
-          strokeDark: ""
+          strokeDark: "",
         },
         gridColumns: 15,
         gridRows: 15,
@@ -202,7 +221,7 @@ export default {
         pB: 0,
         pT: 0,
         pX: 0,
-        pY: 0
+        pY: 0,
       };
     };
     function mixColors(bgColor, fwColor) {
@@ -219,7 +238,7 @@ export default {
       return {
         x: gridX * sett.cellSize - Math.floor(sett.cellSize / 2) + sett.pL,
         y: gridY * sett.cellSize - Math.floor(sett.cellSize / 2) + sett.pT,
-        radius: Math.floor(sett.cellSize / 2) - sett.gridLineWidth
+        radius: Math.floor(sett.cellSize / 2) - sett.gridLineWidth,
       };
     }
 
@@ -364,11 +383,9 @@ export default {
     // }
   },
   beforeDestroy() {
-    let queryString = new URLSearchParams(window.location.search);
-    let roomID = queryString.get("roomID");
-    socket.emit("roomLeft", roomID);
     clearInterval(timerInterval);
-  }
+    socket.close();
+  },
 };
 </script>
 <style scoped>
@@ -393,8 +410,11 @@ export default {
   position: absolute;
   opacity: 1;
   color: var(--main);
-  font-size: 4rem;
+  font-size: 3rem;
+  padding: 0.5rem;
+  border-radius: 10px;
   font-weight: 600;
+  background-color: #2e4052;
 }
 
 #winOverlay {

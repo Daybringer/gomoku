@@ -146,7 +146,7 @@ export default {
     axios
       .post("/port")
       .then(response => {
-        socket = io();
+        socket = io('/search');
         console.log(socket);
         console.log(response);
         this.$emit("updatePort", response.data);
