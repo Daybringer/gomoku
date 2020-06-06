@@ -14,7 +14,6 @@ git push origin master
 cd server
 
 git add .
-read -p "Commit message:" commitMessage
 git commit -m "$commitMessage"
 git push origin master
 
