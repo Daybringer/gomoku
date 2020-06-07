@@ -30,7 +30,7 @@ import router from "./router";
 export default {
   name: "App",
   components: {
-    Navbar
+    Navbar,
   },
   data() {
     return {
@@ -39,20 +39,20 @@ export default {
       colorMain: "#ffffff",
       colorSecond: "#ffffff",
       colorMainDark: "#ffffff",
-      port: "3000"
+      port: "3000",
     };
   },
   methods: {
     isLogged() {
       axios
         .post("/api/islogged")
-        .then(response => {
+        .then((response) => {
           this.logged = true;
           this.username = response.data.username;
           let [
             colorMain,
             colorSecond,
-            colorMainDark
+            colorMainDark,
           ] = response.data.colors.split(",");
           this.colorMain = colorMain;
           this.colorSecond = colorSecond;
@@ -86,7 +86,7 @@ export default {
       let data = {
         colorMain: this.colorMain,
         colorSecond: this.colorSecond,
-        colorMainDark: this.colorMainDark
+        colorMainDark: this.colorMainDark,
       };
       axios
         .post("/api/changeColors", data)
@@ -98,17 +98,17 @@ export default {
       let data = {
         colorMain: this.colorMain,
         colorSecond: this.colorSecond,
-        colorMainDark: this.colorMainDark
+        colorMainDark: this.colorMainDark,
       };
       axios
         .post("/api/changeColors", data)
         .then(() => {})
         .catch(() => {});
-    }
+    },
   },
   beforeMount() {
     this.isLogged();
-  }
+  },
 };
 </script>
 <style>
@@ -117,6 +117,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: "Roboto", sans-serif;
+  box-sizing: border-box;
 }
 a {
   text-decoration: none !important;

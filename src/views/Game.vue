@@ -132,6 +132,12 @@ export default {
         changeTimer("timeOne");
       }
       coin.classList.add("oneTails");
+      let oldDraws = document.getElementsByClassName("lastDraw");
+
+      Array.from(oldDraws).forEach((el) => {
+        el.classList.remove("lastDraw");
+      });
+      document.getElementById(`${x * 15 + y}`).classList.add("lastDraw");
     });
 
     socket.on("win", function(socketID) {
@@ -171,7 +177,9 @@ export default {
       let enemyTime = times[Math.abs(playersArr.indexOf(socketID) - 1)][0];
       document.getElementById("timeSecond").innerHTML = `${Math.floor(
         enemyTime / 60
-      )}:${enemyTime % 60 < 10 ? "0" : ""}${Math.round(enemyTime % 60)}`;
+      )}:${Math.floor(enemyTime % 60) < 10 ? "0" : ""}${Math.floor(
+        enemyTime % 60
+      )}`;
     }
 
     function changeTimer(timerID) {
