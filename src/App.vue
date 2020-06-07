@@ -57,6 +57,7 @@ export default {
           this.colorMain = colorMain;
           this.colorSecond = colorSecond;
           this.colorMainDark = colorMainDark;
+          this.changeFavicon(this.colorMain);
         })
         .catch(() => {
           this.colorMain = "#ff006e";
@@ -88,10 +89,62 @@ export default {
         colorSecond: this.colorSecond,
         colorMainDark: this.colorMainDark,
       };
+      this.changeFavicon(this.colorMain);
       axios
         .post("/api/changeColors", data)
         .then(() => {})
         .catch(() => {});
+    },
+    changeFavicon(hexColor) {
+      console.log(hexColor);
+      switch (hexColor) {
+        case "#ff006e":
+          document
+            .getElementById("favicon")
+            .setAttribute("href", "pink_favicon32.png");
+          break;
+        case "#3a86ff":
+          document
+            .getElementById("favicon")
+            .setAttribute("href", "blue_favicon32.png");
+          break;
+        case "#44bba4":
+          document
+            .getElementById("favicon")
+            .setAttribute("href", "aqua_favicon32.png");
+          break;
+        case "#ffbf00":
+          document
+            .getElementById("favicon")
+            .setAttribute("href", "yellow_favicon32.png");
+          break;
+        case "#ff822e":
+          document
+            .getElementById("favicon")
+            .setAttribute("href", "orange_favicon32.png");
+          break;
+        case "#a937c8":
+          document
+            .getElementById("favicon")
+            .setAttribute("href", "purple_favicon32.png");
+          break;
+        case "#0cce6b":
+          document
+            .getElementById("favicon")
+            .setAttribute("href", "green_favicon32.png");
+          break;
+        case "#d94a3f":
+          document
+            .getElementById("favicon")
+            .setAttribute("href", "red_favicon32.png");
+          break;
+
+        default:
+          document
+            .getElementById("favicon")
+            .setAttribute("href", "pink_favicon32.png");
+          break;
+      }
     },
     changeColorSecond: function(color) {
       this.colorSecond = color;

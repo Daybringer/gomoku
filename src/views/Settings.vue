@@ -38,14 +38,22 @@
           class="rounded color-sub"
           style="background-color: #3a86ff;"
         >
-          <svg class="selected_icon" viewBox="0 0 63.95 63.95" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            class="selected_icon"
+            viewBox="0 0 63.95 63.95"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <path
               d="M31.98 0A31.98 31.98 0 000 31.97a31.98 31.98 0 0031.98 31.98 31.98 31.98 0 0031.97-31.98A31.98 31.98 0 0031.98 0zm4.6 11.75c.69-.16.97.1.8.79v39.7h-5.14V18.12L21.91 21.9v-4.64l14.68-5.5z"
               fill="#ffffff"
               paint-order="stroke fill markers"
             />
           </svg>
-          <svg class="selected_icon" viewBox="0 0 62.13 62.13" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            class="selected_icon"
+            viewBox="0 0 62.13 62.13"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <path
               d="M31.06 0A31.06 31.06 0 000 31.06a31.06 31.06 0 0031.06 31.07 31.06 31.06 0 0031.07-31.07A31.06 31.06 0 0031.06 0zm-.11 10.98c3.5 0 6.26.91 8.3 2.76 2.02 1.82 3.04 4.26 3.04 7.3 0 3.71-2.37 8.12-7.09 13.24L25.14 45.2h18.88v3.9H19.37v-3.44l13.02-14.46a30.62 30.62 0 003.98-5.33 8.87 8.87 0 001.12-4.25c0-1.97-.6-3.58-1.8-4.84a6.24 6.24 0 00-4.74-1.89c-2.38 0-4.24.68-5.56 2.04-1.31 1.35-1.96 3.22-1.96 5.63h-4.78c0-3.46 1.11-6.26 3.33-8.4 2.24-2.13 5.23-3.2 8.97-3.2z"
               fill="#ffffff"
@@ -59,14 +67,22 @@
           class="rounded color-sub"
           style="background-color: #44bba4;"
         >
-          <svg class="selected_icon" viewBox="0 0 63.95 63.95" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            class="selected_icon"
+            viewBox="0 0 63.95 63.95"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <path
               d="M31.98 0A31.98 31.98 0 000 31.97a31.98 31.98 0 0031.98 31.98 31.98 31.98 0 0031.97-31.98A31.98 31.98 0 0031.98 0zm4.6 11.75c.69-.16.97.1.8.79v39.7h-5.14V18.12L21.91 21.9v-4.64l14.68-5.5z"
               fill="#ffffff"
               paint-order="stroke fill markers"
             />
           </svg>
-          <svg class="selected_icon" viewBox="0 0 62.13 62.13" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            class="selected_icon"
+            viewBox="0 0 62.13 62.13"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <path
               d="M31.06 0A31.06 31.06 0 000 31.06a31.06 31.06 0 0031.06 31.07 31.06 31.06 0 0031.07-31.07A31.06 31.06 0 0031.06 0zm-.11 10.98c3.5 0 6.26.91 8.3 2.76 2.02 1.82 3.04 4.26 3.04 7.3 0 3.71-2.37 8.12-7.09 13.24L25.14 45.2h18.88v3.9H19.37v-3.44l13.02-14.46a30.62 30.62 0 003.98-5.33 8.87 8.87 0 001.12-4.25c0-1.97-.6-3.58-1.8-4.84a6.24 6.24 0 00-4.74-1.89c-2.38 0-4.24.68-5.56 2.04-1.31 1.35-1.96 3.22-1.96 5.63h-4.78c0-3.46 1.11-6.26 3.33-8.4 2.24-2.13 5.23-3.2 8.97-3.2z"
               fill="#ffffff"
@@ -80,14 +96,22 @@
           class="rounded color-sub"
           style="background-color: #ffbf00;"
         >
-          <svg class="selected_icon" viewBox="0 0 63.95 63.95" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            class="selected_icon"
+            viewBox="0 0 63.95 63.95"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <path
               d="M31.98 0A31.98 31.98 0 000 31.97a31.98 31.98 0 0031.98 31.98 31.98 31.98 0 0031.97-31.98A31.98 31.98 0 0031.98 0zm4.6 11.75c.69-.16.97.1.8.79v39.7h-5.14V18.12L21.91 21.9v-4.64l14.68-5.5z"
               fill="#ffffff"
               paint-order="stroke fill markers"
             />
           </svg>
-          <svg class="selected_icon" viewBox="0 0 62.13 62.13" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            class="selected_icon"
+            viewBox="0 0 62.13 62.13"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <path
               d="M31.06 0A31.06 31.06 0 000 31.06a31.06 31.06 0 0031.06 31.07 31.06 31.06 0 0031.07-31.07A31.06 31.06 0 0031.06 0zm-.11 10.98c3.5 0 6.26.91 8.3 2.76 2.02 1.82 3.04 4.26 3.04 7.3 0 3.71-2.37 8.12-7.09 13.24L25.14 45.2h18.88v3.9H19.37v-3.44l13.02-14.46a30.62 30.62 0 003.98-5.33 8.87 8.87 0 001.12-4.25c0-1.97-.6-3.58-1.8-4.84a6.24 6.24 0 00-4.74-1.89c-2.38 0-4.24.68-5.56 2.04-1.31 1.35-1.96 3.22-1.96 5.63h-4.78c0-3.46 1.11-6.26 3.33-8.4 2.24-2.13 5.23-3.2 8.97-3.2z"
               fill="#ffffff"
@@ -101,14 +125,22 @@
           class="rounded color-sub"
           style="background-color: #ff822e;"
         >
-          <svg class="selected_icon" viewBox="0 0 63.95 63.95" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            class="selected_icon"
+            viewBox="0 0 63.95 63.95"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <path
               d="M31.98 0A31.98 31.98 0 000 31.97a31.98 31.98 0 0031.98 31.98 31.98 31.98 0 0031.97-31.98A31.98 31.98 0 0031.98 0zm4.6 11.75c.69-.16.97.1.8.79v39.7h-5.14V18.12L21.91 21.9v-4.64l14.68-5.5z"
               fill="#ffffff"
               paint-order="stroke fill markers"
             />
           </svg>
-          <svg class="selected_icon" viewBox="0 0 62.13 62.13" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            class="selected_icon"
+            viewBox="0 0 62.13 62.13"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <path
               d="M31.06 0A31.06 31.06 0 000 31.06a31.06 31.06 0 0031.06 31.07 31.06 31.06 0 0031.07-31.07A31.06 31.06 0 0031.06 0zm-.11 10.98c3.5 0 6.26.91 8.3 2.76 2.02 1.82 3.04 4.26 3.04 7.3 0 3.71-2.37 8.12-7.09 13.24L25.14 45.2h18.88v3.9H19.37v-3.44l13.02-14.46a30.62 30.62 0 003.98-5.33 8.87 8.87 0 001.12-4.25c0-1.97-.6-3.58-1.8-4.84a6.24 6.24 0 00-4.74-1.89c-2.38 0-4.24.68-5.56 2.04-1.31 1.35-1.96 3.22-1.96 5.63h-4.78c0-3.46 1.11-6.26 3.33-8.4 2.24-2.13 5.23-3.2 8.97-3.2z"
               fill="#ffffff"
@@ -122,14 +154,22 @@
           class="rounded color-sub"
           style="background-color: #a937c8;"
         >
-          <svg class="selected_icon" viewBox="0 0 63.95 63.95" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            class="selected_icon"
+            viewBox="0 0 63.95 63.95"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <path
               d="M31.98 0A31.98 31.98 0 000 31.97a31.98 31.98 0 0031.98 31.98 31.98 31.98 0 0031.97-31.98A31.98 31.98 0 0031.98 0zm4.6 11.75c.69-.16.97.1.8.79v39.7h-5.14V18.12L21.91 21.9v-4.64l14.68-5.5z"
               fill="#ffffff"
               paint-order="stroke fill markers"
             />
           </svg>
-          <svg class="selected_icon" viewBox="0 0 62.13 62.13" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            class="selected_icon"
+            viewBox="0 0 62.13 62.13"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <path
               d="M31.06 0A31.06 31.06 0 000 31.06a31.06 31.06 0 0031.06 31.07 31.06 31.06 0 0031.07-31.07A31.06 31.06 0 0031.06 0zm-.11 10.98c3.5 0 6.26.91 8.3 2.76 2.02 1.82 3.04 4.26 3.04 7.3 0 3.71-2.37 8.12-7.09 13.24L25.14 45.2h18.88v3.9H19.37v-3.44l13.02-14.46a30.62 30.62 0 003.98-5.33 8.87 8.87 0 001.12-4.25c0-1.97-.6-3.58-1.8-4.84a6.24 6.24 0 00-4.74-1.89c-2.38 0-4.24.68-5.56 2.04-1.31 1.35-1.96 3.22-1.96 5.63h-4.78c0-3.46 1.11-6.26 3.33-8.4 2.24-2.13 5.23-3.2 8.97-3.2z"
               fill="#ffffff"
@@ -143,14 +183,22 @@
           class="rounded color-sub"
           style="background-color: #0cce6b;"
         >
-          <svg class="selected_icon" viewBox="0 0 63.95 63.95" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            class="selected_icon"
+            viewBox="0 0 63.95 63.95"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <path
               d="M31.98 0A31.98 31.98 0 000 31.97a31.98 31.98 0 0031.98 31.98 31.98 31.98 0 0031.97-31.98A31.98 31.98 0 0031.98 0zm4.6 11.75c.69-.16.97.1.8.79v39.7h-5.14V18.12L21.91 21.9v-4.64l14.68-5.5z"
               fill="#ffffff"
               paint-order="stroke fill markers"
             />
           </svg>
-          <svg class="selected_icon" viewBox="0 0 62.13 62.13" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            class="selected_icon"
+            viewBox="0 0 62.13 62.13"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <path
               d="M31.06 0A31.06 31.06 0 000 31.06a31.06 31.06 0 0031.06 31.07 31.06 31.06 0 0031.07-31.07A31.06 31.06 0 0031.06 0zm-.11 10.98c3.5 0 6.26.91 8.3 2.76 2.02 1.82 3.04 4.26 3.04 7.3 0 3.71-2.37 8.12-7.09 13.24L25.14 45.2h18.88v3.9H19.37v-3.44l13.02-14.46a30.62 30.62 0 003.98-5.33 8.87 8.87 0 001.12-4.25c0-1.97-.6-3.58-1.8-4.84a6.24 6.24 0 00-4.74-1.89c-2.38 0-4.24.68-5.56 2.04-1.31 1.35-1.96 3.22-1.96 5.63h-4.78c0-3.46 1.11-6.26 3.33-8.4 2.24-2.13 5.23-3.2 8.97-3.2z"
               fill="#ffffff"
@@ -164,14 +212,22 @@
           class="rounded color-sub"
           style="background-color: #d94a3f;"
         >
-          <svg class="selected_icon" viewBox="0 0 63.95 63.95" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            class="selected_icon"
+            viewBox="0 0 63.95 63.95"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <path
               d="M31.98 0A31.98 31.98 0 000 31.97a31.98 31.98 0 0031.98 31.98 31.98 31.98 0 0031.97-31.98A31.98 31.98 0 0031.98 0zm4.6 11.75c.69-.16.97.1.8.79v39.7h-5.14V18.12L21.91 21.9v-4.64l14.68-5.5z"
               fill="#ffffff"
               paint-order="stroke fill markers"
             />
           </svg>
-          <svg class="selected_icon" viewBox="0 0 62.13 62.13" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            class="selected_icon"
+            viewBox="0 0 62.13 62.13"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <path
               d="M31.06 0A31.06 31.06 0 000 31.06a31.06 31.06 0 0031.06 31.07 31.06 31.06 0 0031.07-31.07A31.06 31.06 0 0031.06 0zm-.11 10.98c3.5 0 6.26.91 8.3 2.76 2.02 1.82 3.04 4.26 3.04 7.3 0 3.71-2.37 8.12-7.09 13.24L25.14 45.2h18.88v3.9H19.37v-3.44l13.02-14.46a30.62 30.62 0 003.98-5.33 8.87 8.87 0 001.12-4.25c0-1.97-.6-3.58-1.8-4.84a6.24 6.24 0 00-4.74-1.89c-2.38 0-4.24.68-5.56 2.04-1.31 1.35-1.96 3.22-1.96 5.63h-4.78c0-3.46 1.11-6.26 3.33-8.4 2.24-2.13 5.23-3.2 8.97-3.2z"
               fill="#ffffff"
@@ -183,14 +239,22 @@
           class="rounded color-sub"
           style="background-image:  linear-gradient(to right,#ff006eff, #3300ebff);"
         >
-          <svg class="selected_icon" viewBox="0 0 63.95 63.95" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            class="selected_icon"
+            viewBox="0 0 63.95 63.95"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <path
               d="M31.98 0A31.98 31.98 0 000 31.97a31.98 31.98 0 0031.98 31.98 31.98 31.98 0 0031.97-31.98A31.98 31.98 0 0031.98 0zm4.6 11.75c.69-.16.97.1.8.79v39.7h-5.14V18.12L21.91 21.9v-4.64l14.68-5.5z"
               fill="#ffffff"
               paint-order="stroke fill markers"
             />
           </svg>
-          <svg class="selected_icon" viewBox="0 0 62.13 62.13" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            class="selected_icon"
+            viewBox="0 0 62.13 62.13"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <path
               d="M31.06 0A31.06 31.06 0 000 31.06a31.06 31.06 0 0031.06 31.07 31.06 31.06 0 0031.07-31.07A31.06 31.06 0 0031.06 0zm-.11 10.98c3.5 0 6.26.91 8.3 2.76 2.02 1.82 3.04 4.26 3.04 7.3 0 3.71-2.37 8.12-7.09 13.24L25.14 45.2h18.88v3.9H19.37v-3.44l13.02-14.46a30.62 30.62 0 003.98-5.33 8.87 8.87 0 001.12-4.25c0-1.97-.6-3.58-1.8-4.84a6.24 6.24 0 00-4.74-1.89c-2.38 0-4.24.68-5.56 2.04-1.31 1.35-1.96 3.22-1.96 5.63h-4.78c0-3.46 1.11-6.26 3.33-8.4 2.24-2.13 5.23-3.2 8.97-3.2z"
               fill="#ffffff"
@@ -216,7 +280,9 @@
             <rdf:RDF>
               <cc:Work rdf:about>
                 <dc:format>image/svg+xml</dc:format>
-                <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+                <dc:type
+                  rdf:resource="http://purl.org/dc/dcmitype/StillImage"
+                />
                 <dc:title />
               </cc:Work>
             </rdf:RDF>
@@ -236,7 +302,14 @@
                   style="line-height:1.25"
                   xml:space="preserve"
                 >
-                  <tspan x="144.73906" y="215.93147" fill="#2e4052" stroke-width=".085177">Normal</tspan>
+                  <tspan
+                    x="144.73906"
+                    y="215.93147"
+                    fill="#2e4052"
+                    stroke-width=".085177"
+                  >
+                    Normal
+                  </tspan>
                 </text>
                 <g transform="translate(4.0524e-6 .086272)">
                   <g transform="translate(.10383 .72497)">
@@ -384,7 +457,9 @@
             <rdf:RDF>
               <cc:Work rdf:about>
                 <dc:format>image/svg+xml</dc:format>
-                <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+                <dc:type
+                  rdf:resource="http://purl.org/dc/dcmitype/StillImage"
+                />
                 <dc:title />
               </cc:Work>
             </rdf:RDF>
@@ -403,7 +478,14 @@
                 style="line-height:1.25"
                 xml:space="preserve"
               >
-                <tspan x="151.7141" y="215.89146" fill="#2e4052" stroke-width=".085177">Classic</tspan>
+                <tspan
+                  x="151.7141"
+                  y="215.89146"
+                  fill="#2e4052"
+                  stroke-width=".085177"
+                >
+                  Classic
+                </tspan>
               </text>
               <g transform="translate(-.18416 .062905)">
                 <g transform="translate(.098289 .67869)">
@@ -496,7 +578,9 @@
             <rdf:RDF>
               <cc:Work rdf:about>
                 <dc:format>image/svg+xml</dc:format>
-                <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+                <dc:type
+                  rdf:resource="http://purl.org/dc/dcmitype/StillImage"
+                />
                 <dc:title />
               </cc:Work>
             </rdf:RDF>
@@ -515,10 +599,21 @@
                 style="line-height:1.25"
                 xml:space="preserve"
               >
-                <tspan x="158.5457" y="215.82132" fill="#2e4052" stroke-width=".085177">Modern</tspan>
+                <tspan
+                  x="158.5457"
+                  y="215.82132"
+                  fill="#2e4052"
+                  stroke-width=".085177"
+                >
+                  Modern
+                </tspan>
               </text>
               <g transform="translate(-4.5817e-6 -.054871)">
-                <g transform="translate(.23435 .74751)" stroke="#2e4052" stroke-linejoin="round">
+                <g
+                  transform="translate(.23435 .74751)"
+                  stroke="#2e4052"
+                  stroke-linejoin="round"
+                >
                   <rect
                     x="158.35"
                     y="215.81"
@@ -656,23 +751,23 @@ export default {
       if (b.length == 1) b = "0" + b;
 
       return "#" + r + g + b;
-    }
+    },
   },
   props: ["logged", "username", "colorMain", "colorSecond", "colorMainDark"],
   mounted() {
     setTimeout(() => {
-      document.querySelectorAll(".gameboard-sub").forEach(element => {
+      document.querySelectorAll(".gameboard-sub").forEach((element) => {
         element.addEventListener("click", function() {
-          document.querySelectorAll(".gameboard-sub-active").forEach(el => {
+          document.querySelectorAll(".gameboard-sub-active").forEach((el) => {
             el.classList.remove("gameboard-sub-active");
           });
           element.classList.add("gameboard-sub-active");
         });
       });
 
-      document.querySelectorAll(".color-sub").forEach(element => {
+      document.querySelectorAll(".color-sub").forEach((element) => {
         element.addEventListener("click", function() {
-          document.querySelectorAll(".selected_icon_active").forEach(el => {
+          document.querySelectorAll(".selected_icon_active").forEach((el) => {
             el.classList.remove("selected_icon_active");
           });
           element
@@ -682,7 +777,7 @@ export default {
 
         element.addEventListener("contextmenu", function(ev) {
           ev.preventDefault();
-          document.querySelectorAll(".selected_icon_active2").forEach(el => {
+          document.querySelectorAll(".selected_icon_active2").forEach((el) => {
             el.classList.remove("selected_icon_active2");
           });
           element
@@ -697,7 +792,7 @@ export default {
         } else if (secondC == backC) {
           document
             .querySelectorAll(".selected_icon_active2")
-            .forEach(element => {
+            .forEach((element) => {
               element.classList.remove("selected_icon_active2");
             });
           element
@@ -706,7 +801,7 @@ export default {
         }
       });
     }, 100);
-  }
+  },
 };
 </script>
 <style scoped>
