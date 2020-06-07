@@ -72,7 +72,7 @@ export default {
           gameClick(el);
         });
       });
-    }, 200);
+    }, 2000);
 
     function gameClick(el) {
       const row = Math.floor(el.id / 15);
@@ -101,11 +101,20 @@ export default {
       }
     });
 
-    socket.on("click success", function(socketID, round, x, y) {
+    socket.on("click success", function(
+      socketID,
+      round,
+      x,
+      y,
+      times,
+      playersArr
+    ) {
       const coin = document.getElementById("coin");
       coin.classList.forEach((element) => {
         coin.classList.remove(element);
       });
+      clearInterval(timerInterval);
+      updateTimers(round, times, socket.id, playersArr);
       if (socketID == socket.id) {
         if (round % 2 === 0) {
           placeCircle(y + 1, x + 1, sett.colors.primary);
@@ -135,20 +144,6 @@ export default {
       }
     });
 
-    socket.on("timedOut", function(socketID, didTimedOut) {
-      document.getElementById("winOverlay").style.display = "block";
-      if (socketID === socket.id && didTimedOut) {
-        document.getElementById("winText").innerHTML =
-          "Time is out\nYou've lost";
-      } else if (socketID !== socket.id && !didTimedOut) {
-        document.getElementById("winText").innerHTML =
-          "Time is out\nYou've lost";
-      } else {
-        document.getElementById("winText").innerHTML =
-          "Time is out\nYou've won";
-      }
-    });
-
     socket.on("playerLeft", function() {
       document.getElementById("winOverlay").style.display = "block";
       document.getElementById("winText").innerHTML = "You've won";
@@ -165,12 +160,21 @@ export default {
       // secondaryColor = this.colorSecond;
       document.getElementById("winOverlay").style.width = canvas.width + "px";
       document.getElementById("winOverlay").style.height = canvas.width + "px";
-      console.log(canvas);
-      console.log(document.getElementById("winOverlay"));
     }, 500);
 
+    function updateTimers(round, times, socketID, playersArr) {
+      let myTime = times[playersArr.indexOf(socketID)][0];
+      document.getElementById("timeOne").innerHTML = `${Math.floor(
+        myTime / 60
+      )}:${Math.round(myTime % 60) < 10 ? "0" : ""}${Math.round(myTime % 60)}`;
+
+      let enemyTime = times[Math.abs(playersArr.indexOf(socketID) - 1)][0];
+      document.getElementById("timeSecond").innerHTML = `${Math.floor(
+        enemyTime / 60
+      )}:${enemyTime % 60 < 10 ? "0" : ""}${Math.round(enemyTime % 60)}`;
+    }
+
     function changeTimer(timerID) {
-      clearInterval(timerInterval);
       timer = document.getElementById(timerID);
       let splitTime = timer.innerHTML.split(":");
       let min = Number(splitTime[0]);
@@ -178,7 +182,7 @@ export default {
       mlTime = (min * 60 + sec) * 1000;
       timerInterval = setInterval(timeChange, 1000);
     }
-    // NAIVE IMPLEMENTATION
+
     function timeChange() {
       if (mlTime > 0) {
         mlTime = mlTime - 1000;
@@ -187,7 +191,6 @@ export default {
         let seconds = Math.floor((mlTime % (1000 * 60)) / 1000);
         timer.innerHTML = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
       } else {
-        // socket.emit("timeOut", timer.id, roomID);
         clearInterval(timerInterval);
         timer.innerHTML = "0:0";
       }
@@ -252,9 +255,6 @@ export default {
         20 / sett.gridLineWidth;
 
       ctx.strokeStyle = color;
-      console.log(offCenter);
-      console.log(sett.gridLineWidth);
-      console.log(radius);
       const clearSize = sett.cellSize - sett.gridLineWidth;
 
       const curPerc = 0;
