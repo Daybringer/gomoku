@@ -20,15 +20,13 @@
       gridCell.style.cursor = "pointer";
       gridCell.id = String(x);
       gridCell.classList.add("overlayCell");
-      // gridCell.addEventListener("click", () => {
-      //   gameClicked(gridCell);
-      // });
       fragment.appendChild(gridCell);
     }
     grid.appendChild(fragment);
   }
 
   function updateSettings() {
+    let dpi = window.devicePixelRatio;
     let sectionDimensions = document.getElementById("gameContainer");
     let navbarHeight = document.getElementById("navbar").offsetHeight;
     let smallerDimension =
@@ -37,6 +35,7 @@
         : sectionDimensions.clientWidth;
 
     return {
+      dpi: dpi,
       canvasWidth: smallerDimension - navbarHeight,
       canvasHeight: smallerDimension - navbarHeight,
       gridLineWidth: document.body.clientWidth < 1400 ? 5 : 10,
@@ -63,8 +62,8 @@
   }
 
   function drawGameboard() {
-    canvas.width = sett.canvasWidth;
-    canvas.height = sett.canvasHeight;
+    canvas.width = sett.canvasWidth * sett.dpi;
+    canvas.height = sett.canvasHeight * sett.dpi;
 
     ctx.strokeStyle = sett.colors.stroke;
 
@@ -72,7 +71,7 @@
 
     let nX = sett.gridColumns;
     let nY = sett.gridRows;
-    let size = Math.round(canvas.width / nX);
+    let size = canvas.width / nX;
     sett.cellSize = size;
     let pX = 0;
     let pY = 0;
@@ -82,16 +81,15 @@
     let pB = 0;
 
     ctx.beginPath();
-    for (let x = 0; x <= canvas.width; x += size) {
-      ctx.moveTo(x, pT);
+    for (let x = 0; x <= canvas.width + 10; x += size) {
+      ctx.moveTo(x, 0);
       ctx.lineTo(x, canvas.height);
     }
-    for (let y = 0; y <= canvas.height; y += size) {
-      ctx.moveTo(0 - sett.gridLineWidth / 2, y);
-      ctx.lineTo(canvas.width + sett.gridLineWidth / 2, y);
+    for (let y = 0; y <= canvas.height + 10; y += size) {
+      ctx.moveTo(0, y);
+      ctx.lineTo(canvas.width, y);
     }
     ctx.stroke();
-    ctx.translate(-0.5, -0.5);
   }
 
   function mixColors(bgColor, fwColor) {

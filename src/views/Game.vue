@@ -33,7 +33,6 @@
 <script>
 let socket;
 let timerInterval;
-let mlTime, timer;
 import io from "socket.io-client";
 import router from "../router";
 export default {
@@ -49,40 +48,73 @@ export default {
     },
   },
   mounted() {
-    let gameMockScript = document.createElement("script");
-    gameMockScript.setAttribute("src", "./scripts/gameMock.js");
-    document.getElementById("game_main").append(gameMockScript);
+    // Globals
+    let canvas, ctx, sett, mlTime, timer;
 
-    //gap between overlayGrid must be calculated
+    canvas = document.getElementById("gameCanvas");
+    ctx = canvas.getContext("2d");
+    sett = (() => {
+      let dpi = window.devicePixelRatio;
+      let sectionDimensions = document.getElementById("gameContainer");
+      let navbarHeight = document.getElementById("navbar").offsetHeight;
+      let smallerDimension =
+        sectionDimensions.clientWidth > sectionDimensions.clientHeight
+          ? sectionDimensions.clientHeight
+          : sectionDimensions.clientWidth;
+
+      return {
+        dpi: dpi,
+        canvasWidth: smallerDimension - navbarHeight,
+        canvasHeight: smallerDimension - navbarHeight,
+        gridLineWidth: document.body.clientWidth < 1400 ? 5 : 10,
+        colors: {
+          primary: this.colorMain,
+          secondary: this.colorSecond,
+          stroke: "rgba(227, 227, 227, 1)",
+          primaryDark: mixColors([255, 255, 255, 1], [58, 134, 255, 0.45]),
+          secondaryDark: mixColors([255, 255, 255, 1], [255, 0, 110, 0.45]),
+        },
+        gridColumns: 15,
+        gridRows: 15,
+        cellSize: 0,
+      };
+    })();
+    let size = canvas.width / 15;
+    sett.cellSize = size;
+
+    // Styles
+    document.getElementById("winOverlay").style.width = sett.canvasWidth + "px";
+    document.getElementById("winOverlay").style.height =
+      sett.canvasHeight + "px";
+
     const overlay = document.getElementById("gridOverlay");
-    overlay.style.rowGap = `${document.body.clientWidth < 1400 ? 5 : 10}px`;
-    overlay.style.columnGap = `${document.body.clientWidth < 1400 ? 5 : 10}px`;
+    overlay.style.rowGap = `${sett.gridLineWidth}px`;
+    overlay.style.columnGap = `${sett.gridLineWidth}px`;
 
-    let roomID;
+    drawGameboard();
+    generateGridOverlay();
 
+    document.getElementsByClassName("overlayCell").forEach((el) => {
+      el.addEventListener("click", () => {
+        gameClick(el);
+      });
+    });
+
+    // Saving global socket instance
     socket = io("/quick");
+
+    // Global room token
+    let roomID;
     let queryString = new URLSearchParams(window.location.search);
     roomID = queryString.get("roomID");
 
     socket.emit("gameJoined", roomID);
 
-    setTimeout(() => {
-      document.getElementsByClassName("overlayCell").forEach((el) => {
-        el.addEventListener("click", () => {
-          gameClick(el);
-        });
-      });
-    }, 2000);
-
-    function gameClick(el) {
-      const row = Math.floor(el.id / 15);
-      const column = el.id % 15;
-      socket.emit("game click", roomID, row, column);
-    }
     socket.on("roomMissing", function() {
       router.push("/404");
     });
     socket.on("gameBegun", function(startingPlayer) {
+      // Spinning coin
       const coin = document.getElementById("coin");
       coin.classList.forEach((element) => {
         coin.classList.remove(element);
@@ -109,12 +141,17 @@ export default {
       times,
       playersArr
     ) {
+      // Removing old side from flip coin
       const coin = document.getElementById("coin");
       coin.classList.forEach((element) => {
         coin.classList.remove(element);
       });
+
       clearInterval(timerInterval);
+
+      // Syncing local time with time from server
       updateTimers(round, times, socket.id, playersArr);
+
       if (socketID == socket.id) {
         if (round % 2 === 0) {
           placeCircle(y + 1, x + 1, sett.colors.primary);
@@ -132,6 +169,8 @@ export default {
         changeTimer("timeOne");
       }
       coin.classList.add("oneTails");
+
+      // Adding border to last draw (style is in index.html)
       let oldDraws = document.getElementsByClassName("lastDraw");
 
       Array.from(oldDraws).forEach((el) => {
@@ -151,22 +190,16 @@ export default {
     });
 
     socket.on("playerLeft", function() {
+      clearInterval(timerInterval);
       document.getElementById("winOverlay").style.display = "block";
       document.getElementById("winText").innerHTML = "You've won";
     });
 
-    let canvas, ctx, sett;
-    setTimeout(() => {
-      canvas = document.getElementById("gameCanvas");
-      ctx = canvas.getContext("2d");
-      sett = updateSettings();
-      let size = Math.round(canvas.width / 15);
-      sett.cellSize = size;
-      // mainColor = this.mainColor;
-      // secondaryColor = this.colorSecond;
-      document.getElementById("winOverlay").style.width = canvas.width + "px";
-      document.getElementById("winOverlay").style.height = canvas.width + "px";
-    }, 500);
+    function gameClick(el) {
+      const row = Math.floor(el.id / 15);
+      const column = el.id % 15;
+      socket.emit("game click", roomID, row, column);
+    }
 
     function updateTimers(round, times, socketID, playersArr) {
       let myTime = times[playersArr.indexOf(socketID)][0];
@@ -203,39 +236,6 @@ export default {
         timer.innerHTML = "0:0";
       }
     }
-    let updateSettings = () => {
-      let sectionDimensions = document.getElementById("gameContainer");
-      let navbarHeight = document.getElementById("navbar").offsetHeight;
-      let smallerDimension =
-        sectionDimensions.clientWidth > sectionDimensions.clientHeight
-          ? sectionDimensions.clientHeight
-          : sectionDimensions.clientWidth;
-
-      return {
-        canvasWidth: smallerDimension - navbarHeight,
-        canvasHeight: smallerDimension - navbarHeight,
-        gridLineWidth: document.body.clientWidth < 1400 ? 5 : 10,
-        circleLineWidth: document.body.clientWidth < 1400 ? 4 : 6,
-        darkmode: false,
-        colors: {
-          primary: this.colorMain,
-          secondary: this.colorSecond,
-          stroke: "rgba(227, 227, 227, 1)",
-          primaryDark: mixColors([255, 255, 255, 1], [58, 134, 255, 0.45]),
-          secondaryDark: mixColors([255, 255, 255, 1], [255, 0, 110, 0.45]),
-          strokeDark: "",
-        },
-        gridColumns: 15,
-        gridRows: 15,
-        cellSize: 0,
-        pL: 0,
-        pR: 0,
-        pB: 0,
-        pT: 0,
-        pX: 0,
-        pY: 0,
-      };
-    };
     function mixColors(bgColor, fwColor) {
       let [r1, g1, b1] = bgColor;
       let [r2, g2, b2, o2] = fwColor;
@@ -248,59 +248,68 @@ export default {
 
     function calcPosition(gridX, gridY) {
       return {
-        x: gridX * sett.cellSize - Math.floor(sett.cellSize / 2) + sett.pL,
-        y: gridY * sett.cellSize - Math.floor(sett.cellSize / 2) + sett.pT,
+        x: gridX * sett.cellSize - sett.cellSize / 2,
+        y: gridY * sett.cellSize - sett.cellSize / 2,
         radius: sett.cellSize / 2 - sett.gridLineWidth,
       };
     }
 
     function placeCircle(gX, gY, color) {
       const { x, y, radius } = calcPosition(gX, gY);
+
       ctx.lineWidth = sett.gridLineWidth / 2;
-      const offCenter =
-        Math.sqrt(Math.pow(radius, 2) + Math.pow(radius, 2)) -
-        ctx.lineWidth / 2 -
-        20 / sett.gridLineWidth;
-
       ctx.strokeStyle = color;
-      const clearSize = sett.cellSize - sett.gridLineWidth;
 
+      let noBorderCellSize = Number(
+        document.getElementById("0").style.width.slice(0, -2)
+      );
+      const clearSize = noBorderCellSize / 2;
       const curPerc = 0;
-      animateCircle(x, y, radius, curPerc, offCenter, clearSize);
+
+      animateCircle(x, y, radius, curPerc, clearSize);
     }
 
-    function animateCircle(x, y, radius, curPerc, offCenter, clearSize) {
-      ctx.clearRect(x - offCenter - 2, y - offCenter - 2, clearSize, clearSize);
+    function animateCircle(x, y, radius, curPerc, clearSize) {
+      ctx.clearRect(x, y, -clearSize, -clearSize);
+      ctx.clearRect(x, y, clearSize, -clearSize);
+      ctx.clearRect(x, y, -clearSize, clearSize);
+      ctx.clearRect(x, y, clearSize, clearSize);
       ctx.beginPath();
       ctx.arc(x, y, radius, 0, Math.PI * 2 * curPerc);
       ctx.stroke();
       curPerc += 0.045;
       if (curPerc <= 1.12) {
         requestAnimationFrame(function() {
-          animateCircle(x, y, radius, curPerc, offCenter, clearSize);
+          animateCircle(x, y, radius, curPerc, clearSize);
         });
       }
     }
 
     function placeCross(gX, gY, color) {
       const { x, y, radius } = calcPosition(gX, gY);
-      ctx.lineWidth = Math.floor(sett.gridLineWidth / 2);
-      const offCenter =
-        Math.sqrt(Math.pow(radius, 2) + Math.pow(radius, 2)) -
-        ctx.lineWidth / 2 -
-        20 / sett.gridLineWidth;
-      const clearSize = sett.cellSize - sett.gridLineWidth;
+
+      ctx.lineWidth = sett.gridLineWidth / 2;
       ctx.strokeStyle = color;
 
+      let noBorderCellSize = Number(
+        document.getElementById("0").style.width.slice(0, -2)
+      );
+      const offCenter =
+        Math.hypot(noBorderCellSize / 2, noBorderCellSize / 2) -
+        sett.gridLineWidth;
+      const clearSize = noBorderCellSize / 2;
+
       animateCrossL(x, y, radius, -1, offCenter, clearSize);
-      // animateCrossR(x, y, radius, -1, offCenter, clearSize);
     }
 
     function animateCrossL(x, y, radius, curPerc, offCenter, clearSize) {
-      ctx.clearRect(x - offCenter - 2, y - offCenter - 2, clearSize, clearSize);
+      ctx.clearRect(x, y, -clearSize, -clearSize);
+      ctx.clearRect(x, y, clearSize, -clearSize);
+      ctx.clearRect(x, y, -clearSize, clearSize);
+      ctx.clearRect(x, y, clearSize, clearSize);
       ctx.beginPath();
-      ctx.moveTo(x - offCenter, y - offCenter);
-      ctx.lineTo(x + offCenter * curPerc, y + offCenter * curPerc);
+      ctx.moveTo(x - radius, y - radius);
+      ctx.lineTo(x + radius * curPerc, y + radius * curPerc);
       ctx.stroke();
       curPerc += 0.2;
       if (curPerc < 1.1) {
@@ -313,12 +322,15 @@ export default {
     }
 
     function animateCrossR(x, y, radius, curPerc, offCenter, clearSize) {
-      ctx.clearRect(x - offCenter - 2, y - offCenter - 2, clearSize, clearSize);
+      ctx.clearRect(x, y, -clearSize, -clearSize);
+      ctx.clearRect(x, y, clearSize, -clearSize);
+      ctx.clearRect(x, y, -clearSize, clearSize);
+      ctx.clearRect(x, y, clearSize, clearSize);
       ctx.beginPath();
-      ctx.moveTo(x - offCenter, y - offCenter);
-      ctx.lineTo(x + offCenter, y + offCenter);
-      ctx.moveTo(x + offCenter, y - offCenter);
-      ctx.lineTo(x - offCenter * curPerc, y + offCenter * curPerc);
+      ctx.moveTo(x - radius, y - radius);
+      ctx.lineTo(x + radius, y + radius);
+      ctx.moveTo(x + radius, y - radius);
+      ctx.lineTo(x - radius * curPerc, y + radius * curPerc);
       ctx.stroke();
       curPerc += 0.2;
       if (curPerc < 1.1) {
@@ -393,6 +405,44 @@ export default {
     //     });
     //   }
     // }
+    function generateGridOverlay() {
+      const fragment = document.createDocumentFragment();
+      const grid = document.getElementById("gridOverlay");
+      for (let x = 0; x < sett.gridColumns * sett.gridRows; x++) {
+        const gridCell = document.createElement("div");
+        gridCell.style.width = sett.cellSize - sett.gridLineWidth + "px";
+        gridCell.style.height = sett.cellSize - sett.gridLineWidth + "px";
+        // gridCell.style.backgroundColor = "#e70064";
+        gridCell.style.cursor = "pointer";
+        gridCell.id = String(x);
+        gridCell.classList.add("overlayCell");
+        fragment.appendChild(gridCell);
+      }
+      grid.appendChild(fragment);
+    }
+    function drawGameboard() {
+      canvas.width = sett.canvasWidth * sett.dpi;
+      canvas.height = sett.canvasHeight * sett.dpi;
+
+      ctx.strokeStyle = sett.colors.stroke;
+
+      ctx.lineWidth = sett.gridLineWidth;
+
+      let nX = sett.gridColumns;
+      let size = canvas.width / nX;
+      sett.cellSize = size;
+
+      ctx.beginPath();
+      for (let x = 0; x <= canvas.width + 10; x += size) {
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvas.height);
+      }
+      for (let y = 0; y <= canvas.height + 10; y += size) {
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvas.width, y);
+      }
+      ctx.stroke();
+    }
   },
   beforeDestroy() {
     clearInterval(timerInterval);
@@ -610,7 +660,7 @@ export default {
   bottom: 50%;
   left: 50%;
   transform: translate(-50%, 50%);
-  border: 15px solid #2e4052;
+  border: 10px solid #2e4052;
   border-radius: 2rem;
 }
 
@@ -660,8 +710,8 @@ export default {
     width: 95%;
     margin: 0 auto;
     margin-top: 5rem;
-    border: 5px solid #2e4052;
-    border-radius: 0.5rem;
+    /* border: 5px solid #2e4052; */
+    /* border-radius: 0.5rem; */
   }
 
   .game_sub {
