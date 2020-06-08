@@ -14,8 +14,10 @@
       </canvas>
       <div id="gridOverlay"></div>
       <div id="winOverlay">
-        <h1 id="winText">Hello</h1>
-        <router-link to="/search" id="winButton">Find new game</router-link>
+        <div id="winCenterDiv">
+          <h1 id="winText">Hello</h1>
+          <router-link to="/search" id="winButton">Find new game</router-link>
+        </div>
       </div>
     </div>
     <div class="game_sub" id="timer_game_sub">
@@ -27,6 +29,9 @@
         <p id="playerSecond">An utterly bad bot</p>
         <p id="timeSecond">5:00</p>
       </div>
+      <router-link class="leave-button" to="/">
+        Surrender
+      </router-link>
     </div>
   </div>
 </template>
@@ -64,8 +69,14 @@ export default {
 
       return {
         dpi: dpi,
-        canvasWidth: smallerDimension - navbarHeight,
-        canvasHeight: smallerDimension - navbarHeight,
+        canvasWidth:
+          document.body.clientWidth < 1400
+            ? smallerDimension
+            : smallerDimension - navbarHeight,
+        canvasHeight:
+          document.body.clientWidth < 1400
+            ? smallerDimension
+            : smallerDimension - navbarHeight,
         gridLineWidth: document.body.clientWidth < 1400 ? 5 : 10,
         colors: {
           primary: this.colorMain,
@@ -79,13 +90,11 @@ export default {
         cellSize: 0,
       };
     })();
-    let size = canvas.width / 15;
-    sett.cellSize = size;
 
     document.getElementById("gridOverlay").style.width =
-      sett.canvasWidth - 10 + "px";
+      sett.canvasWidth - sett.gridLineWidth + "px";
     document.getElementById("gridOverlay").style.height =
-      sett.canvasHeight - 10 + "px";
+      sett.canvasHeight - sett.gridLineWidth + "px";
     document.getElementById("gameCanvas").style.width = sett.canvasWidth + "px";
     document.getElementById("gameCanvas").style.height =
       sett.canvasHeight + "px";
@@ -417,8 +426,10 @@ export default {
       const grid = document.getElementById("gridOverlay");
       for (let x = 0; x < sett.gridColumns * sett.gridRows; x++) {
         const gridCell = document.createElement("div");
-        gridCell.style.width = sett.cellSize - sett.gridLineWidth + "px";
-        gridCell.style.height = sett.cellSize - sett.gridLineWidth + "px";
+        gridCell.style.width =
+          sett.cellSize / sett.dpi - sett.gridLineWidth + "px";
+        gridCell.style.height =
+          sett.cellSize / sett.dpi - sett.gridLineWidth + "px";
         // gridCell.style.backgroundColor = "#e70064";
         gridCell.style.cursor = "pointer";
         gridCell.id = String(x);
@@ -458,11 +469,30 @@ export default {
 };
 </script>
 <style scoped>
+.leave-button {
+  position: relative;
+  display: block;
+  padding: 0.5rem 0rem;
+  color: #fff;
+  margin-left: auto;
+  margin-right: 3rem;
+  margin-top: 1rem;
+  background: #2e4052;
+  font-size: 1.5rem;
+  font-weight: 500;
+  text-align: center;
+  font-style: normal;
+  width: 50%;
+  border-width: 1px 1px 3px;
+  border-radius: 0.25em;
+  cursor: pointer;
+}
+.leave-button:hover {
+  background-color: #8b8b8b;
+}
 #winButton {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  margin: 0 auto;
+  display: block;
   padding: 1rem;
   background-color: var(--main);
   color: white;
@@ -470,13 +500,16 @@ export default {
   border-radius: 10px;
   font-size: 1.5rem;
   font-weight: 600;
+  margin-top: 0;
+  transition: all 0.2s ease-in-out;
+}
+#winButton:hover {
+  -webkit-transform: scale(1.05);
+  transform: scale(1.05);
 }
 
 #winText {
-  top: 30%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  position: absolute;
+  margin: 0 auto;
   opacity: 1;
   color: var(--main);
   font-size: 3rem;
@@ -484,8 +517,15 @@ export default {
   border-radius: 10px;
   font-weight: 600;
   background-color: #2e4052;
+  margin-bottom: 1.5rem;
 }
-
+#winCenterDiv {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -100%);
+  text-align: center;
+}
 #winOverlay {
   position: absolute;
   z-index: 101;
@@ -699,9 +739,9 @@ export default {
   }
   #gridOverlay {
     display: grid;
-    top: 5rem;
+    top: calc(5rem + 5px);
     left: 0;
-    transform: translate(0, 0);
+    transform: translate(2.5px, 2.5px);
     position: absolute;
     grid-template-columns: repeat(15, 1fr);
     row-gap: 5px;
@@ -714,11 +754,13 @@ export default {
     left: 0;
     transform: translate(0, 0);
     position: relative;
-    width: 95%;
+    width: 100%;
     margin: 0 auto;
     margin-top: 5rem;
-    /* border: 5px solid #2e4052; */
-    /* border-radius: 0.5rem; */
+    border: 0;
+    border-top: 5px solid #2e4052;
+    border-bottom: 5px solid #2e4052;
+    border-radius: 0;
   }
 
   .game_sub {
@@ -731,13 +773,13 @@ export default {
     top: 0;
     right: 0;
     margin: 0;
+    padding: 0;
     display: grid;
+    column-gap: 0;
+    width: 90%;
+    height: 4.8rem;
   }
   #winButton {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     padding: 1rem;
     background-color: var(--main);
     color: white;
@@ -745,20 +787,29 @@ export default {
     border-radius: 10px;
     font-size: 1.5rem;
     font-weight: 600;
+    white-space: nowrap;
   }
-
+  #winButton:hover {
+    -webkit-transform: none;
+    transform: none;
+  }
   #winText {
-    top: 30%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    position: absolute;
     opacity: 1;
     color: var(--main);
-    font-size: 3rem;
+    font-size: 1.5rem;
     padding: 0.5rem;
     border-radius: 10px;
     font-weight: 600;
     background-color: #2e4052;
+    white-space: nowrap;
+  }
+
+  #winCenterDiv {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
   }
 
   #winOverlay {
@@ -769,42 +820,66 @@ export default {
     transform: translate(0, 0);
     position: absolute;
     margin: 0 auto;
-    margin-top: 5rem;
-    border: 5px solid #2e4052;
-    border-radius: 1rem;
+    margin-top: calc(5rem + 5px);
+    border: none;
+    border-radius: 0;
   }
+  .leave-button {
+    position: relative;
+    display: block;
+    color: #2e4052;
+    margin: 0 auto;
+    background: #fff;
+    font-size: 1rem;
+    padding: 0;
+    padding-right: 0.5rem;
 
+    font-weight: 500;
+    text-align: center;
+    font-style: normal;
+    border: none;
+    border-radius: 0;
+    cursor: pointer;
+    grid-column: 3;
+    grid-row: 2;
+    width: 100%;
+  }
+  .leave-button:hover {
+    background-color: #fff;
+  }
   #playerOne {
     text-shadow: 3px 3px 0px rgba(70, 71, 71, 0.2);
-    font-size: 3vw;
+    font-size: 1rem;
     text-align: right;
     padding: 0;
     color: #2e4052;
     margin: 0;
   }
   #timer_game_sub_sub1 {
-    grid-column: 1;
+    grid-column: 2;
+    grid-row: 1;
   }
   #timer_game_sub_sub2 {
-    grid-column: 2;
+    grid-column: 3;
+    grid-row: 1;
   }
   #timeOne {
-    font-size: 4vw;
+    font-size: 1rem;
     margin: 0;
     text-align: right;
-    padding-right: 3rem;
+    padding-right: 0;
     color: var(--main);
   }
   #timeSecond {
-    font-size: 4vw;
+    font-size: 1rem;
     margin: 0;
     text-align: right;
-    padding-right: 3rem;
+    padding-right: 0;
     color: var(--second);
   }
   #playerSecond {
     text-shadow: 3px 3px 0px rgba(70, 71, 71, 0.2);
-    font-size: 2vw;
+    font-size: 1rem;
     text-align: right;
     padding: 0;
     color: #2e4052;
@@ -813,6 +888,7 @@ export default {
 
   #coin {
     top: 0;
+    left: 1rem;
     margin: 0;
     padding: 0;
     position: absolute;
