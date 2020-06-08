@@ -82,6 +82,13 @@ export default {
     let size = canvas.width / 15;
     sett.cellSize = size;
 
+    document.getElementById("gridOverlay").style.width =
+      sett.canvasWidth - 10 + "px";
+    document.getElementById("gridOverlay").style.height =
+      sett.canvasHeight - 10 + "px";
+    document.getElementById("gameCanvas").style.width = sett.canvasWidth + "px";
+    document.getElementById("gameCanvas").style.height =
+      sett.canvasHeight + "px";
     // Styles
     document.getElementById("winOverlay").style.width = sett.canvasWidth + "px";
     document.getElementById("winOverlay").style.height =
