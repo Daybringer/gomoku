@@ -137,11 +137,17 @@
       <span id="loading-text">Room code</span>
       <br />
       <span id="room-code-text" :style="cssVars">
-        KSQT
+        <span id="room-code-text-innerHTMl">KSQT</span>
+        <textarea
+          id="dummyURLHolder"
+          value=""
+          style="display: none;"
+        ></textarea>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 82.27 82.27"
           style="height: 3vw; cursor: pointer;"
+          @click="copyRoomURL"
         >
           <g transform="matrix(25.67749 0 0 25.67749 -8005.21 -2274.6)">
             <circle
@@ -159,31 +165,106 @@
             />
           </g>
         </svg>
+        <span id="copy-success">Copied to clipboard</span>
       </span>
     </div>
   </div>
 </template>
 <script>
+import io from "socket.io-client";
+import router from "../router";
+let socket;
 export default {
   name: "WaitingRoom",
   components: {},
+  methods: {
+    copyRoomURL() {
+      let queryString = new URLSearchParams(window.location.search);
+      let typeOfGame = queryString.get("type");
+      const el = document.createElement("textarea");
+      el.value =
+        window.location.origin +
+        `/waiting?type=${typeOfGame}&roomCode=${
+          document.getElementById("room-code-text-innerHTMl").innerHTML
+        }`;
+      console.log(window.location);
+      el.setAttribute("readonly", "");
+      el.style.position = "absolute";
+      el.style.left = "-9999px";
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand("copy");
+      document.body.removeChild(el);
+      document.getElementById("copy-success").style.display = "inline";
+    },
+  },
   props: ["logged", "username", "colorMain", "colorSecond"],
   computed: {
     cssVars() {
       return {
         "--main": this.colorMain,
-        "--second": this.colorSecond
+        "--second": this.colorSecond,
       };
+    },
+  },
+  mounted() {
+    let queryString = new URLSearchParams(window.location.search);
+    let typeOfGame = queryString.get("type");
+    let roomCodeQuery = queryString.get("roomCode");
+    console.log(roomCodeQuery);
+    if (
+      typeOfGame !== "no_limit" &&
+      typeOfGame !== "5min" &&
+      typeOfGame !== "10min"
+    )
+      router.push("/404");
+
+    socket = io("/waiting");
+
+    if (roomCodeQuery === null) {
+      socket.emit("createRoom");
+    } else {
+      document.getElementById(
+        "room-code-text-innerHTMl"
+      ).innerHTML = roomCodeQuery;
+      document.getElementById("room-code-text").style.display = "block";
+      socket.emit("roomJoined", roomCodeQuery);
     }
-  }
+
+    socket.on("roomGenerated", function(roomCode) {
+      document.getElementById("room-code-text-innerHTMl").innerHTML = roomCode;
+      document.getElementById("room-code-text").style.display = "block";
+    });
+    socket.on("gameBegun", function(roomCode) {
+      router.push({ path: "/private", query: { roomID: roomCode } });
+    });
+    socket.on("room invalid", function() {
+      router.push("/404");
+    });
+  },
+  destroyed() {
+    socket.close();
+  },
 };
 </script>
 <style scoped>
+#copy-success {
+  font-size: 1rem;
+  text-shadow: none;
+  color: #2e4052;
+  margin-left: 1rem;
+  display: none;
+  transition: all 1s ease-in;
+}
 #room-code-text {
   text-shadow: 4px 4px 0px rgba(70, 71, 71, 0.2);
   padding-left: 10rem;
   font-size: 5vw;
   color: var(--main);
+  display: none;
+}
+#room-code-text-innerHTMl {
+  margin-right: 1rem;
 }
 .grid-overlay {
   display: grid;

@@ -24,14 +24,14 @@ const routes = [
       metaTags: [
         {
           name: "description",
-          content: "The home page of our example app."
+          content: "The home page of our example app.",
         },
         {
           property: "og:description",
-          content: "The home page of our example app."
-        }
-      ]
-    }
+          content: "The home page of our example app.",
+        },
+      ],
+    },
   },
   {
     path: "/login",
@@ -42,14 +42,14 @@ const routes = [
       metaTags: [
         {
           name: "description",
-          content: "The login page of our example app."
+          content: "The login page of our example app.",
         },
         {
           property: "og:description",
-          content: "The login page of our example app."
-        }
-      ]
-    }
+          content: "The login page of our example app.",
+        },
+      ],
+    },
   },
   {
     path: "/register",
@@ -60,14 +60,14 @@ const routes = [
       metaTags: [
         {
           name: "description",
-          content: "The register page of our example app."
+          content: "The register page of our example app.",
         },
         {
           property: "og:description",
-          content: "The register page of our example app."
-        }
-      ]
-    }
+          content: "The register page of our example app.",
+        },
+      ],
+    },
   },
   {
     path: "/search",
@@ -78,14 +78,14 @@ const routes = [
       metaTags: [
         {
           name: "description",
-          content: "The home page of our example app."
+          content: "The home page of our example app.",
         },
         {
           property: "og:description",
-          content: "The home page of our example app."
-        }
-      ]
-    }
+          content: "The home page of our example app.",
+        },
+      ],
+    },
   },
   {
     path: "/casual",
@@ -96,14 +96,14 @@ const routes = [
       metaTags: [
         {
           name: "description",
-          content: "The home page of our example app."
+          content: "The home page of our example app.",
         },
         {
           property: "og:description",
-          content: "The home page of our example app."
-        }
-      ]
-    }
+          content: "The home page of our example app.",
+        },
+      ],
+    },
   },
   {
     path: "/ranked",
@@ -114,18 +114,14 @@ const routes = [
       metaTags: [
         {
           name: "description",
-          content: "The home page of our example app."
+          content: "The home page of our example app.",
         },
         {
           property: "og:description",
-          content: "The home page of our example app."
-        }
-      ]
-    }
-    // beforeEnter: (to, from, next) => {
-    //   if (to.name !== 'ranked' && !isAuthenticated) next({ name: 'Login' })
-    //   else next()
-    // }
+          content: "The home page of our example app.",
+        },
+      ],
+    },
   },
   {
     path: "/private",
@@ -136,14 +132,14 @@ const routes = [
       metaTags: [
         {
           name: "description",
-          content: "The home page of our example app."
+          content: "The home page of our example app.",
         },
         {
           property: "og:description",
-          content: "The home page of our example app."
-        }
-      ]
-    }
+          content: "The home page of our example app.",
+        },
+      ],
+    },
   },
   {
     path: "/waiting",
@@ -154,14 +150,14 @@ const routes = [
       metaTags: [
         {
           name: "description",
-          content: "The home page of our example app."
+          content: "The home page of our example app.",
         },
         {
           property: "og:description",
-          content: "The home page of our example app."
-        }
-      ]
-    }
+          content: "The home page of our example app.",
+        },
+      ],
+    },
   },
   {
     path: "/logout",
@@ -172,14 +168,14 @@ const routes = [
       metaTags: [
         {
           name: "description",
-          content: "The home page of our example app."
+          content: "The home page of our example app.",
         },
         {
           property: "og:description",
-          content: "The home page of our example app."
-        }
-      ]
-    }
+          content: "The home page of our example app.",
+        },
+      ],
+    },
   },
   {
     path: "/settings",
@@ -190,14 +186,14 @@ const routes = [
       metaTags: [
         {
           name: "description",
-          content: "The home page of our example app."
+          content: "The home page of our example app.",
         },
         {
           property: "og:description",
-          content: "The home page of our example app."
-        }
-      ]
-    }
+          content: "The home page of our example app.",
+        },
+      ],
+    },
   },
   {
     path: "/dashboard",
@@ -208,18 +204,18 @@ const routes = [
       metaTags: [
         {
           name: "description",
-          content: "The home page of our example app."
+          content: "The home page of our example app.",
         },
         {
           property: "og:description",
-          content: "The home page of our example app."
-        }
-      ]
-    }
+          content: "The home page of our example app.",
+        },
+      ],
+    },
   },
   {
     path: "*",
-    redirect: "/404"
+    redirect: "/404",
   },
   {
     path: "/404",
@@ -230,21 +226,21 @@ const routes = [
       metaTags: [
         {
           name: "description",
-          content: "The home page of our example app."
+          content: "The home page of our example app.",
         },
         {
           property: "og:description",
-          content: "The home page of our example app."
-        }
-      ]
-    }
-  }
+          content: "The home page of our example app.",
+        },
+      ],
+    },
+  },
 ];
 
 const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
-  routes
+  routes,
 });
 
 router.beforeEach((to, from, next) => {

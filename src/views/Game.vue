@@ -15,7 +15,7 @@
       <div id="gridOverlay"></div>
       <div id="winOverlay">
         <div id="winCenterDiv">
-          <h1 id="winText">Hello</h1>
+          <h1 id="winText"></h1>
           <router-link to="/search" id="winButton">Find new game</router-link>
         </div>
       </div>
@@ -26,7 +26,7 @@
         <p id="timeOne">5:00</p>
       </div>
       <div id="timer_game_sub_sub2">
-        <p id="playerSecond">An utterly bad bot</p>
+        <p id="playerSecond"></p>
         <p id="timeSecond">5:00</p>
       </div>
       <router-link class="leave-button" to="/">
@@ -44,6 +44,42 @@ export default {
   name: "Game",
   components: {},
   props: ["logged", "username", "colorMain", "colorSecond", "port"],
+  data() {
+    return {
+      guestNames: [
+        "Mango Wondervale",
+        "Flamo Cedarspeck",
+        "Sneezy Dapplebees",
+        "Petal Hazelberry",
+        "Aed Crystalwax",
+        "Novus Quickriver",
+        "Astro Pumpkinsparkle",
+        "Indi Candlestorm",
+        "Lapis Tumbleswirls",
+        "Ridge Stardew",
+        "Flare Applemuse",
+        "Cadmi Airriver",
+        "Fauna Brambledove",
+        "Calico Beechweather",
+        "Erissa Applesplash",
+        "Wispa Rainbowshine",
+        "Vinca Grayswamp",
+        "Amethyst Shinytwirls",
+        "Lulu Treebottom",
+        "Rosa Tulipshine",
+        "Nimbus Blueroot",
+        "Sunset Blackpuff",
+        "Pyro Magichorn",
+        "Tarragon Wildwhirl",
+        "Snowflake Greyflower",
+        "Albedo Mountainbees",
+        "Basil Twistyclover",
+        "Starfish Brambletwinkle",
+        "Tangy Bitterlace",
+        "Thicket Rumplespirit",
+      ],
+    };
+  },
   computed: {
     cssVars() {
       return {
@@ -55,6 +91,8 @@ export default {
   mounted() {
     // Globals
     let canvas, ctx, sett, mlTime, timer;
+
+    let guestNames = this.guestNames;
 
     canvas = document.getElementById("gameCanvas");
     ctx = canvas.getContext("2d");
@@ -124,12 +162,31 @@ export default {
     let queryString = new URLSearchParams(window.location.search);
     roomID = queryString.get("roomID");
 
-    socket.emit("gameJoined", roomID);
+    socket.emit("gameJoined", roomID, this.username);
+
+    if (this.logged) {
+      socket.emit("loggedUser", this.username);
+    }
 
     socket.on("roomMissing", function() {
       router.push("/404");
     });
-    socket.on("gameBegun", function(startingPlayer) {
+    socket.on("gameBegun", function(startingPlayer, nicks) {
+      // setting nicknames
+      delete nicks[socket.id];
+      if (nicks[Object.keys(nicks)[0]] === "") {
+        // Player is a guest
+        let randNameIndex = Math.round(Math.random() * (guestNames.length - 1));
+        console.log(randNameIndex);
+        console.log(guestNames);
+        document.getElementById("playerSecond").innerHTML =
+          guestNames[randNameIndex];
+      } else {
+        // Player is logged in
+        document.getElementById("playerSecond").innerHTML =
+          nicks[Object.keys(nicks)[0]];
+      }
+
       // Spinning coin
       const coin = document.getElementById("coin");
       coin.classList.forEach((element) => {
@@ -199,9 +256,10 @@ export default {
       clearInterval(timerInterval);
       document.getElementById("winOverlay").style.display = "block";
       if (socket.id === socketID) {
-        document.getElementById("winText").innerHTML = "You've won";
+        document.getElementById("winText").innerHTML = "You've won!";
       } else {
-        document.getElementById("winText").innerHTML = "You've lost";
+        let enemyName = document.getElementById("playerSecond").innerHTML;
+        document.getElementById("winText").innerHTML = `${enemyName} has won!`;
       }
     });
 
@@ -523,7 +581,7 @@ export default {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -100%);
+  transform: translate(-50%, -50%);
   text-align: center;
 }
 #winOverlay {

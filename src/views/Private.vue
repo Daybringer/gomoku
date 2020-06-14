@@ -339,7 +339,7 @@
               </g>
 
               <g id="g5462-0-3">
-                <router-link to="waiting">
+                <router-link :to="{ path: 'waiting', query: { type: '5min' } }">
                   <g id="g5409-3-1" class="create-subButtons">
                     <rect
                       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.0487866;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
@@ -472,7 +472,9 @@
                     </g>
                   </g>
                 </router-link>
-                <router-link to="waiting">
+                <router-link
+                  :to="{ path: 'waiting', query: { type: '10min' } }"
+                >
                   <g id="g5391-5-7" class="create-subButtons">
                     <rect
                       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.0487866;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
@@ -602,7 +604,9 @@
                     </g>
                   </g>
                 </router-link>
-                <router-link to="waiting">
+                <router-link
+                  :to="{ path: 'waiting', query: { type: 'no_limit' } }"
+                >
                   <g id="g5373-0-2" class="create-subButtons">
                     <rect
                       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.0487866;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
@@ -783,7 +787,32 @@ export default {
     let autoJumpInputScript = document.createElement("script");
     autoJumpInputScript.setAttribute("src", "./scripts/autoJump.js");
     document.getElementById("privateScript").appendChild(autoJumpInputScript);
-  }
+    const wrapper = document.getElementById("autojump");
+    const el = wrapper.querySelectorAll(".room-code");
+    const inputLength = el.length;
+
+    Array.prototype.forEach.call(el, function(e, index) {
+      e.addEventListener("keyup", function(e) {
+        if (e.keyCode == 8) {
+          if (index > 0) {
+            if (e.target.value) {
+              e.target.value = "u";
+            }
+            el[index - 1].focus();
+          }
+        } else if (e.keyCode !== 37 && e.keyCode !== 39) {
+          const maxlength = e.target.getAttribute("maxlength");
+          const length = e.target.value.length;
+          if (maxlength == length && index < inputLength - 1) {
+            el[index + 1].focus();
+          } else if (index >= inputLength - 1 && maxlength == length) {
+            document.getElementById("dumbLink").click();
+          }
+        }
+      });
+    });
+  },
+  destroyed() {},
 };
 </script>
 <style scoped>
