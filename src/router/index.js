@@ -1,8 +1,11 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
-import Search from "../views/Search.vue";
-import Game from "../views/Game.vue";
+import RankedSearch from "../views/RankedSearch.vue";
+import CasualSearch from "../views/CasualSearch.vue";
+import PrivateGame from "../views/PrivateGame.vue";
+import CasualGame from "../views/CasualGame.vue";
+import RankedGame from "../views/RankedGame.vue";
 import WaitingRoom from "../views/WaitingRoom.vue";
 import Private from "../views/Private.vue";
 import Login from "../views/Login.vue";
@@ -70,11 +73,11 @@ const routes = [
     },
   },
   {
-    path: "/search",
-    name: "search",
-    component: Search,
+    path: "/q/search",
+    name: "q/search",
+    component: CasualSearch,
     meta: {
-      title: "Gomoku | Search",
+      title: "Gomoku | Casual game | Search",
       metaTags: [
         {
           name: "description",
@@ -88,9 +91,27 @@ const routes = [
     },
   },
   {
-    path: "/casual",
-    name: "casual",
-    component: Game,
+    path: "/r/search",
+    name: "r/search",
+    component: RankedSearch,
+    meta: {
+      title: "Gomoku | Ranked game | Search",
+      metaTags: [
+        {
+          name: "description",
+          content: "The home page of our example app.",
+        },
+        {
+          property: "og:description",
+          content: "The home page of our example app.",
+        },
+      ],
+    },
+  },
+  {
+    path: "/q/game",
+    name: "q/game",
+    component: CasualGame,
     meta: {
       title: "Gomoku | Casual game",
       metaTags: [
@@ -106,11 +127,29 @@ const routes = [
     },
   },
   {
-    path: "/ranked",
-    name: "ranked",
-    component: Game,
+    path: "/r/game",
+    name: "r/game",
+    component: RankedGame,
     meta: {
       title: "Gomoku | Ranked game",
+      metaTags: [
+        {
+          name: "description",
+          content: "The home page of our example app.",
+        },
+        {
+          property: "og:description",
+          content: "The home page of our example app.",
+        },
+      ],
+    },
+  },
+  {
+    path: "/p/game",
+    name: "p/game",
+    component: PrivateGame,
+    meta: {
+      title: "Gomoku | Private game",
       metaTags: [
         {
           name: "description",

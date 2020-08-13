@@ -26,7 +26,10 @@
               stroke="none"
               stroke-width="1"
             />
-            <g id="ephaw8h2jvi4_to" transform="translate(61.480000,-264.730000)">
+            <g
+              id="ephaw8h2jvi4_to"
+              transform="translate(61.480000,-264.730000)"
+            >
               <g id="ephaw8h2jvi4_tr" transform="rotate(-132.010000)">
                 <g
                   id="ephaw8h2jvi4"
@@ -60,7 +63,10 @@
                 </g>
               </g>
             </g>
-            <g id="ephaw8h2jvi7_to" transform="translate(22.947501,-250.796000)">
+            <g
+              id="ephaw8h2jvi7_to"
+              transform="translate(22.947501,-250.796000)"
+            >
               <g id="ephaw8h2jvi7_tr" transform="rotate(47.097829)">
                 <g
                   id="ephaw8h2jvi7"
@@ -105,7 +111,10 @@
               stroke-width="1.124000"
               stroke-linejoin="round"
             />
-            <g id="ephaw8h2jvi11_tr" transform="translate(43.204595,-253.340913) rotate(70)">
+            <g
+              id="ephaw8h2jvi11_tr"
+              transform="translate(43.204595,-253.340913) rotate(70)"
+            >
               <rect
                 id="ephaw8h2jvi11"
                 width="1.483330"
@@ -134,35 +143,10 @@
   </div>
 </template>
 <script>
-import io from "socket.io-client";
-import router from "../router";
-import axios from "axios";
-let socket;
 export default {
-  name: "App",
+  name: "SearchBase",
   components: {},
   props: ["logged", "username", "colorMain", "colorSecond"],
-  mounted() {
-    axios
-      .post("/port")
-      .then(response => {
-        socket = io('/search');
-        console.log(socket);
-        console.log(response);
-        this.$emit("updatePort", response.data);
-        socket.on("gameCreated", function(roomID) {
-          setTimeout(function() {
-            router.push({ path: "/casual", query: { roomID: roomID } });
-          }, 1000);
-        });
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  },
-  beforeDestroy() {
-    socket.close();
-  }
 };
 </script>
 <style scoped>

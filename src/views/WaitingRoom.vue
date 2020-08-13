@@ -222,7 +222,10 @@ export default {
     socket = io("/waiting");
 
     if (roomCodeQuery === null) {
-      socket.emit("createRoom");
+      socket.emit(
+        "createRoom",
+        typeOfGame === "5min" ? 5 : typeOfGame === "10min" ? 10 : null
+      );
     } else {
       document.getElementById(
         "room-code-text-innerHTMl"
@@ -236,7 +239,7 @@ export default {
       document.getElementById("room-code-text").style.display = "block";
     });
     socket.on("gameBegun", function(roomCode) {
-      router.push({ path: "/private", query: { roomID: roomCode } });
+      router.push({ path: "p/game", query: { roomID: roomCode } });
     });
     socket.on("room invalid", function() {
       router.push("/404");

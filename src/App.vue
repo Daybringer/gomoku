@@ -17,8 +17,6 @@
       :username="username"
       :logged="logged"
       :colorMainDark="colorMainDark"
-      @updatePort="updatePort"
-      :port="port"
     />
   </div>
 </template>
@@ -39,7 +37,6 @@ export default {
       colorMain: "#ffffff",
       colorSecond: "#ffffff",
       colorMainDark: "#ffffff",
-      port: "3000",
     };
   },
   methods: {
@@ -65,9 +62,6 @@ export default {
           this.colorMainDark = "#EE0063";
           this.logged = false;
         });
-    },
-    updatePort(port) {
-      this.port = port;
     },
     loggedIn() {
       this.isLogged();

@@ -9,7 +9,7 @@
           :logged="logged"
         ></Index>
       </div>
-      <div class="section">
+      <div class="section" style="background-color:#363636;">
         <Matches
           :colorMain="colorMain"
           :colorSecond="colorSecond"
@@ -50,7 +50,7 @@ export default {
     Index,
     Matches,
     Rules,
-    Footer
+    Footer,
   },
   mounted() {},
   data() {
@@ -59,7 +59,7 @@ export default {
         logged: this.logged,
         username: this.username,
         colorMain: this.colorMain,
-        colorSecond: this.colorSecond
+        colorSecond: this.colorSecond,
       },
       options: {
         //Navigation
@@ -119,23 +119,23 @@ export default {
         parallaxOptions: {
           type: "reveal",
           percentage: 62,
-          property: "translate"
+          property: "translate",
         },
         cards: false,
         cardsOptions: {
           perspective: 100,
           fadeContent: true,
-          fadeBackground: true
+          fadeBackground: true,
         },
 
         //Custom selectors
         sectionSelector: ".section",
         slideSelector: ".slide",
 
-        lazyLoading: true
-      }
+        lazyLoading: true,
+      },
     };
-  }
+  },
 };
 </script>
 <style scoped></style>
