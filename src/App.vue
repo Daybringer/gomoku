@@ -163,7 +163,7 @@ html,
 body {
   margin: 0;
   padding: 0;
-  font-family: "Roboto", sans-serif;
+  font-family: "Cantarell", sans-serif;
   box-sizing: border-box;
 }
 a {
