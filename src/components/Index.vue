@@ -9,7 +9,34 @@
         <span class="bold-text"><br />Gomoku</span>
       </div>
     </div>
-    <h2 class="page-desc">THE Place to play Gomoku</h2>
+    <svg id="playButton" version="1.1" viewBox="0 0 29.884285 10.03159">
+      <g transform="translate(-87.111429,-108.37706)" id="layer1">
+        <g transform="translate(108.46804,82.389592)" id="g1614">
+          <path
+            d="m -15.08448,26.34747 -5.806882,6.00119 2.317171,3.3104 h 12.1594633 8.670275 l 5.806878,-6.00119 -2.317168,-3.3104 h -12.159985 z"
+            style="fill:#363636;fill-opacity:1;stroke:#00b3fe;stroke-width:0.72;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.757549"
+            id="path1693-6"
+          />
+          <text
+            xml:space="preserve"
+            style="font-size:7.71623px;line-height:1.25;font-family:Cantarell;-inkscape-font-specification:Cantarell;fill:#00b3fe;fill-opacity:1;stroke-width:0.192905"
+            x="-15.137695"
+            y="33.684677"
+            id="text1718-5-7"
+          >
+            <tspan
+              id="tspan1716-4-5"
+              x="-15.137695"
+              y="33.684677"
+              style="fill:#00b3fe;fill-opacity:1;stroke-width:0.192905"
+            >
+              PLAY
+            </tspan>
+          </text>
+        </g>
+      </g>
+    </svg>
+    <div class="backgroundImgWrapper"></div>
     <div class="scroll-hint">
       <svg
         class="scroll-hint-svg"
@@ -136,6 +163,22 @@ export default {
 };
 </script>
 <style scoped>
+#playButton {
+  position: absolute;
+  width: 50%;
+  left: 50%;
+  bottom: 30%;
+  transform: translate(-50%, -30%);
+}
+.backgroundImgWrapper {
+  height: 70vh;
+  width: 100%;
+  top: 30%;
+  z-index: -1;
+  position: absolute;
+  background-image: url("../static/lowBack.png");
+  transform: rotate(-7deg);
+}
 .centered-div {
   position: absolute;
   left: 50%;
@@ -154,19 +197,7 @@ export default {
   font-size: 2rem;
   color: #363636;
 }
-.page-title {
-  text-align: center;
-  font-weight: 800;
-  color: #2e4052;
-  font-size: 3em;
-}
-.page-desc {
-  text-align: center;
-  font-weight: 400;
-  color: #2e4052;
-  font-size: 3em;
-  margin-top: 3rem;
-}
+
 .scroll-hint-svg {
   height: 10rem;
 }

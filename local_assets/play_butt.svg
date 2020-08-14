@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   id="svg1622"
+   version="1.1"
+   viewBox="0 0 29.884285 10.03159"
+   height="10.03159mm"
+   width="29.884285mm">
+  <defs
+     id="defs1616" />
+  <metadata
+     id="metadata1619">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     transform="translate(-87.111429,-108.37706)"
+     id="layer1">
+    <g
+       transform="translate(108.46804,82.389592)"
+       id="g1614">
+      <path
+         d="m -15.08448,26.34747 -5.806882,6.00119 2.317171,3.3104 h 12.1594633 8.670275 l 5.806878,-6.00119 -2.317168,-3.3104 h -12.159985 z"
+         style="fill:#363636;fill-opacity:1;stroke:#00b3fe;stroke-width:0.72;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.757549"
+         id="path1693-6" />
+      <text
+         xml:space="preserve"
+         style="font-size:7.71623px;line-height:1.25;font-family:Cantarell;-inkscape-font-specification:Cantarell;fill:#00b3fe;fill-opacity:1;stroke-width:0.192905"
+         x="-15.137695"
+         y="33.684677"
+         id="text1718-5-7"><tspan
+           id="tspan1716-4-5"
+           x="-15.137695"
+           y="33.684677"
+           style="fill:#00b3fe;fill-opacity:1;stroke-width:0.192905">PLAY</tspan></text>
+    </g>
+  </g>
+</svg>
