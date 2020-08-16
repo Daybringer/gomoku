@@ -186,7 +186,7 @@ export default {
   z-index: -1;
   position: absolute;
   background-image: url("../static/lowResBack.png");
-  opacity: 50%;
+  opacity: 0.4;
 }
 .centered-div {
   position: absolute;
