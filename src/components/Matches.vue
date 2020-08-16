@@ -4,31 +4,37 @@
       style="position:absolute;top:0;height:75%;width:100%;"
       id="skewedContainer"
     >
-      <div
-        style="background-color:#defe47;"
-        class="skewMatchBox"
-        id="firstCont"
-      >
-        <div class="centered-div">
-          <span class="match-text">PRIVATE</span>
+      <router-link to="/private">
+        <div
+          style="background-color:#defe47;"
+          class="skewMatchBox"
+          id="firstCont"
+        >
+          <div class="centered-div">
+            <span class="match-text">PRIVATE</span>
+          </div>
         </div>
-      </div>
-      <div
-        style="background-color:#01ffc3;border-top: solid #363636 10px;"
-        class="skewMatchBox"
-      >
-        <div class="centered-div">
-          <span class="match-text">RANKED</span>
+      </router-link>
+      <router-link to="/r/search">
+        <div
+          style="background-color:#01ffc3;border-top: solid #363636 10px;"
+          class="skewMatchBox"
+        >
+          <div class="centered-div">
+            <span class="match-text">RANKED</span>
+          </div>
         </div>
-      </div>
-      <div
-        style="background-color:#ff2079;border-top: solid #363636 10px;"
-        class="skewMatchBox"
-      >
-        <div class="centered-div">
-          <span class="match-text">QUICK</span>
+      </router-link>
+      <router-link to="/q/search">
+        <div
+          style="background-color:#ff2079;border-top: solid #363636 10px;"
+          class="skewMatchBox"
+        >
+          <div class="centered-div">
+            <span class="match-text">QUICK</span>
+          </div>
         </div>
-      </div>
+      </router-link>
     </div>
     <div class="scroll-hint">
       <svg
@@ -165,6 +171,7 @@ export default {
   font-weight: 700;
   font-size: 2.5rem;
   color: #363636;
+  user-select: none;
 }
 .skewMatchBox {
   width: 100%;

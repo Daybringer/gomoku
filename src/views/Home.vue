@@ -2,37 +2,13 @@
   <div>
     <full-page :options="options" id="fullpage" ref="fullpage">
       <div class="section" id="home-section">
-        <Index
-          :colorMain="colorMain"
-          :colorSecond="colorSecond"
-          :username="username"
-          :logged="logged"
-        ></Index>
+        <Index :logged="logged"></Index>
       </div>
       <div class="section" style="background-color:#363636;">
-        <Matches
-          :colorMain="colorMain"
-          :colorSecond="colorSecond"
-          :username="username"
-          :logged="logged"
-        ></Matches>
+        <Matches :logged="logged"></Matches>
       </div>
-      <div class="section" id="rules-section">
-        <Rules
-          :colorMain="colorMain"
-          :colorSecond="colorSecond"
-          :username="username"
-          :logged="logged"
-        ></Rules>
-      </div>
-      <div class="section">
-        <Footer
-          :colorMain="colorMain"
-          :colorSecond="colorSecond"
-          :username="username"
-          :logged="logged"
-          :colorMainDark="colorMainDark"
-        ></Footer>
+      <div class="section" style="background-color:#363636;">
+        <Rules :logged="logged"></Rules>
       </div>
     </full-page>
   </div>
@@ -41,25 +17,20 @@
 import Index from "@/components/Index.vue";
 import Matches from "@/components/Matches.vue";
 import Rules from "@/components/Rules.vue";
-import Footer from "@/components/Footer.vue";
 
 export default {
   name: "App",
-  props: ["logged", "username", "colorMain", "colorSecond", "colorMainDark"],
+  props: ["logged"],
   components: {
     Index,
     Matches,
     Rules,
-    Footer,
   },
   mounted() {},
   data() {
     return {
       props: {
         logged: this.logged,
-        username: this.username,
-        colorMain: this.colorMain,
-        colorSecond: this.colorSecond,
       },
       options: {
         //Navigation

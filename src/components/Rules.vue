@@ -1,113 +1,117 @@
 <template>
-  <div id="rulesScript">
-    <!-- <h1 class="rule-title">Rules</h1>
-    <canvas id="rulesAnimation" width="100" height="100">
-      Your browser doesn't support Canvas. To see the animation please update to
-      modern browser like Firefox. Tic-Tac-Toe | Five in a row | Gomoku game
-      rules animation
-    </canvas>
-    <button class="button_styleless butt_abs_left" id="arrow_left">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 49.1 44.78"
-        style="transform: rotate(90deg);height:10vh;"
+  <div>
+    <div id="rulesSkewedDiv">
+      <div class="centered-div">
+        <span class="headline">Rules</span>
+      </div>
+    </div>
+    <div id="skewed-container"></div>
+    <footer class="footer">
+      <a class="grad-link" href="https://daybringer.github.io/"
+        >Michal Vaňata</a
       >
-        <g :fill="colorMain" paint-order="markers fill stroke">
-          <path d="M24.69 44.54l-2.98-2.99 24.4-24.4 2.98 2.98z" />
-          <path d="M.06 20.36l2.98-2.98 24.4 24.4-2.98 2.99z" />
-          <g>
-            <path d="M24.63 27.38l-2.98-2.98L46.05 0l2.98 2.98z" />
-            <path d="M0 3.2L2.98.23l24.4 24.4-2.98 2.99z" />
-          </g>
-        </g>
-      </svg>
-    </button>
-    <button class="button_styleless butt_abs_right" id="arrow_right">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 49.1 44.78"
-        style="transform: rotate(-90deg);height: 10vh;"
-      >
-        <g :fill="colorMain" paint-order="markers fill stroke">
-          <path d="M24.69 44.54l-2.98-2.99 24.4-24.4 2.98 2.98z" />
-          <path d="M.06 20.36l2.98-2.98 24.4 24.4-2.98 2.99z" />
-          <g>
-            <path d="M24.63 27.38l-2.98-2.98L46.05 0l2.98 2.98z" />
-            <path d="M0 3.2L2.98.23l24.4 24.4-2.98 2.99z" />
-          </g>
-        </g>
-      </svg>
-    </button>
-    <p id="rule-text" class="lead rule-abs"></p>-->
+      <p class="footer-text">©2020</p>
+    </footer>
   </div>
 </template>
 <script>
 export default {
   name: "Rules",
   components: {},
-  props: ["logged", "username", "colorMain", "colorSecond"],
+  methods: {
+    resizeSkew() {
+      let mDiv = document.getElementById("rulesSkewedDiv");
+      let navHeight = document.getElementById("smallNav").clientHeight;
+      let rulesContainer = document.getElementById("skewed-container");
+
+      let cornerHeight =
+        (mDiv.offsetWidth / 2) * Math.tan((7.5 * Math.PI) / 180);
+
+      mDiv.style.top = cornerHeight + navHeight + "px";
+      rulesContainer.style.top =
+        mDiv.offsetHeight + cornerHeight + navHeight + -1 + "px";
+    },
+  },
+  props: ["logged"],
   mounted() {
-    // let ruleAnim = document.createElement("script");
-    // ruleAnim.setAttribute("src", "./scripts/ruleAnim.js");
-    // document.getElementById("rulesScript").appendChild(ruleAnim);
-  }
+    this.resizeSkew();
+    window.onresize = () => this.resizeSkew();
+  },
 };
 </script>
 <style scoped>
-.rule-title {
+#rulesSkewedDiv {
+  background-color: #8f8f8f;
+  width: 100%;
+  height: 15vh;
+  transform: skewY(-7.5deg);
   position: absolute;
-  top: calc(0px + 2rem);
-  left: 50%;
-  font-size: 5rem;
-  color: #2e4052;
-  transform: translate(-50%, 0);
-}
-
-.rule-abs {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translate(-50%, 0);
-}
-
-.butt_abs_left {
-  position: absolute;
-  left: 10%;
-  transform: translate(0, -50%);
-}
-.butt_abs_right {
-  position: absolute;
-  right: 10%;
-  transform: translate(0, -50%);
-}
-
-.lead {
-  font-size: 2.5em;
-  bottom: 10%;
-  left: 50%;
-  transform: translate(-50%, 60%);
-  color: #2e4052;
   text-align: center;
+  margin-top: -1px;
 }
-
-.button_styleless {
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-}
-.button_styleless::-moz-focus-inner {
-  border: 0;
-}
-
-#rulesAnimation {
-  border: 15px solid #2e4052;
-  border-radius: 2rem;
+.centered-div {
   position: absolute;
   left: 50%;
+  top: 50%;
   transform: translate(-50%, -50%);
 }
-
-.rounded {
-  border-radius: 15px;
+.headline {
+  font-weight: 700;
+  font-size: 3rem;
+  color: #363636;
+  user-select: none;
+}
+#skewed-container {
+  width: 100%;
+  height: 60vh;
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  transform: skewY(-7.5deg);
+  text-align: center;
+  background-color: white;
+}
+.grad-link {
+  text-decoration: none;
+  position: relative;
+  display: inline;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #8f8f8f;
+  font-family: "Roboto", sans-serif;
+  overflow: hidden;
+  background: linear-gradient(to right, #00b3fe, #00b3fe 50%, #8f8f8f 50%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% 100%;
+  background-position: 100%;
+  transition: background-position 275ms ease;
+}
+.grad-link:visited {
+  color: black;
+}
+.grad-link:hover {
+  background-position: 0 100%;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  text-align: center;
+  width: 100%;
+  color: #8f8f8f;
+  font-size: 1rem;
+  font-weight: 700;
+  background-color: #363636;
+  padding: 0.5rem;
+  font-family: "Roboto", sans-serif;
+}
+.footer-text {
+  display: inline;
+  position: relative;
+  font-size: 1em;
+  margin-left: 1rem;
+  font-weight: 700;
+  color: #8f8f8f;
 }
 </style>

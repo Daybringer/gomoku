@@ -1,41 +1,40 @@
 <template>
   <div>
-    <div
-      style="background-color:#8f8f8f;width:100%;height:20vh;transform: skewY(-7.5deg);position:absolute;text-align:center;margin-top:-1px;"
-      id="testDiv"
-    >
+    <div id="indexSkewedDiv">
       <div class="centered-div">
         <span class="light-text">Let's play</span>
         <span class="bold-text"><br />Gomoku</span>
       </div>
     </div>
-    <svg id="playButton" version="1.1" viewBox="0 0 29.884285 10.03159">
-      <g transform="translate(-87.111429,-108.37706)" id="layer1">
-        <g transform="translate(108.46804,82.389592)" id="g1614">
-          <path
-            d="m -15.08448,26.34747 -5.806882,6.00119 2.317171,3.3104 h 12.1594633 8.670275 l 5.806878,-6.00119 -2.317168,-3.3104 h -12.159985 z"
-            style="fill:#363636;fill-opacity:1;stroke:#00b3fe;stroke-width:0.72;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.757549"
-            id="path1693-6"
-          />
-          <text
-            xml:space="preserve"
-            style="font-size:7.71623px;line-height:1.25;font-family:Cantarell;-inkscape-font-specification:Cantarell;fill:#00b3fe;fill-opacity:1;stroke-width:0.192905"
-            x="-15.137695"
-            y="33.684677"
-            id="text1718-5-7"
-          >
-            <tspan
-              id="tspan1716-4-5"
+    <router-link to="/q/search">
+      <svg id="playButton" version="1.1" viewBox="0 0 29.884285 10.03159">
+        <g transform="translate(-87.111429,-108.37706)" id="layer1">
+          <g transform="translate(108.46804,82.389592)" id="g1614">
+            <path
+              d="m -15.08448,26.34747 -5.806882,6.00119 2.317171,3.3104 h 12.1594633 8.670275 l 5.806878,-6.00119 -2.317168,-3.3104 h -12.159985 z"
+              style="fill:#363636;fill-opacity:1;stroke:#00b3fe;stroke-width:0.72;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.757549"
+              id="path1693-6"
+            />
+            <text
+              xml:space="preserve"
+              style="font-size:7.71623px;line-height:1.25;font-family:Cantarell;-inkscape-font-specification:Cantarell;fill:#00b3fe;fill-opacity:1;stroke-width:0.192905"
               x="-15.137695"
               y="33.684677"
-              style="fill:#00b3fe;fill-opacity:1;stroke-width:0.192905"
+              id="text1718-5-7"
             >
-              PLAY
-            </tspan>
-          </text>
+              <tspan
+                id="tspan1716-4-5"
+                x="-15.137695"
+                y="33.684677"
+                style="fill:#00b3fe;fill-opacity:1;stroke-width:0.192905"
+              >
+                PLAY
+              </tspan>
+            </text>
+          </g>
         </g>
-      </g>
-    </svg>
+      </svg>
+    </router-link>
     <div class="backgroundImgWrapper"></div>
     <div class="scroll-hint">
       <svg
@@ -145,14 +144,14 @@ export default {
   },
   props: ["logged"],
   mounted() {
-    let mDiv = document.getElementById("testDiv");
+    let mDiv = document.getElementById("indexSkewedDiv");
     let navHeight = document.getElementById("smallNav").clientHeight;
     mDiv.style.top =
       (mDiv.offsetWidth / 2) * Math.tan((7.5 * Math.PI) / 180) +
       navHeight +
       "px";
     window.onresize = function() {
-      let mDiv = document.getElementById("testDiv");
+      let mDiv = document.getElementById("indexSkewedDiv");
       let navHeight = document.getElementById("smallNav").clientHeight;
       mDiv.style.top =
         (mDiv.offsetWidth / 2) * Math.tan((7.5 * Math.PI) / 180) +
@@ -163,21 +162,31 @@ export default {
 };
 </script>
 <style scoped>
+#indexSkewedDiv {
+  background-color: #8f8f8f;
+  width: 100%;
+  height: 20vh;
+  transform: skewY(-7.5deg);
+  position: absolute;
+  text-align: center;
+  margin-top: -1px;
+}
 #playButton {
   position: absolute;
   width: 50%;
   left: 50%;
   bottom: 30%;
   transform: translate(-50%, -30%);
+  user-select: none;
 }
 .backgroundImgWrapper {
-  height: 70vh;
+  height: 100vh;
   width: 100%;
-  top: 30%;
+  top: 0;
   z-index: -1;
   position: absolute;
-  background-image: url("../static/lowBack.png");
-  transform: rotate(-7deg);
+  background-image: url("../static/lowResBack.png");
+  opacity: 50%;
 }
 .centered-div {
   position: absolute;

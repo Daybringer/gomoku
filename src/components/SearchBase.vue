@@ -1,144 +1,155 @@
 <template>
-  <div class="grid-overlay" id="searchScript">
-    <div class="container-half">
-      <div class="swing-animation">
-        <svg
-          id="ephaw8h2jvi1"
-          xmlns="http://www.w3.org/2000/svg"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
-          viewBox="0 0 50.850000 48"
-          shape-rendering="geometricPrecision"
-          text-rendering="geometricPrecision"
-        >
-          <g
-            id="ephaw8h2jvi2"
-            transform="matrix(1 0 0 1 -17.78199958801270 287.35101318359375)"
-            paint-order="markers fill stroke"
+  <div>
+    <div
+      style="background-color:#8f8f8f;width:100%;height:20vh;transform: skewY(-7.5deg);position:absolute;text-align:center;margin-top:-1px;"
+      id="testDiv"
+    >
+      <div class="centered-div">
+        <span class="light-text">Let's play</span>
+        <span class="bold-text"><br />Gomoku</span>
+      </div>
+    </div>
+    <div class="grid-overlay" id="searchScript">
+      <div class="container-half">
+        <div class="swing-animation">
+          <svg
+            id="ephaw8h2jvi1"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            viewBox="0 0 50.850000 48"
+            shape-rendering="geometricPrecision"
+            text-rendering="geometricPrecision"
           >
-            <ellipse
-              id="ephaw8h2jvi3"
-              rx="9.955000"
-              ry="1.939000"
-              transform="matrix(1.73724997043610 0 0 1.48821997642517 43.66908628194534 -243.21498425683708)"
-              opacity="0.596"
+            <g
+              id="ephaw8h2jvi2"
+              transform="matrix(1 0 0 1 -17.78199958801270 287.35101318359375)"
               paint-order="markers fill stroke"
-              fill="rgb(227,227,227)"
-              stroke="none"
-              stroke-width="1"
-            />
-            <g
-              id="ephaw8h2jvi4_to"
-              transform="translate(61.480000,-264.730000)"
             >
-              <g id="ephaw8h2jvi4_tr" transform="rotate(-132.010000)">
-                <g
-                  id="ephaw8h2jvi4"
-                  transform="scale(1,1) translate(-60.200674,252.153023)"
-                  paint-order="markers fill stroke"
-                >
-                  <rect
-                    id="ephaw8h2jvi5"
-                    width="1.483330"
-                    height="9.283330"
-                    rx="0"
-                    ry="0"
-                    transform="matrix(-0.92294168472290 0.38493973016739 -0.38493973016739 -0.92294168472290 62.67649119827323 -248.15453797579238)"
-                    paint-order="markers fill stroke"
-                    :fill="colorMain"
-                    stroke="none"
-                    stroke-width="1"
-                  />
-                  <rect
-                    id="ephaw8h2jvi6"
-                    width="1.483330"
-                    height="9.283330"
-                    rx="0"
-                    ry="0"
-                    transform="matrix(-0.38493973016739 -0.92294168472290 0.92294168472290 -0.38493973016739 56.20218457582762 -249.68310904485418)"
-                    paint-order="markers fill stroke"
-                    :fill="colorMain"
-                    stroke="none"
-                    stroke-width="1"
-                  />
-                </g>
-              </g>
-            </g>
-            <g
-              id="ephaw8h2jvi7_to"
-              transform="translate(22.947501,-250.796000)"
-            >
-              <g id="ephaw8h2jvi7_tr" transform="rotate(47.097829)">
-                <g
-                  id="ephaw8h2jvi7"
-                  transform="scale(1,1) translate(-60.200674,252.153023)"
-                  paint-order="markers fill stroke"
-                >
-                  <rect
-                    id="ephaw8h2jvi8"
-                    width="1.483330"
-                    height="9.283330"
-                    rx="0"
-                    ry="0"
-                    transform="matrix(-0.92294168472290 0.38493973016739 -0.38493973016739 -0.92294168472290 62.67649119827323 -248.15453797579238)"
-                    paint-order="markers fill stroke"
-                    :fill="colorMain"
-                    stroke="none"
-                    stroke-width="1"
-                  />
-                  <rect
-                    id="ephaw8h2jvi9"
-                    width="1.483330"
-                    height="9.283330"
-                    rx="0"
-                    ry="0"
-                    transform="matrix(-0.38493973016739 -0.92294168472290 0.92294168472290 -0.38493973016739 56.20218457582762 -249.68310904485418)"
-                    paint-order="markers fill stroke"
-                    :fill="colorMain"
-                    stroke="none"
-                    stroke-width="1"
-                  />
-                </g>
-              </g>
-            </g>
-            <ellipse
-              id="ephaw8h2jvi10"
-              rx="3.781000"
-              ry="3.942000"
-              transform="matrix(1 0 0 1 43.20699958500003 -248.00867347500011)"
-              paint-order="markers fill stroke"
-              fill="none"
-              :stroke="colorSecond"
-              stroke-width="1.124000"
-              stroke-linejoin="round"
-            />
-            <g
-              id="ephaw8h2jvi11_tr"
-              transform="translate(43.204595,-253.340913) rotate(70)"
-            >
-              <rect
-                id="ephaw8h2jvi11"
-                width="1.483330"
-                height="37.400000"
-                rx="0"
-                ry="0"
-                transform="scale(1,1.319440) translate(-0.733469,-18.702983)"
+              <ellipse
+                id="ephaw8h2jvi3"
+                rx="9.955000"
+                ry="1.939000"
+                transform="matrix(1.73724997043610 0 0 1.48821997642517 43.66908628194534 -243.21498425683708)"
+                opacity="0.596"
                 paint-order="markers fill stroke"
-                fill="rgb(46,64,82)"
+                fill="rgb(227,227,227)"
                 stroke="none"
                 stroke-width="1"
               />
+              <g
+                id="ephaw8h2jvi4_to"
+                transform="translate(61.480000,-264.730000)"
+              >
+                <g id="ephaw8h2jvi4_tr" transform="rotate(-132.010000)">
+                  <g
+                    id="ephaw8h2jvi4"
+                    transform="scale(1,1) translate(-60.200674,252.153023)"
+                    paint-order="markers fill stroke"
+                  >
+                    <rect
+                      id="ephaw8h2jvi5"
+                      width="1.483330"
+                      height="9.283330"
+                      rx="0"
+                      ry="0"
+                      transform="matrix(-0.92294168472290 0.38493973016739 -0.38493973016739 -0.92294168472290 62.67649119827323 -248.15453797579238)"
+                      paint-order="markers fill stroke"
+                      :fill="colorMain"
+                      stroke="none"
+                      stroke-width="1"
+                    />
+                    <rect
+                      id="ephaw8h2jvi6"
+                      width="1.483330"
+                      height="9.283330"
+                      rx="0"
+                      ry="0"
+                      transform="matrix(-0.38493973016739 -0.92294168472290 0.92294168472290 -0.38493973016739 56.20218457582762 -249.68310904485418)"
+                      paint-order="markers fill stroke"
+                      :fill="colorMain"
+                      stroke="none"
+                      stroke-width="1"
+                    />
+                  </g>
+                </g>
+              </g>
+              <g
+                id="ephaw8h2jvi7_to"
+                transform="translate(22.947501,-250.796000)"
+              >
+                <g id="ephaw8h2jvi7_tr" transform="rotate(47.097829)">
+                  <g
+                    id="ephaw8h2jvi7"
+                    transform="scale(1,1) translate(-60.200674,252.153023)"
+                    paint-order="markers fill stroke"
+                  >
+                    <rect
+                      id="ephaw8h2jvi8"
+                      width="1.483330"
+                      height="9.283330"
+                      rx="0"
+                      ry="0"
+                      transform="matrix(-0.92294168472290 0.38493973016739 -0.38493973016739 -0.92294168472290 62.67649119827323 -248.15453797579238)"
+                      paint-order="markers fill stroke"
+                      :fill="colorMain"
+                      stroke="none"
+                      stroke-width="1"
+                    />
+                    <rect
+                      id="ephaw8h2jvi9"
+                      width="1.483330"
+                      height="9.283330"
+                      rx="0"
+                      ry="0"
+                      transform="matrix(-0.38493973016739 -0.92294168472290 0.92294168472290 -0.38493973016739 56.20218457582762 -249.68310904485418)"
+                      paint-order="markers fill stroke"
+                      :fill="colorMain"
+                      stroke="none"
+                      stroke-width="1"
+                    />
+                  </g>
+                </g>
+              </g>
+              <ellipse
+                id="ephaw8h2jvi10"
+                rx="3.781000"
+                ry="3.942000"
+                transform="matrix(1 0 0 1 43.20699958500003 -248.00867347500011)"
+                paint-order="markers fill stroke"
+                fill="none"
+                :stroke="colorSecond"
+                stroke-width="1.124000"
+                stroke-linejoin="round"
+              />
+              <g
+                id="ephaw8h2jvi11_tr"
+                transform="translate(43.204595,-253.340913) rotate(70)"
+              >
+                <rect
+                  id="ephaw8h2jvi11"
+                  width="1.483330"
+                  height="37.400000"
+                  rx="0"
+                  ry="0"
+                  transform="scale(1,1.319440) translate(-0.733469,-18.702983)"
+                  paint-order="markers fill stroke"
+                  fill="rgb(46,64,82)"
+                  stroke="none"
+                  stroke-width="1"
+                />
+              </g>
             </g>
-          </g>
-        </svg>
-        <router-link to="casual" id="dumbLink"></router-link>
+          </svg>
+          <router-link to="casual" id="dumbLink"></router-link>
+        </div>
       </div>
-    </div>
 
-    <div class="container-half container-loading-text">
-      <span id="loading-text">
-        Searching
-        <span id="wait"></span>
-      </span>
+      <div class="container-half container-loading-text">
+        <span id="loading-text">
+          Searching
+          <span id="wait"></span>
+        </span>
+      </div>
     </div>
   </div>
 </template>
@@ -147,6 +158,22 @@ export default {
   name: "SearchBase",
   components: {},
   props: ["logged", "username", "colorMain", "colorSecond"],
+  mounted() {
+    let mDiv = document.getElementById("testDiv");
+    let navHeight = document.getElementById("smallNav").clientHeight;
+    mDiv.style.top =
+      (mDiv.offsetWidth / 2) * Math.tan((7.5 * Math.PI) / 180) +
+      navHeight +
+      "px";
+    window.onresize = function() {
+      let mDiv = document.getElementById("testDiv");
+      let navHeight = document.getElementById("smallNav").clientHeight;
+      mDiv.style.top =
+        (mDiv.offsetWidth / 2) * Math.tan((7.5 * Math.PI) / 180) +
+        navHeight +
+        "px";
+    };
+  },
 };
 </script>
 <style scoped>
