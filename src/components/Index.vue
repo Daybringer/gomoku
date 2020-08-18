@@ -5,7 +5,6 @@
         <span class="light-text">Let's play</span>
         <span class="bold-text"><br />Gomoku</span>
         <span class="bold-text"><br />Five in a row</span>
-        <span class="bold-text"><br />Piškvorky</span>
         <span class="bold-text"><br />五目並べ</span>
         <span class="bold-text"><br />Fünf in eine Reihe</span>
       </div>
@@ -197,31 +196,54 @@ export default {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
 }
 .bold-text {
   font-style: normal;
   font-weight: 700;
   font-size: 2rem;
   color: #363636;
-  animation: fadeIn ease 5s infinite;
-  -webkit-animation: fadeIn ease 5s infinite;
-  -moz-animation: fadeIn ease 5s infinite;
-  -o-animation: fadeIn ease 5s infinite;
-  -ms-animation: fadeIn ease 5s infinite;
+  animation: fadeIn ease 12s infinite;
+  -webkit-animation: fadeIn ease 12s infinite;
+  -moz-animation: fadeIn ease 12s infinite;
+  -o-animation: fadeIn ease 12s infinite;
+  -ms-animation: fadeIn ease 12s infinite;
+  white-space: nowrap;
+  overflow: hidden;
+  opacity: 0;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.bold-text:nth-child(2) {
+  animation-delay: 3s;
+}
+.bold-text:nth-child(3) {
+  animation-delay: 6s;
+}
+.bold-text:nth-child(4) {
+  animation-delay: 9s;
 }
 
 @keyframes fadeIn {
   0% {
     opacity: 0;
+    display: inline;
+  }
+  5% {
+    opacity: 1;
+    display: inline;
   }
   20% {
     opacity: 1;
+    display: inline;
   }
-  80% {
-    opacity: 1;
-  }
-  100% {
+  25% {
     opacity: 0;
+    display: none;
   }
 }
 .light-text {
@@ -229,6 +251,10 @@ export default {
   font-weight: 400;
   font-size: 2rem;
   color: #363636;
+  position: absolute;
+  left: 50%;
+  top: 3vh;
+  transform: translate(-50%, 0);
 }
 
 .scroll-hint-svg {
