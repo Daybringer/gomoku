@@ -5,8 +5,26 @@
         <span class="headline">Rules</span>
       </div>
     </div>
-    <div id="skewed-container"></div>
-    <footer class="footer">
+    <div id="rulesContainer">
+      <carousel
+        id="rules-carousel"
+        :per-page="1"
+        :paginationColor="'#363636'"
+        :paginationActiveColor="'#00b3fe'"
+        :paginationPosition="'bottom-overlay'"
+      >
+        <slide class="rule-container">
+          <h3 class="rule-heading">Basics</h3>
+        </slide>
+        <slide class="rule-container">
+          <h3 class="rule-heading">SWAP Rule</h3>
+        </slide>
+        <slide class="rule-container">
+          <h3 class="rule-heading">SWAP2 Rule</h3>
+        </slide>
+      </carousel>
+    </div>
+    <footer class="footer" id="footer">
       <a class="grad-link" href="https://daybringer.github.io/"
         >Michal Vaňata</a
       >
@@ -15,21 +33,33 @@
   </div>
 </template>
 <script>
+import { Carousel, Slide } from "vue-carousel";
 export default {
   name: "Rules",
-  components: {},
+  components: {
+    Carousel,
+    Slide,
+  },
   methods: {
     resizeSkew() {
       let mDiv = document.getElementById("rulesSkewedDiv");
       let navHeight = document.getElementById("smallNav").clientHeight;
-      let rulesContainer = document.getElementById("skewed-container");
+      let rulesContainer = document.getElementById("rulesContainer");
+      let footerHeight = document.getElementById("footer").clientHeight;
 
       let cornerHeight =
         (mDiv.offsetWidth / 2) * Math.tan((7.5 * Math.PI) / 180);
 
       mDiv.style.top = cornerHeight + navHeight + "px";
-      rulesContainer.style.top =
-        mDiv.offsetHeight + cornerHeight + navHeight + -1 + "px";
+      rulesContainer.style.top = mDiv.offsetHeight + navHeight + -1 + "px";
+
+      let viewHeight = Math.max(
+        document.documentElement.clientHeight,
+        window.innerHeight || 0
+      );
+
+      rulesContainer.style.height =
+        viewHeight - mDiv.offsetHeight - footerHeight - navHeight + "px";
     },
   },
   props: ["logged"],
@@ -40,6 +70,30 @@ export default {
 };
 </script>
 <style scoped>
+.rule-heading {
+  text-align: center;
+  color: #363636;
+  font-weight: 700;
+  font-size: 1.5rem;
+  margin-top: 0;
+}
+.rule-container {
+  height: 60vh;
+}
+#rules-carousel {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  width: 100%;
+}
+#rulesContainer {
+  position: absolute;
+  background-color: white;
+  width: 100%;
+  z-index: 0;
+  height: 100%;
+}
 #rulesSkewedDiv {
   background-color: #8f8f8f;
   width: 100%;
@@ -48,6 +102,7 @@ export default {
   position: absolute;
   text-align: center;
   margin-top: -1px;
+  z-index: 1;
 }
 .centered-div {
   position: absolute;
@@ -61,16 +116,7 @@ export default {
   color: #363636;
   user-select: none;
 }
-#skewed-container {
-  width: 100%;
-  height: 60vh;
-  position: absolute;
-  z-index: 1;
-  top: 0;
-  transform: skewY(-7.5deg);
-  text-align: center;
-  background-color: white;
-}
+
 .grad-link {
   text-decoration: none;
   position: relative;

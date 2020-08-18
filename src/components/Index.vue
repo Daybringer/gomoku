@@ -247,7 +247,7 @@ export default {
   }
 }
 .light-text {
-  white-space: normal;
+  white-space: nowrap;
   font-weight: 400;
   font-size: 2rem;
   color: #363636;
