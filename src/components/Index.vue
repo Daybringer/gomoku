@@ -4,6 +4,10 @@
       <div class="centered-div">
         <span class="light-text">Let's play</span>
         <span class="bold-text"><br />Gomoku</span>
+        <span class="bold-text"><br />Five in a row</span>
+        <span class="bold-text"><br />Piškvorky</span>
+        <span class="bold-text"><br />五目並べ</span>
+        <span class="bold-text"><br />Fünf in eine Reihe</span>
       </div>
     </div>
     <router-link to="/q/search">
@@ -199,6 +203,26 @@ export default {
   font-weight: 700;
   font-size: 2rem;
   color: #363636;
+  animation: fadeIn ease 5s infinite;
+  -webkit-animation: fadeIn ease 5s infinite;
+  -moz-animation: fadeIn ease 5s infinite;
+  -o-animation: fadeIn ease 5s infinite;
+  -ms-animation: fadeIn ease 5s infinite;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 .light-text {
   white-space: normal;
