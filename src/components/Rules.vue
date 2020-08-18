@@ -11,16 +11,70 @@
         :per-page="1"
         :paginationColor="'#363636'"
         :paginationActiveColor="'#00b3fe'"
-        :paginationPosition="'bottom-overlay'"
       >
         <slide class="rule-container">
-          <h3 class="rule-heading">Basics</h3>
+          <div>
+            <h3 class="rule-heading">Basics</h3>
+            <ul class="rule-list">
+              <li class="rule-point">Gomoku is a game for 2 players</li>
+              <li class="rule-point">
+                It is played on 15x15 gameboard
+              </li>
+              <li class="rule-point">
+                Players alternate turns placing their stone/circle/cross
+              </li>
+              <li class="rule-point">
+                The winner is the first player to form an unbroken chain of five
+                stones horizontally, vertically, or diagonally
+              </li>
+            </ul>
+            <button class="modal-show-example">Show example</button>
+          </div>
         </slide>
         <slide class="rule-container">
-          <h3 class="rule-heading">SWAP Rule</h3>
+          <div>
+            <h3 class="rule-heading">SWAP Rule</h3>
+            <ul class="rule-list">
+              <li class="rule-point">
+                Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+              </li>
+              <li class="rule-point">
+                Accusantium alias quis sunt nisi veniam molestias deserunt natus
+                hic!
+              </li>
+              <li class="rule-point">
+                Cumque quibusdam placeat quos omnis.
+              </li>
+              <li class="rule-point">
+                Consectetur corrupti adipisci similique, quo recusandae ratione.
+              </li>
+            </ul>
+            <button class="modal-show-example">Show example</button>
+          </div>
         </slide>
         <slide class="rule-container">
-          <h3 class="rule-heading">SWAP2 Rule</h3>
+          <div>
+            <h3 class="rule-heading">SWAP2 Rule</h3>
+            <ul class="rule-list">
+              <li class="rule-point">
+                Rule used in <b>ranked games</b> to even out the advantage of
+                starting player. It is used on all international tournaments
+              </li>
+              <li class="rule-point">
+                Order:
+                <ol>
+                  <li>
+                    Starting player places 3 stones (e.g. 2 crosses, 1 circle)
+                  </li>
+                  <li>
+                    An opponent can either choose a side or place next 2 stones
+                  </li>
+                  <li>The player with least stones plays</li>
+                </ol>
+              </li>
+            </ul>
+            <button class="modal-show-example">Show example</button>
+          </div>
         </slide>
       </carousel>
     </div>
@@ -34,6 +88,7 @@
 </template>
 <script>
 import { Carousel, Slide } from "vue-carousel";
+import is from "is_js";
 export default {
   name: "Rules",
   components: {
@@ -57,9 +112,18 @@ export default {
         document.documentElement.clientHeight,
         window.innerHeight || 0
       );
-
-      rulesContainer.style.height =
-        viewHeight - mDiv.offsetHeight - footerHeight - navHeight + "px";
+      if (is.not.chrome()) {
+        rulesContainer.style.height =
+          viewHeight -
+          mDiv.offsetHeight -
+          cornerHeight -
+          footerHeight -
+          navHeight +
+          "px";
+      } else {
+        rulesContainer.style.height =
+          viewHeight - mDiv.offsetHeight - footerHeight - navHeight + "px";
+      }
     },
   },
   props: ["logged"],
@@ -70,6 +134,39 @@ export default {
 };
 </script>
 <style scoped>
+.rule-list {
+  text-align: left;
+  list-style-type: none;
+}
+
+.rule-point::before {
+  content: "■";
+  color: #00b3fe;
+  float: left;
+  width: 1em;
+  margin: 0.4em -1.4em;
+  font-size: 60%;
+}
+
+.rule-point {
+  margin-bottom: 1rem;
+  color: #363636;
+  font-weight: 400;
+  padding-left: 0.5rem;
+  font-size: 1rem;
+}
+.modal-show-example {
+  position: absolute;
+  bottom: 0;
+  transform: translate(-50%, 0);
+  border: #363636 solid 2px;
+  background-color: #00b3fe;
+  color: white;
+  padding: 0.25rem 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
 .rule-heading {
   text-align: center;
   color: #363636;
@@ -78,7 +175,8 @@ export default {
   margin-top: 0;
 }
 .rule-container {
-  height: 60vh;
+  height: 50vh;
+  text-align: center;
 }
 #rules-carousel {
   position: absolute;
