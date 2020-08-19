@@ -88,7 +88,7 @@
 </template>
 <script>
 import { Carousel, Slide } from "vue-carousel";
-import is from "is_js";
+// import is from "is_js";
 export default {
   name: "Rules",
   components: {
@@ -106,24 +106,14 @@ export default {
         (mDiv.offsetWidth / 2) * Math.tan((7.5 * Math.PI) / 180);
 
       mDiv.style.top = cornerHeight + navHeight + "px";
-      rulesContainer.style.top = mDiv.offsetHeight + navHeight + -1 + "px";
+      rulesContainer.style.bottom = footerHeight + "px";
 
       let viewHeight = Math.max(
         document.documentElement.clientHeight,
         window.innerHeight || 0
       );
-      if (is.not.chrome()) {
-        rulesContainer.style.height =
-          viewHeight -
-          mDiv.offsetHeight -
-          cornerHeight -
-          footerHeight -
-          navHeight +
-          "px";
-      } else {
-        rulesContainer.style.height =
-          viewHeight - mDiv.offsetHeight - footerHeight - navHeight + "px";
-      }
+      rulesContainer.style.height =
+        viewHeight - mDiv.offsetHeight - footerHeight - navHeight + "px";
     },
   },
   props: ["logged"],
@@ -177,6 +167,7 @@ export default {
 .rule-container {
   height: 50vh;
   text-align: center;
+  overflow-y: scroll;
 }
 #rules-carousel {
   position: absolute;
