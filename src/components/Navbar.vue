@@ -109,6 +109,7 @@ export default {
       colorMain: "#00b3fe",
       buttonType: "elastic",
       isActive: false,
+      buttonIsActiv: false,
       size: "s",
       color: "#00b3fe",
       activeColor: "#00b3fe",
@@ -134,18 +135,18 @@ export default {
   },
   methods: {
     closeMenu() {
-      console.log(this.$refs.hamburger);
       document.getElementById("hamburger-icon").click();
     },
     burgerToggle: function(active) {
       if (active) {
-        console.log("is active");
+        this.buttonIsActiv = true;
         document.getElementById("dropdown-content").style.display = "block";
         document.getElementById("dropdown-content").classList.add("slide-in");
         document
           .getElementById("dropdown-content")
           .classList.remove("slide-out");
       } else {
+        this.buttonIsActiv = false;
         document.getElementById("dropdown-content").classList.add("slide-out");
         document
           .getElementById("dropdown-content")
@@ -156,6 +157,11 @@ export default {
       location.hash = hashbang;
     },
     scrollToTop: function() {
+      if (this.buttonIsActiv) {
+        this.closeMenu();
+        console.log("yay");
+      }
+
       document.getElementById("dropdown-content").classList.remove("slide-out");
       document.getElementById("dropdown-content").classList.remove("slide-in");
       if (location.pathname === "/") {
