@@ -120,10 +120,29 @@ export default {
   mounted() {
     this.resizeSkew();
     window.onresize = () => this.resizeSkew();
+    let els = document.getElementsByClassName("VueCarousel-dot");
+    [].forEach.call(els, function(el) {
+      el.style.marginTop = "0px";
+    });
+
+    let els3 = document.getElementsByClassName("VueCarousel-pagination");
+    [].forEach.call(els3, function(el) {
+      el.style.marginTop = "-15px";
+    });
+    let els2 = document.getElementsByClassName("VueCarousel-dot-container");
+    [].forEach.call(els2, function(el) {
+      el.style.marginTop = "0px";
+    });
   },
 };
 </script>
 <style scoped>
+.VueCarousel-dot-container {
+  margin-top: 0 !important;
+}
+.VueCarousel-dot {
+  margin-top: 0 !important;
+}
 .rule-list {
   text-align: left;
   list-style-type: none;
@@ -182,6 +201,7 @@ export default {
   width: 100%;
   z-index: 0;
   height: 100%;
+  overflow: scroll;
 }
 #rulesSkewedDiv {
   background-color: #8f8f8f;
@@ -232,6 +252,7 @@ export default {
 .footer {
   position: absolute;
   bottom: 0;
+  margin-bottom: -1px;
   text-align: center;
   width: 100%;
   color: #8f8f8f;

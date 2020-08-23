@@ -135,7 +135,7 @@ export default {
   methods: {
     closeMenu() {
       console.log(this.$refs.hamburger);
-      this.$refs.hamburger.click();
+      document.getElementById("hamburger-icon").click();
     },
     burgerToggle: function(active) {
       if (active) {
@@ -147,15 +147,17 @@ export default {
           .classList.remove("slide-out");
       } else {
         document.getElementById("dropdown-content").classList.add("slide-out");
-        // document
-        //   .getElementById("dropdown-content")
-        //   .classList.remove("slide-in");
+        document
+          .getElementById("dropdown-content")
+          .classList.remove("slide-in");
       }
     },
     scrollFix: function(hashbang) {
       location.hash = hashbang;
     },
     scrollToTop: function() {
+      document.getElementById("dropdown-content").classList.remove("slide-out");
+      document.getElementById("dropdown-content").classList.remove("slide-in");
       if (location.pathname === "/") {
         this.scrollFix("#home");
       }
@@ -204,15 +206,18 @@ export default {
   z-index: -1;
 }
 .slide-in {
-  animation: slide-in 1s forwards;
+  animation: slide-in 0.75s forwards;
 }
 @keyframes slide-in {
+  0% {
+    transform: translateY(-110%);
+  }
   100% {
     transform: translateY(0%);
   }
 }
 .slide-out {
-  animation: slide-out 1s forwards;
+  animation: slide-out 0.75s forwards;
 }
 @keyframes slide-out {
   0% {
