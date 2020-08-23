@@ -67,6 +67,7 @@
         </router-link>
         <tasty-burger-button
           id="hamburger-icon"
+          ref="hamburger"
           :type="buttonType"
           :active="isActive"
           :size="size"
@@ -74,9 +75,14 @@
           :active-color="activeColor"
           v-on:toggle="burgerToggle"
         />
-        <div id="dropdown-content">
+        <div id="dropdown-content" @click="closeMenu">
           <a></a>
-          <a @click="$emit(loggedOut)" href="">Log In</a>
+          <router-link
+            @click="$emit(loggedOut)"
+            to="/login"
+            style="color:#00b3fe"
+            >Log In</router-link
+          >
           <router-link @click.native="scrollToMatches" to="/"
             >Matches</router-link
           >
@@ -103,7 +109,7 @@ export default {
       colorMain: "#00b3fe",
       buttonType: "elastic",
       isActive: false,
-      size: "m",
+      size: "s",
       color: "#00b3fe",
       activeColor: "#00b3fe",
     };
@@ -127,13 +133,23 @@ export default {
     };
   },
   methods: {
+    closeMenu() {
+      console.log(this.$refs.hamburger);
+      this.$refs.hamburger.click();
+    },
     burgerToggle: function(active) {
       if (active) {
         console.log("is active");
         document.getElementById("dropdown-content").style.display = "block";
+        document.getElementById("dropdown-content").classList.add("slide-in");
+        document
+          .getElementById("dropdown-content")
+          .classList.remove("slide-out");
       } else {
-        console.log("is not active");
-        document.getElementById("dropdown-content").style.display = "none";
+        document.getElementById("dropdown-content").classList.add("slide-out");
+        // document
+        //   .getElementById("dropdown-content")
+        //   .classList.remove("slide-in");
       }
     },
     scrollFix: function(hashbang) {
@@ -184,14 +200,34 @@ export default {
   right: 0;
   top: 3rem;
   display: none;
+  transform: translateY(-110%);
   z-index: -1;
+}
+.slide-in {
+  animation: slide-in 1s forwards;
+}
+@keyframes slide-in {
+  100% {
+    transform: translateY(0%);
+  }
+}
+.slide-out {
+  animation: slide-out 1s forwards;
+}
+@keyframes slide-out {
+  0% {
+    transform: translateY(0%);
+  }
+  100% {
+    transform: translateY(-110%);
+  }
 }
 #dropdown-content a {
   display: block;
   color: #8f8f8f;
   background-color: #363636;
-  padding: 0.5rem 2rem;
-  font-size: 1rem;
+  padding: 0.5em 2rem;
+  font-size: 1.1rem;
   font-weight: 700;
 }
 #hamburger-icon {
