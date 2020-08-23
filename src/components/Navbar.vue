@@ -65,51 +65,25 @@
             </g>
           </svg>
         </router-link>
-        <svg
-          id="svg3027"
-          version="1.1"
-          viewBox="0 0 21.876072 15.96943"
-          class="burgerSVG"
-        >
-          <g transform="translate(-104.543,-120.08387)" id="layer1">
-            <g
-              transform="matrix(-5.345316,0,0,5.345316,317.63418,-203.25082)"
-              style="fill:#ff006e;fill-opacity:1"
-              id="g1539-2-9-3-2-3"
-            >
-              <rect
-                style="fill:#00b3fe;fill-opacity:1;stroke:none;stroke-width:1.76305;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.360234"
-                id="rect1513-26-4-6-0-2"
-                width="4.092567"
-                height="0.60670787"
-                x="35.772461"
-                y="62.870197"
-                rx="0.25578544"
-                ry="0.30335394"
-              />
-              <rect
-                ry="0.30335394"
-                rx="0.22700049"
-                y="61.679771"
-                x="36.233021"
-                height="0.60670787"
-                width="3.6320078"
-                id="rect1513-9-1-8-7-2-0"
-                style="fill:#00b3fe;fill-opacity:1;stroke:none;stroke-width:1.66089;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.360234"
-              />
-              <rect
-                ry="0.30335394"
-                rx="0.19730575"
-                y="60.489349"
-                x="36.708138"
-                height="0.60670787"
-                width="3.1568921"
-                id="rect1513-2-0-1-5-3-6"
-                style="fill:#00b3fe;fill-opacity:1;stroke:none;stroke-width:1.54845;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.360234"
-              />
-            </g>
-          </g>
-        </svg>
+        <tasty-burger-button
+          id="hamburger-icon"
+          :type="buttonType"
+          :active="isActive"
+          :size="size"
+          :color="color"
+          :active-color="activeColor"
+          v-on:toggle="burgerToggle"
+        />
+        <div id="dropdown-content">
+          <a></a>
+          <a @click="$emit(loggedOut)" href="">Log In</a>
+          <router-link @click.native="scrollToMatches" to="/"
+            >Matches</router-link
+          >
+          <router-link @click.native="scrollToRules" to="/">Rules</router-link>
+          <router-link to="/about">About</router-link>
+          <a id="last-fake-link"></a>
+        </div>
       </div>
       <div
         id="skewed-nav"
@@ -120,12 +94,18 @@
 </template>
 
 <script>
+import { TastyBurgerButton } from "vue-tasty-burgers";
 export default {
   name: "navbar",
   props: ["logged"],
   data() {
     return {
       colorMain: "#00b3fe",
+      buttonType: "elastic",
+      isActive: false,
+      size: "m",
+      color: "#00b3fe",
+      activeColor: "#00b3fe",
     };
   },
   mounted: function() {
@@ -147,12 +127,31 @@ export default {
     };
   },
   methods: {
+    burgerToggle: function(active) {
+      if (active) {
+        console.log("is active");
+        document.getElementById("dropdown-content").style.display = "block";
+      } else {
+        console.log("is not active");
+        document.getElementById("dropdown-content").style.display = "none";
+      }
+    },
     scrollFix: function(hashbang) {
       location.hash = hashbang;
     },
     scrollToTop: function() {
       if (location.pathname === "/") {
         this.scrollFix("#home");
+      }
+    },
+    scrollToRules: function() {
+      if (location.pathname === "/") {
+        this.scrollFix("#rules");
+      }
+    },
+    scrollToMatches: function() {
+      if (location.pathname === "/") {
+        this.scrollFix("#matches");
       }
     },
   },
@@ -164,11 +163,43 @@ export default {
       };
     },
   },
+  components: {
+    "tasty-burger-button": TastyBurgerButton,
+  },
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+#last-fake-link {
+  transform: skewY(-7.5deg);
+  height: 2rem;
+  position: absolute;
+  bottom: -1rem;
+  width: 100%;
+  z-index: -1;
+}
+#dropdown-content {
+  position: absolute;
+  right: 0;
+  top: 3rem;
+  display: none;
+  z-index: -1;
+}
+#dropdown-content a {
+  display: block;
+  color: #8f8f8f;
+  background-color: #363636;
+  padding: 0.5rem 2rem;
+  font-size: 1rem;
+  font-weight: 700;
+}
+#hamburger-icon {
+  right: 1em;
+  top: 50%;
+  transform: translate(0, -50%);
+  position: absolute;
+}
 .navbar {
   z-index: 1000;
   position: fixed;
@@ -191,14 +222,7 @@ export default {
   margin-left: 1em;
   left: 0;
 }
-.burgerSVG {
-  height: 70%;
-  position: absolute;
-  top: 50%;
-  transform: translate(0, -50%);
-  margin-right: 1em;
-  right: 0;
-}
+
 .account-window {
   background-color: var(--main);
   width: auto;
@@ -306,9 +330,6 @@ a:focus {
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
   .logoSVG {
-    height: 50%;
-  }
-  .burgerSVG {
     height: 50%;
   }
   .account-window {

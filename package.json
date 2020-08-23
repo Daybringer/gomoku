@@ -18,7 +18,8 @@
     "vue": "^2.6.11",
     "vue-fullpage.js": "^0.1.5",
     "vue-router": "^3.1.6",
-    "vue-socket.io": "^3.0.9"
+    "vue-socket.io": "^3.0.9",
+    "vue-tasty-burgers": "^1.2.3"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.4.0",
