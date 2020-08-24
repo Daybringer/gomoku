@@ -1,10 +1,5 @@
 <template>
-  <SearchBase
-    :logged="logged"
-    :username="username"
-    :colorMain="colorMain"
-    :colorSecond="colorSecond"
-  ></SearchBase>
+  <SearchBase :logged="logged"></SearchBase>
 </template>
 <script>
 import io from "socket.io-client";
@@ -14,7 +9,7 @@ let socket;
 export default {
   name: "App",
   components: { SearchBase },
-  props: ["logged", "username", "colorMain", "colorSecond"],
+  props: ["logged"],
   mounted() {
     socket = io("/q/search");
     socket.on("gameCreated", function(roomID) {

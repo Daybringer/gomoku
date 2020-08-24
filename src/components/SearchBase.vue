@@ -1,155 +1,135 @@
 <template>
   <div>
-    <div
-      style="background-color:#8f8f8f;width:100%;height:20vh;transform: skewY(-7.5deg);position:absolute;text-align:center;margin-top:-1px;"
-      id="testDiv"
-    >
+    <div id="searchSkewedDiv">
       <div class="centered-div">
-        <span class="light-text">Let's play</span>
-        <span class="bold-text"><br />Gomoku</span>
+        <span class="headline">Searching</span>
       </div>
     </div>
-    <div class="grid-overlay" id="searchScript">
-      <div class="container-half">
-        <div class="swing-animation">
-          <svg
-            id="ephaw8h2jvi1"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            viewBox="0 0 50.850000 48"
-            shape-rendering="geometricPrecision"
-            text-rendering="geometricPrecision"
-          >
-            <g
-              id="ephaw8h2jvi2"
-              transform="matrix(1 0 0 1 -17.78199958801270 287.35101318359375)"
-              paint-order="markers fill stroke"
-            >
-              <ellipse
-                id="ephaw8h2jvi3"
-                rx="9.955000"
-                ry="1.939000"
-                transform="matrix(1.73724997043610 0 0 1.48821997642517 43.66908628194534 -243.21498425683708)"
-                opacity="0.596"
+    <span id="timeTracker">{{ timeToShow }}</span>
+    <div class="swing-animation">
+      <svg
+        id="ephaw8h2jvi1"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        viewBox="0 0 50.850000 48"
+        shape-rendering="geometricPrecision"
+        text-rendering="geometricPrecision"
+      >
+        <g
+          id="ephaw8h2jvi2"
+          transform="matrix(1 0 0 1 -17.78199958801270 287.35101318359375)"
+          paint-order="markers fill stroke"
+        >
+          <ellipse
+            id="ephaw8h2jvi3"
+            rx="9.955000"
+            ry="1.939000"
+            transform="matrix(1.73724997043610 0 0 1.48821997642517 43.66908628194534 -243.21498425683708)"
+            opacity="0.596"
+            paint-order="markers fill stroke"
+            fill="rgb(227,227,227)"
+            stroke="none"
+            stroke-width="1"
+          />
+          <g id="ephaw8h2jvi4_to" transform="translate(61.480000,-264.730000)">
+            <g id="ephaw8h2jvi4_tr" transform="rotate(-132.010000)">
+              <g
+                id="ephaw8h2jvi4"
+                transform="scale(1,1) translate(-60.200674,252.153023)"
                 paint-order="markers fill stroke"
-                fill="rgb(227,227,227)"
-                stroke="none"
-                stroke-width="1"
-              />
-              <g
-                id="ephaw8h2jvi4_to"
-                transform="translate(61.480000,-264.730000)"
-              >
-                <g id="ephaw8h2jvi4_tr" transform="rotate(-132.010000)">
-                  <g
-                    id="ephaw8h2jvi4"
-                    transform="scale(1,1) translate(-60.200674,252.153023)"
-                    paint-order="markers fill stroke"
-                  >
-                    <rect
-                      id="ephaw8h2jvi5"
-                      width="1.483330"
-                      height="9.283330"
-                      rx="0"
-                      ry="0"
-                      transform="matrix(-0.92294168472290 0.38493973016739 -0.38493973016739 -0.92294168472290 62.67649119827323 -248.15453797579238)"
-                      paint-order="markers fill stroke"
-                      :fill="colorMain"
-                      stroke="none"
-                      stroke-width="1"
-                    />
-                    <rect
-                      id="ephaw8h2jvi6"
-                      width="1.483330"
-                      height="9.283330"
-                      rx="0"
-                      ry="0"
-                      transform="matrix(-0.38493973016739 -0.92294168472290 0.92294168472290 -0.38493973016739 56.20218457582762 -249.68310904485418)"
-                      paint-order="markers fill stroke"
-                      :fill="colorMain"
-                      stroke="none"
-                      stroke-width="1"
-                    />
-                  </g>
-                </g>
-              </g>
-              <g
-                id="ephaw8h2jvi7_to"
-                transform="translate(22.947501,-250.796000)"
-              >
-                <g id="ephaw8h2jvi7_tr" transform="rotate(47.097829)">
-                  <g
-                    id="ephaw8h2jvi7"
-                    transform="scale(1,1) translate(-60.200674,252.153023)"
-                    paint-order="markers fill stroke"
-                  >
-                    <rect
-                      id="ephaw8h2jvi8"
-                      width="1.483330"
-                      height="9.283330"
-                      rx="0"
-                      ry="0"
-                      transform="matrix(-0.92294168472290 0.38493973016739 -0.38493973016739 -0.92294168472290 62.67649119827323 -248.15453797579238)"
-                      paint-order="markers fill stroke"
-                      :fill="colorMain"
-                      stroke="none"
-                      stroke-width="1"
-                    />
-                    <rect
-                      id="ephaw8h2jvi9"
-                      width="1.483330"
-                      height="9.283330"
-                      rx="0"
-                      ry="0"
-                      transform="matrix(-0.38493973016739 -0.92294168472290 0.92294168472290 -0.38493973016739 56.20218457582762 -249.68310904485418)"
-                      paint-order="markers fill stroke"
-                      :fill="colorMain"
-                      stroke="none"
-                      stroke-width="1"
-                    />
-                  </g>
-                </g>
-              </g>
-              <ellipse
-                id="ephaw8h2jvi10"
-                rx="3.781000"
-                ry="3.942000"
-                transform="matrix(1 0 0 1 43.20699958500003 -248.00867347500011)"
-                paint-order="markers fill stroke"
-                fill="none"
-                :stroke="colorSecond"
-                stroke-width="1.124000"
-                stroke-linejoin="round"
-              />
-              <g
-                id="ephaw8h2jvi11_tr"
-                transform="translate(43.204595,-253.340913) rotate(70)"
               >
                 <rect
-                  id="ephaw8h2jvi11"
+                  id="ephaw8h2jvi5"
                   width="1.483330"
-                  height="37.400000"
+                  height="9.283330"
                   rx="0"
                   ry="0"
-                  transform="scale(1,1.319440) translate(-0.733469,-18.702983)"
+                  transform="matrix(-0.92294168472290 0.38493973016739 -0.38493973016739 -0.92294168472290 62.67649119827323 -248.15453797579238)"
                   paint-order="markers fill stroke"
-                  fill="rgb(46,64,82)"
+                  :fill="colorMain"
+                  stroke="none"
+                  stroke-width="1"
+                />
+                <rect
+                  id="ephaw8h2jvi6"
+                  width="1.483330"
+                  height="9.283330"
+                  rx="0"
+                  ry="0"
+                  transform="matrix(-0.38493973016739 -0.92294168472290 0.92294168472290 -0.38493973016739 56.20218457582762 -249.68310904485418)"
+                  paint-order="markers fill stroke"
+                  :fill="colorMain"
                   stroke="none"
                   stroke-width="1"
                 />
               </g>
             </g>
-          </svg>
-          <router-link to="casual" id="dumbLink"></router-link>
-        </div>
-      </div>
-
-      <div class="container-half container-loading-text">
-        <span id="loading-text">
-          Searching
-          <span id="wait"></span>
-        </span>
-      </div>
+          </g>
+          <g id="ephaw8h2jvi7_to" transform="translate(22.947501,-250.796000)">
+            <g id="ephaw8h2jvi7_tr" transform="rotate(47.097829)">
+              <g
+                id="ephaw8h2jvi7"
+                transform="scale(1,1) translate(-60.200674,252.153023)"
+                paint-order="markers fill stroke"
+              >
+                <rect
+                  id="ephaw8h2jvi8"
+                  width="1.483330"
+                  height="9.283330"
+                  rx="0"
+                  ry="0"
+                  transform="matrix(-0.92294168472290 0.38493973016739 -0.38493973016739 -0.92294168472290 62.67649119827323 -248.15453797579238)"
+                  paint-order="markers fill stroke"
+                  :fill="colorMain"
+                  stroke="none"
+                  stroke-width="1"
+                />
+                <rect
+                  id="ephaw8h2jvi9"
+                  width="1.483330"
+                  height="9.283330"
+                  rx="0"
+                  ry="0"
+                  transform="matrix(-0.38493973016739 -0.92294168472290 0.92294168472290 -0.38493973016739 56.20218457582762 -249.68310904485418)"
+                  paint-order="markers fill stroke"
+                  :fill="colorMain"
+                  stroke="none"
+                  stroke-width="1"
+                />
+              </g>
+            </g>
+          </g>
+          <ellipse
+            id="ephaw8h2jvi10"
+            rx="3.781000"
+            ry="3.942000"
+            transform="matrix(1 0 0 1 43.20699958500003 -248.00867347500011)"
+            paint-order="markers fill stroke"
+            fill="none"
+            :stroke="colorSecond"
+            stroke-width="1.124000"
+            stroke-linejoin="round"
+          />
+          <g
+            id="ephaw8h2jvi11_tr"
+            transform="translate(43.204595,-253.340913) rotate(70)"
+          >
+            <rect
+              id="ephaw8h2jvi11"
+              width="1.483330"
+              height="37.400000"
+              rx="0"
+              ry="0"
+              transform="scale(1,1.319440) translate(-0.733469,-18.702983)"
+              paint-order="markers fill stroke"
+              fill="rgb(46,64,82)"
+              stroke="none"
+              stroke-width="1"
+            />
+          </g>
+        </g>
+      </svg>
+      <router-link to="casual" id="dumbLink"></router-link>
     </div>
   </div>
 </template>
@@ -157,50 +137,96 @@
 export default {
   name: "SearchBase",
   components: {},
-  props: ["logged", "username", "colorMain", "colorSecond"],
-  mounted() {
-    let mDiv = document.getElementById("testDiv");
-    let navHeight = document.getElementById("smallNav").clientHeight;
-    mDiv.style.top =
-      (mDiv.offsetWidth / 2) * Math.tan((7.5 * Math.PI) / 180) +
-      navHeight +
-      "px";
-    window.onresize = function() {
-      let mDiv = document.getElementById("testDiv");
+  data() {
+    return {
+      colorMain: "#ff2079",
+      colorSecond: "#00b3fe",
+      interval: null,
+      currTime: 0,
+    };
+  },
+  computed: {
+    minutes() {
+      return Math.floor((this.currTime % (1000 * 60 * 60)) / (1000 * 60));
+    },
+    seconds() {
+      return Math.floor((this.currTime % (1000 * 60)) / 1000);
+    },
+    timeToShow() {
+      return `${this.minutes}:${this.seconds < 10 ? "0" : ""}${this.seconds}`;
+    },
+  },
+  methods: {
+    resizeSkew() {
+      let mDiv = document.getElementById("searchSkewedDiv");
+      let timer = document.getElementById("timeTracker");
       let navHeight = document.getElementById("smallNav").clientHeight;
       mDiv.style.top =
         (mDiv.offsetWidth / 2) * Math.tan((7.5 * Math.PI) / 180) +
         navHeight +
         "px";
-    };
+      timer.style.top =
+        navHeight +
+        mDiv.offsetHeight +
+        mDiv.offsetWidth * Math.tan((7.5 * Math.PI) / 180) +
+        "px";
+    },
+    timeChange() {
+      this.currTime += 1000;
+    },
+  },
+  props: ["logged"],
+  mounted() {
+    this.resizeSkew();
+    window.onresize = () => this.resizeSkew();
+    this.interval = setInterval(this.timeChange, 1000);
+  },
+  beforeDestroy() {
+    clearInterval(this.interval);
   },
 };
 </script>
 <style scoped>
-.grid-overlay {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+#timeTracker {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
+  margin-top: 1rem;
+  font-weight: 700;
+  font-size: 2rem;
+  color: #363636;
+  display: inline-block;
+  width: 20%;
 }
-
-.container-half {
-  width: 50vw;
+#searchSkewedDiv {
+  background-color: #8f8f8f;
+  width: 100%;
+  height: 15vh;
+  transform: skewY(-7.5deg);
+  position: absolute;
+  text-align: center;
+  margin-top: -1px;
+  z-index: 1;
 }
-
-.container-loading-text {
-  padding-top: 10rem;
+.centered-div {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }
-
-#loading-text {
-  padding-left: 10rem;
-  font-size: 5vw;
-  color: #2e4052;
+.headline {
+  font-weight: 700;
+  font-size: 3rem;
+  color: #363636;
+  user-select: none;
 }
 
 .swing-animation {
-  width: 60%;
-  margin-left: auto;
-  margin-right: 0;
-  margin-top: 15%;
+  width: 40vh;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
+  bottom: 3rem;
 }
 #ephaw8h2jvi4_to {
   animation: ephaw8h2jvi4_to__to 2000ms linear infinite normal forwards;
@@ -336,37 +362,6 @@ export default {
 
   100% {
     transform: translate(43.204595px, -253.340913px) rotate(70deg);
-  }
-}
-
-@media only screen and (max-width: 600px) {
-  .grid-overlay {
-    display: grid;
-    grid-template-columns: repeat(1, 1fr);
-  }
-
-  .container-half {
-    width: 100%;
-  }
-
-  .container-loading-text {
-    padding-top: 3rem;
-  }
-
-  #loading-text {
-    font-size: 3rem;
-    color: #2e4052;
-    padding: 0;
-    margin: 0;
-    left: 50%;
-    position: fixed;
-    transform: translate(-50%, 0);
-  }
-
-  .swing-animation {
-    width: 80%;
-    margin-left: auto;
-    margin-right: auto;
   }
 }
 </style>

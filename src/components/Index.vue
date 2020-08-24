@@ -145,22 +145,20 @@ export default {
       colorMain: "#00b3fe",
     };
   },
-  props: ["logged"],
-  mounted() {
-    let mDiv = document.getElementById("indexSkewedDiv");
-    let navHeight = document.getElementById("smallNav").clientHeight;
-    mDiv.style.top =
-      (mDiv.offsetWidth / 2) * Math.tan((7.5 * Math.PI) / 180) +
-      navHeight +
-      "px";
-    window.onresize = function() {
+  methods: {
+    resizeSkew() {
       let mDiv = document.getElementById("indexSkewedDiv");
       let navHeight = document.getElementById("smallNav").clientHeight;
       mDiv.style.top =
         (mDiv.offsetWidth / 2) * Math.tan((7.5 * Math.PI) / 180) +
         navHeight +
         "px";
-    };
+    },
+  },
+  props: ["logged"],
+  mounted() {
+    this.resizeSkew();
+    window.onresize = () => this.resizeSkew();
   },
 };
 </script>
@@ -258,7 +256,7 @@ export default {
 }
 
 .scroll-hint-svg {
-  height: 10rem;
+  height: 5rem;
 }
 
 .scroll-hint {
@@ -268,27 +266,6 @@ export default {
   transform: translateX(-50%);
 }
 
-/* Small devices (portrait tablets and large phones, 600px and up) */
-@media only screen and (max-width: 600px) {
-  .page-desc {
-    text-align: center;
-    font-weight: 500;
-    color: #2e4052;
-    font-size: 2em;
-    margin-top: 0rem;
-    padding: 0 1rem;
-  }
-  .scroll-hint-svg {
-    height: 5rem;
-  }
-
-  .scroll-hint {
-    bottom: 0;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-}
 #ead0bypm8o974_to {
   animation: ead0bypm8o974_to__to 4000ms linear infinite normal forwards;
 }

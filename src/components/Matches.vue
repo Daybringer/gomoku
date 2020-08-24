@@ -138,16 +138,8 @@ export default {
   name: "Matches",
   components: {},
   props: ["logged"],
-  mounted() {
-    let firstCont = document.getElementById("firstCont");
-    let skewedOberCont = document.getElementById("skewedContainer");
-    let navHeight = document.getElementById("smallNav").clientHeight;
-    skewedOberCont.style.top =
-      (firstCont.offsetWidth / 2) * Math.tan((7.5 * Math.PI) / 180) +
-      navHeight +
-      "px";
-
-    window.onresize = function() {
+  methods: {
+    resizeSkew() {
       let firstCont = document.getElementById("firstCont");
       let skewedOberCont = document.getElementById("skewedContainer");
       let navHeight = document.getElementById("smallNav").clientHeight;
@@ -155,7 +147,11 @@ export default {
         (firstCont.offsetWidth / 2) * Math.tan((7.5 * Math.PI) / 180) +
         navHeight +
         "px";
-    };
+    },
+  },
+  mounted() {
+    this.resizeSkew();
+    window.onresize = () => this.resizeSkew();
   },
 };
 </script>

@@ -116,14 +116,11 @@ export default {
     };
   },
   mounted: function() {
-    let skewedNav = document.getElementById("skewed-nav");
-    let navHeight = document.getElementById("smallNav").clientHeight;
-    skewedNav.style.top =
-      (skewedNav.offsetWidth / 2) * Math.tan((7.5 * Math.PI) / 180) -
-      skewedNav.offsetHeight +
-      navHeight +
-      "px";
-    window.onresize = function() {
+    this.resizeSkew();
+    window.onresize = () => this.resizeSkew();
+  },
+  methods: {
+    resizeSkew() {
       let skewedNav = document.getElementById("skewed-nav");
       let navHeight = document.getElementById("smallNav").clientHeight;
       skewedNav.style.top =
@@ -131,9 +128,7 @@ export default {
         skewedNav.offsetHeight +
         navHeight +
         "px";
-    };
-  },
-  methods: {
+    },
     closeMenu() {
       document.getElementById("hamburger-icon").click();
     },
@@ -159,7 +154,6 @@ export default {
     scrollToTop: function() {
       if (this.buttonIsActiv) {
         this.closeMenu();
-        console.log("yay");
       }
 
       document.getElementById("dropdown-content").classList.remove("slide-out");
@@ -193,7 +187,6 @@ export default {
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 #last-fake-link {
   transform: skewY(-7.5deg);

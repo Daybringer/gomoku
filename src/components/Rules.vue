@@ -120,10 +120,6 @@ export default {
   mounted() {
     this.resizeSkew();
     window.onresize = () => this.resizeSkew();
-    let els = document.getElementsByClassName("VueCarousel-dot");
-    [].forEach.call(els, function(el) {
-      el.style.marginTop = "0px";
-    });
 
     let els3 = document.getElementsByClassName("VueCarousel-pagination");
     [].forEach.call(els3, function(el) {
@@ -137,12 +133,6 @@ export default {
 };
 </script>
 <style scoped>
-.VueCarousel-dot-container {
-  margin-top: 0 !important;
-}
-.VueCarousel-dot {
-  margin-top: 0 !important;
-}
 .rule-list {
   text-align: left;
   list-style-type: none;
