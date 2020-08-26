@@ -239,6 +239,7 @@ export default {
   top: 50%;
   transform: translate(0, -50%);
   position: absolute;
+  cursor: auto;
 }
 .navbar {
   z-index: 1000;

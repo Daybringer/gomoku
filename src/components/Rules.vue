@@ -88,7 +88,6 @@
 </template>
 <script>
 import { Carousel, Slide } from "vue-carousel";
-// import is from "is_js";
 export default {
   name: "Rules",
   components: {

@@ -87,7 +87,7 @@ export default {
           document.body.clientWidth < 1400
             ? smallerDimension
             : smallerDimension - navbarHeight,
-        gridLineWidth: document.body.clientWidth < 1400 ? 5 : 10,
+        gridLineWidth: 5,
         colors: {
           primary: this.colorMain,
           secondary: this.colorSecond,
@@ -385,72 +385,6 @@ export default {
         });
       }
     }
-    // function placeLine(color, positions) {
-    //   ctx.strokeStyle = color;
-
-    //   const { x: fromX, y: fromY, radius } = calcPosition(
-    //     positions.fromX,
-    //     positions.fromY
-    //   );
-    //   const { x: toX, y: toY } = calcPosition(positions.toX, positions.toY);
-
-    //   const offCenter =
-    //     Math.sqrt(Math.pow(radius, 2) + Math.pow(radius, 2)) -
-    //     ctx.lineWidth / 2 -
-    //     20 / sett.gridLineWidth;
-
-    //   const difX = toX - fromX;
-    //   const difY = toY - fromY;
-
-    //   let xPositive, yPositive;
-    //   if (difX !== 0 && difY !== 0) {
-    //     if (difY < 0) {
-    //       yPositive = [offCenter, -offCenter];
-    //       xPositive = [-offCenter, offCenter];
-    //     } else if (difY > 0) {
-    //       yPositive = [-offCenter, offCenter];
-    //       xPositive = [-offCenter, offCenter];
-    //     }
-    //   } else if (difY === 0) {
-    //     yPositive = [0, 0];
-    //     xPositive = [offCenter, offCenter];
-    //   } else if (difX === 0) {
-    //     yPositive = [-offCenter, offCenter];
-    //     xPositive = [0, 0];
-    //   }
-
-    //   let step = 0;
-    //   animateLine(
-    //     fromX + xPositive[0],
-    //     fromY + yPositive[0],
-    //     toX + xPositive[1],
-    //     toY + yPositive[1],
-    //     step,
-    //     difX,
-    //     difY
-    //   );
-    // }
-
-    // function animateLine(fX, fY, toX, toY, step, difX, difY) {
-    //   ctx.beginPath();
-    //   ctx.moveTo(fX, fY);
-    //   ctx.lineTo(fX + difX * 0.02, fY + difY * 0.02);
-    //   ctx.stroke();
-    //   step += 0.01;
-    //   if (step < 1.15) {
-    //     requestAnimationFrame(function() {
-    //       animateLine(
-    //         fX + difX * 0.01,
-    //         fY + difY * 0.01,
-    //         toX,
-    //         toY,
-    //         step,
-    //         difX,
-    //         difY
-    //       );
-    //     });
-    //   }
-    // }
     function generateGridOverlay() {
       const fragment = document.createDocumentFragment();
       const grid = document.getElementById("gridOverlay");
@@ -460,7 +394,7 @@ export default {
           sett.cellSize / sett.dpi - sett.gridLineWidth + "px";
         gridCell.style.height =
           sett.cellSize / sett.dpi - sett.gridLineWidth + "px";
-        // gridCell.style.backgroundColor = "#e70064";
+        gridCell.style.backgroundColor = "#e70064";
         gridCell.style.cursor = "pointer";
         gridCell.id = String(x);
         gridCell.classList.add("overlayCell");

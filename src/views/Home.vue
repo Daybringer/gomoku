@@ -76,6 +76,7 @@ export default {
         animateAnchor: true,
         recordHistory: true,
 
+        licenseKey: "7DEA585A-8DE5490D-826E843F-BDAE1C48",
         //Design
         controlArrows: true,
         verticalCentered: true,

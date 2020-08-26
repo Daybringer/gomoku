@@ -1,28 +1,41 @@
 <template>
-  <div class="page-container" :style="cssVars">
-    <h1 class="page-title" :style="cssVars">Register</h1>
-    <div class="form-footer" :style="cssVars">
-      <form v-on:submit="register">
-        <fieldset>
-          <p id="successField"></p>
-          <p id="errorField"></p>
-          <label for="usernameRegister">Username</label>
-          <input type="text" name="usernameRegister" id="usernameRegister" />
-          <label for="emailRegister">Email</label>
-          <input type="text" name="emailRegister" id="emailRegister" />
-          <label for="passwordRegister">Password</label>
-          <input type="password" name="passwordRegister" id="passwordRegister" />
-          <label for="passwordRepeatRegister">Confirm Password</label>
+  <div id="ober-container">
+    <div class="page-container" :style="cssVars">
+      <h1 class="page-title" :style="cssVars">Register</h1>
+      <div class="form-footer" :style="cssVars">
+        <form v-on:submit="register">
+          <fieldset>
+            <p id="successField"></p>
+            <p id="errorField"></p>
+            <label for="usernameRegister">Username</label>
+            <input type="text" name="usernameRegister" id="usernameRegister" />
+            <label for="emailRegister">Email</label>
+            <input type="text" name="emailRegister" id="emailRegister" />
+            <label for="passwordRegister">Password</label>
+            <input
+              type="password"
+              name="passwordRegister"
+              id="passwordRegister"
+            />
+            <label for="passwordRepeatRegister">Confirm Password</label>
+            <input
+              type="password"
+              name="passwordRepeatRegister"
+              id="passwordRepeatRegister"
+              :style="cssVars"
+            />
+          </fieldset>
           <input
-            type="password"
-            name="passwordRepeatRegister"
-            id="passwordRepeatRegister"
+            id="form-footer-submit"
+            type="submit"
+            value="Register"
             :style="cssVars"
           />
-        </fieldset>
-        <input id="form-footer-submit" type="submit" value="Register" :style="cssVars" />
-        <router-link class="grad-link" to="login" :style="cssVars">Log in</router-link>
-      </form>
+          <router-link class="grad-link" to="login" :style="cssVars"
+            >Log in</router-link
+          >
+        </form>
+      </div>
     </div>
   </div>
 </template>
@@ -32,18 +45,24 @@
 import axios from "axios";
 export default {
   name: "Register",
-  props: ["logged", "username", "colorMain", "colorSecond", "colorMainDark"],
+  props: ["logged"],
   computed: {
     cssVars() {
       return {
         "--main": this.colorMain,
         "--second": this.colorSecond,
-        "--mainDark": this.colorMainDark
+        "--mainDark": this.colorMainDark,
       };
-    }
+    },
+  },
+  data() {
+    return {
+      colorMain: "#00b3fe",
+      colorMainDark: "#00ABF5",
+    };
   },
   methods: {
-    register: e => {
+    register: (e) => {
       e.preventDefault();
       let username = document.getElementById("usernameRegister").value.trim();
       let email = document.getElementById("emailRegister").value.trim();
@@ -56,11 +75,11 @@ export default {
           username: username,
           email: email,
           password: password,
-          password2: passwordRepeat
+          password2: passwordRepeat,
         };
         axios
           .post("/api/register", data)
-          .then(response => {
+          .then((response) => {
             if (response.status === 200) {
               document.getElementById("errorField").innerHTML = "";
               document.getElementById("successField").innerHTML = response.data;
@@ -72,7 +91,7 @@ export default {
               document.getElementById("usernameRegister").value = "";
             }
           })
-          .catch(errors => {
+          .catch((errors) => {
             document.getElementById("successField").innerHTML = "";
             document.getElementById("errorField").innerHTML =
               errors.response.data;
@@ -83,11 +102,28 @@ export default {
           });
       };
       register();
-    }
-  }
+    },
+    resizeSkew() {
+      let mDiv = document.getElementById("ober-container");
+      let navHeight = document.getElementById("smallNav").clientHeight;
+
+      let cornerHeight =
+        (mDiv.offsetWidth / 2) * Math.tan((7.5 * Math.PI) / 180);
+
+      mDiv.style.top = cornerHeight + navHeight + "px";
+    },
+  },
+  mounted() {
+    this.resizeSkew();
+    window.onresize = () => this.resizeSkew();
+  },
 };
 </script>
 <style scoped>
+#ober-container {
+  position: absolute;
+  width: 100%;
+}
 #successField {
   display: none;
   color: white;
@@ -272,7 +308,7 @@ export default {
 }
 @media only screen and (max-width: 600px) {
   .page-title {
-    margin-top: 2.25rem;
+    margin-top: 1rem;
     margin-bottom: 1rem;
   }
   .form-footer {
@@ -331,8 +367,8 @@ export default {
     padding: 0.25rem 1rem;
     font-weight: 600;
     width: 80%;
-    border-radius: 0.5em;
-    font-size: 2rem;
+    border-radius: 4px;
+    font-size: 1.5rem;
   }
 
   #successField {

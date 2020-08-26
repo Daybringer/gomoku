@@ -14,6 +14,7 @@ import Logout from "../views/Logout.vue";
 import Settings from "../views/Settings.vue";
 import Dashboard from "../views/Dashboard.vue";
 import Missing from "../views/404.vue";
+import GameBase from "../components/GameBase.vue";
 
 Vue.use(VueRouter);
 
@@ -22,6 +23,24 @@ const routes = [
     path: "/",
     name: "index",
     component: Home,
+    meta: {
+      title: "Gomoku | Online tic-tac-toe",
+      metaTags: [
+        {
+          name: "description",
+          content: "The home page of our example app.",
+        },
+        {
+          property: "og:description",
+          content: "The home page of our example app.",
+        },
+      ],
+    },
+  },
+  {
+    path: "/example",
+    name: "example",
+    component: GameBase,
     meta: {
       title: "Gomoku | Online tic-tac-toe",
       metaTags: [

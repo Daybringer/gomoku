@@ -14,31 +14,35 @@
         <div v-if="activeState === 'base'" class="centered-div">
           <span class="match-text">CREATE</span>
         </div>
-        <div v-if="activeState === 'create'" class="overlaySubOption">
-          <div class="centered-div1">
-            <span class="match-text">5 Min</span>
+        <router-link :to="{ path: 'waiting', query: { type: '5min' } }">
+          <div v-if="activeState === 'create'" class="overlaySubOption">
+            <div class="centered-div1">
+              <span class="match-text">5 Min</span>
+            </div>
           </div>
-        </div>
-
-        <div
-          v-if="activeState === 'create'"
-          style="border-top: solid #363636 10px;"
-          class="overlaySubOption"
-        >
-          <div class="centered-div2">
-            <span class="match-text">10 Min</span>
+        </router-link>
+        <router-link :to="{ path: 'waiting', query: { type: '10min' } }">
+          <div
+            v-if="activeState === 'create'"
+            style="border-top: solid #363636 10px;"
+            class="overlaySubOption"
+          >
+            <div class="centered-div2">
+              <span class="match-text">10 Min</span>
+            </div>
           </div>
-        </div>
-
-        <div
-          v-if="activeState === 'create'"
-          style="border-top: solid #363636 10px;"
-          class="overlaySubOption"
-        >
-          <div class="centered-div3">
-            <span class="match-text">No Limit</span>
+        </router-link>
+        <router-link :to="{ path: 'waiting', query: { type: 'no_limit' } }">
+          <div
+            v-if="activeState === 'create'"
+            style="border-top: solid #363636 10px;"
+            class="overlaySubOption"
+          >
+            <div class="centered-div3">
+              <span class="match-text">No Limit</span>
+            </div>
           </div>
-        </div>
+        </router-link>
         <div
           v-if="activeState === 'create'"
           style="border-top: solid #363636 10px;"
@@ -63,7 +67,16 @@
         </div>
         <div class="codeInputGr" v-if="activeState === 'join'">
           <label for="roomCode" id="roomCodeLabel">Room Code</label>
-          <input name="roomCode" id="roomCode" type="text" />
+          <input
+            name="roomCode"
+            id="roomCode"
+            type="text"
+            maxlength="4"
+            @input="checkRoomCode"
+          />
+          <span id="codeInvalidText" v-if="wrongCode"
+            >Room code is invalid</span
+          >
         </div>
         <i
           v-if="activeState === 'join'"
@@ -76,6 +89,9 @@
   </div>
 </template>
 <script>
+import io from "socket.io-client";
+import router from "../router";
+let socket;
 export default {
   name: "Private",
   components: {},
@@ -86,6 +102,7 @@ export default {
       AnimTransClass2: null,
       activeState: "base",
       testVar: null,
+      wrongCode: false,
     };
   },
   methods: {
@@ -129,12 +146,29 @@ export default {
         "px";
       skewedOberCont.style.top = fromTop;
     },
+    checkRoomCode(e) {
+      let targetElement = e.target;
+      if (targetElement.value.length === 4) {
+        socket.emit("roomJoined", targetElement.value.toUpperCase());
+      }
+    },
   },
   mounted() {
     this.resizeSkew();
     window.onresize = () => this.resizeSkew();
+
+    socket = io("/waiting");
+
+    socket.on("gameBegun", function(roomCode) {
+      router.push({ path: "p/game", query: { roomID: roomCode } });
+    });
+    socket.on("room invalid", () => {
+      this.wrongCode = true;
+    });
   },
-  destroyed() {},
+  destroyed() {
+    socket.close();
+  },
 };
 </script>
 <style scoped>
@@ -183,7 +217,6 @@ export default {
   height: 50%;
   transform: skewY(-7.5deg);
   text-align: center;
-  cursor: pointer;
   position: absolute;
 }
 .overlayLeave {
@@ -263,10 +296,22 @@ export default {
   position: absolute;
   transform: translateX(-50%);
   margin-top: 0.5rem;
+  text-align: center;
 }
 #roomCodeLabel {
   color: #363636;
   font-size: 2rem;
   font-weight: 400;
+}
+#codeInvalidText {
+  color: red;
+  display: block;
+  position: absolute;
+  top: 20vh;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 1.25rem;
+  font-weight: 700;
 }
 </style>

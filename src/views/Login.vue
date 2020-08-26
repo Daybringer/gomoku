@@ -1,26 +1,28 @@
 <template>
-  <div class="page-container">
-    <h1 class="page-title" id="page-title">Login</h1>
-    <div class="form-footer">
-      <form v-on:submit="login" :style="cssVars">
-        <fieldset>
-          <p id="successField">You have been succesfully logged in</p>
-          <p id="errorField">Invalid email or password</p>
-          <label for="usernameLogin">Email</label>
-          <input type="text" name="emailLogin" id="emailLogin" />
-          <label for="passwordLogin">Password</label>
-          <input type="password" name="passwordLogin" id="passwordLogin" />
-        </fieldset>
-        <input
-          id="form-footer-submit"
-          type="submit"
-          value="Log in"
-          :style="cssVars"
-        />
-        <router-link :style="cssVars" class="grad-link" to="register"
-          >No account yet?</router-link
-        >
-      </form>
+  <div id="ober-container">
+    <div class="page-container">
+      <h1 class="page-title" id="page-title">Login</h1>
+      <div class="form-footer">
+        <form v-on:submit="login" :style="cssVars">
+          <fieldset>
+            <p id="successField">You have been succesfully logged in</p>
+            <p id="errorField">Invalid email or password</p>
+            <label for="usernameLogin">Email</label>
+            <input type="text" name="emailLogin" id="emailLogin" />
+            <label for="passwordLogin">Password</label>
+            <input type="password" name="passwordLogin" id="passwordLogin" />
+          </fieldset>
+          <input
+            id="form-footer-submit"
+            type="submit"
+            value="Log in"
+            :style="cssVars"
+          />
+          <router-link :style="cssVars" class="grad-link" to="register"
+            >No account yet?</router-link
+          >
+        </form>
+      </div>
     </div>
   </div>
 </template>
@@ -30,12 +32,17 @@ import router from "../router";
 import axios from "axios";
 export default {
   name: "Login",
-  props: ["logged", "username", "colorMain", "colorSecond", "colorMainDark"],
+  props: ["logged"],
+  data() {
+    return {
+      colorMain: "#00b3fe",
+      colorMainDark: "#00ABF5",
+    };
+  },
   computed: {
     cssVars() {
       return {
         "--main": this.colorMain,
-        "--second": this.colorSecond,
         "--mainDark": this.colorMainDark,
       };
     },
@@ -68,10 +75,27 @@ export default {
       };
       login();
     },
+    resizeSkew() {
+      let mDiv = document.getElementById("ober-container");
+      let navHeight = document.getElementById("smallNav").clientHeight;
+
+      let cornerHeight =
+        (mDiv.offsetWidth / 2) * Math.tan((7.5 * Math.PI) / 180);
+
+      mDiv.style.top = cornerHeight + navHeight + "px";
+    },
+  },
+  mounted() {
+    this.resizeSkew();
+    window.onresize = () => this.resizeSkew();
   },
 };
 </script>
 <style scoped>
+#ober-container {
+  position: absolute;
+  width: 100%;
+}
 #successField {
   display: none;
   color: white;
@@ -124,7 +148,7 @@ export default {
   margin-top: 6vh;
   text-align: center;
   font-weight: 800;
-  color: #2e4052;
+  color: #363636;
   font-size: 3em;
 }
 .form-footer {
@@ -175,7 +199,7 @@ export default {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   background-color: #e8eeef;
-  color: #2e4052;
+  color: #363636;
   -webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03) inset;
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03) inset;
   margin-bottom: 30px;
@@ -229,13 +253,13 @@ export default {
   display: inline;
   font-size: 1.5em;
   font-weight: 800;
-  color: #2e4052;
+  color: #363636;
   overflow: hidden;
   background: linear-gradient(
     to right,
     var(--main),
     var(--main) 50%,
-    #2e4052 50%
+    #363636 50%
   );
   background-clip: text;
   -webkit-background-clip: text;
@@ -257,7 +281,8 @@ export default {
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
   .page-title {
-    margin-top: 4rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
   }
   .form-footer {
     min-width: 90%;
@@ -303,7 +328,7 @@ export default {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     background-color: #e8eeef;
-    color: #2e4052;
+    color: #363636;
     -webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03) inset;
     box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03) inset;
     margin-bottom: 15px;
@@ -314,8 +339,8 @@ export default {
     padding: 0.25rem 1rem;
     font-weight: 600;
     width: 80%;
-    border-radius: 0.5em;
-    font-size: 2rem;
+    border-radius: 4px;
+    font-size: 1.5rem;
   }
 
   #successField {

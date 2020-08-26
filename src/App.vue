@@ -90,7 +90,6 @@ export default {
         .catch(() => {});
     },
     changeFavicon(hexColor) {
-      console.log(hexColor);
       switch (hexColor) {
         case "#ff006e":
           document
