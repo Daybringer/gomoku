@@ -2,9 +2,9 @@
   <div id="container">
     <div class="timeGrid">
       <div class="firstOberGroup">
-        <span class="names">An Enemy</span>
+        <span class="names">{{ enemyName }}</span>
         <div class="firstTimeGroup">
-          <span id="firstTimer">10:00</span>
+          <span id="firstTimer">{{ enTime || "NaN" }}</span>
           <svg
             xmlns:dc="http://purl.org/dc/elements/1.1/"
             xmlns:cc="http://creativecommons.org/ns#"
@@ -22,7 +22,7 @@
               >
                 <path
                   id="path1693-8"
-                  style="fill:#363636;fill-opacity:1;stroke:#00b3fe;stroke-width:0.72;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.757549"
+                  style="fill:#363636;fill-opacity:1;stroke:#ff2079;stroke-width:0.72;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.757549"
                   d="m 147.72001,174.77933 -2.60277,6.00119 2.31717,3.3104 h 12.15946 4.63174 l 2.80329,-6.00119 -2.31717,-3.3104 h -5.11786 z"
                 />
               </g>
@@ -33,7 +33,7 @@
       <div class="secondOberGroup">
         <span class="names">You</span>
         <div class="secondTimeGroup">
-          <span id="secondTimer">10:00</span>
+          <span id="secondTimer">{{ myTime || "NaN" }}</span>
           <svg
             xmlns:svg="http://www.w3.org/2000/svg"
             viewBox="0 0 77.844025 34.346019"
@@ -47,7 +47,7 @@
               >
                 <path
                   d="m 171.2958,172.40602 -2.60277,6.00119 2.31717,3.3104 h 12.15946 4.63174 l 2.80329,-6.00119 -2.31717,-3.3104 h -5.11786 z"
-                  style="fill:#363636;fill-opacity:1;stroke:#ff2079;stroke-width:0.72;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.762404"
+                  style="fill:#363636;fill-opacity:1;stroke:#00b3fe;stroke-width:0.72;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.762404"
                   id="path1693-8-7"
                 />
               </g>
@@ -58,12 +58,23 @@
     </div>
     <div id="gameBundler">
       <div id="gridOverlay"></div>
-      <!-- <div id="winOverlay" style="display:none;">
-        <div id="winCenterDiv">
-          <h1 id="winText"></h1>
+      <div id="coinOverlay" v-if="gameState === 'preBase'">
+        <div id="coin" :class="coinSide">
+          <div class="side-a"></div>
+          <div class="side-b"></div>
+        </div>
+      </div>
+      <div
+        id="winOverlay"
+        v-if="
+          gameState === 'won' || gameState === 'lost' || gameState === 'left'
+        "
+      >
+        <div class="centeredDiv">
+          <h1 id="winText">{{ endText }}</h1>
           <router-link to="/q/search" id="winButton">Find new game</router-link>
         </div>
-      </div> -->
+      </div>
     </div>
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -123,7 +134,32 @@ export default {
       lastPosition: 0,
     };
   },
-  props: ["logged", "username", "colorMain", "colorSecond"],
+  computed: {
+    endText() {
+      switch (this.gameState) {
+        case "won":
+          return "You've won";
+        case "lost":
+          return "You've lost";
+        case "left":
+          return "Opponent's left the game.\nYou've won";
+        default:
+          return "Error";
+      }
+    },
+  },
+  props: [
+    "logged",
+    "username",
+    "colorMain",
+    "colorSecond",
+    "typeOfGame",
+    "gameState",
+    "myTime",
+    "enTime",
+    "enemyName",
+    "coinSide",
+  ],
   methods: {
     resizeSkew() {
       let mDiv = document.getElementById("container");
@@ -158,37 +194,12 @@ export default {
       }
       grid.appendChild(fragment);
     },
-    gameClick(el) {
-      if (this.round % 2 === 0) {
-        let crossCp = document.getElementById("svgCrossOrigin").cloneNode(true);
-        crossCp.id = `cross${el.id}`;
-        crossCp.classList.add("svgCC");
-        el.appendChild(crossCp);
-      } else {
-        let circleCp = document
-          .getElementById("svgCircleOrigin")
-          .cloneNode(true);
-        circleCp.id = `circle${el.id}`;
-        circleCp.classList.add("svgCC");
-        el.appendChild(circleCp);
-      }
-      document.getElementById(this.lastPosition).style.outline = "none";
-      document.getElementById(el.id).style.outline = "3px solid #363636";
-      this.lastPosition = el.id;
-      this.round++;
-    },
   },
   mounted() {
     this.resizeSkew();
     window.onresize = () => this.resizeSkew();
     this.generateGridOverlay();
-    document.getElementsByClassName("overlayCell").forEach((el) => {
-      el.addEventListener("click", () => {
-        this.gameClick(el);
-      });
-    });
   },
-  computed: {},
 };
 </script>
 <style scoped>
@@ -241,6 +252,33 @@ export default {
   border-top: 5px solid #363636;
   border-bottom: 5px solid #363636;
 }
+#winOverlay {
+  top: -5px;
+  position: absolute;
+  width: 100%;
+  height: calc(100% + 10px);
+  background-color: rgba(100, 100, 100, 0.6);
+}
+#winButton {
+  border: 5px solid black;
+  padding: 0.5rem 1rem;
+  position: relative;
+  text-align: center;
+  border-radius: 4px;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.25rem;
+  background: #00b3fe;
+  width: 80%;
+  border: 1px solid #00abf5;
+  border-width: 1px 1px 3px;
+  cursor: pointer;
+}
+#winText {
+  color: #363636;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
 #gridOverlay {
   position: relative;
   display: grid;
@@ -271,6 +309,98 @@ export default {
 #svgCrossOrigin,
 #svgCircleOrigin {
   display: none;
+}
+.centeredDiv {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+#coinOverlay {
+  top: -5px;
+  position: absolute;
+  width: 100%;
+  height: calc(100% + 10px);
+  background-color: rgba(100, 100, 100, 0.6);
+}
+#coin {
+  position: relative;
+  margin: 0 auto;
+  margin-top: 8rem;
+  width: 100px;
+  height: 100px;
+  cursor: default;
+}
+
+#coin div {
+  width: 100%;
+  height: 100%;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
+  -webkit-box-shadow: inset 0 0 45px rgba(255, 255, 255, 0.3),
+    0 12px 20px -10px rgba(0, 0, 0, 0.4);
+  -moz-box-shadow: inset 0 0 45px rgba(255, 255, 255, 0.3),
+    0 12px 20px -10px rgba(0, 0, 0, 0.4);
+  box-shadow: inset 0 0 45px rgba(255, 255, 255, 0.3),
+    0 12px 20px -10px rgba(0, 0, 0, 0.4);
+}
+.side-a {
+  background-color: #00b3fe;
+}
+.side-b {
+  background-color: #ff2079;
+}
+#coin {
+  transition: -webkit-transform 1s ease-in;
+  -webkit-transform-style: preserve-3d;
+}
+#coin div {
+  position: absolute;
+  -webkit-backface-visibility: hidden;
+}
+.side-a {
+  z-index: 100;
+}
+.side-b {
+  transform: rotateY(-180deg);
+}
+#coin.heads {
+  -webkit-animation: flipHeads 1.5s ease-out forwards;
+  -moz-animation: flipHeads 1.5s ease-out forwards;
+  -o-animation: flipHeads 1.5s ease-out forwards;
+  animation: flipHeads 1.5s ease-out forwards;
+}
+#coin.tails {
+  -webkit-animation: flipTails 1.5s ease-out forwards;
+  -moz-animation: flipTails 1.5s ease-out forwards;
+  -o-animation: flipTails 1.5s ease-out forwards;
+  animation: flipTails 1.5s ease-out forwards;
+}
+@keyframes flipHeads {
+  from {
+    -webkit-transform: rotateY(0);
+    -moz-transform: rotateY(0);
+    transform: rotateY(0);
+  }
+  to {
+    -webkit-transform: rotateY(1800deg);
+    -moz-transform: rotateY(1800deg);
+    transform: rotateY(1800deg);
+  }
+}
+@keyframes flipTails {
+  from {
+    -webkit-transform: rotateY(0);
+    -moz-transform: rotateY(0);
+    transform: rotateY(0);
+  }
+  to {
+    -webkit-transform: rotateY(1980deg);
+    -moz-transform: rotateY(1980deg);
+    transform: rotateY(1980deg);
+  }
 }
 </style>
 <style>
