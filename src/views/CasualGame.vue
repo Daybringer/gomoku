@@ -24,8 +24,8 @@ export default {
     return {
       guestNames: ["Neon", "Amidala"],
       gameState: "base",
-      enTime: "5:00",
-      myTime: "5:00",
+      enTime: "2:30",
+      myTime: "2:30",
       timerInterval: null,
       mlTime: 0,
       enemyName: "Opponent",
@@ -141,12 +141,14 @@ export default {
       if (socket.id === startingPlayer) {
         this.coinSide = "heads";
         setTimeout(() => {
+          document.getElementById("myStroke").style.strokeOpacity = "0.362404";
           this.changeTimer("mine");
           this.gameState = "base";
         }, 3500);
       } else {
         this.coinSide = "tails";
         setTimeout(() => {
+          document.getElementById("enStroke").style.strokeOpacity = "0.362404";
           this.changeTimer("enemy");
           this.gameState = "base";
         }, 3500);
@@ -178,6 +180,8 @@ export default {
           targetDiv.appendChild(crossCp);
         }
         this.changeTimer("enemy");
+        document.getElementById("enStroke").style.strokeOpacity = "0.762404";
+        document.getElementById("myStroke").style.strokeOpacity = "0.362404";
       } else {
         if (round % 2 === 0) {
           // add secondary colors
@@ -197,6 +201,8 @@ export default {
           crossCp.classList.add("svgCC");
           targetDiv.appendChild(crossCp);
         }
+        document.getElementById("myStroke").style.strokeOpacity = "0.762404";
+        document.getElementById("enStroke").style.strokeOpacity = "0.362404";
         this.changeTimer("mine");
       }
 

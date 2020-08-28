@@ -21,7 +21,7 @@
                 transform="matrix(3.2491287,0,0,3.2491287,-399.3817,-431.26353)"
               >
                 <path
-                  id="path1693-8"
+                  id="enStroke"
                   style="fill:#363636;fill-opacity:1;stroke:#ff2079;stroke-width:0.72;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.757549"
                   d="m 147.72001,174.77933 -2.60277,6.00119 2.31717,3.3104 h 12.15946 4.63174 l 2.80329,-6.00119 -2.31717,-3.3104 h -5.11786 z"
                 />
@@ -48,7 +48,7 @@
                 <path
                   d="m 171.2958,172.40602 -2.60277,6.00119 2.31717,3.3104 h 12.15946 4.63174 l 2.80329,-6.00119 -2.31717,-3.3104 h -5.11786 z"
                   style="fill:#363636;fill-opacity:1;stroke:#00b3fe;stroke-width:0.72;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.762404"
-                  id="path1693-8-7"
+                  id="myStroke"
                 />
               </g>
             </g>
@@ -72,7 +72,18 @@
       >
         <div class="centeredDiv">
           <h1 id="winText">{{ endText }}</h1>
-          <router-link to="/q/search" id="winButton">Find new game</router-link>
+          <router-link
+            to="/q/search"
+            id="winButton"
+            v-if="typeOfGame !== 'private'"
+            >Find new game</router-link
+          >
+          <router-link
+            to="/private"
+            id="winButton"
+            v-if="typeOfGame === 'private'"
+            >Rematch</router-link
+          >
         </div>
       </div>
     </div>
@@ -142,7 +153,7 @@ export default {
         case "lost":
           return "You've lost";
         case "left":
-          return "Opponent's left the game.\nYou've won";
+          return "Opponent's left the game.";
         default:
           return "Error";
       }
@@ -273,11 +284,16 @@ export default {
   border: 1px solid #00abf5;
   border-width: 1px 1px 3px;
   cursor: pointer;
+  white-space: nowrap;
 }
 #winText {
-  color: #363636;
+  color: white;
   font-weight: 700;
   margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  background-color: #363636;
+  border-radius: 4px;
+  padding: 0.25rem 0.5rem;
 }
 #gridOverlay {
   position: relative;

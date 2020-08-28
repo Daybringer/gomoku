@@ -159,8 +159,19 @@ export default {
 
     socket = io("/waiting");
 
-    socket.on("gameBegun", function(roomCode) {
-      router.push({ path: "p/game", query: { roomID: roomCode } });
+    socket.on("gameBegun", function(roomCode, gameBaseTime) {
+      router.push({
+        path: "p/game",
+        query: {
+          roomID: roomCode,
+          type:
+            gameBaseTime / 60 === 10
+              ? "10min"
+              : gameBaseTime / 60 === 5
+              ? "5min"
+              : "no_limit",
+        },
+      });
     });
     socket.on("room invalid", () => {
       this.wrongCode = true;
@@ -265,8 +276,19 @@ export default {
 }
 .shrink-up {
   transition: 0.25s all linear 0s;
-  z-index: 1;
+  animation: zindexFinal 0.25 forwards;
   height: calc(50%);
+}
+@keyframes zindexFinal {
+  0% {
+    z-index: 1;
+  }
+  99% {
+    z-index: 1;
+  }
+  100% {
+    z-index: 0;
+  }
 }
 .shrink-down {
   transition: 0.25s all linear 0s;

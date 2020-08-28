@@ -227,7 +227,10 @@ export default {
       document.getElementById("room-code-text").style.display = "block";
     });
     socket.on("gameBegun", function(roomCode) {
-      router.push({ path: "p/game", query: { roomID: roomCode } });
+      router.push({
+        path: "p/game",
+        query: { roomID: roomCode, type: typeOfGame },
+      });
     });
     socket.on("room invalid", function() {
       router.push("/404");
