@@ -175,7 +175,6 @@ export default {
 .rule-container {
   height: 50vh;
   text-align: center;
-  overflow-y: scroll;
 }
 #rules-carousel {
   position: absolute;
@@ -190,7 +189,6 @@ export default {
   width: 100%;
   z-index: 0;
   height: 100%;
-  overflow: scroll;
 }
 #rulesSkewedDiv {
   background-color: #8f8f8f;

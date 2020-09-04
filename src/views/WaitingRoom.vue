@@ -125,9 +125,9 @@
       </svg>
     </div>
     <div class="textGroup">
-      <span id="loading-text">Room code</span>
+      <span id="loading-text">Room code<br /></span>
       <span id="room-code-text">
-        <span id="room-code-text-innerHTMl">KSQT</span>
+        <span id="room-code-text-innerHTMl">{{ roomCodeQuery }}</span>
         <textarea
           id="dummyURLHolder"
           value=""
@@ -169,15 +169,17 @@ export default {
   components: {},
   methods: {
     copyRoomURL() {
+      console.log(this.roomCodeQuery);
       let queryString = new URLSearchParams(window.location.search);
       let typeOfGame = queryString.get("type");
       const el = document.createElement("textarea");
-      el.value =
-        window.location.origin +
-        `/waiting?type=${typeOfGame}&roomCode=${
-          document.getElementById("room-code-text-innerHTMl").innerHTML
-        }`;
-      console.log(window.location);
+      if (this.roomCodeQuery !== "Loading...") {
+        el.value =
+          window.location.origin +
+          `/waiting?type=${typeOfGame}&roomCode=${this.roomCodeQuery}`;
+      } else {
+        el.value = "";
+      }
       el.setAttribute("readonly", "");
       el.style.position = "absolute";
       el.style.left = "-9999px";
@@ -194,6 +196,7 @@ export default {
     return {
       colorMain: "#ff2079",
       colorSecond: "#00b3fe",
+      roomCodeQuery: "Processing...",
     };
   },
   mounted() {
@@ -215,18 +218,17 @@ export default {
         typeOfGame === "5min" ? 5 : typeOfGame === "10min" ? 10 : null
       );
     } else {
-      document.getElementById(
-        "room-code-text-innerHTMl"
-      ).innerHTML = roomCodeQuery;
+      this.roomCodeQuery = roomCodeQuery;
       document.getElementById("room-code-text").style.display = "block";
       socket.emit("roomJoined", roomCodeQuery);
     }
 
-    socket.on("roomGenerated", function(roomCode) {
-      document.getElementById("room-code-text-innerHTMl").innerHTML = roomCode;
+    socket.on("roomGenerated", (roomCode) => {
+      console.log(roomCode, this.roomCodeQuery);
+      this.roomCodeQuery = roomCode;
       document.getElementById("room-code-text").style.display = "block";
     });
-    socket.on("gameBegun", function(roomCode) {
+    socket.on("gameBegun", (roomCode) => {
       router.push({
         path: "p/game",
         query: { roomID: roomCode, type: typeOfGame },

@@ -77,17 +77,18 @@
         />
         <div id="dropdown-content" @click="closeMenu">
           <a></a>
-          <router-link
-            @click="$emit(loggedOut)"
-            to="/login"
-            style="color:#00b3fe"
+          <router-link v-if="!logged" to="/login" style="color:#00b3fe"
             >Log In</router-link
+          >
+          <router-link v-if="logged" to="/dashboard" style="color:#00b3fe"
+            >Dashboard</router-link
           >
           <router-link @click.native="scrollToMatches" to="/"
             >Matches</router-link
           >
           <router-link @click.native="scrollToRules" to="/">Rules</router-link>
           <router-link to="/about">About</router-link>
+          <a v-if="logged" href="#" @click="logOut">Log Out</a>
           <a id="last-fake-link"></a>
         </div>
       </div>
@@ -120,6 +121,9 @@ export default {
     window.onresize = () => this.resizeSkew();
   },
   methods: {
+    logOut() {
+      this.$emit("loggedOut");
+    },
     resizeSkew() {
       let skewedNav = document.getElementById("skewed-nav");
       let navHeight = document.getElementById("smallNav").clientHeight;

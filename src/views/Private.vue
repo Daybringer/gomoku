@@ -47,6 +47,7 @@
           v-if="activeState === 'create'"
           style="border-top: solid #363636 10px;"
           class="overlayLeave"
+          :class="moveClass"
         >
           <i
             @click="createToBase"
@@ -96,6 +97,15 @@ export default {
   name: "Private",
   components: {},
   props: ["logged"],
+  computed: {
+    skewedDivTranslate() {
+      if (this.AnimTransClass === "shrink-up") {
+        return "transSkewDiv";
+      } else {
+        return "hiddSkewDiv";
+      }
+    },
+  },
   data() {
     return {
       AnimTransClass: null,
@@ -103,36 +113,40 @@ export default {
       activeState: "base",
       testVar: null,
       wrongCode: false,
+      moveClass: null,
     };
   },
   methods: {
     createToBase() {
       this.testVar = true;
       setTimeout(() => {
-        this.AnimTransClass = "shrink-up";
-        this.activeState = "base";
+        this.moveClass = "moveClass";
       }, 1);
       setTimeout(() => {
-        this.testVar = false;
+        this.AnimTransClass = "shrink-up";
+        this.activeState = "base";
       }, 250);
+      setTimeout(() => {
+        this.testVar = false;
+        this.moveClass = null;
+      }, 500);
     },
     joinToBase() {
-      // this.testVar = true;
       setTimeout(() => {
         this.AnimTransClass2 = "shrink-down";
         this.activeState = "base";
       }, 1);
-      setTimeout(() => {
-        // this.testVar = false;
-      }, 250);
+      setTimeout(() => {}, 250);
     },
     changeClass() {
       if (!this.testVar) {
         this.AnimTransClass = "expand-down";
+        this.AnimTransClass2 = null;
         this.activeState = "create";
       }
     },
     changeClass2() {
+      this.AnimTransClass = null;
       this.AnimTransClass2 = "expand-up";
       this.activeState = "join";
     },
@@ -235,6 +249,10 @@ export default {
   background-color: #363636;
   text-align: center;
 }
+.moveClass {
+  transform: translateX(-100%);
+  transition: all 0.2s;
+}
 
 .backIcon {
   background-color: none;
@@ -275,7 +293,7 @@ export default {
   height: calc(100% + 10px);
 }
 .shrink-up {
-  transition: 0.25s all linear 0s;
+  transition: 0.25s all linear;
   animation: zindexFinal 0.25 forwards;
   height: calc(50%);
 }
