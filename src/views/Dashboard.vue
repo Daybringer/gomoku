@@ -10,8 +10,8 @@
         <span>Elo:</span>
         <span>{{ currElo }}</span>
       </div>
-      <div id="eloGraph" style="height:20vh;">
-        Here is gonna be an elo graph
+      <div id="eloGraph">
+        <LineChart :chartdata="chartData" :options="chartOptions"></LineChart>
       </div>
       <div class="dashBox">
         <label>New Password:</label>
@@ -27,9 +27,10 @@
 </template>
 <script>
 import axios from "axios";
+import LineChart from "@/components/LineChart.vue";
 export default {
   name: "Dashboard",
-  components: {},
+  components: { LineChart },
   mounted() {
     this.resizeSkew();
     window.onresize = () => this.resizeSkew();
@@ -62,6 +63,32 @@ export default {
   data() {
     return {
       currElo: "1200",
+      chartData: {
+        labels: [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
+        ],
+        datasets: [
+          {
+            label: "ELO History",
+            borderColor: "#00b3fe",
+            fill: "false",
+            tension: 0,
+            data: [40, 20, 30, 39, 50, 40, 39, 80, 40, 20, 112, 111],
+          },
+        ],
+      },
+      chartOptions: {},
     };
   },
 };
