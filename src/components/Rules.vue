@@ -28,7 +28,16 @@
                 stones horizontally, vertically, or diagonally
               </li>
             </ul>
-            <button class="modal-show-example">Show example</button>
+            <button
+              class="modal-show-example"
+              @click="
+                () => {
+                  exampleModalState = 'basics';
+                }
+              "
+            >
+              Show example
+            </button>
           </div>
         </slide>
         <slide class="rule-container">
@@ -49,7 +58,16 @@
                 Consectetur corrupti adipisci similique, quo recusandae ratione.
               </li>
             </ul>
-            <button class="modal-show-example">Show example</button>
+            <button
+              class="modal-show-example"
+              @click="
+                () => {
+                  exampleModalState = 'swap1';
+                }
+              "
+            >
+              Show example
+            </button>
           </div>
         </slide>
         <slide class="rule-container">
@@ -73,11 +91,24 @@
                 </ol>
               </li>
             </ul>
-            <button class="modal-show-example">Show example</button>
+            <button
+              class="modal-show-example"
+              @click="
+                () => {
+                  exampleModalState = 'swap2';
+                }
+              "
+            >
+              Show example
+            </button>
           </div>
         </slide>
       </carousel>
     </div>
+    <GifModal
+      @closeModal="closeModal"
+      :modalState="exampleModalState"
+    ></GifModal>
     <footer class="footer" id="footer">
       <a class="grad-link" href="https://daybringer.github.io/"
         >Michal Vaňata</a
@@ -88,13 +119,18 @@
 </template>
 <script>
 import { Carousel, Slide } from "vue-carousel";
+import GifModal from "@/components/GifModal.vue";
 export default {
   name: "Rules",
   components: {
     Carousel,
     Slide,
+    GifModal,
   },
   methods: {
+    closeModal() {
+      this.exampleModalState = "none";
+    },
     resizeSkew() {
       let mDiv = document.getElementById("rulesSkewedDiv");
       let navHeight = document.getElementById("smallNav").clientHeight;
@@ -116,6 +152,11 @@ export default {
     },
   },
   props: ["logged"],
+  data() {
+    return {
+      exampleModalState: "none",
+    };
+  },
   mounted() {
     this.resizeSkew();
     window.onresize = () => this.resizeSkew();

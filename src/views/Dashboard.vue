@@ -7,7 +7,7 @@
     </div>
     <div id="dashboardContentBox">
       <div class="dashBox">
-        <span>Elo:</span>
+        <span>Current elo:</span>
         <span>{{ currElo }}</span>
       </div>
       <div id="eloGraph">
@@ -62,7 +62,7 @@ export default {
   },
   data() {
     return {
-      currElo: "1200",
+      currElo: "1000",
       chartData: {
         labels: [
           "January",
@@ -80,7 +80,7 @@ export default {
         ],
         datasets: [
           {
-            label: "ELO History",
+            label: "Month",
             borderColor: "#00b3fe",
             fill: "false",
             tension: 0,
@@ -88,7 +88,23 @@ export default {
           },
         ],
       },
-      chartOptions: {},
+      chartOptions: {
+        scales: {
+          yAxes: [
+            {
+              ticks: {
+                beginAtZero: true,
+              },
+            },
+          ],
+        },
+        title: {
+          display: true,
+          text: "Elo history",
+          padding: 5,
+          fontSize: 20,
+        },
+      },
     };
   },
 };
