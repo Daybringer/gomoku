@@ -73,7 +73,7 @@
         <div class="centeredDiv">
           <h1 id="winText">{{ endText }}</h1>
           <h1 v-if="typeOfGame === 'ranked'" id="eloGain" :style="eloPosOrNeg">
-            {{ (eloGain > 0 ? "+" : "-") + eloGain + " ELO" }}
+            {{ (eloGain > 0 ? "+" : "") + eloGain + " ELO" }}
           </h1>
           <router-link
             to="/q/search"

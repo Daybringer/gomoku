@@ -237,9 +237,10 @@ export default {
       }
     });
 
-    socket.on("playerLeft", () => {
+    socket.on("playerLeft", (eloDiff) => {
       clearInterval(this.timerInterval);
       this.gameState = "left";
+      this.eloGain = eloDiff;
     });
   },
   beforeDestroy() {
