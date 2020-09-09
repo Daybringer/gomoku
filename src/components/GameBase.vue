@@ -72,10 +72,19 @@
       >
         <div class="centeredDiv">
           <h1 id="winText">{{ endText }}</h1>
+          <h1 v-if="typeOfGame === 'ranked'" id="eloGain" :style="eloPosOrNeg">
+            {{ (eloGain > 0 ? "+" : "-") + eloGain + " ELO" }}
+          </h1>
           <router-link
             to="/q/search"
             id="winButton"
-            v-if="typeOfGame !== 'private'"
+            v-if="typeOfGame === 'quick'"
+            >Find new game</router-link
+          >
+          <router-link
+            to="/r/search"
+            id="winButton"
+            v-if="typeOfGame === 'ranked'"
             >Find new game</router-link
           >
           <router-link
@@ -146,12 +155,21 @@ export default {
     };
   },
   computed: {
+    eloPosOrNeg() {
+      if (this.eloGain >= 0) {
+        return { color: "green" };
+      } else {
+        return { color: "red" };
+      }
+    },
     endText() {
       switch (this.gameState) {
         case "won":
           return "You've won";
         case "lost":
           return "You've lost";
+        case "tie":
+          return "It's a tie";
         case "left":
           return "Opponent's left the game.";
         default:
@@ -160,6 +178,7 @@ export default {
     },
   },
   props: [
+    "eloGain",
     "logged",
     "username",
     "colorMain",
@@ -285,6 +304,15 @@ export default {
   border-width: 1px 1px 3px;
   cursor: pointer;
   white-space: nowrap;
+}
+#eloGain {
+  color: #00b3fe;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  background-color: #363636;
+  border-radius: 4px;
+  padding: 0.25rem 0.5rem;
 }
 #winText {
   color: white;

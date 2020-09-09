@@ -9,6 +9,7 @@
     :enTime="enTime"
     :gameState="gameState"
     :coinSide="coinSide"
+    :typeOfGame="'quick'"
   ></GameBase>
 </template>
 <script>

@@ -27,15 +27,21 @@
 </template>
 <script>
 import axios from "axios";
+import router from "../router";
 import LineChart from "@/components/LineChart.vue";
 export default {
   name: "Dashboard",
   components: { LineChart },
   mounted() {
-    this.resizeSkew();
-    window.onresize = () => this.resizeSkew();
-    this.fetchDashData();
+    if (this.logged) {
+      this.resizeSkew();
+      window.onresize = () => this.resizeSkew();
+      this.fetchDashData();
+    } else {
+      router.push("/login");
+    }
   },
+  props: ["logged", "username"],
   methods: {
     resizeSkew() {
       let mDiv = document.getElementById("dashSkewedDiv");
@@ -52,6 +58,7 @@ export default {
         "px";
     },
     fetchDashData() {
+      console.log("data fetched");
       axios
         .post("/api/dash")
         .then((response) => {
