@@ -92,12 +92,13 @@ export default {
       }, 1000);
     },
     updateTimers(round, times, socketID, playersArr) {
-      let myTime = times[playersArr.indexOf(socketID)][0];
+      let myTime = times[playersArr.indexOf(socketID)].timeLeft;
       this.myTime = `${Math.floor(myTime / 60)}:${
         Math.round(myTime % 60) < 10 ? "0" : ""
       }${Math.round(myTime % 60)}`;
 
-      let enemyTime = times[Math.abs(playersArr.indexOf(socketID) - 1)][0];
+      let enemyTime =
+        times[Math.abs(playersArr.indexOf(socketID) - 1)].timeLeft;
       this.enTime = `${Math.floor(enemyTime / 60)}:${
         Math.floor(enemyTime % 60) < 10 ? "0" : ""
       }${Math.floor(enemyTime % 60)}`;
