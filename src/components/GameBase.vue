@@ -369,12 +369,13 @@ export default {
   background-color: rgba(100, 100, 100, 0.6);
 }
 #coin {
-  position: relative;
-  margin: 0 auto;
-  margin-top: 8rem;
+  position: absolute;
+  top: 50%;
+  left: 50%;
   width: 100px;
   height: 100px;
   cursor: default;
+  transform: translate(-100px, -100px);
 }
 
 #coin div {
@@ -445,6 +446,119 @@ export default {
     -moz-transform: rotateY(1980deg);
     transform: rotateY(1980deg);
   }
+}
+
+@media only screen and (min-width: 768px) {
+  #container {
+    position: absolute;
+    top: 3rem;
+    width: 100%;
+    bottom: unset;
+  }
+
+  .firstOberGroup {
+    grid-column: 0;
+    grid-row: 1;
+    width: 50vw;
+    text-align: center;
+    padding-top: 1rem;
+  }
+  .secondOberGroup {
+    grid-column: 1;
+    grid-row: 1;
+    width: 50vw;
+    text-align: center;
+    padding-top: 1rem;
+  }
+  .firstTimeGroup,
+  .secondTimeGroup {
+    position: relative;
+    padding: 0.5rem;
+    width: 20vw;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .names {
+    color: #363636;
+    font-weight: 700;
+    font-size: 1.5rem;
+  }
+  #secondTimer,
+  #firstTimer {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -60%);
+    font-size: 2rem;
+    color: white;
+    font-weight: 700;
+  }
+  #gameBundler {
+    background-color: #3636367a;
+    position: relative;
+    transform: translateX(-50%);
+    left: 50%;
+    top: 0rem;
+    border: 5px solid #363636;
+  }
+  #winOverlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(100, 100, 100, 0.6);
+  }
+  #winButton {
+    border: 5px solid black;
+    padding: 0.5rem 1rem;
+    position: relative;
+    text-align: center;
+    border-radius: 4px;
+    color: #fff;
+    font-weight: 700;
+    font-size: 1.25rem;
+    background: #00b3fe;
+    width: 80%;
+    border: 1px solid #00abf5;
+    border-width: 1px 1px 3px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  #eloGain {
+    color: #00b3fe;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+    background-color: #363636;
+    border-radius: 4px;
+    padding: 0.25rem 0.5rem;
+  }
+  #winText {
+    color: white;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+    background-color: #363636;
+    border-radius: 4px;
+    padding: 0.25rem 0.5rem;
+  }
+  #gridOverlay {
+    position: relative;
+    display: grid;
+    width: 100%;
+    height: 100%;
+    grid-template-columns: repeat(15, minmax(0, 1fr));
+    grid-template-rows: repeat(15, minmax(0, 1fr));
+    row-gap: 3px;
+    column-gap: 3px;
+  }
+}
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
 }
 </style>
 <style>

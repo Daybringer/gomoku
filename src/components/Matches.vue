@@ -1,9 +1,6 @@
 <template>
   <div style="height:100%;width:100%;">
-    <div
-      style="position:absolute;top:0;height:75%;width:100%;"
-      id="skewedContainer"
-    >
+    <div id="skewedContainer">
       <router-link to="/private">
         <div
           style="background-color:#defe47;"
@@ -156,6 +153,12 @@ export default {
 };
 </script>
 <style scoped>
+#skewedContainer {
+  position: absolute;
+  top: 0;
+  height: 75%;
+  width: 100%;
+}
 .centered-div {
   position: absolute;
   left: 50%;
@@ -174,5 +177,27 @@ export default {
   height: 33%;
   transform: skewY(-7.5deg);
   text-align: center;
+}
+
+@media only screen and (min-width: 768px) {
+  .skewMatchBox {
+    transform: skewY(0deg);
+  }
+  #skewedContainer {
+    position: absolute;
+    top: calc(50%) !important;
+    left: 0;
+    height: 75%;
+    width: 100%;
+    transform: translateY(-50%);
+  }
+}
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
 }
 </style>

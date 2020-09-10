@@ -364,4 +364,42 @@ export default {
     transform: translate(43.204595px, -253.340913px) rotate(70deg);
   }
 }
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+  .swing-animation {
+    width: 50vh;
+  }
+  #searchSkewedDiv {
+    background-color: #8f8f8f;
+    width: 100%;
+    height: 15vh;
+    transform: skewY(0deg);
+    top: 3rem !important;
+    position: absolute;
+    text-align: center;
+    margin-top: 0px;
+    z-index: 1;
+  }
+  #timeTracker {
+    position: absolute;
+    left: 50%;
+    top: calc(3rem + 15vh) !important;
+    transform: translate(-50%, 0);
+    margin-top: 1rem;
+    font-weight: 700;
+    font-size: 2rem;
+    color: #363636;
+    display: inline-block;
+    width: 5%;
+  }
+}
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+}
 </style>

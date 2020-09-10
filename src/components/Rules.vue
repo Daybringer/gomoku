@@ -298,4 +298,27 @@ export default {
   font-weight: 700;
   color: #8f8f8f;
 }
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+  #rulesSkewedDiv {
+    background-color: #8f8f8f;
+    width: 100%;
+    height: 12vh;
+    top: 3rem !important;
+    transform: skewY(0deg);
+    position: absolute;
+    text-align: center;
+    margin-top: 0;
+    z-index: 1;
+  }
+}
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+}
 </style>

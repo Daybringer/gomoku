@@ -76,7 +76,7 @@
           v-on:toggle="burgerToggle"
         />
         <div id="dropdown-content" @click="closeMenu">
-          <a></a>
+          <a id="first-fake-link"></a>
           <router-link v-if="!logged" to="/login" style="color:#00b3fe"
             >Log In</router-link
           >
@@ -92,10 +92,7 @@
           <a id="last-fake-link"></a>
         </div>
       </div>
-      <div
-        id="skewed-nav"
-        style="background-color:#363636;width:100%;height:20vh;transform: skewY(-7.5deg);position:absolute;text-align:center;z-index:-1;"
-      ></div>
+      <div id="skewed-nav"></div>
     </div>
   </div>
 </template>
@@ -192,6 +189,15 @@ export default {
 </script>
 
 <style scoped>
+#skewed-nav {
+  background-color: #363636;
+  width: 100%;
+  height: 20vh;
+  transform: skewY(-7.5deg);
+  position: absolute;
+  text-align: center;
+  z-index: -1;
+}
 #last-fake-link {
   transform: skewY(-7.5deg);
   height: 2rem;
@@ -254,13 +260,9 @@ export default {
   height: 3rem;
   background-color: #ffffff;
 }
-.logo {
-  height: 100%;
-  position: absolute;
-}
 
 .logoSVG {
-  height: 70%;
+  height: 50%;
   position: absolute;
   top: 50%;
   transform: translate(0, -50%);
@@ -268,210 +270,42 @@ export default {
   left: 0;
 }
 
-.account-window {
-  background-color: var(--main);
-  width: auto;
-  min-width: 15rem;
-  position: absolute;
-  right: 0;
-  height: 100%;
-  border-bottom-left-radius: 1rem;
-  cursor: pointer;
-}
-
-.svg_login {
-  height: 60%;
-  margin-right: 2em;
-  right: 0;
-  top: 0;
-  margin-bottom: auto;
-  position: absolute;
-  top: 50%;
-  transform: translate(0, -50%);
-}
-
-.account-name {
-  color: #fafefcff;
-  font-weight: 700;
-  font-size: 1.8em;
-  height: 60%;
-  right: 40%;
-  top: 0;
-  margin-bottom: auto;
-  position: absolute;
-  top: 50%;
-  transform: translate(0, -60%);
-}
-/* The dropdown container */
-.dropdown {
-  float: right;
-  overflow: hidden;
-  height: 100%;
-  min-width: 15%;
-}
-
-/* Dropdown button */
-.dropdown .dropbtn {
-  font-weight: 700;
-  font-size: 1.8em;
-  width: 100%;
-  height: 100%;
-  border: none;
-  outline: none;
-  color: white;
-  padding: 0 2rem;
-  background-color: var(--main);
-  font-family: inherit; /* Important for vertical align on mobile phones */
-  margin: 0; /* Important for vertical align on mobile phones */
-  border-bottom-left-radius: 1rem;
-}
-#dropbtn::-moz-focus-inner {
-  border: 0;
-}
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #f9f9f9;
-  width: 100%;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-  z-index: 1;
-  border-bottom-left-radius: 1rem;
-  border-top-left-radius: 1rem;
-}
-
-/* Links inside the dropdown */
-.dropdown-content a {
-  float: none;
-  color: black;
-  padding: 1rem 16px;
-  text-decoration: none;
-  display: block;
-  text-align: left;
-  overflow: hidden;
-  cursor: pointer;
-}
-
-/* Add a grey background color to dropdown links on hover */
-.dropdown-content a:hover {
-  background-color: #ddd;
-}
-a:active {
-  outline: none;
-}
-a:focus {
-  outline: none;
-}
-.dropdown-content #last-link:hover {
-  border-bottom-left-radius: 1rem;
-}
-.dropdown-content #first-link:hover {
-  border-top-left-radius: 1rem;
-}
-
-/* Show the dropdown menu on hover */
-.dropdown:hover .dropdown-content {
-  display: block;
-}
-/* Extra small devices (phones, 600px and down) */
-@media only screen and (max-width: 600px) {
-  .logoSVG {
-    height: 50%;
-  }
-  .account-window {
-    background-color: var(--main);
-    width: auto;
-    min-width: 10rem;
-    position: absolute;
-    right: 0;
-    height: 90%;
-    border-bottom-left-radius: 1rem;
-    cursor: pointer;
-  }
-
-  .svg_login {
-    display: none;
-  }
-
-  .account-name {
-    font-weight: 500;
-    height: 100%;
-    right: 50%;
-    position: absolute;
-    top: 50%;
-    transform: translate(50%, -45%);
-  }
-  /* The dropdown container */
-  .dropdown {
-    float: right;
-    overflow: hidden;
-    height: 100%;
-    min-width: 15%;
-  }
-
-  /* Dropdown button */
-  .dropdown .dropbtn {
-    font-weight: 500;
-    font-size: 1.5em;
-    max-width: 12rem;
-    width: 100%;
-    height: 100%;
-    border: none;
-    outline: none;
-    color: white;
-    padding: 0 1rem;
-    background-color: var(--main);
-    font-family: inherit; /* Important for vertical align on mobile phones */
-    margin: 0; /* Important for vertical align on mobile phones */
-    border-bottom-left-radius: 1rem;
-  }
-  .dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: #f9f9f9;
-    width: 100%;
-    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-    z-index: 1;
-    border-bottom-left-radius: 1rem;
-    border-top-left-radius: 1rem;
-  }
-
-  /* Links inside the dropdown */
-  .dropdown-content a {
-    float: none;
-    color: black;
-    padding: 1rem 16px;
-    text-decoration: none;
-    display: block;
-    text-align: left;
-    overflow: hidden;
-    cursor: pointer;
-  }
-
-  /* Add a grey background color to dropdown links on hover */
-  .dropdown-content a:hover {
-    background-color: #ddd;
-  }
-  a:active {
-    outline: none;
-  }
-  a:focus {
-    outline: none;
-  }
-  .dropdown-content #last-link:hover {
-    border-bottom-left-radius: 1rem;
-  }
-  .dropdown-content #first-link:hover {
-    border-top-left-radius: 1rem;
-  }
-
-  /* Show the dropdown menu on hover */
-  .dropdown:hover .dropdown-content {
-    display: block;
-  }
-}
-
 /* Medium devices (landscape tablets, 768px and up) */
 @media only screen and (min-width: 768px) {
+  #skewed-nav {
+    display: none;
+  }
+  #hamburger-icon {
+    display: none;
+  }
+  .navbar {
+    height: 3rem;
+  }
+  #dropdown-content {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    display: flex;
+    transform: translateY(-50%);
+    z-index: 0;
+  }
+  #dropdown-content a {
+    display: inline;
+    text-align: center;
+    color: #8f8f8f;
+    background-color: #363636;
+    padding: 0.5em 2rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+  #first-fake-link,
+  #last-fake-link {
+    display: none !important;
+  }
+  .slide-out,
+  .slide-in {
+    animation: none;
+  }
 }
 
 /* Large devices (laptops/desktops, 992px and up) */

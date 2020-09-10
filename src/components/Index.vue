@@ -336,4 +336,38 @@ export default {
     transform: translate(79.856567px, 131.74px);
   }
 }
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+  #indexSkewedDiv {
+    background-color: #8f8f8f;
+    width: 100%;
+    height: 15vh;
+    transform: skewY(0deg);
+    position: absolute;
+    text-align: center;
+    top: 3rem !important;
+  }
+  #playButton {
+    position: absolute;
+    width: 30%;
+    left: 50%;
+    bottom: 30%;
+    transform: translate(-50%, -30%);
+    user-select: none;
+  }
+  .scroll-hint-svg {
+    height: 7rem;
+  }
+  .light-text {
+    top: 1vh;
+  }
+}
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+}
 </style>
