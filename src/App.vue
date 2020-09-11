@@ -44,27 +44,19 @@ export default {
       axios
         .post("/api/islogged")
         .then((response) => {
-          this.logged = true;
-          this.username = response.data.username;
-          let [
-            colorMain,
-            colorSecond,
-            colorMainDark,
-          ] = response.data.colors.split(",");
-          this.colorMain = colorMain;
-          this.colorSecond = colorSecond;
-          this.colorMainDark = colorMainDark;
-          this.changeFavicon(this.colorMain);
+          if (response.data) {
+            this.logged = true;
+            this.username = response.data.username;
+          } else {
+            this.logged = false;
+          }
         })
-        .catch(() => {
-          this.colorMain = "#ff006e";
-          this.colorSecond = "#3a86ff";
-          this.colorMainDark = "#EE0063";
-          this.logged = false;
+        .catch((err) => {
+          console.log(err);
         });
     },
-    loggedIn() {
-      this.isLogged();
+    loggedIn(isLogged) {
+      this.logged = isLogged;
     },
     loggedOut() {
       axios
@@ -88,56 +80,6 @@ export default {
         .post("/api/changeColors", data)
         .then(() => {})
         .catch(() => {});
-    },
-    changeFavicon(hexColor) {
-      switch (hexColor) {
-        case "#ff006e":
-          document
-            .getElementById("favicon")
-            .setAttribute("href", "pink_favicon32.png");
-          break;
-        case "#3a86ff":
-          document
-            .getElementById("favicon")
-            .setAttribute("href", "blue_favicon32.png");
-          break;
-        case "#44bba4":
-          document
-            .getElementById("favicon")
-            .setAttribute("href", "aqua_favicon32.png");
-          break;
-        case "#ffbf00":
-          document
-            .getElementById("favicon")
-            .setAttribute("href", "yellow_favicon32.png");
-          break;
-        case "#ff822e":
-          document
-            .getElementById("favicon")
-            .setAttribute("href", "orange_favicon32.png");
-          break;
-        case "#a937c8":
-          document
-            .getElementById("favicon")
-            .setAttribute("href", "purple_favicon32.png");
-          break;
-        case "#0cce6b":
-          document
-            .getElementById("favicon")
-            .setAttribute("href", "green_favicon32.png");
-          break;
-        case "#d94a3f":
-          document
-            .getElementById("favicon")
-            .setAttribute("href", "red_favicon32.png");
-          break;
-
-        default:
-          document
-            .getElementById("favicon")
-            .setAttribute("href", "pink_favicon32.png");
-          break;
-      }
     },
     changeColorSecond: function(color) {
       this.colorSecond = color;
