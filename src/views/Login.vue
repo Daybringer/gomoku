@@ -21,7 +21,7 @@
           <router-link :style="cssVars" class="grad-link" to="register"
             >No account yet?</router-link
           >
-          <a @click="googleLogin" href="#">Sign In with Google</a>
+          <a href="/auth/google">Sign In with Google</a>
         </form>
       </div>
     </div>
@@ -49,16 +49,6 @@ export default {
     },
   },
   methods: {
-    googleLogin() {
-      axios
-        .get("/auth/google")
-        .then(() => {
-          console.log("succ");
-        })
-        .catch((err) => {
-          if (err) console.log(err);
-        });
-    },
     login(e) {
       e.preventDefault();
       let email = document.getElementById("emailLogin").value.trim();
