@@ -106,6 +106,10 @@ export default {
               this.googleMail = user.tt.bu;
               const { registered, username } = response.data;
               if (registered) {
+                window.localStorage.setItem(
+                  "jwtToken",
+                  response.headers["auth-token"]
+                );
                 this.$emit("loggedIn", true, username);
                 router.push("/");
               } else {

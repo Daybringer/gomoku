@@ -119,6 +119,7 @@ export default {
   },
   methods: {
     logOut() {
+      window.localStorage.removeItem("jwtToken");
       this.$emit("loggedOut");
     },
     resizeSkew() {

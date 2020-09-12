@@ -24,7 +24,12 @@
 // @ is an alias to /src
 import Navbar from "@/components/Navbar.vue";
 import axios from "axios";
+
 import router from "./router";
+
+// axios.interceptors.request.use((config) => {
+//   config.headers.authorization = `Bearer ${localStorage.getItem("jwtToken")}`;
+// });
 export default {
   name: "App",
   components: {
@@ -42,7 +47,15 @@ export default {
   methods: {
     isLogged() {
       axios
-        .post("/api/islogged")
+        .post(
+          "/api/islogged",
+          {},
+          {
+            headers: {
+              "auth-token": `${localStorage.getItem("jwtToken")}`,
+            },
+          }
+        )
         .then((response) => {
           if (response.data) {
             this.logged = true;
