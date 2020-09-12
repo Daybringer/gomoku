@@ -55,8 +55,9 @@ export default {
           console.log(err);
         });
     },
-    loggedIn(isLogged) {
+    loggedIn(isLogged, username) {
       this.logged = isLogged;
+      if (username) this.username = username;
     },
     loggedOut() {
       axios
@@ -93,9 +94,27 @@ export default {
         .then(() => {})
         .catch(() => {});
     },
+    // googleSession(email) {
+    //   // Check for name in database
+    //   axios
+    //     .post("/api/googleLogin", { email: email })
+    //     .then((response) => {
+    //       const { username } = response.data;
+    //       this.loggedIn(true, username);
+    //     })
+    //     .catch((err) => {
+    //       if (err) console.log(err);
+    //     });
+    // },
   },
-  beforeMount() {
+  mounted() {
     this.isLogged();
+    // if (this.$gAuth.isAuthorized) {
+    //   console.log("cookie is here", this.$gAuth.GoogleAuth);
+    //   this.googleSession(this.$gAuth.GoogleAuth.currentUser.le.tt.bu);
+    // } else {
+    //   console.log("cookie missing", this.$gAuth.GoogleAuth, this.$gAuth);
+    // }
   },
 };
 </script>

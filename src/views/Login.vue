@@ -21,8 +21,15 @@
           <router-link :style="cssVars" class="grad-link" to="register"
             >No account yet?</router-link
           >
-          <a href="/auth/google">Sign In with Google</a>
         </form>
+        <div v-show="usernameModal" class="usernameModal">
+          <label for="usernameInp">Set username</label>
+          <input type="text" name="usernameInp" id="usernameInp" />
+          <button @click="registerModal">Save</button>
+        </div>
+        <button @click="handleClickSignIn">
+          signIn
+        </button>
       </div>
     </div>
   </div>
@@ -38,6 +45,10 @@ export default {
     return {
       colorMain: "#00b3fe",
       colorMainDark: "#00ABF5",
+      isInit: false,
+      usernameModal: false,
+      googleMail: null,
+      isSignIn: false,
     };
   },
   computed: {
@@ -84,6 +95,48 @@ export default {
         (mDiv.offsetWidth / 2) * Math.tan((7.5 * Math.PI) / 180);
 
       mDiv.style.top = cornerHeight + navHeight + "px";
+    },
+    handleClickSignIn() {
+      this.$gAuth
+        .signIn()
+        .then((user) => {
+          axios
+            .post("/api/googleLogin", { email: user.tt.bu })
+            .then((response) => {
+              this.googleMail = user.tt.bu;
+              const { registered, username } = response.data;
+              if (registered) {
+                this.$emit("loggedIn", true, username);
+                router.push("/");
+              } else {
+                // show username modal
+                this.usernameModal = true;
+              }
+            })
+            .catch((err) => {
+              if (err) console.log(err);
+            });
+        })
+        .catch((error) => {
+          // On fail do something
+          if (error) console.log(error);
+        });
+    },
+    registerModal() {
+      let username = document.getElementById("usernameInp").value;
+      let trimmedUsername = username.trim();
+      axios
+        .post("/api/googleRegister", {
+          email: this.googleMail,
+          username: trimmedUsername,
+        })
+        .then(() => {
+          this.$emit("loggedIn", true, trimmedUsername);
+          router.push("/");
+        })
+        .catch((err) => {
+          if (err) console.log(err);
+        });
     },
   },
   mounted() {
@@ -279,6 +332,14 @@ export default {
 #form-footer-submit::-moz-focus-inner {
   border: 0;
 }
+
+.usernameModal {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
   .page-title {
