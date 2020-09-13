@@ -26,10 +26,6 @@ import Navbar from "@/components/Navbar.vue";
 import axios from "axios";
 
 import router from "./router";
-
-// axios.interceptors.request.use((config) => {
-//   config.headers.authorization = `Bearer ${localStorage.getItem("jwtToken")}`;
-// });
 export default {
   name: "App",
   components: {

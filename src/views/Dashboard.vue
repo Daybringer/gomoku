@@ -151,4 +151,26 @@ export default {
   color: #363636;
   user-select: none;
 }
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+}
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) and (max-width: 1200px) {
+}
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+  #dashSkewedDiv {
+    transform: skewY(0deg) !important;
+    top: 3rem !important;
+  }
+  #dashboardContentBox {
+    top: calc(3rem + 15vh);
+  }
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+}
 </style>

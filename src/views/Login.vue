@@ -1,9 +1,9 @@
 <template>
-  <div id="ober-container">
+  <div id="ober-container" :style="cssVars">
     <div class="page-container">
       <h1 class="page-title" id="page-title">Login</h1>
       <div class="form-footer">
-        <form v-on:submit="login" :style="cssVars">
+        <form v-on:submit="login">
           <fieldset>
             <p id="successField">You have been succesfully logged in</p>
             <p id="errorField">Invalid email or password</p>
@@ -22,14 +22,33 @@
             >No account yet?</router-link
           >
         </form>
-        <div v-show="usernameModal" class="usernameModal">
-          <label for="usernameInp">Set username</label>
-          <input type="text" name="usernameInp" id="usernameInp" />
-          <button @click="registerModal">Save</button>
-        </div>
-        <button @click="handleClickSignIn">
-          signIn
-        </button>
+
+        <GoogleLogin
+          :renderParams="renderParams"
+          :params="params"
+          :onSuccess="onSuccess"
+          :onFailure="onFailure"
+          style="margin-top:1rem;"
+          >Login</GoogleLogin
+        >
+      </div>
+    </div>
+    <div v-show="usernameModal" class="modal">
+      <div class="modalBox">
+        <i
+          @click="closeModal"
+          class="fa fa-times fa-2x closeModal"
+          aria-hidden="true"
+        ></i>
+        <label for="usernameInp" class="modalLabel">Set username</label>
+        <input
+          type="text"
+          name="usernameInp"
+          id="usernameInp"
+          class="modalInput"
+        />
+        <span v-show="usernameTaken" class="errorMess">Username is taken</span>
+        <button @click="registerModal" class="modalBtn">Save</button>
       </div>
     </div>
   </div>
@@ -38,17 +57,32 @@
 <script>
 import router from "../router";
 import axios from "axios";
+import GoogleLogin from "vue-google-login";
+
 export default {
   name: "Login",
   props: ["logged"],
+  components: { GoogleLogin },
   data() {
     return {
       colorMain: "#00b3fe",
       colorMainDark: "#00ABF5",
       isInit: false,
+      usernameTaken: false,
       usernameModal: false,
       googleMail: null,
       isSignIn: false,
+      // client_id is the only required property but you can add several more params, full list down bellow on the Auth api section
+      params: {
+        client_id:
+          "1064130338503-0g3bbnb9i03s10mb1douod4oes4kp0th.apps.googleusercontent.com",
+      },
+      // only needed if you want to render the button with the google ui
+      renderParams: {
+        width: 250,
+        height: 50,
+        longtitle: true,
+      },
     };
   },
   computed: {
@@ -96,35 +130,30 @@ export default {
 
       mDiv.style.top = cornerHeight + navHeight + "px";
     },
-    handleClickSignIn() {
-      this.$gAuth
-        .signIn()
-        .then((user) => {
-          axios
-            .post("/api/googleLogin", { email: user.tt.bu })
-            .then((response) => {
-              this.googleMail = user.tt.bu;
-              const { registered, username } = response.data;
-              if (registered) {
-                window.localStorage.setItem(
-                  "jwtToken",
-                  response.headers["auth-token"]
-                );
-                this.$emit("loggedIn", true, username);
-                router.push("/");
-              } else {
-                // show username modal
-                this.usernameModal = true;
-              }
-            })
-            .catch((err) => {
-              if (err) console.log(err);
-            });
+    onSuccess(googleUser) {
+      axios
+        .post("/api/googleLogin", { email: googleUser.tt.bu })
+        .then((response) => {
+          this.googleMail = googleUser.tt.bu;
+          const { registered, username } = response.data;
+          if (registered) {
+            window.localStorage.setItem(
+              "jwtToken",
+              response.headers["auth-token"]
+            );
+            this.$emit("loggedIn", true, username);
+            router.push("/");
+          } else {
+            // show username modal
+            this.usernameModal = true;
+          }
         })
-        .catch((error) => {
-          // On fail do something
-          if (error) console.log(error);
+        .catch((err) => {
+          if (err) console.log(err);
         });
+    },
+    onFailure(err) {
+      console.log(err);
     },
     registerModal() {
       let username = document.getElementById("usernameInp").value;
@@ -142,6 +171,11 @@ export default {
           if (err) console.log(err);
         });
     },
+    closeModal() {
+      console.log("clicked");
+      this.usernameModal = false;
+      this.usernameTaken = false;
+    },
   },
   mounted() {
     this.resizeSkew();
@@ -151,8 +185,9 @@ export default {
 </script>
 <style scoped>
 #ober-container {
-  position: absolute;
+  position: relative;
   width: 100%;
+  height: 100%;
 }
 #successField {
   display: none;
@@ -337,13 +372,78 @@ export default {
   border: 0;
 }
 
-.usernameModal {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+.modal {
+  display: block; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0); /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
 }
 
+.modalBox {
+  position: relative;
+  background-color: #fefefe;
+  margin: 20% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 40%; /* Could be more or less, depending on screen size */
+  text-align: center;
+}
+.modalLabel {
+  font-size: 1.5rem;
+  color: #363636;
+}
+.modalInput {
+  margin: 0 auto;
+  border: 3px #363636 solid;
+  line-height: 1.5rem;
+  font-size: 1.5rem;
+  margin-top: 1rem;
+  display: block;
+  width: 60%;
+  text-align: center;
+}
+.errorMess {
+  color: red;
+  display: block;
+  margin-top: 0.5rem;
+}
+.closeModal {
+  position: absolute;
+  top: 0;
+  right: 0.25rem;
+  display: block;
+  color: #363636;
+  cursor: pointer;
+}
+.modalBtn {
+  color: #fff;
+  margin: 0 auto;
+  background: var(--main);
+  text-align: center;
+  font-style: normal;
+  border: 1px solid var(--mainDark);
+  border-width: 1px 1px 3px;
+  cursor: pointer;
+
+  margin: 0 auto;
+  margin-top: 1rem;
+  display: block;
+  width: 40%;
+  padding: 0.25rem 1rem;
+  font-weight: 600;
+  border-radius: 4px;
+  font-size: 1.5rem;
+}
+
+.modalBtn:hover {
+  background: var(--mainDark);
+}
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
   .page-title {
