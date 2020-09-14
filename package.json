@@ -10,11 +10,13 @@
   },
   "dependencies": {
     "axios": "^0.19.2",
+    "chart.js": "^2.9.3",
     "core-js": "^3.6.5",
     "fullpage.js": "^3.0.8",
     "socket.io-client": "^2.3.0",
     "vue": "^2.6.11",
     "vue-carousel": "^0.18.0",
+    "vue-chartjs": "^3.5.1",
     "vue-fullpage.js": "^0.1.5",
     "vue-google-login": "^2.0.5",
     "vue-router": "^3.1.6",

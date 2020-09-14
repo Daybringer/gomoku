@@ -3,6 +3,14 @@
 # abort on errors
 set -e
 
+cd server 
+
+echo "Building TS files"
+
+npm run build-src
+
+cd ..
+
 # build
 npm run build
 git add .
