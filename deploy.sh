@@ -25,4 +25,12 @@ git add .
 git commit -m "$commitMessage"
 git push origin master
 
+cd src
+
+git add .
+git commit -m "$commitMessage"
+git push origin master
+
+cd -
+
 cd -
