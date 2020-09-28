@@ -103,27 +103,9 @@ export default {
         .then(() => {})
         .catch(() => {});
     },
-    // googleSession(email) {
-    //   // Check for name in database
-    //   axios
-    //     .post("/api/googleLogin", { email: email })
-    //     .then((response) => {
-    //       const { username } = response.data;
-    //       this.loggedIn(true, username);
-    //     })
-    //     .catch((err) => {
-    //       if (err) console.log(err);
-    //     });
-    // },
   },
   mounted() {
     this.isLogged();
-    // if (this.$gAuth.isAuthorized) {
-    //   console.log("cookie is here", this.$gAuth.GoogleAuth);
-    //   this.googleSession(this.$gAuth.GoogleAuth.currentUser.le.tt.bu);
-    // } else {
-    //   console.log("cookie missing", this.$gAuth.GoogleAuth, this.$gAuth);
-    // }
   },
 };
 </script>
@@ -134,6 +116,7 @@ body {
   padding: 0;
   font-family: "Cantarell", sans-serif;
   box-sizing: border-box;
+  scroll-behavior: smooth;
 }
 a {
   text-decoration: none !important;

@@ -1,177 +1,382 @@
 <template>
-  <div>
-    <div class="navbar" id="smallNav">
-      <div style="width:100%;background-color:#363636;height:100%;">
-        <router-link to="/" @click.native="scrollToTop">
-          <svg
-            viewBox="0 0 25.265 4.105"
-            xmlns="http://www.w3.org/2000/svg"
-            class="logoSVG"
-          >
-            <g
-              transform="translate(-102.84 -127.6)"
-              paint-order="markers fill stroke"
-            >
-              <circle
-                cx="109.42"
-                cy="129.65"
-                r="1.86"
-                fill="none"
-                :stroke="colorMain"
-                stroke-linejoin="round"
-                stroke-width=".385"
-              />
-              <circle
-                cx="118.39"
-                cy="129.65"
-                r="1.86"
-                fill="none"
-                :stroke="colorMain"
-                stroke-linejoin="round"
-                stroke-width=".385"
-              />
-              <g :fill="colorMain">
-                <path
-                  d="M120.874 127.79h.375v3.913h-.375zM121.355 129.516l.265-.265 2.187 2.187-.265.265z"
-                />
-                <path d="M123.273 127.597l.265.266-1.918 1.918-.265-.265z" />
-              </g>
-              <path d="M127.73 127.71h.378v2.081h-.378z" :fill="colorMain" />
-              <path
-                d="M127.92 129.78a1.746 1.746 0 01-1.746 1.739 1.746 1.746 0 01-1.746-1.739"
-                fill="none"
-                :stroke="colorMain"
-                stroke-linejoin="round"
-                stroke-width=".378"
-              />
-              <g :fill="colorMain">
-                <path d="M124.23 127.71h.378v2.081h-.378z" />
-                <path
-                  d="M104.89 127.6c-1.131 0-2.053.921-2.053 2.053s.922 2.052 2.053 2.052c.576 0 1.126-.242 1.515-.667l-.284-.26a1.668 1.668 0 11.437-1.125c0 .3-.01.632-.169.816l.25.235c.264-.304.304-.722.304-1.051a2.056 2.056 0 00-2.053-2.053z"
-                  color="#000"
-                  style="font-feature-settings:normal;font-variant-alternates:normal;font-variant-caps:normal;font-variant-ligatures:normal;font-variant-numeric:normal;font-variant-position:normal;isolation:auto;mix-blend-mode:normal;text-decoration-color:#000;text-decoration-line:none;text-decoration-style:solid;text-indent:0;text-orientation:mixed;text-transform:none;white-space:normal"
-                />
-                <path
-                  d="M106.12 131.3l-1.715-1.714.272-.272 1.728 1.728-.027.029-.028.028-.045.045-.053.049-.042.036-.051.041z"
-                />
-              </g>
-              <g :fill="colorMain" stroke-width="0">
-                <path
-                  d="M111.9 127.83h.369v3.83h-.369zM115.55 127.88h.369v3.83h-.369z"
-                />
-                <path d="M115.548 127.88l.23.23-1.855 1.856-.23-.23z" />
-                <path d="M114.162 129.719l-.26.26-1.89-1.888.262-.26z" />
-              </g>
-            </g>
-          </svg>
-        </router-link>
-        <tasty-burger-button
-          id="hamburger-icon"
-          ref="hamburger"
-          :type="buttonType"
-          :active="isActive"
-          :size="size"
-          :color="color"
-          :active-color="activeColor"
-          v-on:toggle="burgerToggle"
+  <!-- <div class="navbar " id="smallNav">
+    <div class="bg-gomoku-black w-full h-full rounder-bottom-nav">
+      <router-link to="/" @click.native="scrollToTop" class="left-0">
+        <img
+          src="@/assets/logo.svg"
+          class="absolute left-0 h-50 ml-4 transform translate-y-1/2"
         />
-        <div id="dropdown-content" @click="closeMenu">
-          <a id="first-fake-link"></a>
-          <router-link v-if="!logged" to="/login" style="color:#00b3fe"
-            >Log In</router-link
-          >
-          <router-link v-if="logged" to="/dashboard" style="color:#00b3fe"
-            >Dashboard</router-link
-          >
-          <router-link @click.native="scrollToMatches" to="/"
-            >Matches</router-link
-          >
-          <router-link @click.native="scrollToRules" to="/">Rules</router-link>
-          <router-link to="/about">About</router-link>
-          <a v-if="logged" href="#" @click="logOut">Log Out</a>
-          <a id="last-fake-link"></a>
+      </router-link>
+      <tasty-burger-button
+        id="hamburger-icon"
+        ref="hamburger"
+        :type="burgerOptions.buttonType"
+        :active="burgerOptions.isActive"
+        :size="burgerOptions.size"
+        :color="colorMain"
+        :active-color="colorMain"
+        v-on:toggle="burgerToggle"
+      />
+      <div id="dropdown-content" :class="currentClass" @click="closeMenu">
+        <router-link v-if="!logged" to="/login"
+          ><span class="text-gomoku-blue">Log In</span></router-link
+        >
+        <router-link v-if="logged" to="/dashboard" style="color:#00b3fe"
+          >Dashboard</router-link
+        >
+        <router-link @click.native="scrollToMatches" to="/"
+          >Matches</router-link
+        >
+        <router-link @click.native="scrollToRules" to="/">Rules</router-link>
+        <router-link to="/about">About</router-link>
+        <a v-if="logged" href="#" @click="logOut">Log Out</a>
+      </div>
+    </div>
+  </div> -->
+  <nav
+    id="navbar"
+    :class="{
+      navbarTop: navbarScroledStyle === 'top',
+      navbarScrolled: navbarScroledStyle === 'scrolled',
+    }"
+    class="w-full bg-gray-800 sticky top-0 z-50 "
+  >
+    <div class="max-w-7xl mx-auto px-2 md:px-6 lg:px-8">
+      <div class="relative flex items-center justify-between h-16">
+        <div class="absolute inset-y-0 left-0 flex items-center md:hidden">
+          <!-- Mobile menu button-->
+          <tasty-burger-button
+            id="hamburger-icon"
+            ref="hamburger"
+            style="margin-left:0.5rem;"
+            aria-label="Main menu"
+            aria-expanded="false"
+            :type="burgerOptions.buttonType"
+            :active="burgerOptions.isActive"
+            :size="burgerOptions.size"
+            :color="grey"
+            :active-color="grey"
+            v-on:toggle="burgerToggle"
+          />
+        </div>
+        <div
+          class="flex-1 flex items-center justify-center md:items-stretch md:justify-start"
+        >
+          <div class="flex-shrink-0">
+            <router-link to="/" @click.native="scrollTo('#home')">
+              <img
+                class="h-6 w-auto align-middle inline sm:h-8"
+                src="@/assets/logo.svg"
+                alt="Playgomoku logo"
+              />
+            </router-link>
+          </div>
+          <div class="hidden md:block md:ml-6">
+            <div class="flex">
+              <router-link
+                to="/q/search"
+                :class="activeLink === 'home' ? 'buttonActive' : 'buttonOff'"
+                class="ml-4 px-3 py-2 border-2 border-transparent rounded-md text-sm font-semibold leading-5 border-gomoku-blue text-gray-300 hover:bg-gomoku-blue-dark hover:border-gomoku-blue-dark hover:text-gomoku-black focus:shadow-outline focus:outline-none focus:text-white transition duration-150 ease-in-out"
+                >Play</router-link
+              >
+              <router-link
+                to="/#matches"
+                @click.native="scrollTo('#matches')"
+                :class="activeLink === 'matches' ? ' bg-gray-900' : ''"
+                class="ml-4 px-3 py-2 border-2 border-transparent rounded-md text-sm font-semibold leading-5 text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700 transition duration-150 ease-in-out"
+                >Matches</router-link
+              >
+              <router-link
+                to="/#rules"
+                @click.native="scrollTo('#rules')"
+                :class="activeLink === 'rules' ? ' bg-gray-900' : ''"
+                class="ml-4 px-3 py-2 border-2 border-transparent rounded-md text-sm font-semibold leading-5 text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700 transition duration-150 ease-in-out"
+                >Rules</router-link
+              >
+              <router-link
+                to="/#origins"
+                @click.native="scrollTo('#origins')"
+                :class="activeLink === 'origins' ? ' bg-gray-900' : ''"
+                class="ml-4 px-3 py-2 border-2 border-transparent rounded-md text-sm font-semibold leading-5 text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700 transition duration-150 ease-in-out"
+                >Origins</router-link
+              >
+              <router-link
+                to="/#contact"
+                @click.native="scrollTo('contact')"
+                :class="activeLink === 'contact' ? ' bg-gray-900' : ''"
+                class="ml-4 px-3 py-2 border-2 border-transparent rounded-md text-sm font-semibold leading-5 text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700 transition duration-150 ease-in-out"
+                >Contact</router-link
+              >
+            </div>
+          </div>
+        </div>
+        <div
+          class="absolute inset-y-0 right-0 flex items-center pr-2 md:static md:inset-auto md:ml-6 md:pr-0"
+        >
+          <!-- Profile dropdown -->
+          <div class="ml-3 relative">
+            <div>
+              <button
+                v-if="logged"
+                class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-white transition duration-150 ease-in-out"
+                id="user-menu"
+                aria-label="User menu"
+                aria-haspopup="true"
+                @click="profileToggle"
+              >
+                <img
+                  class="h-8 w-8 rounded-full"
+                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                  alt=""
+                />
+              </button>
+              <button
+                v-if="!logged"
+                class="md:flex hidden px-8 py-2 bg-gomoku-blue hover:bg-gomoku-blue-dark text-white font-bold border-transparent rounded focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
+                id="user-menu"
+                aria-label="User menu"
+                aria-haspopup="true"
+                @click="routerLinkToLogin"
+              >
+                Sign in
+              </button>
+            </div>
+            <transition
+              enter-active-class="transition ease-out duration-100 transform"
+              enter-class="opacity-0 scale-95"
+              enter-to-class="opacity-100 scale-100"
+              leave-active-class="transition ease-in duration-75 transform"
+              leave-class="opacity-100 scale-100"
+              leave-to-class="opacity-0 scale-95"
+            >
+              <div
+                v-show="profileDropdownIsToggled"
+                class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg
+              "
+              >
+                <div
+                  class="py-1 rounded-md bg-white shadow-xs"
+                  role="menu"
+                  aria-orientation="vertical"
+                  aria-labelledby="user-menu"
+                >
+                  <a
+                    href="#"
+                    class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
+                    role="menuitem"
+                    >Your Profile</a
+                  >
+                  <a
+                    href="#"
+                    class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
+                    role="menuitem"
+                    >Settings</a
+                  >
+                  <a
+                    href="#"
+                    class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
+                    role="menuitem"
+                    >Sign out</a
+                  >
+                </div>
+              </div>
+            </transition>
+          </div>
         </div>
       </div>
-      <div id="skewed-nav"></div>
     </div>
-  </div>
+
+    <!--
+    Mobile menu, toggle classes based on menu state.
+
+    Menu open: "block", Menu closed: "hidden"
+  -->
+    <div
+      class="md:hidden"
+      :class="burgerDropdownIsToggled ? 'block' : 'hidden'"
+    >
+      <div class="px-2 pt-2 pb-3 z-50" id="navbarDropdown">
+        <router-link
+          to="/login"
+          class="inline-block w-auto px-3 py-2 text-base bg-gomoku-blue hover:bg-gomoku-blue-dark text-gray-800 shadow-lg font-bold border-transparent rounded focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
+          >Sign in</router-link
+        >
+        <router-link
+          to="/#matches"
+          @click.native="scrollTo('#matches')"
+          :class="activeLink === 'matches' ? ' bg-gray-900' : ''"
+          class="mt-1 block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700 transition duration-150 ease-in-out"
+          >Matches</router-link
+        >
+        <router-link
+          to="/#rules"
+          @click.native="scrollTo('#rules')"
+          :class="activeLink === 'rules' ? ' bg-gray-900' : ''"
+          class="mt-1 block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700 transition duration-150 ease-in-out"
+          >Rules</router-link
+        >
+        <router-link
+          to="/#origins"
+          @click.native="scrollTo('#origins')"
+          :class="activeLink === 'origins' ? ' bg-gray-900' : ''"
+          class="mt-1 block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700 transition duration-150 ease-in-out"
+          >Origins</router-link
+        >
+        <router-link
+          to="/#contact"
+          @click.native="scrollTo('#contact')"
+          :class="activeLink === 'contact' ? ' bg-gray-900' : ''"
+          class="mt-1 block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700 transition duration-150 ease-in-out"
+          >Contact</router-link
+        >
+      </div>
+    </div>
+  </nav>
 </template>
 
 <script>
+import debounce from "debounce";
 import { TastyBurgerButton } from "vue-tasty-burgers";
+import router from "@/router";
 export default {
-  name: "navbar",
-  props: ["logged"],
+  name: "Navbar",
+  props: { logged: Boolean },
   data() {
     return {
+      burgerOptions: {
+        buttonType: "elastic",
+        isActive: this.burgerDropdownIsToggled,
+        size: "s",
+      },
+      burgerDropdownIsToggled: false,
+      profileDropdownIsToggled: false,
       colorMain: "#00b3fe",
-      buttonType: "elastic",
-      isActive: false,
-      buttonIsActiv: false,
-      size: "s",
-      color: "#00b3fe",
-      activeColor: "#00b3fe",
+      grey: "#cbd5e0",
+      activeLink: "",
+      navbarScroledStyle: "top",
     };
   },
-  mounted: function() {
-    this.resizeSkew();
-    window.onresize = () => this.resizeSkew();
+  mounted() {
+    this.navbarActiveElChange();
+    if (location.pathname === "/") {
+      document.addEventListener(
+        "scroll",
+        debounce(this.navbarActiveElChange, 0)
+      );
+    }
+  },
+  destroyed() {
+    document.removeEventListener(
+      "scroll",
+      debounce(this.navbarActiveElChange, 0)
+    );
   },
   methods: {
     logOut() {
       window.localStorage.removeItem("jwtToken");
       this.$emit("loggedOut");
     },
-    resizeSkew() {
-      let skewedNav = document.getElementById("skewed-nav");
-      let navHeight = document.getElementById("smallNav").clientHeight;
-      skewedNav.style.top =
-        (skewedNav.offsetWidth / 2) * Math.tan((7.5 * Math.PI) / 180) -
-        skewedNav.offsetHeight +
-        navHeight +
-        "px";
-    },
-    closeMenu() {
-      document.getElementById("hamburger-icon").click();
-    },
-    burgerToggle: function(active) {
-      if (active) {
-        this.buttonIsActiv = true;
-        document.getElementById("dropdown-content").style.display = "block";
-        document.getElementById("dropdown-content").classList.add("slide-in");
-        document
-          .getElementById("dropdown-content")
-          .classList.remove("slide-out");
+    navbarActiveElChange() {
+      // TODO Try to change to more dynamic, vue way
+
+      if (location.pathname === "/") {
+        // Defining constants of parts of home page
+
+        const navbarHeight = document.getElementById("navbar").clientHeight;
+        // const indexOffsetTop =
+        //   document.getElementById("home").offsetTop - navbarHeight;
+        const matches = document.getElementById("matches");
+        const matchesOffsetTop = Math.round(
+          matches.offsetTop - navbarHeight + matches.clientHeight / 2
+        );
+        const rules = document.getElementById("rules");
+        const rulesOffsetTop = Math.round(
+          rules.offsetTop - navbarHeight + rules.clientHeight / 2
+        );
+        const origins = document.getElementById("origins");
+        const originsOffsetTop = Math.round(
+          origins.offsetTop - navbarHeight + origins.clientHeight / 2
+        );
+        const contact = document.getElementById("contact");
+        const contactOffsetTop = Math.round(
+          contact.offsetTop - navbarHeight + contact.clientHeight / 2
+        );
+
+        const clientTopOffset = Math.round(
+          window.pageYOffset + window.innerHeight
+        );
+
+        let bottomOfWindow =
+          Math.max(
+            window.pageYOffset,
+            document.documentElement.scrollTop,
+            document.body.scrollTop
+          ) +
+            window.innerHeight >=
+          document.documentElement.offsetHeight - contact.clientHeight / 4;
+        if (bottomOfWindow === true) {
+          this.activeLink = "contact";
+        } else if (clientTopOffset >= 0 && clientTopOffset < matchesOffsetTop) {
+          this.activeLink = "home";
+        } else if (
+          clientTopOffset > matchesOffsetTop &&
+          clientTopOffset < rulesOffsetTop
+        ) {
+          this.activeLink = "matches";
+        } else if (
+          clientTopOffset > rulesOffsetTop &&
+          clientTopOffset < originsOffsetTop
+        ) {
+          this.activeLink = "rules";
+        } else if (
+          clientTopOffset > originsOffsetTop &&
+          clientTopOffset < contactOffsetTop
+        ) {
+          this.activeLink = "origins";
+        }
       } else {
-        this.buttonIsActiv = false;
-        document.getElementById("dropdown-content").classList.add("slide-out");
-        document
-          .getElementById("dropdown-content")
-          .classList.remove("slide-in");
-      }
-    },
-    scrollFix: function(hashbang) {
-      location.hash = hashbang;
-    },
-    scrollToTop: function() {
-      if (this.buttonIsActiv) {
-        this.closeMenu();
+        this.activeLink = "";
+        console.log(location);
       }
 
-      document.getElementById("dropdown-content").classList.remove("slide-out");
-      document.getElementById("dropdown-content").classList.remove("slide-in");
-      if (location.pathname === "/") {
-        this.scrollFix("#home");
+      if (window.pageYOffset > document.getElementById("navbar").clientHeight) {
+        this.navbarScroledStyle = "scrolled";
+      } else {
+        this.navbarScroledStyle = "top";
       }
     },
-    scrollToRules: function() {
-      if (location.pathname === "/") {
-        this.scrollFix("#rules");
+    burgerToggle() {
+      if (this.burgerDropdownIsToggled === false) {
+        this.burgerDropdownIsToggled = true;
+      } else {
+        this.burgerDropdownIsToggled = false;
       }
     },
-    scrollToMatches: function() {
+    profileToggle() {
+      if (this.profileDropdownIsToggled === false) {
+        this.profileDropdownIsToggled = true;
+      } else {
+        this.profileDropdownIsToggled = false;
+      }
+    },
+    routerLinkToLogin() {
+      router.push("login");
+    },
+    scrollTo(hashbang) {
       if (location.pathname === "/") {
-        this.scrollFix("#matches");
+        location.hash = hashbang;
+        const posFromTop = document.getElementById(hashbang.slice(1)).offsetTop;
+        const navbarHeight = document.getElementById("navbar").clientHeight;
+
+        if (window.innerWidth <= 768 && hashbang !== "#home") {
+          const dropdownSize = document.getElementById("navbarDropdown")
+            .offsetHeight;
+          window.scrollTo(0, posFromTop - navbarHeight + dropdownSize);
+          console.log(dropdownSize);
+        } else {
+          window.scrollTo(0, posFromTop - navbarHeight);
+          console.log("desktop", window.innerWidth);
+        }
       }
     },
   },
@@ -190,130 +395,14 @@ export default {
 </script>
 
 <style scoped>
-#skewed-nav {
-  background-color: #363636;
-  width: 100%;
-  height: 20vh;
-  transform: skewY(-7.5deg);
-  position: absolute;
-  text-align: center;
-  z-index: -1;
-}
-#last-fake-link {
-  transform: skewY(-7.5deg);
-  height: 2rem;
-  position: absolute;
-  bottom: -1rem;
-  width: 100%;
-  z-index: -1;
-}
-#dropdown-content {
-  position: absolute;
-  right: 0;
-  top: 3rem;
-  display: none;
-  transform: translateY(-110%);
-  z-index: -1;
-}
-.slide-in {
-  animation: slide-in 0.75s forwards;
-}
-@keyframes slide-in {
-  0% {
-    transform: translateY(-110%);
-  }
-  100% {
-    transform: translateY(0%);
-  }
-}
-.slide-out {
-  animation: slide-out 0.75s forwards;
-}
-@keyframes slide-out {
-  0% {
-    transform: translateY(0%);
-  }
-  100% {
-    transform: translateY(-110%);
-  }
-}
-#dropdown-content a {
-  display: block;
-  color: #8f8f8f;
-  background-color: #363636;
-  padding: 0.5em 2rem;
-  font-size: 1.1rem;
-  font-weight: 700;
-}
-#hamburger-icon {
-  right: 1em;
-  top: 50%;
-  transform: translate(0, -50%);
-  position: absolute;
-  cursor: auto;
-}
-.navbar {
-  z-index: 1000;
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 3rem;
-  background-color: #ffffff;
+.buttonActive {
+  @apply bg-gomoku-blue;
+  @apply text-gomoku-black;
+  @apply shadow-lg;
 }
 
-.logoSVG {
-  height: 50%;
-  position: absolute;
-  top: 50%;
-  transform: translate(0, -50%);
-  margin-left: 1em;
-  left: 0;
-}
-
-/* Medium devices (landscape tablets, 768px and up) */
-@media only screen and (min-width: 768px) {
-  #skewed-nav {
-    display: none;
-  }
-  #hamburger-icon {
-    display: none;
-  }
-  .navbar {
-    height: 3rem;
-  }
-  #dropdown-content {
-    position: absolute;
-    right: 0;
-    top: 50%;
-    display: flex;
-    transform: translateY(-50%);
-    z-index: 0;
-  }
-  #dropdown-content a {
-    display: inline;
-    text-align: center;
-    color: #8f8f8f;
-    background-color: #363636;
-    padding: 0.5em 2rem;
-    font-size: 1.1rem;
-    font-weight: 700;
-  }
-  #first-fake-link,
-  #last-fake-link {
-    display: none !important;
-  }
-  .slide-out,
-  .slide-in {
-    animation: none;
-  }
-}
-
-/* Large devices (laptops/desktops, 992px and up) */
-@media only screen and (min-width: 992px) {
-}
-
-/* Extra large devices (large laptops and desktops, 1200px and up) */
-@media only screen and (min-width: 1200px) {
+.buttonOff {
+  @apply border-gomoku-blue;
+  @apply border-2;
 }
 </style>

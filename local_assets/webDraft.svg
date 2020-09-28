@@ -12,7 +12,7 @@
    viewBox="0 0 200.92923 330.50848"
    version="1.1"
    id="svg8"
-   inkscape:version="1.0 (4035a4fb49, 2020-05-01)"
+   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)"
    sodipodi:docname="webDraft.svg">
   <defs
      id="defs2">
@@ -35,11 +35,11 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.0044169"
-     inkscape:cx="301.91871"
-     inkscape:cy="965.53065"
+     inkscape:zoom="0.48000898"
+     inkscape:cx="169.95869"
+     inkscape:cy="595.80986"
      inkscape:document-units="mm"
-     inkscape:current-layer="g2914-3"
+     inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
      showgrid="false"
      inkscape:window-width="1366"
@@ -2574,5 +2574,13 @@
          x="143.4536"
          y="176.42975" />
     </g>
+    <rect
+       transform="matrix(0.99144486,-0.13052619,0,-1,0,0)"
+       y="-100.59862"
+       x="-122.72795"
+       height="13.454695"
+       width="48.687279"
+       id="rect1308-2-3"
+       style="fill:#009efe;fill-opacity:1;stroke:none;stroke-width:1.90887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.360234" />
   </g>
 </svg>

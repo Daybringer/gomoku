@@ -1,0 +1,60 @@
+          <svg
+            viewBox="0 0 25.265 4.105"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <g
+              transform="translate(-102.84 -127.6)"
+              paint-order="markers fill stroke"
+            >
+              <circle
+                cx="109.42"
+                cy="129.65"
+                r="1.86"
+                fill="none"
+                stroke="#00b3fe"
+                stroke-linejoin="round"
+                stroke-width=".385"
+              />
+              <circle
+                cx="118.39"
+                cy="129.65"
+                r="1.86"
+                fill="none"
+                stroke="#00b3fe"
+                stroke-linejoin="round"
+                stroke-width=".385"
+              />
+              <g fill="#00b3fe">
+                <path
+                  d="M120.874 127.79h.375v3.913h-.375zM121.355 129.516l.265-.265 2.187 2.187-.265.265z"
+                />
+                <path d="M123.273 127.597l.265.266-1.918 1.918-.265-.265z" />
+              </g>
+              <path d="M127.73 127.71h.378v2.081h-.378z" fill="#00b3fe" />
+              <path
+                d="M127.92 129.78a1.746 1.746 0 01-1.746 1.739 1.746 1.746 0 01-1.746-1.739"
+                fill="none"
+                stroke="#00b3fe"
+                stroke-linejoin="round"
+                stroke-width=".378"
+              />
+              <g fill="#00b3fe">
+                <path d="M124.23 127.71h.378v2.081h-.378z" />
+                <path
+                  d="M104.89 127.6c-1.131 0-2.053.921-2.053 2.053s.922 2.052 2.053 2.052c.576 0 1.126-.242 1.515-.667l-.284-.26a1.668 1.668 0 11.437-1.125c0 .3-.01.632-.169.816l.25.235c.264-.304.304-.722.304-1.051a2.056 2.056 0 00-2.053-2.053z"
+                  color="#000"
+                  style="font-feature-settings:normal;font-variant-alternates:normal;font-variant-caps:normal;font-variant-ligatures:normal;font-variant-numeric:normal;font-variant-position:normal;isolation:auto;mix-blend-mode:normal;text-decoration-color:#000;text-decoration-line:none;text-decoration-style:solid;text-indent:0;text-orientation:mixed;text-transform:none;white-space:normal"
+                />
+                <path
+                  d="M106.12 131.3l-1.715-1.714.272-.272 1.728 1.728-.027.029-.028.028-.045.045-.053.049-.042.036-.051.041z"
+                />
+              </g>
+              <g fill="#00b3fe" stroke-width="0">
+                <path
+                  d="M111.9 127.83h.369v3.83h-.369zM115.55 127.88h.369v3.83h-.369z"
+                />
+                <path d="M115.548 127.88l.23.23-1.855 1.856-.23-.23z" />
+                <path d="M114.162 129.719l-.26.26-1.89-1.888.262-.26z" />
+              </g>
+            </g>
+          </svg>
