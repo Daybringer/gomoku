@@ -84,56 +84,43 @@
       class="w-full min-height-screen-calc flex bg-gray-300 flex-col"
     >
       <h2
-        class="text-5xl mt-8 md:mt-8 2xl:mt-16 text-gray-800 font-semibold w-full text-center"
+        class="text-5xl mt-4 md:mt-4 2xl:mt-4 text-gray-800 font-semibold w-full text-center"
       >
         Rules
       </h2>
       <div
-        class=" w-90 mt-5 flex-1 p-4 flex flex-row mb-8 bg-gray-800 rounded-2xl md:rounded-2xl m-auto"
+        class=" w-90 mt-4 flex-1 p-4 grid grid-flow-row md:grid-flow-col md:grid-cols-7 md:grid-rows-4 gap-4 mb-8 bg-gray-800 rounded-xl m-auto"
       >
-        <div class="mr-4 w-10 bg-gray-300 flex flex-col">
-          <div
-            class="flex-1 flex m-auto w-full bg-gray-500"
-            @click="activeRule = 'basics'"
-          >
-            <div class="m-auto">Basics</div>
-          </div>
-          <div
-            class="flex-1 flex m-auto w-full bg-gray-600"
-            @click="activeRule = 'matches'"
-          >
-            <div class="m-auto">Game Types</div>
-          </div>
-          <div
-            class="flex-1 flex m-auto w-full bg-gray-700"
-            @click="activeRule = 'swap'"
-          >
-            <div class="m-auto">SWAP</div>
-          </div>
+        <div
+          class="md:row-span-2 md:col-span-4 p-2 pl-3 rounded-md bg-gray-700"
+        >
+          <h3 class="font-semibold text-lg md:text-2xl text-gray-200">
+            Basics
+          </h3>
         </div>
-        <div class="flex-1 flex flex-col bg-gray-300">
-          <div class="w-full text-center bg-gray-600">
-            <h3 v-show="activeRule === 'basics'" class="text-gray-900 text-4xl">
-              Basics
-            </h3>
-            <h3
-              v-show="activeRule === 'matches'"
-              class="text-gray-900 text-4xl"
-            >
-              Game Types
-            </h3>
-            <h3 v-show="activeRule === 'swap'" class="text-gray-900 text-4xl">
-              SWAP
-            </h3>
+        <div class="row-span-1 md:col-span-4 p-2 pl-3 rounded-md bg-gray-700">
+          <h3 class="font-semibold text-lg md:text-2xl text-gray-200">SWAP1</h3>
+        </div>
+        <div class="row-span-1 md:col-span-4 p-2 pl-3 rounded-md bg-gray-700">
+          <h3 class="font-semibold text-lg md:text-2xl text-gray-200">SWAP2</h3>
+        </div>
+        <div
+          class="md:row-span-4 md:col-span-3 rounded-md bg-gray-700 flex flex-col  text-center"
+        >
+          <h3 class="mt-2 text-lg md:text-2xl text-gray-200  font-semibold">
+            Game types
+          </h3>
+          <div class="flex-1 bg-gray-800 m-4 rounded-md p-2 pl-3">
+            <h3 class="text-gray-200 text-left font-medium">Quick</h3>
           </div>
-          <div v-show="activeRule === 'basics'" class="flex-1 bg-gray-500">
-            basicbasicbasic
+          <div class="flex-1 bg-gray-800 m-4 rounded-md p-2 pl-3">
+            <h3 class="text-gray-200 text-left font-medium">Ranked</h3>
           </div>
-          <div v-show="activeRule === 'matches'" class="flex-1 bg-gray-500">
-            gametypegametypegametype
+          <div class="flex-1 bg-gray-800 m-4 rounded-md p-2 pl-3">
+            <h3 class="text-gray-200 text-left font-medium">Custom</h3>
           </div>
-          <div v-show="activeRule === 'swap'" class="flex-1 bg-gray-500">
-            swapswapswapswap
+          <div class="flex-1 bg-gray-800 m-4 rounded-md p-2 pl-3">
+            <h3 class="text-white text-left font-medium">AI</h3>
           </div>
         </div>
       </div>
