@@ -455,7 +455,22 @@ export default {
   name: "Home",
   props: { logged: Boolean },
   components: {},
-  mounted() {},
+  beforeMount() {
+    if (window.innerWidth >= 1280) {
+      this.expanded = {
+        swap1: true,
+        swap2: true,
+        basics: true,
+        matchTypes: {
+          self: true,
+          quick: true,
+          ranked: true,
+          custom: true,
+          ai: true,
+        },
+      };
+    }
+  },
   data() {
     return {
       activeRule: "basics",
