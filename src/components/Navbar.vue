@@ -336,7 +336,6 @@ export default {
         }
       } else {
         this.activeLink = "";
-        console.log(location);
       }
 
       if (window.pageYOffset > document.getElementById("navbar").clientHeight) {
@@ -372,10 +371,8 @@ export default {
           const dropdownSize = document.getElementById("navbarDropdown")
             .offsetHeight;
           window.scrollTo(0, posFromTop - navbarHeight + dropdownSize);
-          console.log(dropdownSize);
         } else {
           window.scrollTo(0, posFromTop - navbarHeight);
-          console.log("desktop", window.innerWidth);
         }
       }
     },
