@@ -39,6 +39,9 @@ module.exports = {
       screens: {
         "2xl": "1680px",
       },
+      boxShadow: {
+        "outline-white": "0 0 0 3px rgba(247,250,252,0.3)",
+      },
     },
   },
   variants: {},

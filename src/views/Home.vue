@@ -89,43 +89,190 @@
         Rules
       </h2>
       <div
-        class=" w-90 mt-4 flex-1 p-4 grid grid-flow-row md:grid-flow-col md:grid-cols-7 md:grid-rows-4 gap-4 mb-8 bg-gray-800 rounded-xl m-auto"
+        class=" w-90 mt-4 flex-1 p-4 grid grid-flow-row xl:grid-flow-col xl:grid-cols-7 xl:grid-rows-4 gap-4 mb-8 bg-gray-800 rounded-xl m-auto"
       >
         <div
-          class="md:row-span-2 md:col-span-4 p-2 pl-3 rounded-md bg-gray-700"
+          class="xl:row-span-2 xl:col-span-4 p-2 pl-3 rounded-md bg-gray-700 row-start-1"
         >
           <h3 class="font-semibold text-lg md:text-2xl text-gray-200">
             Basics
           </h3>
-        </div>
-        <div class="row-span-1 md:col-span-4 p-2 pl-3 rounded-md bg-gray-700">
-          <h3 class="font-semibold text-lg md:text-2xl text-gray-200">SWAP1</h3>
-        </div>
-        <div class="row-span-1 md:col-span-4 p-2 pl-3 rounded-md bg-gray-700">
-          <h3 class="font-semibold text-lg md:text-2xl text-gray-200">SWAP2</h3>
+          <ul class="list-disc list-inside text-gray-300 font-normal p-3">
+            <li class="pb-3">Played on <b>15x15</b> gameboard</li>
+            <li class="pb-3">time is measured with chess clocks</li>
+            <li class="pb-3">
+              player who makes an unbroken row of exactly <b>5</b> stones in any
+              direction <b>wins</b> the game
+            </li>
+
+            <li class="pb-3">
+              Starting player is randomly decided by coin flip
+            </li>
+            <li class="pb-3">
+              Players alternate their turns until somebody wins or whole board
+              is filled, when the game ends as a tie
+            </li>
+            <li class="pb-3">
+              Game either starts with simple start or with more advanced
+              starting technique called SWAP
+            </li>
+          </ul>
         </div>
         <div
-          class="md:row-span-4 md:col-span-3 rounded-md bg-gray-700 flex flex-col  text-center"
+          class="row-span-1 xl:col-span-4 p-2 pl-3 rounded-md bg-gray-700 row-start-3"
+        >
+          <h3 class="font-semibold text-lg md:text-2xl text-gray-200">SWAP1</h3>
+          <ul class="list-disc list-inside text-gray-300 font-normal p-3">
+            <li class="pb-3">
+              Starting player is randomly decided by coin flip
+            </li>
+            <li class="pb-3">
+              Players alternate their turns until somebody wins or whole board
+              is filled, when the game ends as a tie
+            </li>
+            <li class="pb-3">
+              Game either starts with simple start or with more advanced
+              starting technique called SWAP
+            </li>
+            <li class="list-none">
+              <button
+                class="border-gray-400 border-4 text-gray-200 text-base font-medium py-1 px-6 rounded-md focus:shadow-outline-white focus:outline-none hover:bg-gray-400 hover:text-gray-700"
+              >
+                Example
+              </button>
+            </li>
+          </ul>
+        </div>
+        <div
+          class="row-span-1 xl:col-span-4 p-2 pl-3 rounded-md bg-gray-700 row-start-4"
+        >
+          <h3 class="font-semibold text-lg md:text-2xl text-gray-200">SWAP2</h3>
+          <ul class="list-disc list-inside text-gray-300 font-normal p-3">
+            <li class="pb-3">
+              Starting player is randomly decided by coin flip
+            </li>
+            <li class="pb-3">
+              Players alternate their turns until somebody wins or whole board
+              is filled, when the game ends as a tie
+            </li>
+            <li class="pb-3">
+              Game either starts with simple start or with more advanced
+              starting technique called SWAP
+            </li>
+          </ul>
+        </div>
+        <div
+          class="xl:row-span-4 xl:col-span-3 rounded-md bg-gray-700 flex flex-col  text-center row-start-2"
         >
           <h3 class="mt-2 text-lg md:text-2xl text-gray-200  font-semibold">
             Game types
           </h3>
           <div class="flex-1 bg-gray-800 m-4 rounded-md p-2 pl-3">
-            <h3 class="text-gray-200 text-left font-medium">Quick</h3>
+            <h3 class="text-gray-200 text-left font-medium text-lg underline">
+              Quick
+            </h3>
+            <ul
+              class="list-disc list-inside text-gray-300 font-normal p-3 text-left"
+            >
+              <li class="pb-3">
+                Starting player is randomly decided by coin flip
+              </li>
+              <li class="pb-3">
+                Players alternate their turns until somebody wins or whole board
+                is filled, when the game ends as a tie
+              </li>
+              <li class="pb-3">
+                Game either starts with simple start or with more advanced
+                starting technique called SWAP
+              </li>
+            </ul>
           </div>
           <div class="flex-1 bg-gray-800 m-4 rounded-md p-2 pl-3">
-            <h3 class="text-gray-200 text-left font-medium">Ranked</h3>
+            <h3 class="text-gray-200 text-left font-medium text-lg underline">
+              Ranked
+            </h3>
+            <ul
+              class="list-disc list-inside text-gray-300 font-normal p-3 text-left"
+            >
+              <li class="pb-3">
+                Starting player is randomly decided by coin flip
+              </li>
+              <li class="pb-3">
+                Players alternate their turns until somebody wins or whole board
+                is filled, when the game ends as a tie
+              </li>
+              <li class="pb-3">
+                Game either starts with simple start or with more advanced
+                starting technique called SWAP
+              </li>
+            </ul>
           </div>
           <div class="flex-1 bg-gray-800 m-4 rounded-md p-2 pl-3">
-            <h3 class="text-gray-200 text-left font-medium">Custom</h3>
+            <h3 class="text-gray-200 text-left font-medium underline text-lg">
+              Custom
+            </h3>
+            <ul
+              class="list-disc list-inside text-gray-300 font-normal p-3 text-left"
+            >
+              <li class="pb-3">
+                Starting player is randomly decided by coin flip
+              </li>
+              <li class="pb-3">
+                Players alternate their turns until somebody wins or whole board
+                is filled, when the game ends as a tie
+              </li>
+              <li class="pb-3">
+                Game either starts with simple start or with more advanced
+                starting technique called SWAP
+              </li>
+            </ul>
           </div>
           <div class="flex-1 bg-gray-800 m-4 rounded-md p-2 pl-3">
-            <h3 class="text-white text-left font-medium">AI</h3>
+            <h3 class="text-white text-left font-medium underline text-lg">
+              AI
+            </h3>
+            <ul
+              class="list-disc list-inside text-gray-300 font-normal p-3 text-left"
+            >
+              <li class="pb-3">
+                Starting player is randomly decided by coin flip
+              </li>
+              <li class="pb-3">
+                Players alternate their turns until somebody wins or whole board
+                is filled, when the game ends as a tie
+              </li>
+              <li class="pb-3">
+                Game either starts with simple start or with more advanced
+                starting technique called SWAP
+              </li>
+            </ul>
           </div>
         </div>
       </div>
     </div>
-    <div id="origins" class="w-full min-height-screen-calc bg-gray-200"></div>
+    <div
+      id="origins"
+      class="w-full min-height-screen-calc flex bg-gray-300 flex-col"
+    >
+      <h2
+        class="text-5xl mt-4 md:mt-4 2xl:mt-4 text-gray-800 font-semibold w-full text-center"
+      >
+        Origins
+      </h2>
+      <div class="ml-auto mr-auto mt-4 w-90 leading-8">
+        <p>
+          Gomoku is said to have originated in China with the name Wu Zi Qi
+          (五子棋). The name "Gomoku" is from the Japanese language, in which it
+          is referred to as gomokunarabe (五目並べ). Go means five, moku is a
+          counter word for pieces and narabe means line-up. The game is also
+          popular in Korea, where it is called omok (五目) which has the same
+          structure and origin as the Japanese name. In the nineteenth century,
+          the game was introduced to Britain where it was known as Go Bang, said
+          to be a corruption of the Japanese word goban, said to be adopted from
+          Chinese k'i pan (qí pán) "chess-board."
+        </p>
+      </div>
+    </div>
     <div id="contact" class="w-full h-56 bg-gomoku-black"></div>
   </div>
 </template>
