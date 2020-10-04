@@ -41,6 +41,7 @@ module.exports = {
       },
       boxShadow: {
         "outline-white": "0 0 0 3px rgba(247,250,252,0.3)",
+        "outline-gray": "0 0 0 3px rgba(74,85,104,0.4)",
       },
       stroke: {
         "gray-200": "white",

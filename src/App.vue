@@ -117,6 +117,8 @@ body {
   font-family: "Fira Sans", sans-serif;
   box-sizing: border-box;
   scroll-behavior: smooth;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-tap-highlight-color: transparent;
 }
 a {
   text-decoration: none !important;

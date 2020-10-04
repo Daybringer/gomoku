@@ -23,7 +23,7 @@
       >
         <div class="m-auto">
           <button
-            class="border-gray-800 border-4 text-gray-800 text-xl font-bold py-3 px-24 rounded-lg focus:shadow-outline focus:outline-none"
+            class="border-gray-800 border-4 text-gray-800 text-xl font-bold py-3 px-24 rounded-lg focus:shadow-outline-gray focus:outline-none"
           >
             Play
           </button>
@@ -44,9 +44,12 @@
       >
         <div class="flex ">
           <div
-            class="m-auto transform hover:scale-105 transition-transform ease-in duration-75"
+            class="m-auto transform hover:scale-105  transition-transform ease-in duration-75"
           >
-            <router-link to="/q/search" class="">
+            <router-link
+              to="/q/search"
+              class="focus:outline-none focus:opacity-75"
+            >
               <img class="" src="../assets/boxMatchQuick.svg" />
             </router-link>
           </div>
@@ -55,7 +58,10 @@
           <div
             class="m-auto transform hover:scale-105 transition-transform ease-in duration-75"
           >
-            <router-link to="/q/search">
+            <router-link
+              to="/q/search"
+              class="focus:outline-none focus:opacity-75"
+            >
               <img src="../assets/boxMatchRanked.svg" />
             </router-link>
           </div>
@@ -64,7 +70,10 @@
           <div
             class="m-auto transform hover:scale-105 transition-transform ease-in duration-75"
           >
-            <router-link to="/q/search">
+            <router-link
+              to="/q/search"
+              class="focus:outline-none focus:opacity-75"
+            >
               <img src="../assets/boxMatchCustom.svg" />
             </router-link>
           </div>
@@ -73,7 +82,10 @@
           <div
             class="m-auto transform hover:scale-105 transition-transform ease-in duration-75"
           >
-            <router-link to="/q/search">
+            <router-link
+              to="/q/search"
+              class="focus:outline-none focus:opacity-75"
+            >
               <img src="../assets/boxMatchAI.svg" />
             </router-link>
           </div>
@@ -85,12 +97,12 @@
       class="w-full min-height-screen-calc flex bg-gray-300 flex-col"
     >
       <h2
-        class="text-5xl my-6 md:mt-4 2xl:mt-4 text-gray-800 font-semibold w-full text-center"
+        class="text-5xl my-6  md:mt-4 2xl:mt-4 text-gray-800 font-semibold w-full text-center"
       >
         Rules
       </h2>
       <div
-        class=" w-90 mt-4  p-4 grid grid-flow-row xl:grid-flow-col xl:grid-cols-7 xl:grid-rows-4 gap-4 mb-8 bg-gray-800 rounded-xl m-auto"
+        class=" w-90 mt-4  p-4 py-8 xl:py-4 grid grid-flow-row xl:grid-flow-col xl:grid-cols-7 xl:grid-rows-4 gap-4 mb-8 bg-gray-800 rounded-lg m-auto"
       >
         <div
           class="xl:row-span-2 xl:col-span-4 p-2 pl-3 rounded-md bg-gray-700 row-start-1"
@@ -98,7 +110,7 @@
           <div
             class="relative flex-row flex  items-center justify-between h-10"
           >
-            <h3 class="font-semibold text-lg md:text-2xl text-gray-200">
+            <h3 class="font-semibold text-lg  md:text-2xl text-gray-200">
               Basics
             </h3>
             <svg
@@ -462,18 +474,31 @@
       >
         Origins
       </h2>
-      <div class="ml-auto mr-auto mt-4 w-90 leading-8">
-        <p>
-          Gomoku is said to have originated in China with the name Wu Zi Qi
-          (五子棋). The name "Gomoku" is from the Japanese language, in which it
-          is referred to as gomokunarabe (五目並べ). Go means five, moku is a
-          counter word for pieces and narabe means line-up. The game is also
-          popular in Korea, where it is called omok (五目) which has the same
-          structure and origin as the Japanese name. In the nineteenth century,
-          the game was introduced to Britain where it was known as Go Bang, said
-          to be a corruption of the Japanese word goban, said to be adopted from
-          Chinese k'i pan (qí pán) "chess-board."
-        </p>
+      <div
+        class="ml-auto flex-1 mr-auto  flex flex-col mt-4   xl:text-base font-normal leading-8 xl:leading-10"
+      >
+        <div class="w-90 xl:w-8/12 m-auto">
+          <p>
+            Gomoku is said to have originated in China with the name Wu Zi Qi
+            (五子棋). The name "Gomoku" is from the Japanese language, in which
+            it is referred to as gomokunarabe (五目並べ). Go means five, moku is
+            a counter word for pieces and narabe means line-up. The game is also
+            popular in Korea, where it is called omok (五目) which has the same
+            structure and origin as the Japanese name. In the nineteenth
+            century, the game was introduced to Britain where it was known as Go
+            Bang, said to be a corruption of the Japanese word goban, said to be
+            adopted from Chinese k'i pan (qí pán) "chess-board."
+          </p>
+        </div>
+        <div class="flex-1 w-full m-auto flex flex-row relative">
+          <div class="mt-16 xl:mt-0">
+            <img
+              src="../assets/gomoku_japanese.svg"
+              alt="gomoku in japanese"
+              class="h-20 rotated-japanese"
+            />
+          </div>
+        </div>
       </div>
     </div>
     <div id="contact" class="w-full bg-gomoku-black p-4 pb-2 flex flex-col">
@@ -481,7 +506,7 @@
         class="text-gray-200 w-full m-auto text-center flex items-center flex-row justify-items-center justify-center pb-2"
       >
         <a
-          href="https://github.com/Daybringer/gomoku-front-source"
+          href="https://github.com/Daybringer/gomoku"
           target="_blank"
           class="focus:outline-none focus:text-gray-700 "
         >
@@ -643,6 +668,10 @@ export default {
 };
 </script>
 <style>
+.rotated-japanese {
+  transform: rotate(12.5deg);
+}
+
 .slide-enter-active {
   animation: slide-animation 0.3s ease-in forwards;
 }

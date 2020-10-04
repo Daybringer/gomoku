@@ -1,38 +1,4 @@
 <template>
-  <!-- <div class="navbar " id="smallNav">
-    <div class="bg-gomoku-black w-full h-full rounder-bottom-nav">
-      <router-link to="/" @click.native="scrollToTop" class="left-0">
-        <img
-          src="@/assets/logo.svg"
-          class="absolute left-0 h-50 ml-4 transform translate-y-1/2"
-        />
-      </router-link>
-      <tasty-burger-button
-        id="hamburger-icon"
-        ref="hamburger"
-        :type="burgerOptions.buttonType"
-        :active="burgerOptions.isActive"
-        :size="burgerOptions.size"
-        :color="colorMain"
-        :active-color="colorMain"
-        v-on:toggle="burgerToggle"
-      />
-      <div id="dropdown-content" :class="currentClass" @click="closeMenu">
-        <router-link v-if="!logged" to="/login"
-          ><span class="text-gomoku-blue">Log In</span></router-link
-        >
-        <router-link v-if="logged" to="/dashboard" style="color:#00b3fe"
-          >Dashboard</router-link
-        >
-        <router-link @click.native="scrollToMatches" to="/"
-          >Matches</router-link
-        >
-        <router-link @click.native="scrollToRules" to="/">Rules</router-link>
-        <router-link to="/about">About</router-link>
-        <a v-if="logged" href="#" @click="logOut">Log Out</a>
-      </div>
-    </div>
-  </div> -->
   <nav
     id="navbar"
     :class="{
@@ -41,9 +7,9 @@
     }"
     class="w-full bg-gray-800 sticky top-0 z-50 "
   >
-    <div class="max-w-7xl mx-auto px-2 md:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto px-2 md:px-6 xl:px-8">
       <div class="relative flex items-center justify-between h-16">
-        <div class="absolute inset-y-0 left-0 flex items-center md:hidden">
+        <div class="absolute inset-y-0 left-0 flex items-center xl:hidden">
           <!-- Mobile menu button-->
           <tasty-burger-button
             id="hamburger-icon"
@@ -56,22 +22,26 @@
             :size="burgerOptions.size"
             :color="grey"
             :active-color="grey"
-            v-on:toggle="burgerToggle"
+            @toggle="burgerToggle"
           />
         </div>
         <div
-          class="flex-1 flex items-center justify-center md:items-stretch md:justify-start"
+          class="flex-1 flex items-center justify-center xl:items-stretch xl:justify-start"
         >
           <div class="flex-shrink-0">
-            <router-link to="/" @click.native="scrollTo('#home')">
+            <router-link
+              to="/"
+              @click.native="scrollTo('#home')"
+              class="focus:outline-none focus:opacity-75"
+            >
               <img
-                class="h-6 w-auto align-middle inline sm:h-8"
+                class="h-6 w-auto align-middle inline sm:h-8 stroke-current  hover:opacity-75"
                 src="@/assets/logo.svg"
                 alt="Playgomoku logo"
               />
             </router-link>
           </div>
-          <div class="hidden md:block md:ml-6">
+          <div class="hidden xl:block xl:ml-6">
             <div class="flex">
               <router-link
                 to="/q/search"
@@ -111,7 +81,7 @@
           </div>
         </div>
         <div
-          class="absolute inset-y-0 right-0 flex items-center pr-2 md:static md:inset-auto md:ml-6 md:pr-0"
+          class="absolute inset-y-0 right-0 flex items-center pr-2 xl:static xl:inset-auto xl:ml-6 xl:pr-0"
         >
           <!-- Profile dropdown -->
           <div class="ml-3 relative">
@@ -132,7 +102,7 @@
               </button>
               <button
                 v-if="!logged"
-                class="md:flex hidden px-8 py-2 bg-gomoku-blue hover:bg-gomoku-blue-dark text-white font-bold border-transparent rounded focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
+                class="xl:flex hidden px-8 py-2 bg-gomoku-blue hover:bg-gomoku-blue-dark text-white font-bold border-transparent rounded focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
                 id="user-menu"
                 aria-label="User menu"
                 aria-haspopup="true"
@@ -192,7 +162,7 @@
     Menu open: "block", Menu closed: "hidden"
   -->
     <div
-      class="md:hidden"
+      class="xl:hidden"
       :class="burgerDropdownIsToggled ? 'block' : 'hidden'"
     >
       <div class="px-2 pt-2 pb-3 z-50" id="navbarDropdown">
@@ -240,7 +210,7 @@ import { TastyBurgerButton } from "vue-tasty-burgers";
 import router from "@/router";
 export default {
   name: "Navbar",
-  props: { logged: Boolean },
+  props: ["logged"],
   data() {
     return {
       burgerOptions: {
