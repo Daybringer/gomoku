@@ -24,7 +24,7 @@ const routes = [
     name: "index",
     component: Home,
     meta: {
-      title: "Gomoku | Online tic-tac-toe",
+      title: "Gomoku | Online Gomoku Multiplayer",
       metaTags: [
         {
           name: "description",

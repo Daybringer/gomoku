@@ -9,11 +9,11 @@
           <span class="text-gray-300 font-semibold md:text-xl italic"
             >Let's play</span
           >
-          <span class="bold-text">Gomoku</span>
-          <span class="bold-text">Piškvorky</span>
-          <span class="bold-text">Five in a row</span>
-          <span class="bold-text">五目並べ</span>
-          <span class="bold-text">Fünf in eine Reihe</span>
+          <h2 class="bold-text">Piškvorky</h2>
+          <h2 class="bold-text">Five in a row</h2>
+          <h2 class="bold-text">五目並べ</h2>
+          <h2 class="bold-text">Fünf in eine Reihe</h2>
+          <h1 class="bold-text">Gomoku</h1>
         </div>
       </div>
 
@@ -40,7 +40,7 @@
         Matches
       </h2>
       <div
-        class=" mx-auto mb-auto md:mt-16 2xl:mt-32  w-90 md:w-60 gap-8 grid grid-cols-1 md:grid-cols-2 z-40"
+        class=" mx-auto mb-auto md:mt-16 2xl:mt-32  w-80 md:w-60 gap-8 grid grid-cols-1 md:grid-cols-2 z-40"
       >
         <div class="flex ">
           <div
@@ -455,7 +455,7 @@
     </div>
     <div
       id="origins"
-      class="w-full min-height-screen-calc flex bg-gray-300 flex-col"
+      class="w-full min-height-screen-calc flex pb-8 bg-gray-300 flex-col"
     >
       <h2
         class="text-5xl mt-4 md:mt-4 2xl:mt-4 text-gray-800 font-semibold w-full text-center"
@@ -476,80 +476,114 @@
         </p>
       </div>
     </div>
-    <div id="contact" class="w-full bg-gomoku-black flex flex-col">
+    <div id="contact" class="w-full bg-gomoku-black p-4 pb-2 flex flex-col">
       <div
-        class="text-gray-200 w-full m-auto text-center flex items-center flex-row justify-items-center justify-center py-2"
+        class="text-gray-200 w-full m-auto text-center flex items-center flex-row justify-items-center justify-center pb-2"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-8 stroke-current mr-3"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          fill="none"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+        <a
+          href="https://github.com/Daybringer/gomoku-front-source"
+          target="_blank"
+          class="focus:outline-none focus:text-gray-700 "
         >
-          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-          <path
-            d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5"
-          />
-        </svg>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="stroke-current h-8"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          fill="none"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-          <circle cx="9" cy="12" r="1" />
-          <circle cx="15" cy="12" r="1" />
-          <path d="M7.5 7.5c3.5-1 5.5-1 9 0" />
-          <path d="M7 16.5c3.5 1 6.5 1 10 0" />
-          <path
-            d="M15.5 17c0 1 1.5 3 2 3c1.5 0 2.833 -1.667 3.5 -3c.667 -1.667 .5 -5.833 -1.5 -11.5c-1.457 -1.015 -3 -1.34 -4.5 -1.5l-1 2.5"
-          />
-          <path
-            d="M8.5 17c0 1 -1.356 3 -1.832 3c-1.429 0 -2.698 -1.667 -3.333 -3c-.635 -1.667 -.476 -5.833 1.428 -11.5c1.388 -1.015 2.782 -1.34 4.237 -1.5l1 2.5"
-          />
-        </svg>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="stroke-current h-8 ml-3"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="#2c3e50"
-          fill="none"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-          <path
-            d="M4 3.71v16.58a0.7 .7 0 0 0 1.05 .606l14.622 -8.42a0.55 .55 0 0 0 0 -.953l-14.622 -8.419a0.7 .7 0 0 0 -1.05 .607z"
-          />
-          <line x1="15" y1="9" x2="4.5" y2="20.5" />
-          <line x1="4.5" y1="3.5" x2="15" y2="15" />
-        </svg>
-      </div>
-      <div class="w-full h-6 flex-1 m-auto text-center pb-2">
-        <span class="text-gray-200 text-base font-normal"
-          ><svg
+          <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="icon icon-tabler icon-tabler-copyright inline h-5 stroke-current"
+            class="h-8 stroke-current mr-5  hover:text-gray-500 focus:outline-none"
             viewBox="0 0 24 24"
-            stroke-width="1.3"
+            stroke-width="1.8"
             fill="none"
             stroke-linecap="round"
             stroke-linejoin="round"
           >
             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-            <circle cx="12" cy="12" r="9" />
-            <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+            <path
+              d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5"
+            />
           </svg>
-          Michal Vaňata</span
+        </a>
+        <a
+          href="https://discord.gg/ASYgt6j"
+          target="_blank"
+          class="focus:outline-none focus:text-gray-700 "
         >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-8 stroke-current hover:text-gray-500 focus:outline-none"
+            viewBox="0 0 24 24"
+            stroke-width="1.8"
+            fill="none"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <circle cx="9" cy="12" r="1" />
+            <circle cx="15" cy="12" r="1" />
+            <path d="M7.5 7.5c3.5-1 5.5-1 9 0" />
+            <path d="M7 16.5c3.5 1 6.5 1 10 0" />
+            <path
+              d="M15.5 17c0 1 1.5 3 2 3c1.5 0 2.833 -1.667 3.5 -3c.667 -1.667 .5 -5.833 -1.5 -11.5c-1.457 -1.015 -3 -1.34 -4.5 -1.5l-1 2.5"
+            />
+            <path
+              d="M8.5 17c0 1 -1.356 3 -1.832 3c-1.429 0 -2.698 -1.667 -3.333 -3c-.635 -1.667 -.476 -5.833 1.428 -11.5c1.388 -1.015 2.782 -1.34 4.237 -1.5l1 2.5"
+            />
+          </svg>
+        </a>
+        <a
+          href="https://play.google.com/store/apps"
+          target="_blank"
+          class="focus:outline-none focus:text-gray-700"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-8 stroke-current ml-5  hover:text-gray-500 focus:outline-none"
+            viewBox="0 0 24 24"
+            stroke-width="1.8"
+            stroke="#2c3e50"
+            fill="none"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path
+              d="M4 3.71v16.58a0.7 .7 0 0 0 1.05 .606l14.622 -8.42a0.55 .55 0 0 0 0 -.953l-14.622 -8.419a0.7 .7 0 0 0 -1.05 .607z"
+            />
+            <line x1="15" y1="9" x2="4.5" y2="20.5" />
+            <line x1="4.5" y1="3.5" x2="15" y2="15" />
+          </svg>
+        </a>
+      </div>
+      <div
+        class="text-gray-200 h-6 w-full m-auto text-center flex items-center flex-row justify-items-center justify-center pb-2 my-2"
+      >
+        <router-link
+          to="/contact"
+          class="mr-5 hover:text-gray-500 focus:text-gray-600 focus:outline-none"
+          >Contact</router-link
+        >
+        <router-link
+          to="/privacy"
+          class="hover:text-gray-500 focus:text-gray-600 focus:outline-none"
+          >Privacy</router-link
+        >
+      </div>
+      <div class="w-full h-6 flex-1 m-auto text-center">
+        <span class="text-gray-200 text-base font-normal "
+          >Copyright (c) 2020
+          <a
+            href="https://daybringer.github.io/"
+            class="focus:text-gray-600 focus:outline-none  hover:text-gray-500"
+            target="_blank"
+            >Vaňata
+          </a>
+          <span class="text-sm italic"
+            >licensed under
+            <a
+              href="https://github.com/Daybringer/gomoku/blob/master/LICENSE"
+              class="focus:text-gray-600 focus:outline-none  not-italic hover:text-gray-500"
+              target="_blank"
+              >MIT</a
+            ></span
+          >
+        </span>
       </div>
     </div>
   </div>
@@ -557,7 +591,7 @@
 <script>
 export default {
   name: "Home",
-  props: { logged: Boolean },
+  props: ["logged"],
   components: {},
   beforeMount() {
     if (window.innerWidth >= 1280) {

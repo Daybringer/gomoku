@@ -3,7 +3,7 @@ module.exports = {
     // removeDeprecatedGapUtilities: true,
     // purgeLayersByDefault: true,
   },
-  purge: [],
+  purge: ["./src/**/*.html", "./src/**/*.vue"],
   theme: {
     extend: {
       colors: {
@@ -42,8 +42,13 @@ module.exports = {
       boxShadow: {
         "outline-white": "0 0 0 3px rgba(247,250,252,0.3)",
       },
+      stroke: {
+        "gray-200": "white",
+      },
     },
   },
-  variants: {},
+  variants: {
+    // textColor: ["responsive", "hover", "focus", "visited", "active"],
+  },
   plugins: [],
 };
