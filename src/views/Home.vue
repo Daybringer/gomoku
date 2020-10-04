@@ -10,6 +10,7 @@
             >Let's play</span
           >
           <span class="bold-text">Gomoku</span>
+          <span class="bold-text">Piškvorky</span>
           <span class="bold-text">Five in a row</span>
           <span class="bold-text">五目並べ</span>
           <span class="bold-text">Fünf in eine Reihe</span>
@@ -34,7 +35,7 @@
       class="w-full min-height-screen-calc flex bg-gray-300 flex-col"
     >
       <h2
-        class="text-5xl mt-8 md:mt-8 2xl:mt-12 text-gray-800 font-semibold w-full text-center"
+        class="text-5xl my-6 md:mt-8 2xl:mt-12 text-gray-800 font-semibold w-full text-center"
       >
         Matches
       </h2>
@@ -84,12 +85,12 @@
       class="w-full min-height-screen-calc flex bg-gray-300 flex-col"
     >
       <h2
-        class="text-5xl mt-4 md:mt-4 2xl:mt-4 text-gray-800 font-semibold w-full text-center"
+        class="text-5xl my-6 md:mt-4 2xl:mt-4 text-gray-800 font-semibold w-full text-center"
       >
         Rules
       </h2>
       <div
-        class=" w-90 mt-4 flex-1 p-4 grid grid-flow-row xl:grid-flow-col xl:grid-cols-7 xl:grid-rows-4 gap-4 mb-8 bg-gray-800 rounded-xl m-auto"
+        class=" w-90 mt-4  p-4 grid grid-flow-row xl:grid-flow-col xl:grid-cols-7 xl:grid-rows-4 gap-4 mb-8 bg-gray-800 rounded-xl m-auto"
       >
         <div
           class="xl:row-span-2 xl:col-span-4 p-2 pl-3 rounded-md bg-gray-700 row-start-1"
@@ -238,189 +239,217 @@
           </transition>
         </div>
         <div
-          class="xl:row-span-4 xl:col-span-3 rounded-md bg-gray-700 flex flex-col  text-center row-start-2"
+          class="xl:row-span-4 xl:col-span-3 rounded-md bg-gray-700 flex flex-col p-2 text-center row-start-2"
         >
-          <h3
-            class="font-semibold text-lg md:text-2xl mt-3 ml-3 text-left text-gray-200"
+          <div
+            class="relative flex-row flex  items-center justify-between h-10"
           >
-            Game Types
-          </h3>
-          <div class="flex-1 bg-gray-800 m-4 rounded-md p-2 pl-3">
-            <div
-              class="relative flex-row flex  items-center justify-between h-10"
+            <h3 class="font-semibold text-lg md:text-2xl text-gray-200 pl-1">
+              Game Types
+            </h3>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="icon icon-tabler icon-tabler-chevrons-down h-full xl:hidden transform transition-transform ease-in duration-100"
+              :class="expanded.matchTypes.self ? '-rotate-90 ' : 'rotate-0'"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="#cbd5e0"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              @click="toggleExpand('matchTypes.self')"
             >
-              <h3 class="text-gray-200 text-left font-medium text-lg">
-                Quick
-              </h3>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="icon icon-tabler icon-tabler-chevrons-down h-full xl:hidden transform transition-transform ease-in duration-100"
-                :class="expanded.matchTypes.quick ? '-rotate-90 ' : 'rotate-0'"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="#cbd5e0"
-                fill="none"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                @click="toggleExpand('matchTypes.quick')"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <polyline points="7 7 12 12 17 7" />
-                <polyline points="7 13 12 18 17 13" />
-              </svg>
-            </div>
-            <transition name="slide">
-              <div v-show="expanded.matchTypes.quick" class="xl:block">
-                <ul
-                  class="list-disc list-inside text-gray-300 font-normal p-3 text-left"
-                >
-                  <li class="pb-3">
-                    Starting player is randomly decided by coin flip
-                  </li>
-                  <li class="pb-3">
-                    Players alternate their turns until somebody wins or whole
-                    board is filled, when the game ends as a tie
-                  </li>
-                  <li class="pb-3">
-                    Game either starts with simple start or with more advanced
-                    starting technique called SWAP
-                  </li>
-                </ul>
-              </div>
-            </transition>
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <polyline points="7 7 12 12 17 7" />
+              <polyline points="7 13 12 18 17 13" />
+            </svg>
           </div>
-          <div class="flex-1 bg-gray-800 m-4 rounded-md p-2 pl-3">
-            <div
-              class="relative flex-row flex  items-center justify-between h-10"
-            >
-              <h3 class="text-gray-200 text-left font-medium text-lg">
-                Ranked
-              </h3>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="icon icon-tabler icon-tabler-chevrons-down h-full xl:hidden transform transition-transform ease-in duration-100"
-                :class="expanded.matchTypes.ranked ? '-rotate-90 ' : 'rotate-0'"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="#cbd5e0"
-                fill="none"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                @click="toggleExpand('matchTypes.ranked')"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <polyline points="7 7 12 12 17 7" />
-                <polyline points="7 13 12 18 17 13" />
-              </svg>
-            </div>
-            <transition name="slide">
-              <div v-show="expanded.matchTypes.ranked" class="xl:block">
-                <ul
-                  class="list-disc list-inside text-gray-300 font-normal p-3 text-left"
+          <transition name="slide">
+            <div v-show="expanded.matchTypes.self" class="xl:block">
+              <div class="flex-1 bg-gray-800 my-4 rounded-md p-3 py-2">
+                <div
+                  class="relative flex-row flex  items-center justify-between h-10"
                 >
-                  <li class="pb-3">
-                    Starting player is randomly decided by coin flip
-                  </li>
-                  <li class="pb-3">
-                    Players alternate their turns until somebody wins or whole
-                    board is filled, when the game ends as a tie
-                  </li>
-                  <li class="pb-3">
-                    Game either starts with simple start or with more advanced
-                    starting technique called SWAP
-                  </li>
-                </ul>
+                  <h3 class="text-gray-200 text-left font-medium text-lg">
+                    Quick
+                  </h3>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="icon icon-tabler icon-tabler-chevrons-down h-full xl:hidden transform transition-transform ease-in duration-100"
+                    :class="
+                      expanded.matchTypes.quick ? '-rotate-90 ' : 'rotate-0'
+                    "
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="#cbd5e0"
+                    fill="none"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    @click="toggleExpand('matchTypes.quick')"
+                  >
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <polyline points="7 7 12 12 17 7" />
+                    <polyline points="7 13 12 18 17 13" />
+                  </svg>
+                </div>
+                <transition name="slide">
+                  <div v-show="expanded.matchTypes.quick" class="xl:block">
+                    <ul
+                      class="list-disc list-inside text-gray-300 font-normal p-3 text-left"
+                    >
+                      <li class="pb-3">
+                        Starting player is randomly decided by coin flip
+                      </li>
+                      <li class="pb-3">
+                        Players alternate their turns until somebody wins or
+                        whole board is filled, when the game ends as a tie
+                      </li>
+                      <li class="pb-3">
+                        Game either starts with simple start or with more
+                        advanced starting technique called SWAP
+                      </li>
+                    </ul>
+                  </div>
+                </transition>
               </div>
-            </transition>
-          </div>
-          <div class="flex-1 bg-gray-800 m-4 rounded-md p-2 pl-3">
-            <div
-              class="relative flex-row flex items-center justify-between h-10"
-            >
-              <h3 class="text-gray-200 text-left font-medium text-lg">
-                Custom
-              </h3>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="icon icon-tabler icon-tabler-chevrons-down h-full xl:hidden transform transition-transform ease-in duration-100"
-                :class="expanded.matchTypes.custom ? '-rotate-90 ' : 'rotate-0'"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="#cbd5e0"
-                fill="none"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                @click="toggleExpand('matchTypes.custom')"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <polyline points="7 7 12 12 17 7" />
-                <polyline points="7 13 12 18 17 13" />
-              </svg>
-            </div>
-            <transition name="slide">
-              <div v-show="expanded.matchTypes.custom" class="xl:block">
-                <ul
-                  class="list-disc list-inside text-gray-300 font-normal p-3 text-left"
+              <div class="flex-1 bg-gray-800 my-4 rounded-md p-3 py-2">
+                <div
+                  class="relative flex-row flex  items-center justify-between h-10"
                 >
-                  <li class="pb-3">
-                    Starting player is randomly decided by coin flip
-                  </li>
-                  <li class="pb-3">
-                    Players alternate their turns until somebody wins or whole
-                    board is filled, when the game ends as a tie
-                  </li>
-                  <li class="pb-3">
-                    Game either starts with simple start or with more advanced
-                    starting technique called SWAP
-                  </li>
-                </ul>
+                  <h3 class="text-gray-200 text-left font-medium text-lg">
+                    Ranked
+                  </h3>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="icon icon-tabler icon-tabler-chevrons-down h-full xl:hidden transform transition-transform ease-in duration-100"
+                    :class="
+                      expanded.matchTypes.ranked ? '-rotate-90 ' : 'rotate-0'
+                    "
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="#cbd5e0"
+                    fill="none"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    @click="toggleExpand('matchTypes.ranked')"
+                  >
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <polyline points="7 7 12 12 17 7" />
+                    <polyline points="7 13 12 18 17 13" />
+                  </svg>
+                </div>
+                <transition name="slide">
+                  <div v-show="expanded.matchTypes.ranked" class="xl:block">
+                    <ul
+                      class="list-disc list-inside text-gray-300 font-normal p-3 text-left"
+                    >
+                      <li class="pb-3">
+                        Starting player is randomly decided by coin flip
+                      </li>
+                      <li class="pb-3">
+                        Players alternate their turns until somebody wins or
+                        whole board is filled, when the game ends as a tie
+                      </li>
+                      <li class="pb-3">
+                        Game either starts with simple start or with more
+                        advanced starting technique called SWAP
+                      </li>
+                    </ul>
+                  </div>
+                </transition>
               </div>
-            </transition>
-          </div>
-          <div class="flex-1 bg-gray-800 m-4 rounded-md p-2 pl-3">
-            <div
-              class="relative flex-row flex  items-center justify-between h-10"
-            >
-              <h3 class="text-gray-200 text-left font-medium text-lg">
-                AI
-              </h3>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="icon icon-tabler icon-tabler-chevrons-down h-full xl:hidden transform transition-transform ease-in duration-100"
-                :class="expanded.matchTypes.ai ? '-rotate-90 ' : 'rotate-0'"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="#cbd5e0"
-                fill="none"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                @click="toggleExpand('matchTypes.ai')"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <polyline points="7 7 12 12 17 7" />
-                <polyline points="7 13 12 18 17 13" />
-              </svg>
-            </div>
-            <transition name="slide">
-              <div v-show="expanded.matchTypes.ai" class="xl:block">
-                <ul
-                  class="list-disc list-inside text-gray-300 font-normal p-3 text-left"
+              <div class="flex-1 bg-gray-800 my-4 rounded-md p-3 py-2">
+                <div
+                  class="relative flex-row flex items-center justify-between h-10"
                 >
-                  <li class="pb-3">
-                    Starting player is randomly decided by coin flip
-                  </li>
-                  <li class="pb-3">
-                    Players alternate their turns until somebody wins or whole
-                    board is filled, when the game ends as a tie
-                  </li>
-                  <li class="pb-3">
-                    Game either starts with simple start or with more advanced
-                    starting technique called SWAP
-                  </li>
-                </ul>
+                  <h3 class="text-gray-200 text-left font-medium text-lg">
+                    Custom
+                  </h3>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="icon icon-tabler icon-tabler-chevrons-down h-full xl:hidden transform transition-transform ease-in duration-100"
+                    :class="
+                      expanded.matchTypes.custom ? '-rotate-90 ' : 'rotate-0'
+                    "
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="#cbd5e0"
+                    fill="none"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    @click="toggleExpand('matchTypes.custom')"
+                  >
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <polyline points="7 7 12 12 17 7" />
+                    <polyline points="7 13 12 18 17 13" />
+                  </svg>
+                </div>
+                <transition name="slide">
+                  <div v-show="expanded.matchTypes.custom" class="xl:block">
+                    <ul
+                      class="list-disc list-inside text-gray-300 font-normal p-3 text-left"
+                    >
+                      <li class="pb-3">
+                        Starting player is randomly decided by coin flip
+                      </li>
+                      <li class="pb-3">
+                        Players alternate their turns until somebody wins or
+                        whole board is filled, when the game ends as a tie
+                      </li>
+                      <li class="pb-3">
+                        Game either starts with simple start or with more
+                        advanced starting technique called SWAP
+                      </li>
+                    </ul>
+                  </div>
+                </transition>
               </div>
-            </transition>
-          </div>
+              <div class="flex-1 bg-gray-800 my-4 rounded-md p-3 py-2">
+                <div
+                  class="relative flex-row flex  items-center justify-between h-10"
+                >
+                  <h3 class="text-gray-200 text-left font-medium text-lg">
+                    AI
+                  </h3>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="icon icon-tabler icon-tabler-chevrons-down h-full xl:hidden transform transition-transform ease-in duration-100"
+                    :class="expanded.matchTypes.ai ? '-rotate-90 ' : 'rotate-0'"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="#cbd5e0"
+                    fill="none"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    @click="toggleExpand('matchTypes.ai')"
+                  >
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <polyline points="7 7 12 12 17 7" />
+                    <polyline points="7 13 12 18 17 13" />
+                  </svg>
+                </div>
+                <transition name="slide">
+                  <div v-show="expanded.matchTypes.ai" class="xl:block">
+                    <ul
+                      class="list-disc list-inside text-gray-300 font-normal p-3 text-left"
+                    >
+                      <li class="pb-3">
+                        Starting player is randomly decided by coin flip
+                      </li>
+                      <li class="pb-3">
+                        Players alternate their turns until somebody wins or
+                        whole board is filled, when the game ends as a tie
+                      </li>
+                      <li class="pb-3">
+                        Game either starts with simple start or with more
+                        advanced starting technique called SWAP
+                      </li>
+                    </ul>
+                  </div>
+                </transition>
+              </div>
+            </div>
+          </transition>
         </div>
       </div>
     </div>
@@ -447,7 +476,82 @@
         </p>
       </div>
     </div>
-    <div id="contact" class="w-full h-56 bg-gomoku-black"></div>
+    <div id="contact" class="w-full bg-gomoku-black flex flex-col">
+      <div
+        class="text-gray-200 w-full m-auto text-center flex items-center flex-row justify-items-center justify-center py-2"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-8 stroke-current mr-3"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          fill="none"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <path
+            d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5"
+          />
+        </svg>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="stroke-current h-8"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          fill="none"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <circle cx="9" cy="12" r="1" />
+          <circle cx="15" cy="12" r="1" />
+          <path d="M7.5 7.5c3.5-1 5.5-1 9 0" />
+          <path d="M7 16.5c3.5 1 6.5 1 10 0" />
+          <path
+            d="M15.5 17c0 1 1.5 3 2 3c1.5 0 2.833 -1.667 3.5 -3c.667 -1.667 .5 -5.833 -1.5 -11.5c-1.457 -1.015 -3 -1.34 -4.5 -1.5l-1 2.5"
+          />
+          <path
+            d="M8.5 17c0 1 -1.356 3 -1.832 3c-1.429 0 -2.698 -1.667 -3.333 -3c-.635 -1.667 -.476 -5.833 1.428 -11.5c1.388 -1.015 2.782 -1.34 4.237 -1.5l1 2.5"
+          />
+        </svg>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="stroke-current h-8 ml-3"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="#2c3e50"
+          fill="none"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <path
+            d="M4 3.71v16.58a0.7 .7 0 0 0 1.05 .606l14.622 -8.42a0.55 .55 0 0 0 0 -.953l-14.622 -8.419a0.7 .7 0 0 0 -1.05 .607z"
+          />
+          <line x1="15" y1="9" x2="4.5" y2="20.5" />
+          <line x1="4.5" y1="3.5" x2="15" y2="15" />
+        </svg>
+      </div>
+      <div class="w-full h-6 flex-1 m-auto text-center pb-2">
+        <span class="text-gray-200 text-base font-normal"
+          ><svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="icon icon-tabler icon-tabler-copyright inline h-5 stroke-current"
+            viewBox="0 0 24 24"
+            stroke-width="1.3"
+            fill="none"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <circle cx="12" cy="12" r="9" />
+            <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+          </svg>
+          Michal Vaňata</span
+        >
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -562,11 +666,11 @@ export default {
   font-weight: 700;
   font-size: 1.75rem;
   @apply text-gray-300;
-  animation: fadeIn ease 12s infinite;
-  -webkit-animation: fadeIn ease 12s infinite;
-  -moz-animation: fadeIn ease 12s infinite;
-  -o-animation: fadeIn ease 12s infinite;
-  -ms-animation: fadeIn ease 12s infinite;
+  animation: fadeIn ease 15s infinite;
+  -webkit-animation: fadeIn ease 15s infinite;
+  -moz-animation: fadeIn ease 15s infinite;
+  -o-animation: fadeIn ease 15s infinite;
+  -ms-animation: fadeIn ease 15s infinite;
   white-space: nowrap;
   overflow: hidden;
   opacity: 0;
@@ -585,21 +689,24 @@ export default {
 .bold-text:nth-child(4) {
   animation-delay: 9s;
 }
+.bold-text:nth-child(5) {
+  animation-delay: 12s;
+}
 
 @keyframes fadeIn {
   0% {
     opacity: 0;
     display: inline;
   }
-  5% {
+  6.5% {
+    opacity: 1;
+    display: inline;
+  }
+  13% {
     opacity: 1;
     display: inline;
   }
   20% {
-    opacity: 1;
-    display: inline;
-  }
-  25% {
     opacity: 0;
     display: none;
   }
