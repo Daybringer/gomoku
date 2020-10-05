@@ -310,15 +310,13 @@
                       class="list-disc list-inside text-gray-300 font-normal p-3 text-left"
                     >
                       <li class="pb-3">
-                        Starting player is randomly decided by coin flip
+                        Players don't have to be logged in
                       </li>
                       <li class="pb-3">
-                        Players alternate their turns until somebody wins or
-                        whole board is filled, when the game ends as a tie
+                        Each player has a time limit of 5mins
                       </li>
                       <li class="pb-3">
-                        Game either starts with simple start or with more
-                        advanced starting technique called SWAP
+                        ELO doesn't matter, just have fun!
                       </li>
                     </ul>
                   </div>
@@ -356,15 +354,19 @@
                       class="list-disc list-inside text-gray-300 font-normal p-3 text-left"
                     >
                       <li class="pb-3">
-                        Starting player is randomly decided by coin flip
+                        Players have to be logged in
                       </li>
                       <li class="pb-3">
-                        Players alternate their turns until somebody wins or
-                        whole board is filled, when the game ends as a tie
+                        Each player has a time limit of 10mins
                       </li>
                       <li class="pb-3">
-                        Game either starts with simple start or with more
-                        advanced starting technique called SWAP
+                        Players of similar ELO are matched against each other
+                      </li>
+                      <li class="pb-3">
+                        Winner's ELO increases, loser's decreases
+                      </li>
+                      <li class="pb-3">
+                        The game starts with SWAP1
                       </li>
                     </ul>
                   </div>
@@ -402,15 +404,13 @@
                       class="list-disc list-inside text-gray-300 font-normal p-3 text-left"
                     >
                       <li class="pb-3">
-                        Starting player is randomly decided by coin flip
+                        One player creates a game room and shares its link with an opponent
                       </li>
                       <li class="pb-3">
-                        Players alternate their turns until somebody wins or
-                        whole board is filled, when the game ends as a tie
+                        It's up to the player to prescribe a time limit and a swap
                       </li>
                       <li class="pb-3">
-                        Game either starts with simple start or with more
-                        advanced starting technique called SWAP
+                        ELO is not affected by the outcome of the game
                       </li>
                     </ul>
                   </div>
@@ -446,15 +446,16 @@
                       class="list-disc list-inside text-gray-300 font-normal p-3 text-left"
                     >
                       <li class="pb-3">
-                        Starting player is randomly decided by coin flip
+                        A player enters a game against a bot
                       </li>
                       <li class="pb-3">
-                        Players alternate their turns until somebody wins or
-                        whole board is filled, when the game ends as a tie
+                        The rules of the game will vary
                       </li>
                       <li class="pb-3">
-                        Game either starts with simple start or with more
-                        advanced starting technique called SWAP
+                        ELO is not affected by the outcome of the game
+                      </li>
+                      <li class="pb-3">
+                        Each game presents a unique challenge
                       </li>
                     </ul>
                   </div>
