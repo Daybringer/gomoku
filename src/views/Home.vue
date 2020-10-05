@@ -134,22 +134,23 @@
             <div v-show="expanded.basics" class="xl:block">
               <ul class="list-disc list-inside text-gray-300 font-normal p-3">
                 <li class="pb-3">Played on <b>15x15</b> gameboard</li>
-                <li class="pb-3">time is measured with chess clocks</li>
+                <li class="pb-3">Players take turns</li>
+                <li class="pb-3">Total time measured using chess clock</li>
                 <li class="pb-3">
-                  player who makes an unbroken row of exactly <b>5</b> stones in
+                  Player who makes an unbroken row of <b>5</b> stones in
                   any direction <b>wins</b> the game
                 </li>
 
                 <li class="pb-3">
-                  Starting player is randomly decided by coin flip
+                  Starting player is determined by a coin flip
                 </li>
                 <li class="pb-3">
-                  Players alternate their turns until somebody wins or whole
-                  board is filled, when the game ends as a tie
+                  Players alternate until somebody wins or the
+                  board is filled, in which case the game is tied
                 </li>
                 <li class="pb-3">
-                  Game either starts with simple start or with more advanced
-                  starting technique called SWAP
+                  Game either starts with a blank board or with a more advanced
+                  technique called SWAP
                 </li>
               </ul>
             </div>
