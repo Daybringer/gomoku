@@ -140,22 +140,23 @@
             <div v-show="expanded.basics" class="xl:block">
               <ul class="list-disc list-inside text-gray-300 font-normal p-3">
                 <li class="pb-3">Played on <b>15x15</b> gameboard</li>
-                <li class="pb-3">time is measured with chess clocks</li>
+                <li class="pb-3">Players take turns</li>
+                <li class="pb-3">Total time measured using chess clock</li>
                 <li class="pb-3">
-                  player who makes an unbroken row of exactly <b>5</b> stones in
+                  Player who makes an unbroken row of <b>5</b> stones in
                   any direction <b>wins</b> the game
                 </li>
 
                 <li class="pb-3">
-                  Starting player is randomly decided by coin flip
+                  Starting player is determined by a coin flip
                 </li>
                 <li class="pb-3">
-                  Players alternate their turns until somebody wins or whole
-                  board is filled, when the game ends as a tie
+                  Players alternate until somebody wins or the
+                  board is filled, in which case the game is tied
                 </li>
                 <li class="pb-3">
-                  Game either starts with simple start or with more advanced
-                  starting technique called SWAP
+                  Game either starts with a blank board or with a more advanced
+                  technique called SWAP
                 </li>
               </ul>
             </div>
@@ -191,15 +192,16 @@
             <div v-show="expanded.swap1" class="xl:block">
               <ul class="list-disc list-inside text-gray-300 font-normal p-3">
                 <li class="pb-3">
-                  Starting player is randomly decided by coin flip
+                  Starting player is determined by a coin flip
                 </li>
                 <li class="pb-3">
-                  Players alternate their turns until somebody wins or whole
-                  board is filled, when the game ends as a tie
+                  He then places 3 stones - 2 of one color and 1 of the other
                 </li>
                 <li class="pb-3">
-                  Game either starts with simple start or with more advanced
-                  starting technique called SWAP
+                  The opponent chooses one of the colors, starting player is assigned the other one
+                </li>
+                <li class="pb-3">
+                  The player with only 1 stone goes 1st
                 </li>
                 <li class="list-none">
                   <button
@@ -242,15 +244,18 @@
             <div v-show="expanded.swap2" class="xl:block">
               <ul class="list-disc list-inside text-gray-300 font-normal p-3">
                 <li class="pb-3">
-                  Starting player is randomly decided by coin flip
-                </li>
-                <li class="pb-3">
-                  Players alternate their turns until somebody wins or whole
-                  board is filled, when the game ends as a tie
-                </li>
-                <li class="pb-3">
-                  Game either starts with simple start or with more advanced
-                  starting technique called SWAP
+                  The game starts like SWAP1, but the opponent has <b>3</b> choices
+                  <ul class="list-disc list-inside text-gray-300 font-normal p-3">
+                    <li class="pb-3">
+                      Play with the 2 placed stones and go 2nd
+                    </li>
+                    <li class="pb-3">
+                      Play with the 1 placed stone and go 1st
+                    </li>
+                    <li class="pb-3">
+                      Place 2 more stones and let starting player choose his color
+                    </li>
+                  </ul>
                 </li>
               </ul>
             </div>
@@ -316,15 +321,13 @@
                       class="list-disc list-inside text-gray-300 font-normal p-3 text-left"
                     >
                       <li class="pb-3">
-                        Starting player is randomly decided by coin flip
+                        Players don't have to be logged in
                       </li>
                       <li class="pb-3">
-                        Players alternate their turns until somebody wins or
-                        whole board is filled, when the game ends as a tie
+                        Each player has a time limit of 5mins
                       </li>
                       <li class="pb-3">
-                        Game either starts with simple start or with more
-                        advanced starting technique called SWAP
+                        ELO doesn't matter, just have fun!
                       </li>
                     </ul>
                   </div>
@@ -362,15 +365,19 @@
                       class="list-disc list-inside text-gray-300 font-normal p-3 text-left"
                     >
                       <li class="pb-3">
-                        Starting player is randomly decided by coin flip
+                        Players have to be logged in
                       </li>
                       <li class="pb-3">
-                        Players alternate their turns until somebody wins or
-                        whole board is filled, when the game ends as a tie
+                        Each player has a time limit of 10mins
                       </li>
                       <li class="pb-3">
-                        Game either starts with simple start or with more
-                        advanced starting technique called SWAP
+                        Players of similar ELO are matched against each other
+                      </li>
+                      <li class="pb-3">
+                        Winner's ELO increases, loser's decreases
+                      </li>
+                      <li class="pb-3">
+                        The game starts with SWAP1
                       </li>
                     </ul>
                   </div>
@@ -408,15 +415,13 @@
                       class="list-disc list-inside text-gray-300 font-normal p-3 text-left"
                     >
                       <li class="pb-3">
-                        Starting player is randomly decided by coin flip
+                        One player creates a game room and shares its link with an opponent
                       </li>
                       <li class="pb-3">
-                        Players alternate their turns until somebody wins or
-                        whole board is filled, when the game ends as a tie
+                        It's up to the player to prescribe a time limit and a swap
                       </li>
                       <li class="pb-3">
-                        Game either starts with simple start or with more
-                        advanced starting technique called SWAP
+                        ELO is not affected by the outcome of the game
                       </li>
                     </ul>
                   </div>
@@ -452,15 +457,16 @@
                       class="list-disc list-inside text-gray-300 font-normal p-3 text-left"
                     >
                       <li class="pb-3">
-                        Starting player is randomly decided by coin flip
+                        A player enters a game against a bot
                       </li>
                       <li class="pb-3">
-                        Players alternate their turns until somebody wins or
-                        whole board is filled, when the game ends as a tie
+                        The rules of the game will vary
                       </li>
                       <li class="pb-3">
-                        Game either starts with simple start or with more
-                        advanced starting technique called SWAP
+                        ELO is not affected by the outcome of the game
+                      </li>
+                      <li class="pb-3">
+                        Each game presents a unique challenge
                       </li>
                     </ul>
                   </div>
