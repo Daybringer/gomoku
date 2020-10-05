@@ -185,15 +185,16 @@
             <div v-show="expanded.swap1" class="xl:block">
               <ul class="list-disc list-inside text-gray-300 font-normal p-3">
                 <li class="pb-3">
-                  Starting player is randomly decided by coin flip
+                  Starting player is determined by a coin flip
                 </li>
                 <li class="pb-3">
-                  Players alternate their turns until somebody wins or whole
-                  board is filled, when the game ends as a tie
+                  He then places 3 stones - 2 of one color and 1 of the other
                 </li>
                 <li class="pb-3">
-                  Game either starts with simple start or with more advanced
-                  starting technique called SWAP
+                  The opponent chooses one of the colors, starting player is assigned the other one
+                </li>
+                <li class="pb-3">
+                  The player with only 1 stone goes 1st
                 </li>
                 <li class="list-none">
                   <button
@@ -236,15 +237,18 @@
             <div v-show="expanded.swap2" class="xl:block">
               <ul class="list-disc list-inside text-gray-300 font-normal p-3">
                 <li class="pb-3">
-                  Starting player is randomly decided by coin flip
-                </li>
-                <li class="pb-3">
-                  Players alternate their turns until somebody wins or whole
-                  board is filled, when the game ends as a tie
-                </li>
-                <li class="pb-3">
-                  Game either starts with simple start or with more advanced
-                  starting technique called SWAP
+                  The game starts like SWAP1, but the opponent has <b>3</b> choices
+                  <ul class="list-disc list-inside text-gray-300 font-normal p-3">
+                    <li class="pb-3">
+                      Play with the 2 placed stones and go 2nd
+                    </li>
+                    <li class="pb-3">
+                      Play with the 1 placed stone and go 1st
+                    </li>
+                    <li class="pb-3">
+                      Place 2 more stones and let starting player choose his color
+                    </li>
+                  </ul>
                 </li>
               </ul>
             </div>
