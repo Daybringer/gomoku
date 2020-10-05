@@ -1,9 +1,7 @@
 <template>
   <div>
     <div id="searchSkewedDiv">
-      <div class="centered-div">
-        <span class="headline">Searching</span>
-      </div>
+      <span class="headline">Searching</span>
     </div>
     <span id="timeTracker">{{ timeToShow }}</span>
     <div class="swing-animation">
@@ -157,28 +155,12 @@ export default {
     },
   },
   methods: {
-    resizeSkew() {
-      let mDiv = document.getElementById("searchSkewedDiv");
-      let timer = document.getElementById("timeTracker");
-      let navHeight = document.getElementById("smallNav").clientHeight;
-      mDiv.style.top =
-        (mDiv.offsetWidth / 2) * Math.tan((7.5 * Math.PI) / 180) +
-        navHeight +
-        "px";
-      timer.style.top =
-        navHeight +
-        mDiv.offsetHeight +
-        mDiv.offsetWidth * Math.tan((7.5 * Math.PI) / 180) +
-        "px";
-    },
     timeChange() {
       this.currTime += 1000;
     },
   },
   props: ["logged"],
   mounted() {
-    this.resizeSkew();
-    window.onresize = () => this.resizeSkew();
     this.interval = setInterval(this.timeChange, 1000);
   },
   beforeDestroy() {
@@ -197,28 +179,6 @@ export default {
   color: #363636;
   display: inline-block;
   width: 20%;
-}
-#searchSkewedDiv {
-  background-color: #8f8f8f;
-  width: 100%;
-  height: 15vh;
-  transform: skewY(-7.5deg);
-  position: absolute;
-  text-align: center;
-  margin-top: -1px;
-  z-index: 1;
-}
-.centered-div {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
-.headline {
-  font-weight: 700;
-  font-size: 3rem;
-  color: #363636;
-  user-select: none;
 }
 
 .swing-animation {

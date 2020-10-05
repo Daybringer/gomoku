@@ -121,15 +121,6 @@ export default {
       };
       login();
     },
-    resizeSkew() {
-      let mDiv = document.getElementById("ober-container");
-      let navHeight = document.getElementById("smallNav").clientHeight;
-
-      let cornerHeight =
-        (mDiv.offsetWidth / 2) * Math.tan((7.5 * Math.PI) / 180);
-
-      mDiv.style.top = cornerHeight + navHeight + "px";
-    },
     onSuccess(googleUser) {
       axios
         .post("/api/googleLogin", { email: googleUser.tt.bu })
@@ -172,15 +163,11 @@ export default {
         });
     },
     closeModal() {
-      console.log("clicked");
       this.usernameModal = false;
       this.usernameTaken = false;
     },
   },
-  mounted() {
-    this.resizeSkew();
-    window.onresize = () => this.resizeSkew();
-  },
+  mounted() {},
 };
 </script>
 <style scoped>

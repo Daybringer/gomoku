@@ -19,14 +19,20 @@
 
       <div class=" bg-gray-800 h-20 z-30 w-full m-auto"></div>
       <div
-        class=" w-90 h-90 flex flex-1 mb-8 bg-white z-40 m-auto rounded-xl md:rounded-2xl -mt-16 md:-mt-12"
+        class=" w-90 h-90 flex flex-1 mb-8 bg-white z-40 m-auto rounded-xl relative md:rounded-2xl -mt-16 md:-mt-12"
       >
+        <!-- Gomoku repeated background -->
+        <!-- <div
+          class="absolute w-full h-full repeated-gomoku-background opacity-50 z-0"
+        ></div> -->
         <div class="m-auto">
-          <button
-            class="border-gray-800 border-4 text-gray-800 text-xl font-bold py-3 px-24 rounded-lg focus:shadow-outline-gray focus:outline-none"
-          >
-            Play
-          </button>
+          <router-link to="/q/search">
+            <button
+              class="border-gray-800 border-4 text-gray-800 text-xl font-bold py-3 px-24 rounded-lg focus:shadow-outline-gray focus:outline-none"
+            >
+              Play
+            </button>
+          </router-link>
         </div>
       </div>
     </div>
@@ -670,6 +676,10 @@ export default {
 <style>
 .rotated-japanese {
   transform: rotate(12.5deg);
+}
+
+.repeated-gomoku-background {
+  background-image: url("../static/lowResBack.png");
 }
 
 .slide-enter-active {
