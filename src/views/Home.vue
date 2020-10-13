@@ -1,5 +1,6 @@
 <template>
   <div class="w-full h-full">
+    <!-- Landing page -->
     <div
       class="w-full min-height-screen-calc flex flex-col bg-gray-300 "
       id="home"
@@ -36,6 +37,7 @@
         </div>
       </div>
     </div>
+    <!-- Matces -->
     <div
       id="matches"
       class="w-full min-height-screen-calc flex bg-gray-300 flex-col"
@@ -98,6 +100,7 @@
         </div>
       </div>
     </div>
+    <!-- Rules -->
     <div
       id="rules"
       class="w-full min-height-screen-calc flex bg-gray-300 flex-col"
@@ -108,375 +111,193 @@
         Rules
       </h2>
       <div
-        class=" w-90 mt-4  p-4 py-8 xl:py-4 grid grid-flow-row xl:grid-flow-col xl:grid-cols-7 xl:grid-rows-4 gap-4 mb-8 bg-gray-800 rounded-lg m-auto"
+        class=" w-90 xl:w-2/3 mt-4  p-4 py-8 flex flex-col mb-8 bg-gray-800 rounded-lg m-auto"
       >
-        <div
-          class="xl:row-span-2 xl:col-span-4 p-2 pl-3 rounded-md bg-gray-700 row-start-1"
+        <!-- Basics -->
+        <rule-section
+          class=""
+          :type="'section'"
+          :toggleTarget="expanded.basics"
+          targetHeading="Basics"
         >
-          <div
-            class="relative flex-row flex  items-center justify-between h-10"
-          >
-            <h3 class="font-semibold text-lg  md:text-2xl text-gray-200">
-              Basics
-            </h3>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="icon icon-tabler icon-tabler-chevrons-down h-full xl:hidden transform transition-transform ease-in duration-100"
-              :class="expanded.basics ? '-rotate-90 ' : 'rotate-0'"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="#cbd5e0"
-              fill="none"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              @click="toggleExpand('basics')"
-            >
-              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-              <polyline points="7 7 12 12 17 7" />
-              <polyline points="7 13 12 18 17 13" />
-            </svg>
-          </div>
-          <transition name="slide">
-            <div v-show="expanded.basics" class="xl:block">
-              <ul class="list-disc list-inside text-gray-300 font-normal p-3">
-                <li class="pb-3">Played on <b>15x15</b> gameboard</li>
-                <li class="pb-3">Players take turns</li>
-                <li class="pb-3">Total time measured using chess clock</li>
-                <li class="pb-3">
-                  Player who makes an unbroken row of <b>5</b> stones in
-                  any direction <b>wins</b> the game
-                </li>
+          <ul class="list-disc list-inside text-gray-300 font-normal p-3">
+            <li class="pb-3">Played on <b>15x15</b> gameboard</li>
+            <li class="pb-3">Players take turns</li>
+            <li class="pb-3">Total time measured using chess clock</li>
+            <li class="pb-3">
+              Player who makes an unbroken row of <b>5</b> stones in any
+              direction <b>wins</b> the game
+            </li>
 
-                <li class="pb-3">
-                  Starting player is determined by a coin flip
-                </li>
-                <li class="pb-3">
-                  Players alternate until somebody wins or the
-                  board is filled, in which case the game is tied
-                </li>
-                <li class="pb-3">
-                  Game either starts with a blank board or with a more advanced
-                  technique called SWAP
-                </li>
-              </ul>
-            </div>
-          </transition>
-        </div>
-        <div
-          class="row-span-1 xl:col-span-4 p-2 pl-3 rounded-md bg-gray-700 row-start-3"
+            <li class="pb-3">
+              Starting player is determined by a coin flip
+            </li>
+            <li class="pb-3">
+              Players alternate until somebody wins or the board is filled, in
+              which case the game is tied
+            </li>
+            <li class="pb-3">
+              Game either starts with a blank board or with a more advanced
+              technique called SWAP
+            </li>
+          </ul>
+        </rule-section>
+        <!-- Game Types -->
+        <rule-section
+          class="mt-4"
+          :type="'section'"
+          :toggleTarget="expanded.gameTypes.self"
+          targetHeading="Game Types"
         >
-          <div
-            class="relative flex-row flex  items-center justify-between h-10"
+          <!-- Quick -->
+          <rule-section
+            :type="'subsection'"
+            :toggleTarget="expanded.gameTypes.quick"
+            :targetHeading="'Quick'"
           >
-            <h3 class="font-semibold text-lg md:text-2xl text-gray-200">
-              SWAP1
-            </h3>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="icon icon-tabler icon-tabler-chevrons-down h-full xl:hidden transform transition-transform ease-in duration-100"
-              :class="expanded.swap1 ? '-rotate-90 ' : 'rotate-0'"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="#cbd5e0"
-              fill="none"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              @click="toggleExpand('swap1')"
+            <ul
+              class="list-disc list-inside text-gray-300 font-normal p-3 text-left"
             >
-              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-              <polyline points="7 7 12 12 17 7" />
-              <polyline points="7 13 12 18 17 13" />
-            </svg>
-          </div>
-          <transition name="slide">
-            <div v-show="expanded.swap1" class="xl:block">
+              <li class="pb-3">
+                Players don't have to be logged in
+              </li>
+              <li class="pb-3">
+                Each player has a time limit of 5mins
+              </li>
+              <li class="pb-3">
+                ELO doesn't matter, just have fun!
+              </li>
+            </ul>
+          </rule-section>
+          <!-- Ranked -->
+          <rule-section
+            :type="'subsection'"
+            :toggleTarget="expanded.gameTypes.ranked"
+            :targetHeading="'Ranked'"
+          >
+            <ul
+              class="list-disc list-inside text-gray-300 font-normal p-3 text-left"
+            >
+              <li class="pb-3">
+                Players have to be logged in
+              </li>
+              <li class="pb-3">
+                Each player has a time limit of 10mins
+              </li>
+              <li class="pb-3">
+                Players of similar ELO are matched against each other
+              </li>
+              <li class="pb-3">
+                Winner's ELO increases, loser's decreases
+              </li>
+              <li class="pb-3">
+                The game starts with SWAP1
+              </li>
+            </ul>
+          </rule-section>
+          <!-- Custom -->
+          <rule-section
+            :type="'subsection'"
+            :toggleTarget="expanded.gameTypes.custom"
+            :targetHeading="'Custom'"
+          >
+            <ul
+              class="list-disc list-inside text-gray-300 font-normal p-3 text-left"
+            >
+              <li class="pb-3">
+                One player creates a game room and shares its link with an
+                opponent
+              </li>
+              <li class="pb-3">
+                It's up to the player to prescribe a time limit and a swap
+              </li>
+              <li class="pb-3">
+                ELO is not affected by the outcome of the game
+              </li>
+            </ul>
+          </rule-section>
+          <!-- AI -->
+          <rule-section
+            :type="'subsection'"
+            :toggleTarget="expanded.gameTypes.ai"
+            :targetHeading="'AI'"
+          >
+            <ul
+              class="list-disc list-inside text-gray-300 font-normal p-3 text-left"
+            >
+              <li class="pb-3">
+                A player enters a game against a bot
+              </li>
+              <li class="pb-3">
+                The rules of the game will vary
+              </li>
+              <li class="pb-3">
+                ELO is not affected by the outcome of the game
+              </li>
+              <li class="pb-3">
+                Each game presents a unique challenge
+              </li>
+            </ul>
+          </rule-section>
+        </rule-section>
+        <!-- SWAP1 -->
+        <rule-section
+          class="mt-4"
+          :type="'section'"
+          :toggleTarget="expanded.swap1"
+          targetHeading="SWAP1"
+        >
+          <ul class="list-disc list-inside text-gray-300 font-normal p-3">
+            <li class="pb-3">
+              Starting player is determined by a coin flip
+            </li>
+            <li class="pb-3">
+              He then places 3 stones - 2 of one color and 1 of the other
+            </li>
+            <li class="pb-3">
+              The opponent chooses one of the colors, starting player is
+              assigned the other one
+            </li>
+            <li class="pb-3">
+              The player with only 1 stone goes 1st
+            </li>
+            <li class="list-none">
+              <button
+                class="border-gray-400 border-4 text-gray-200 text-base font-medium py-1 px-6 rounded-md focus:shadow-outline-white focus:outline-none hover:bg-gray-400 hover:text-gray-700"
+              >
+                Example
+              </button>
+            </li>
+          </ul>
+        </rule-section>
+        <!-- SWAP2 -->
+        <rule-section
+          class="mt-4"
+          :type="'section'"
+          :toggleTarget="expanded.swap2"
+          targetHeading="SWAP2"
+        >
+          <ul class="list-disc list-inside text-gray-300 font-normal p-3">
+            <li class="pb-3">
+              The game starts like SWAP1, but the opponent has
+              <b>3</b> choices
               <ul class="list-disc list-inside text-gray-300 font-normal p-3">
                 <li class="pb-3">
-                  Starting player is determined by a coin flip
+                  Play with the 2 placed stones and go 2nd
                 </li>
                 <li class="pb-3">
-                  He then places 3 stones - 2 of one color and 1 of the other
+                  Play with the 1 placed stone and go 1st
                 </li>
                 <li class="pb-3">
-                  The opponent chooses one of the colors, starting player is assigned the other one
-                </li>
-                <li class="pb-3">
-                  The player with only 1 stone goes 1st
-                </li>
-                <li class="list-none">
-                  <button
-                    class="border-gray-400 border-4 text-gray-200 text-base font-medium py-1 px-6 rounded-md focus:shadow-outline-white focus:outline-none hover:bg-gray-400 hover:text-gray-700"
-                  >
-                    Example
-                  </button>
+                  Place 2 more stones and let starting player choose his color
                 </li>
               </ul>
-            </div>
-          </transition>
-        </div>
-        <div
-          class="row-span-1 xl:col-span-4 p-2 pl-3 rounded-md bg-gray-700 row-start-4"
-        >
-          <div
-            class="relative flex-row flex  items-center justify-between h-10"
-          >
-            <h3 class="font-semibold text-lg md:text-2xl text-gray-200">
-              SWAP2
-            </h3>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="icon icon-tabler icon-tabler-chevrons-down h-full xl:hidden transform transition-transform ease-in duration-100"
-              :class="expanded.swap2 ? '-rotate-90 ' : 'rotate-0'"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="#cbd5e0"
-              fill="none"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              @click="toggleExpand('swap2')"
-            >
-              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-              <polyline points="7 7 12 12 17 7" />
-              <polyline points="7 13 12 18 17 13" />
-            </svg>
-          </div>
-          <transition name="slide">
-            <div v-show="expanded.swap2" class="xl:block">
-              <ul class="list-disc list-inside text-gray-300 font-normal p-3">
-                <li class="pb-3">
-                  The game starts like SWAP1, but the opponent has <b>3</b> choices
-                  <ul class="list-disc list-inside text-gray-300 font-normal p-3">
-                    <li class="pb-3">
-                      Play with the 2 placed stones and go 2nd
-                    </li>
-                    <li class="pb-3">
-                      Play with the 1 placed stone and go 1st
-                    </li>
-                    <li class="pb-3">
-                      Place 2 more stones and let starting player choose his color
-                    </li>
-                  </ul>
-                </li>
-              </ul>
-            </div>
-          </transition>
-        </div>
-        <div
-          class="xl:row-span-4 xl:col-span-3 rounded-md bg-gray-700 flex flex-col p-2 text-center row-start-2"
-        >
-          <div
-            class="relative flex-row flex  items-center justify-between h-10"
-          >
-            <h3 class="font-semibold text-lg md:text-2xl text-gray-200 pl-1">
-              Game Types
-            </h3>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="icon icon-tabler icon-tabler-chevrons-down h-full xl:hidden transform transition-transform ease-in duration-100"
-              :class="expanded.matchTypes.self ? '-rotate-90 ' : 'rotate-0'"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="#cbd5e0"
-              fill="none"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              @click="toggleExpand('matchTypes.self')"
-            >
-              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-              <polyline points="7 7 12 12 17 7" />
-              <polyline points="7 13 12 18 17 13" />
-            </svg>
-          </div>
-          <transition name="slide">
-            <div v-show="expanded.matchTypes.self" class="xl:block">
-              <div class="flex-1 bg-gray-800 my-4 rounded-md p-3 py-2">
-                <div
-                  class="relative flex-row flex  items-center justify-between h-10"
-                >
-                  <h3 class="text-gray-200 text-left font-medium text-lg">
-                    Quick
-                  </h3>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="icon icon-tabler icon-tabler-chevrons-down h-full xl:hidden transform transition-transform ease-in duration-100"
-                    :class="
-                      expanded.matchTypes.quick ? '-rotate-90 ' : 'rotate-0'
-                    "
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="#cbd5e0"
-                    fill="none"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    @click="toggleExpand('matchTypes.quick')"
-                  >
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                    <polyline points="7 7 12 12 17 7" />
-                    <polyline points="7 13 12 18 17 13" />
-                  </svg>
-                </div>
-                <transition name="slide">
-                  <div v-show="expanded.matchTypes.quick" class="xl:block">
-                    <ul
-                      class="list-disc list-inside text-gray-300 font-normal p-3 text-left"
-                    >
-                      <li class="pb-3">
-                        Players don't have to be logged in
-                      </li>
-                      <li class="pb-3">
-                        Each player has a time limit of 5mins
-                      </li>
-                      <li class="pb-3">
-                        ELO doesn't matter, just have fun!
-                      </li>
-                    </ul>
-                  </div>
-                </transition>
-              </div>
-              <div class="flex-1 bg-gray-800 my-4 rounded-md p-3 py-2">
-                <div
-                  class="relative flex-row flex  items-center justify-between h-10"
-                >
-                  <h3 class="text-gray-200 text-left font-medium text-lg">
-                    Ranked
-                  </h3>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="icon icon-tabler icon-tabler-chevrons-down h-full xl:hidden transform transition-transform ease-in duration-100"
-                    :class="
-                      expanded.matchTypes.ranked ? '-rotate-90 ' : 'rotate-0'
-                    "
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="#cbd5e0"
-                    fill="none"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    @click="toggleExpand('matchTypes.ranked')"
-                  >
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                    <polyline points="7 7 12 12 17 7" />
-                    <polyline points="7 13 12 18 17 13" />
-                  </svg>
-                </div>
-                <transition name="slide">
-                  <div v-show="expanded.matchTypes.ranked" class="xl:block">
-                    <ul
-                      class="list-disc list-inside text-gray-300 font-normal p-3 text-left"
-                    >
-                      <li class="pb-3">
-                        Players have to be logged in
-                      </li>
-                      <li class="pb-3">
-                        Each player has a time limit of 10mins
-                      </li>
-                      <li class="pb-3">
-                        Players of similar ELO are matched against each other
-                      </li>
-                      <li class="pb-3">
-                        Winner's ELO increases, loser's decreases
-                      </li>
-                      <li class="pb-3">
-                        The game starts with SWAP1
-                      </li>
-                    </ul>
-                  </div>
-                </transition>
-              </div>
-              <div class="flex-1 bg-gray-800 my-4 rounded-md p-3 py-2">
-                <div
-                  class="relative flex-row flex items-center justify-between h-10"
-                >
-                  <h3 class="text-gray-200 text-left font-medium text-lg">
-                    Custom
-                  </h3>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="icon icon-tabler icon-tabler-chevrons-down h-full xl:hidden transform transition-transform ease-in duration-100"
-                    :class="
-                      expanded.matchTypes.custom ? '-rotate-90 ' : 'rotate-0'
-                    "
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="#cbd5e0"
-                    fill="none"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    @click="toggleExpand('matchTypes.custom')"
-                  >
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                    <polyline points="7 7 12 12 17 7" />
-                    <polyline points="7 13 12 18 17 13" />
-                  </svg>
-                </div>
-                <transition name="slide">
-                  <div v-show="expanded.matchTypes.custom" class="xl:block">
-                    <ul
-                      class="list-disc list-inside text-gray-300 font-normal p-3 text-left"
-                    >
-                      <li class="pb-3">
-                        One player creates a game room and shares its link with an opponent
-                      </li>
-                      <li class="pb-3">
-                        It's up to the player to prescribe a time limit and a swap
-                      </li>
-                      <li class="pb-3">
-                        ELO is not affected by the outcome of the game
-                      </li>
-                    </ul>
-                  </div>
-                </transition>
-              </div>
-              <div class="flex-1 bg-gray-800 my-4 rounded-md p-3 py-2">
-                <div
-                  class="relative flex-row flex  items-center justify-between h-10"
-                >
-                  <h3 class="text-gray-200 text-left font-medium text-lg">
-                    AI
-                  </h3>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="icon icon-tabler icon-tabler-chevrons-down h-full xl:hidden transform transition-transform ease-in duration-100"
-                    :class="expanded.matchTypes.ai ? '-rotate-90 ' : 'rotate-0'"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="#cbd5e0"
-                    fill="none"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    @click="toggleExpand('matchTypes.ai')"
-                  >
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                    <polyline points="7 7 12 12 17 7" />
-                    <polyline points="7 13 12 18 17 13" />
-                  </svg>
-                </div>
-                <transition name="slide">
-                  <div v-show="expanded.matchTypes.ai" class="xl:block">
-                    <ul
-                      class="list-disc list-inside text-gray-300 font-normal p-3 text-left"
-                    >
-                      <li class="pb-3">
-                        A player enters a game against a bot
-                      </li>
-                      <li class="pb-3">
-                        The rules of the game will vary
-                      </li>
-                      <li class="pb-3">
-                        ELO is not affected by the outcome of the game
-                      </li>
-                      <li class="pb-3">
-                        Each game presents a unique challenge
-                      </li>
-                    </ul>
-                  </div>
-                </transition>
-              </div>
-            </div>
-          </transition>
-        </div>
+            </li>
+          </ul>
+        </rule-section>
       </div>
     </div>
+    <!-- Origins -->
     <div
       id="origins"
       class="w-full min-height-screen-calc flex pb-8 bg-gray-300 flex-col"
@@ -487,32 +308,22 @@
         Origins
       </h2>
       <div
-        class="ml-auto flex-1 mr-auto  flex flex-col mt-4   xl:text-base font-normal leading-8 xl:leading-10"
+        class="w-90 xl:w-8/12 xl:text-base ml-auto mr-auto mt-5 font-normal leading-8 xl:leading-10"
       >
-        <div class="w-90 xl:w-8/12 m-auto">
-          <p>
-            Gomoku is said to have originated in China with the name Wu Zi Qi
-            (五子棋). The name "Gomoku" is from the Japanese language, in which
-            it is referred to as gomokunarabe (五目並べ). Go means five, moku is
-            a counter word for pieces and narabe means line-up. The game is also
-            popular in Korea, where it is called omok (五目) which has the same
-            structure and origin as the Japanese name. In the nineteenth
-            century, the game was introduced to Britain where it was known as Go
-            Bang, said to be a corruption of the Japanese word goban, said to be
-            adopted from Chinese k'i pan (qí pán) "chess-board."
-          </p>
-        </div>
-        <div class="flex-1 w-full m-auto flex flex-row relative">
-          <div class="mt-16 xl:mt-0">
-            <img
-              src="../assets/gomoku_japanese.svg"
-              alt="gomoku in japanese"
-              class="h-20 rotated-japanese"
-            />
-          </div>
-        </div>
+        <p>
+          Gomoku is said to have originated in China with the name Wu Zi Qi
+          (五子棋). The name "Gomoku" is from the Japanese language, in which it
+          is referred to as gomokunarabe (五目並べ). Go means five, moku is a
+          counter word for pieces and narabe means line-up. The game is also
+          popular in Korea, where it is called omok (五目) which has the same
+          structure and origin as the Japanese name. In the nineteenth century,
+          the game was introduced to Britain where it was known as Go Bang, said
+          to be a corruption of the Japanese word goban, said to be adopted from
+          Chinese k'i pan (qí pán) "chess-board."
+        </p>
       </div>
     </div>
+    <!-- Footer -->
     <div id="contact" class="w-full bg-gomoku-black p-4 pb-2 flex flex-col">
       <div
         class="text-gray-200 w-full m-auto text-center flex items-center flex-row justify-items-center justify-center pb-2"
@@ -626,57 +437,30 @@
   </div>
 </template>
 <script>
+import RuleSection from "../components/RuleSection.vue";
 export default {
   name: "Home",
   props: ["logged"],
-  components: {},
-  beforeMount() {
-    if (window.innerWidth >= 1280) {
-      this.expanded = {
-        swap1: true,
-        swap2: true,
-        basics: true,
-        matchTypes: {
-          self: true,
-          quick: true,
-          ranked: true,
-          custom: true,
-          ai: true,
-        },
-      };
-    }
-  },
+  components: { RuleSection },
+  beforeMount() {},
   data() {
     return {
       activeRule: "basics",
       expanded: {
-        swap1: false,
-        swap2: false,
-        basics: false,
-        matchTypes: {
-          self: false,
-          quick: false,
-          ranked: false,
-          custom: false,
-          ai: false,
+        swap1: { toggled: false },
+        swap2: { toggled: false },
+        basics: { toggled: false },
+        gameTypes: {
+          self: { toggled: false },
+          quick: { toggled: false },
+          ranked: { toggled: false },
+          custom: { toggled: false },
+          ai: { toggled: false },
         },
       },
     };
   },
-  methods: {
-    toggleExpand(toExpand) {
-      // FIXME quick solution, but unusable in production, make it more general and make it global
-      if (toExpand.includes(".")) {
-        // naive solution for only 1 level
-        let parsedToExpand = toExpand.split(".");
-        this.expanded[parsedToExpand[0]][parsedToExpand[1]] = !this.expanded[
-          parsedToExpand[0]
-        ][parsedToExpand[1]];
-      } else {
-        this.expanded[toExpand] = !this.expanded[toExpand];
-      }
-    },
-  },
+  methods: {},
 };
 </script>
 <style>
@@ -686,27 +470,6 @@ export default {
 
 .repeated-gomoku-background {
   background-image: url("../static/lowResBack.png");
-}
-
-.slide-enter-active {
-  animation: slide-animation 0.3s ease-in forwards;
-}
-.slide-leave-active {
-  animation: slide-animation 0.3s ease-in forwards reverse;
-}
-
-@keyframes slide-animation {
-  0% {
-    max-height: 0;
-    opacity: 0;
-  }
-  40% {
-    opacity: 0;
-  }
-  100% {
-    max-height: 1000px;
-    opacity: 1;
-  }
 }
 
 .rounded-inner-div {
