@@ -22,6 +22,10 @@ export class UsersRepositoryService {
     return this.userRepository.find();
   }
 
+  public async findByUUID(uuid: string): Promise<User> {
+    return this.userRepository.findOne({ UUID: uuid });
+  }
+
   // TODO very much naive solution, has been secured with isAlphaNumeric, but should prolly change
   // ? One solution could be to do both searches and only take the valid one if one exists
   public async findByEmailOrUsername(usernameOrEmail: string): Promise<User> {

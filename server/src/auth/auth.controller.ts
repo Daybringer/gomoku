@@ -12,10 +12,11 @@ import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { UserInterface as User } from '../users/models/user.interface';
 import { TokensService } from './token.service';
-
 import { RefreshTokenDTO } from './dto/refresh-token.dto';
 import { SignUpDTO } from './dto/sign-up.dto';
 import { LogInDTO } from './dto/log-in.dto';
+import { UsersRepositoryService } from 'src/users/usersRepository.service';
+import { JwtAuthGuard } from './guards/jwt.guard';
 
 interface ResponseObject {
   success: boolean;
@@ -37,11 +38,12 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private tokensService: TokensService,
+    private usersRepositoryService: UsersRepositoryService,
   ) {}
 
   @Get()
-  apiIndex() {
-    return 'Api Index';
+  index() {
+    return 'Auth Index';
   }
 
   @Get('google')
@@ -65,7 +67,7 @@ export class AuthController {
     const token = await this.tokensService.generateAccessToken(result.user);
     const refresh = await this.tokensService.generateRefreshToken(
       result.user,
-      60 * 60 * 24 * 30,
+      60 * 60 * 24 * 100,
     );
 
     const payload = this.buildResponsePayload(user, token, refresh);

@@ -31,9 +31,10 @@ export class TokensService {
     private readonly jwtService: JwtService,
   ) {}
 
+  // ? Creating refresh token for 100 days
   public async createRefreshToken(
     user: User,
-    ttl: number = 60 * 60 * 24 * 30,
+    ttl: number = 60 * 60 * 24 * 100,
   ): Promise<RefreshToken> {
     const token = new RefreshTokenEntity();
 
