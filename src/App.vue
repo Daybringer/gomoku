@@ -41,6 +41,16 @@ export default {
     };
   },
   methods: {
+    pokeAPI() {
+      axios
+        .post("/api/mock")
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
     isLogged() {
       axios
         .post(

@@ -1,23 +1,33 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UserModule } from './user/user.module';
-import { User } from './user';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule } from '@nestjs/config';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
+import { UserEntity } from './users/models/user.entity';
+import { RefreshTokenEntity } from './auth/models/refresh-token.entity';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      url: process.env.DATABASE_URL,
-      autoLoadEntities: true,
+      host: 'localhost',
+      port: 5432,
+      username: 'nightrider',
+      password: process.env.DATABASE_PASSWORD,
+      database: 'gomokuDatabase',
+      entities: [UserEntity, RefreshTokenEntity],
       synchronize: true,
     }),
-    UserModule,
+    AuthModule,
+    UsersModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'dist/public'),
+    }),
   ],
   controllers: [AppController],
-  providers: [AppService, User],
+  providers: [AppService],
 })
 export class AppModule {}
