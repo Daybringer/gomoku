@@ -3,14 +3,24 @@
     <div class="page-container">
       <h1 class="page-title" id="page-title">Login</h1>
       <div class="form-footer">
-        <form v-on:submit="login">
+        <form @submit="login">
           <fieldset>
             <p id="successField">You have been succesfully logged in</p>
             <p id="errorField">Invalid email or password</p>
             <label for="usernameLogin">Email</label>
-            <input type="text" name="emailLogin" id="emailLogin" />
+            <input
+              type="text"
+              name="emailLogin"
+              id="emailLogin"
+              v-model="usernameOrEmail"
+            />
             <label for="passwordLogin">Password</label>
-            <input type="password" name="passwordLogin" id="passwordLogin" />
+            <input
+              type="password"
+              name="passwordLogin"
+              id="passwordLogin"
+              v-model="password"
+            />
           </fieldset>
           <input
             id="form-footer-submit"
@@ -22,18 +32,9 @@
             >No account yet?</router-link
           >
         </form>
-
-        <GoogleLogin
-          :renderParams="renderParams"
-          :params="params"
-          :onSuccess="onSuccess"
-          :onFailure="onFailure"
-          style="margin-top:1rem;"
-          >Login</GoogleLogin
-        >
       </div>
     </div>
-    <div v-show="usernameModal" class="modal">
+    <!-- <div v-show="usernameModal" class="modal">
       <div class="modalBox">
         <i
           @click="closeModal"
@@ -50,19 +51,15 @@
         <span v-show="usernameTaken" class="errorMess">Username is taken</span>
         <button @click="registerModal" class="modalBtn">Save</button>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script>
-import router from "../router";
-import axios from "axios";
-import GoogleLogin from "vue-google-login";
-
 export default {
   name: "Login",
   props: ["logged"],
-  components: { GoogleLogin },
+  components: {},
   data() {
     return {
       colorMain: "#00b3fe",
@@ -72,17 +69,8 @@ export default {
       usernameModal: false,
       googleMail: null,
       isSignIn: false,
-      // client_id is the only required property but you can add several more params, full list down bellow on the Auth api section
-      params: {
-        client_id:
-          "1064130338503-0g3bbnb9i03s10mb1douod4oes4kp0th.apps.googleusercontent.com",
-      },
-      // only needed if you want to render the button with the google ui
-      renderParams: {
-        width: 250,
-        height: 50,
-        longtitle: true,
-      },
+      usernameOrEmail: "",
+      password: "",
     };
   },
   computed: {
@@ -96,76 +84,63 @@ export default {
   methods: {
     login(e) {
       e.preventDefault();
-      let email = document.getElementById("emailLogin").value.trim();
-      let password = document.getElementById("passwordLogin").value.trim();
-      let login = () => {
-        let data = {
-          email: email,
-          password: password,
-        };
-        axios
-          .post("/api/login", data)
-          .then(() => {
-            document.getElementById("emailLogin").value = "";
-            document.getElementById("passwordLogin").value = "";
-            document.getElementById("errorField").style.display = "none";
-            document.getElementById("successField").style.display = "block";
-            this.$emit("loggedIn", true);
-            router.push("/");
-          })
-          .catch(() => {
-            document.getElementById("passwordLogin").value = "";
-            document.getElementById("errorField").style.display = "block";
-            document.getElementById("successField").style.display = "none";
-          });
-      };
-      login();
-    },
-    onSuccess(googleUser) {
-      axios
-        .post("/api/googleLogin", { email: googleUser.tt.bu })
-        .then((response) => {
-          this.googleMail = googleUser.tt.bu;
-          const { registered, username } = response.data;
-          if (registered) {
-            window.localStorage.setItem(
-              "jwtToken",
-              response.headers["auth-token"]
-            );
-            this.$emit("loggedIn", true, username);
-            router.push("/");
-          } else {
-            // show username modal
-            this.usernameModal = true;
-          }
-        })
-        .catch((err) => {
-          if (err) console.log(err);
-        });
-    },
-    onFailure(err) {
-      console.log(err);
-    },
-    registerModal() {
-      let username = document.getElementById("usernameInp").value;
-      let trimmedUsername = username.trim();
-      axios
-        .post("/api/googleRegister", {
-          email: this.googleMail,
-          username: trimmedUsername,
-        })
+
+      const { usernameOrEmail, password } = this.$data;
+
+      console.log(usernameOrEmail, password);
+
+      this.$store
+        .dispatch("authenticate", { usernameOrEmail, password })
         .then(() => {
-          this.$emit("loggedIn", true, trimmedUsername);
-          router.push("/");
+          this.$router.push("/");
         })
-        .catch((err) => {
-          if (err) console.log(err);
-        });
+        .catch((err) => {});
     },
-    closeModal() {
-      this.usernameModal = false;
-      this.usernameTaken = false;
-    },
+    // onSuccess(googleUser) {
+    //   axios
+    //     .post("/api/googleLogin", { email: googleUser.tt.bu })
+    //     .then((response) => {
+    //       this.googleMail = googleUser.tt.bu;
+    //       const { registered, username } = response.data;
+    //       if (registered) {
+    //         window.localStorage.setItem(
+    //           "jwtToken",
+    //           response.headers["auth-token"]
+    //         );
+    //         this.$emit("loggedIn", true, username);
+    //         router.push("/");
+    //       } else {
+    //         // show username modal
+    //         this.usernameModal = true;
+    //       }
+    //     })
+    //     .catch((err) => {
+    //       if (err) console.log(err);
+    //     });
+    // },
+    // onFailure(err) {
+    //   console.log(err);
+    // },
+    // registerModal() {
+    //   let username = document.getElementById("usernameInp").value;
+    //   let trimmedUsername = username.trim();
+    //   axios
+    //     .post("/api/googleRegister", {
+    //       email: this.googleMail,
+    //       username: trimmedUsername,
+    //     })
+    //     .then(() => {
+    //       this.$emit("loggedIn", true, trimmedUsername);
+    //       router.push("/");
+    //     })
+    //     .catch((err) => {
+    //       if (err) console.log(err);
+    //     });
+    // },
+    // closeModal() {
+    //   this.usernameModal = false;
+    //   this.usernameTaken = false;
+    // },
   },
   mounted() {},
 };

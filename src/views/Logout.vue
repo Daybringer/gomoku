@@ -5,7 +5,10 @@
 </template>
 <script>
 export default {
-  name: "Logout"
+  name: "Logout",
+  mounted() {
+    this.$store.dispatch("AUTH_LOGOUT");
+  },
 };
 </script>
 <style scoped>

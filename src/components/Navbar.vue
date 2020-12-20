@@ -84,10 +84,10 @@
           class="absolute inset-y-0 right-0 flex items-center pr-2 xl:static xl:inset-auto xl:ml-6 xl:pr-0"
         >
           <!-- Profile dropdown -->
-          <div class="ml-3 relative">
+          <div class="ml-3 relative" v-click-outside="clickedOutsideProfile">
             <div>
               <button
-                v-if="logged"
+                v-show="logged"
                 class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-white transition duration-150 ease-in-out"
                 id="user-menu"
                 aria-label="User menu"
@@ -101,7 +101,7 @@
                 />
               </button>
               <button
-                v-if="!logged"
+                v-show="!logged"
                 class="xl:flex hidden px-8 py-2 bg-gomoku-blue hover:bg-gomoku-blue-dark text-white font-bold border-transparent rounded focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
                 id="user-menu"
                 aria-label="User menu"
@@ -138,12 +138,14 @@
                   >
                   <a
                     href="#"
+                    @click.prevent="routeTo('/settings')"
                     class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
                     role="menuitem"
                     >Settings</a
                   >
                   <a
                     href="#"
+                    @click.prevent="logout"
                     class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
                     role="menuitem"
                     >Sign out</a
@@ -205,12 +207,12 @@
 </template>
 
 <script>
+import { ClickOutside } from "../directives/ClickOutsidedDirective";
 import debounce from "debounce";
 import { TastyBurgerButton } from "vue-tasty-burgers";
 import router from "@/router";
 export default {
   name: "Navbar",
-  props: ["logged"],
   data() {
     return {
       burgerOptions: {
@@ -242,9 +244,18 @@ export default {
     );
   },
   methods: {
-    logOut() {
-      window.localStorage.removeItem("jwtToken");
-      this.$emit("loggedOut");
+    logout() {
+      this.$store
+        .dispatch("authLogOut")
+        .then(() => {
+          if (this.profileDropdownIsToggled) this.profileToggle();
+          if (this.$router.currentRoute.path != "/") this.$router.push("/");
+        })
+        .catch((err) => {});
+    },
+    routeTo(path) {
+      if (this.profileDropdownIsToggled) this.profileToggle();
+      this.$router.push(path);
     },
     navbarActiveElChange() {
       // TODO Try to change to more dynamic, vue way
@@ -329,7 +340,7 @@ export default {
       }
     },
     routerLinkToLogin() {
-      router.push("login");
+      router.push("/login").catch(() => {});
     },
     scrollTo(hashbang) {
       if (location.pathname === "/") {
@@ -346,8 +357,18 @@ export default {
         }
       }
     },
+    clickedOutsideProfile() {
+      if (this.profileDropdownIsToggled) {
+        this.profileToggle();
+      }
+    },
   },
   computed: {
+    logged() {
+      let state = this.$store.getters.isAuthenticated;
+      console.log(state);
+      return state;
+    },
     cssVars() {
       return {
         "--main": this.colorMain,
@@ -358,6 +379,7 @@ export default {
   components: {
     "tasty-burger-button": TastyBurgerButton,
   },
+  directives: { ClickOutside },
 };
 </script>
 

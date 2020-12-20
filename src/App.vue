@@ -1,23 +1,7 @@
 <template>
   <div id="app">
-    <Navbar
-      id="navbar"
-      :colorMain="colorMain"
-      :colorSecond="colorSecond"
-      @loggedOut="loggedOut"
-      :username="username"
-      :logged="logged"
-    ></Navbar>
-    <router-view
-      :colorMain="colorMain"
-      :colorSecond="colorSecond"
-      @colorMain="changeColorMain"
-      @colorSecond="changeColorSecond"
-      @loggedIn="loggedIn"
-      :username="username"
-      :logged="logged"
-      :colorMainDark="colorMainDark"
-    />
+    <Navbar id="navbar"></Navbar>
+    <router-view />
   </div>
 </template>
 <script>
@@ -114,9 +98,7 @@ export default {
         .catch(() => {});
     },
   },
-  mounted() {
-    this.isLogged();
-  },
+  mounted() {},
 };
 </script>
 <style>
