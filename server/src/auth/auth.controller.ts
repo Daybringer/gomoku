@@ -3,7 +3,9 @@ import {
   Controller,
   Get,
   Post,
+  Redirect,
   Req,
+  Res,
   UseGuards,
   UsePipes,
   ValidationPipe,
@@ -52,8 +54,19 @@ export class AuthController {
 
   @Get('google/redirect')
   @UseGuards(AuthGuard('google'))
-  googleAuthRedirect(@Req() req) {
-    return this.authService.googleLogin(req);
+  async googleAuthRedirect(@Req() req, @Res() res) {
+    const user = await this.authService.googleLogin(req);
+
+    if (!user)
+      return { success: false, data: null, errors: ['Invalid Credentials'] };
+
+    const token = await this.tokensService.generateAccessToken(user);
+    const refresh = await this.tokensService.generateRefreshToken(
+      user,
+      60 * 60 * 24 * 30,
+    );
+
+    res.redirect(`/googleLogin?token=${token}`);
   }
 
   @Post('register')

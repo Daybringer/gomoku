@@ -18,8 +18,8 @@ export interface UserInterface {
   UUID?: string;
   username?: string;
   email?: string;
-  //   NOT UNIQUE
   googleID?: string;
+
   password?: string;
   date?: Date;
   // admin?:boolean;

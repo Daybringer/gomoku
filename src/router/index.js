@@ -15,6 +15,7 @@ import Settings from "../views/Settings.vue";
 import Dashboard from "../views/Dashboard.vue";
 import Missing from "../views/404.vue";
 import GameBase from "../components/GameBase.vue";
+import GoogleLogin from "../views/googleLogin.vue";
 
 import store from "../store";
 
@@ -52,6 +53,12 @@ const routes = [
     path: "/login",
     name: "login",
     component: Login,
+    beforeEnter: ifNotAuthenticated,
+  },
+  {
+    path: "/googleLogin",
+    name: "GoogleLogin",
+    component: GoogleLogin,
     beforeEnter: ifNotAuthenticated,
   },
   {

@@ -33,25 +33,8 @@
           >
         </form>
       </div>
+      <a href="/api/auth/google">Google</a>
     </div>
-    <!-- <div v-show="usernameModal" class="modal">
-      <div class="modalBox">
-        <i
-          @click="closeModal"
-          class="fa fa-times fa-2x closeModal"
-          aria-hidden="true"
-        ></i>
-        <label for="usernameInp" class="modalLabel">Set username</label>
-        <input
-          type="text"
-          name="usernameInp"
-          id="usernameInp"
-          class="modalInput"
-        />
-        <span v-show="usernameTaken" class="errorMess">Username is taken</span>
-        <button @click="registerModal" class="modalBtn">Save</button>
-      </div>
-    </div> -->
   </div>
 </template>
 
@@ -93,6 +76,15 @@ export default {
         .dispatch("authenticate", { usernameOrEmail, password })
         .then(() => {
           this.$router.push("/");
+        })
+        .catch((err) => {});
+    },
+    googleLogin(e) {
+      e.preventDefault();
+      this.$store
+        .dispatch("authenticateGoogle")
+        .then(() => {
+          // this.$router.push("/");
         })
         .catch((err) => {});
     },

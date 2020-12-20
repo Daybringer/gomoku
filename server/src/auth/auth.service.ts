@@ -35,15 +35,38 @@ export class AuthService {
     return bcrypt.compare(newPassword, passwordHash);
   }
 
-  googleLogin(req) {
+  async googleLogin(req): Promise<User> {
     if (!req.user) {
-      return 'No user from google';
+      throw new UnauthorizedException('Invalid Google User');
     }
+    const { email, googleID } = req.user;
 
-    return {
-      message: 'User information from google',
-      user: req.user,
-    };
+    return this.userRepositoryService.findOneByEmail(email).then((user) => {
+      if (!user) {
+        return this.createGUser(email, googleID);
+      } else {
+        if (user.googleID !== '0') {
+          return user;
+        } else {
+          throw new UnauthorizedException('Not a Google account');
+        }
+      }
+    });
+  }
+
+  async createGUser(email: string, googleID: string): Promise<User> {
+    const newUser = new UserEntity();
+    newUser.username = '';
+    newUser.email = email;
+    newUser.googleID = googleID;
+    newUser.password = '';
+    const user = await this.userRepository.save(newUser);
+    if (user) {
+      const { password, ...result } = user;
+      return result;
+    } else {
+      return null;
+    }
   }
 
   async createUser(
@@ -122,16 +145,17 @@ export class AuthService {
         if (!user) {
           throw Error;
         } else {
-          return this.comparePassword(password, user.password).then(
-            (passwordsMatch) => {
-              if (passwordsMatch) {
-                const { password, ...result } = user;
-                return result;
-              } else {
-                throw Error;
-              }
-            },
-          );
+          if (user.googleID)
+            return this.comparePassword(password, user.password).then(
+              (passwordsMatch) => {
+                if (passwordsMatch) {
+                  const { password, ...result } = user;
+                  return result;
+                } else {
+                  throw Error;
+                }
+              },
+            );
         }
       });
   }

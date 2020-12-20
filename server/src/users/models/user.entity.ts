@@ -38,7 +38,7 @@ export class UserEntity {
   @CreateDateColumn()
   created: Date;
 
-  @Column({ default: 0 })
+  @Column({ default: '' })
   googleID: string;
 
   @Column({ default: '' })

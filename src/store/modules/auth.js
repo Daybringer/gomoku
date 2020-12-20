@@ -19,8 +19,6 @@ const actions = {
       axios
         .post("api/auth/login", { usernameOrEmail, password })
         .then((resp) => {
-          console.log(resp);
-
           const data = resp.data.data;
 
           const token = data.payload.token;
@@ -37,6 +35,11 @@ const actions = {
           reject(err);
         });
     });
+  },
+  saveToken({ commit }, token) {
+    localStorage.setItem("user-token", token);
+    axios.defaults.headers.common["Authorization"] = token;
+    commit("setSuccess", token);
   },
   authLogOut({ commit }) {
     return new Promise((resolve) => {
