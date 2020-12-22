@@ -1,6 +1,8 @@
+'use strict';
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Post,
   Redirect,
@@ -17,13 +19,21 @@ import { TokensService } from './token.service';
 import { RefreshTokenDTO } from './dto/refresh-token.dto';
 import { SignUpDTO } from './dto/sign-up.dto';
 import { LogInDTO } from './dto/log-in.dto';
-import { UsersRepositoryService } from 'src/users/usersRepository.service';
+import { GoogleSignInDTO } from './dto/google-sign-in.dto';
+import { SetUsernameDTO } from './dto/set-username.dto';
 import { JwtAuthGuard } from './guards/jwt.guard';
 
 interface ResponseObject {
   success: boolean;
-  data: AuthenticationPayload | null;
   errors: string[];
+}
+
+interface AuthResponseObject extends ResponseObject {
+  data: AuthenticationPayload | null;
+}
+
+interface GenericResponseObject extends ResponseObject {
+  data: {} | null;
 }
 
 interface AuthenticationPayload {
@@ -40,7 +50,6 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private tokensService: TokensService,
-    private usersRepositoryService: UsersRepositoryService,
   ) {}
 
   @Get()
@@ -48,30 +57,87 @@ export class AuthController {
     return 'Auth Index';
   }
 
-  @Get('google')
-  @UseGuards(AuthGuard('google'))
-  async googleAuth(@Req() req) {}
+  @Post('google')
+  @UsePipes(new ValidationPipe())
+  async signIn(
+    @Body() req: GoogleSignInDTO,
+  ): Promise<GenericResponseObject | AuthResponseObject> {
+    const payload = await this.authService.validateGoogleID(req.id_token);
+    if (!payload)
+      return { success: false, data: null, errors: ['Invalid Google user'] };
 
-  @Get('google/redirect')
-  @UseGuards(AuthGuard('google'))
-  async googleAuthRedirect(@Req() req, @Res() res) {
-    const user = await this.authService.googleLogin(req);
+    console.log(payload);
+
+    const user = await this.authService.validateGoogleUser(payload.email);
+
+    if (!user) {
+      const user = this.authService.namelessGoogleExists(payload.email);
+      if (!user)
+        this.authService
+          .createNamelessGoogle(payload.email, payload.sub)
+          .then(() => {});
+
+      return {
+        success: false,
+        data: { id_token: req.id_token },
+        errors: ['Set username'],
+      };
+    } else {
+      const token = await this.tokensService.generateAccessToken(user);
+      const refresh = await this.tokensService.generateRefreshToken(
+        user,
+        60 * 60 * 24 * 100,
+      );
+
+      const authPayload = this.buildResponsePayload(user, token, refresh);
+
+      return {
+        success: true,
+        data: authPayload,
+        errors: [],
+      };
+    }
+  }
+
+  @Post('setUsername')
+  @UsePipes(new ValidationPipe())
+  async setUsername(@Body() req: SetUsernameDTO): Promise<AuthResponseObject> {
+    const { username, id_token } = req;
+
+    const payload = await this.authService.validateGoogleID(id_token);
+    if (!payload)
+      return { success: false, data: null, errors: ['Invalid Google user'] };
+
+    const user = await this.authService.setGoogleUsername(
+      username,
+      payload.email,
+    );
 
     if (!user)
-      return { success: false, data: null, errors: ['Invalid Credentials'] };
+      return {
+        success: false,
+        data: null,
+        errors: ['Username is already taken'],
+      };
 
     const token = await this.tokensService.generateAccessToken(user);
     const refresh = await this.tokensService.generateRefreshToken(
       user,
-      60 * 60 * 24 * 30,
+      60 * 60 * 24 * 100,
     );
 
-    res.redirect(`/googleLogin?token=${token}`);
+    const authPayload = this.buildResponsePayload(user, token, refresh);
+
+    return {
+      success: true,
+      data: authPayload,
+      errors: [],
+    };
   }
 
   @Post('register')
   @UsePipes(new ValidationPipe())
-  async register(@Body() user: SignUpDTO): Promise<ResponseObject> {
+  async register(@Body() user: SignUpDTO): Promise<AuthResponseObject> {
     const result = await this.authService.register(user);
 
     if (result.errors.length > 0)
@@ -94,7 +160,7 @@ export class AuthController {
 
   @Post('login')
   @UsePipes(new ValidationPipe())
-  async login(@Body() user: LogInDTO): Promise<ResponseObject> {
+  async login(@Body() user: LogInDTO): Promise<AuthResponseObject> {
     const validatedUser = await this.authService.login(user);
     if (!validatedUser)
       return { success: false, data: null, errors: ['Invalid Credentials'] };
@@ -116,8 +182,8 @@ export class AuthController {
     };
   }
 
-  @Post('/refresh')
-  async refresh(@Body() body: RefreshTokenDTO): Promise<ResponseObject> {
+  @Post('refresh')
+  async refresh(@Body() body: RefreshTokenDTO): Promise<AuthResponseObject> {
     const {
       user,
       token,

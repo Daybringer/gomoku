@@ -1,13 +1,15 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { InjectRepository } from '@nestjs/typeorm';
-import { UserEntity } from 'src/users/models/user.entity';
 
 import { UserInterface as User } from 'src/users/models/user.interface';
+import { NamelessGUserRepositoryService } from 'src/users/namelessGUserRepository.service';
 import { UsersRepositoryService } from 'src/users/usersRepository.service';
-import { Repository } from 'typeorm';
+
 import { LogInDTO } from './dto/log-in.dto';
 import { SignUpDTO } from './dto/sign-up.dto';
+
+import { OAuth2Client } from 'google-auth-library';
+import { NamelessGUser } from 'src/users/models/namelessGUser.interface';
 
 const bcrypt = require('bcrypt');
 
@@ -15,9 +17,8 @@ const bcrypt = require('bcrypt');
 export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
-    @InjectRepository(UserEntity)
-    private readonly userRepository: Repository<UserEntity>,
     private readonly userRepositoryService: UsersRepositoryService,
+    private readonly namelessGUserRepositoryService: NamelessGUserRepositoryService,
   ) {}
 
   async generateJWT(user: User): Promise<string> {
@@ -28,45 +29,58 @@ export class AuthService {
     return bcrypt.hash(password, 13);
   }
 
+  async validateGoogleID(googleIDToken: string) {
+    const client = new OAuth2Client(
+      process.env.GOOGLE_CLIENT_ID,
+      process.env.GOOGLE_CLIENT_SECRET,
+    );
+    const ticket = await client.verifyIdToken({
+      idToken: googleIDToken,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+    return ticket.getPayload();
+  }
+
+  public async validateGoogleUser(email: string): Promise<User> {
+    return this.userRepositoryService.findOneByEmail(email);
+  }
+
+  async namelessGoogleExists(email: string): Promise<NamelessGUser> {
+    return this.namelessGUserRepositoryService.findOneByEmail(email);
+  }
+
+  async createNamelessGoogle(
+    email: string,
+    googleID: string,
+  ): Promise<NamelessGUser> {
+    return this.namelessGUserRepositoryService.create(email, googleID);
+  }
+
+  async setGoogleUsername(username: string, email: string): Promise<User> {
+    return this.userRepositoryService
+      .findOneByUsername(username)
+      .then((user) => {
+        if (user) {
+          throw new Error('Username is already taken');
+        } else {
+          return this.userRepositoryService
+            .create(username, email, '')
+            .then((user) => {
+              return this.namelessGUserRepositoryService
+                .deleteOneByEmail(email)
+                .then(() => {
+                  return user;
+                });
+            });
+        }
+      });
+  }
+
   async comparePassword(
     newPassword: string,
     passwordHash: string,
   ): Promise<boolean> {
     return bcrypt.compare(newPassword, passwordHash);
-  }
-
-  async googleLogin(req): Promise<User> {
-    if (!req.user) {
-      throw new UnauthorizedException('Invalid Google User');
-    }
-    const { email, googleID } = req.user;
-
-    return this.userRepositoryService.findOneByEmail(email).then((user) => {
-      if (!user) {
-        return this.createGUser(email, googleID);
-      } else {
-        if (user.googleID !== '0') {
-          return user;
-        } else {
-          throw new UnauthorizedException('Not a Google account');
-        }
-      }
-    });
-  }
-
-  async createGUser(email: string, googleID: string): Promise<User> {
-    const newUser = new UserEntity();
-    newUser.username = '';
-    newUser.email = email;
-    newUser.googleID = googleID;
-    newUser.password = '';
-    const user = await this.userRepository.save(newUser);
-    if (user) {
-      const { password, ...result } = user;
-      return result;
-    } else {
-      return null;
-    }
   }
 
   async createUser(
@@ -75,11 +89,11 @@ export class AuthService {
     password: string,
   ): Promise<User> {
     const hashedPassword = await this.hashPassword(password);
-    const newUser = new UserEntity();
-    newUser.username = username;
-    newUser.email = email;
-    newUser.password = hashedPassword;
-    const user = await this.userRepository.save(newUser);
+    const user = await this.userRepositoryService.create(
+      username,
+      email,
+      hashedPassword,
+    );
     if (user) {
       const { password, ...result } = user;
       return result;

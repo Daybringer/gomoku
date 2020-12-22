@@ -32,19 +32,43 @@
             >No account yet?</router-link
           >
         </form>
+        <GoogleLogin
+          :params="params"
+          :renderParams="renderParams"
+          :onSuccess="onSuccess"
+          :onFailure="onFailure"
+        ></GoogleLogin>
+        <div
+          v-if="modalToggled"
+          class="w-full h-full absolute z-10 bg-gomoku-blue-dark text-center"
+        >
+          <h2 class="text-white">Set username</h2>
+          <input class="bg-white w-10/12" v-model="gUsername" type="text" />
+          <button @click="requestUsername">Set username</button>
+        </div>
       </div>
-      <a href="/api/auth/google">Google</a>
     </div>
   </div>
 </template>
 
 <script>
+import { GoogleLogin } from "vue-google-login";
+import axios from "axios";
 export default {
   name: "Login",
   props: ["logged"],
-  components: {},
+  components: { GoogleLogin },
   data() {
     return {
+      params: {
+        client_id:
+          "1064130338503-0g3bbnb9i03s10mb1douod4oes4kp0th.apps.googleusercontent.com",
+      },
+      renderParams: {
+        width: 250,
+        height: 50,
+        longtitle: true,
+      },
       colorMain: "#00b3fe",
       colorMainDark: "#00ABF5",
       isInit: false,
@@ -54,6 +78,9 @@ export default {
       isSignIn: false,
       usernameOrEmail: "",
       password: "",
+      googleAccessToken: "",
+      modalToggled: false,
+      gUsername: "",
     };
   },
   computed: {
@@ -79,60 +106,35 @@ export default {
         })
         .catch((err) => {});
     },
-    googleLogin(e) {
-      e.preventDefault();
+    onSuccess(googleUser) {
+      const token = googleUser.getAuthResponse().id_token;
       this.$store
-        .dispatch("authenticateGoogle")
-        .then(() => {
-          // this.$router.push("/");
+        .dispatch("authenticateGoogle", { token })
+        .then((res) => {
+          if (res.success) {
+            this.$router.push("/");
+          } else {
+            this.modalToggled = true;
+          }
         })
-        .catch((err) => {});
+        .catch((err) => {
+          console.log(err);
+        });
     },
-    // onSuccess(googleUser) {
-    //   axios
-    //     .post("/api/googleLogin", { email: googleUser.tt.bu })
-    //     .then((response) => {
-    //       this.googleMail = googleUser.tt.bu;
-    //       const { registered, username } = response.data;
-    //       if (registered) {
-    //         window.localStorage.setItem(
-    //           "jwtToken",
-    //           response.headers["auth-token"]
-    //         );
-    //         this.$emit("loggedIn", true, username);
-    //         router.push("/");
-    //       } else {
-    //         // show username modal
-    //         this.usernameModal = true;
-    //       }
-    //     })
-    //     .catch((err) => {
-    //       if (err) console.log(err);
-    //     });
-    // },
-    // onFailure(err) {
-    //   console.log(err);
-    // },
-    // registerModal() {
-    //   let username = document.getElementById("usernameInp").value;
-    //   let trimmedUsername = username.trim();
-    //   axios
-    //     .post("/api/googleRegister", {
-    //       email: this.googleMail,
-    //       username: trimmedUsername,
-    //     })
-    //     .then(() => {
-    //       this.$emit("loggedIn", true, trimmedUsername);
-    //       router.push("/");
-    //     })
-    //     .catch((err) => {
-    //       if (err) console.log(err);
-    //     });
-    // },
-    // closeModal() {
-    //   this.usernameModal = false;
-    //   this.usernameTaken = false;
-    // },
+    requestUsername() {
+      const token = this.$store.getters.getGoogleIDToken;
+      this.$store
+        .dispatch("requsetUsername", { username: this.gUsername, token })
+        .then(() => {
+          this.$router.push("/");
+        })
+        .catch(() => {
+          console.log("Username is already taken");
+        });
+    },
+    onFailure(err) {
+      console.log(err);
+    },
   },
   mounted() {},
 };

@@ -10,6 +10,18 @@ export class UsersRepositoryService {
     private readonly userRepository: Repository<UserEntity>,
   ) {}
 
+  public async create(
+    username: string,
+    email: string,
+    password: string,
+  ): Promise<User> {
+    const newUser = new UserEntity();
+    newUser.username = username;
+    newUser.email = email;
+    newUser.password = password;
+    return this.userRepository.save(newUser);
+  }
+
   public async findOneByUsername(username: string): Promise<User> {
     return this.userRepository.findOne({ username });
   }

@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
@@ -8,6 +6,9 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { UserEntity } from './users/models/user.entity';
 import { RefreshTokenEntity } from './auth/models/refresh-token.entity';
+import { NamelessGUserEntity } from './users/models/namelessGUser.entity';
+
+require('dotenv').config();
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { RefreshTokenEntity } from './auth/models/refresh-token.entity';
       username: 'nightrider',
       password: process.env.DATABASE_PASSWORD,
       database: 'gomokuDatabase',
-      entities: [UserEntity, RefreshTokenEntity],
+      entities: [UserEntity, RefreshTokenEntity, NamelessGUserEntity],
       synchronize: true,
     }),
     AuthModule,
@@ -27,7 +28,7 @@ import { RefreshTokenEntity } from './auth/models/refresh-token.entity';
       rootPath: join(__dirname, '..', 'dist/public'),
     }),
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

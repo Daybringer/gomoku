@@ -10,6 +10,7 @@ import { JwtAuthGuard } from './guards/jwt.guard';
 import { GoogleStrategy } from './strategies/google.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { TokensService } from './token.service';
+require('dotenv').config();
 
 @Module({
   imports: [
@@ -27,7 +28,7 @@ import { TokensService } from './token.service';
     JwtStrategy,
     AuthService,
     TokensService,
-    GoogleStrategy,
+    // GoogleStrategy,
   ],
   exports: [JwtAuthGuard, JwtStrategy],
 })
