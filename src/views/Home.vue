@@ -1,7 +1,7 @@
 <template>
   <!-- Landing page alias Home -->
   <div
-    class="w-full min-height-screen-calc flex flex-col bg-gray-200 scroll-margin-navbar"
+    class="w-full min-height-screen-calc flex flex-col bg-gray-200 dark:bg-gray-700 scroll-margin-navbar"
     id="home"
     ref="home"
   >
@@ -21,7 +21,7 @@
 
     <div class=" bg-gray-800 h-20 z-30 w-full m-auto"></div>
     <div
-      class=" w-90 h-90 flex flex-1 mb-8 bg-white z-40 m-auto rounded-xl relative md:rounded-2xl -mt-16 md:-mt-12"
+      class=" w-90 h-90 flex flex-1 mb-8 bg-white dark:bg-gray-500 shadow-lg z-40 m-auto rounded-xl relative md:rounded-2xl -mt-16 md:-mt-12"
     >
       <!-- Gomoku repeated background -->
       <!-- <div
@@ -30,7 +30,7 @@
       <div class="m-auto">
         <router-link to="/q/search">
           <button
-            class="border-gray-800 border-4 text-gray-800 text-xl font-bold py-3 px-24 rounded-lg focus:shadow-outline-gray focus:outline-none"
+            class="border-gray-800 dark:border-gray-200 border-4 text-gray-200 dark:text-gray-300 text-xl font-bold py-3 px-24 rounded-lg focus:shadow-outline-gray focus:outline-none"
           >
             Play
           </button>
@@ -42,11 +42,11 @@
   <div
     ref="matches"
     id="matches"
-    class="w-full min-height-screen-calc flex bg-gray-200 flex-col scroll-margin-navbar"
+    class="w-full min-height-screen-calc flex bg-gray-200 dark:bg-gray-700  flex-col scroll-margin-navbar"
   >
     <intersection-observer @intersect="intersectionCrossed('matches')" />
     <h2
-      class="text-5xl my-6 md:mt-8 2xl:mt-12 text-gray-800 font-semibold w-full text-center"
+      class="text-5xl my-6 md:mt-8 2xl:mt-12 text-gray-800 dark:text-gray-200 font-semibold w-full text-center"
     >
       Matches
     </h2>
@@ -107,11 +107,11 @@
   <div
     id="rules"
     ref="rules"
-    class="w-full min-height-screen-calc flex bg-gray-200 flex-col scroll-margin-navbar"
+    class="w-full min-height-screen-calc flex bg-gray-200 dark:bg-gray-700  flex-col scroll-margin-navbar"
   >
     <intersection-observer @intersect="intersectionCrossed('rules')" />
     <h2
-      class="text-5xl my-6  md:mt-4 2xl:mt-4 text-gray-800 font-semibold w-full text-center"
+      class="text-5xl my-6  md:mt-4 2xl:mt-4 text-gray-800 dark:text-gray-200 font-semibold w-full text-center"
     >
       Rules
     </h2>
@@ -306,16 +306,16 @@
   <div
     ref="origins"
     id="origins"
-    class="w-full min-height-screen-calc flex pb-8 bg-gray-200 flex-col scroll-margin-navbar"
+    class="w-full min-height-screen-calc flex pb-8 bg-gray-200 dark:bg-gray-700  flex-col scroll-margin-navbar"
   >
     <intersection-observer @intersect="intersectionCrossed('origins')" />
     <h2
-      class="text-5xl mt-4 md:mt-4 2xl:mt-4 text-gray-800 font-semibold w-full text-center"
+      class="text-5xl mt-4 md:mt-4 2xl:mt-4 text-gray-800 dark:text-gray-200 font-semibold w-full text-center"
     >
       Origins
     </h2>
     <div
-      class="w-90 xl:w-8/12 xl:text-base ml-auto mr-auto mt-5 font-normal leading-8 xl:leading-10"
+      class="w-90 xl:w-8/12 xl:text-base ml-auto mr-auto mt-5 font-normal dark:text-gray-300 leading-8 xl:leading-10"
     >
       <p>
         Gomoku is said to have originated in China with the name Wu Zi Qi
@@ -334,7 +334,7 @@
   <div
     ref="contact"
     id="contact"
-    class="w-full bg-gomoku-black p-4 pb-2 flex flex-col scroll-margin-navbar"
+    class="w-full bg-gomoku-black  p-4 pb-2 flex flex-col scroll-margin-navbar"
   >
     <intersection-observer @intersect="intersectionCrossed('contact')" />
     <div

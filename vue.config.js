@@ -4,19 +4,4 @@ module.exports = {
   devServer: {
     proxy: "http://localhost:3000",
   },
-  // module: {
-  //   rules: [
-  //     {
-  //       test: /\.css$/,
-  //       use: [
-  //         {
-  //           loader: MiniCssExtractPlugin.loader,
-  //           options: { hmr: !env.prod },
-  //         },
-  //         "css-loader",
-  //         "postcss-loader",
-  //       ],
-  //     },
-  //   ],
-  // },
 };

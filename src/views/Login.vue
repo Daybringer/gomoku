@@ -1,39 +1,51 @@
 <template>
   <div
-    class="min-height-screen-calc flex-align-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8"
+    class="min-height-screen-calc flex-align-center bg-gray-100 dark:bg-gray-700 py-12 px-4 sm:px-6 lg:px-8"
   >
     <div
-      class="absolute-center-top-third max-w-lg w-full md:p-8 p-4  space-y-8 rounded-lg border-gray-50  bg-white border-opacity-30 border-t-1 shadow-2xl border-2"
+      class="absolute-center-top-third max-w-lg w-full md:p-8 p-4  space-y-8 rounded-lg border-gray-50 bg-white dark:bg-gray-600 dark:border-transparent border-opacity-30 border-t-1 shadow-2xl border-2"
     >
-      <h2 class="text-center text-gray-900 font-extrabold text-3xl">Sign in</h2>
-      <hr />
+      <h2
+        class="text-center text-gray-900 dark:text-gray-200 font-extrabold text-3xl"
+      >
+        Sign in
+      </h2>
+      <hr class="dark:border-gray-500" />
       <form class="flex flex-col p-2 pb-0">
-        <label for="usernameOrEmail" class="text-gray-900 text-lg"
+        <label
+          for="usernameOrEmail"
+          class="text-gray-900 dark:text-gray-200  text-lg"
           >Username or Email</label
         >
         <input
           name="usernameOrEmail"
           type="text"
           autocomplete="username"
-          class="mt-2 py-1 px-2 rounded-md block border-2 border-gray-300 border-opacity-50 shadow-sm text-xl text-gray-900 focus:outline-none focus:border-gomoku-blue focus:ring-gomoku-blue focus:ring-1"
+          class="input-text dark:bg-gray-300 dark:border-gray-500"
         />
-        <label for="password" class="mt-8 text-gray-900 text-lg"
+        <label
+          for="password"
+          class="mt-8 text-gray-900 dark:text-gray-200 text-lg"
           >Password</label
         >
         <input
           name="password"
           type="password"
           autocomplete="username"
-          class="mt-2 py-1 px-2 rounded-md block border-2 border-gray-300 border-opacity-50 shadow-sm text-lg text-gray-900 focus:outline-none focus:border-gomoku-blue focus:ring-gomoku-blue focus:ring-1"
+          class="input-text dark:bg-gray-300 dark:border-gray-500"
         />
         <div class="mt-3 flex flex-row justify-between flex-wrap">
           <div>
             <input
               type="checkbox"
               name="remember"
-              class="align-text-top h-4 w-4 text-gomoku-blue  border-gray-300 rounded cursor-pointer focus:ring-0"
+              class="align-text-top h-4 w-4 text-gomoku-blue  bg-gray-300 rounded cursor-pointer focus:ring-0 focus:shadow-none focus:outline-none"
             />
-            <label for="remember" class="ml-1 text-gray-900">Remember me</label>
+            <label
+              for="remember"
+              class="ml-1 pr-3 text-gray-900 dark:text-gray-200"
+              >Remember me</label
+            >
           </div>
           <router-link
             class="text-gomoku-blue hover:text-gomoku-blue-dark focus:text-gomoku-blue-dark focus:outline-none"
@@ -55,13 +67,13 @@
         >
       </form>
       <div
-        class="separator flex items-center text-center leading-5 text-gray-700"
+        class="separator flex items-center text-center leading-5 text-gray-700 dark:text-gray-200 "
       >
         Or continue with
       </div>
       <div class="flex flex-row justify-around">
         <button
-          class="border-2 border-gray-300 border-opacity-50 shadow-md text-gray-500 hover:text-gomoku-blue hover:border-gomoku-blue focus:text-gomoku-blue  focus:border-gomoku-blue focus:outline-none rounded-lg px-10 py-1"
+          class="border-2 border-gray-300 border-opacity-50 shadow-md text-gray-500 dark:text-gray-300 dark:hover:text-gomoku-blue hover:text-gomoku-blue hover:border-gomoku-blue focus:text-gomoku-blue dark:focus:text-gomoku-blue focus:border-gomoku-blue focus:outline-none rounded-lg px-10 py-1 "
         >
           <svg
             role="img"
@@ -76,7 +88,7 @@
           </svg>
         </button>
         <button
-          class="border-2 border-gray-300 border-opacity-50 shadow-md text-gray-500 hover:text-gomoku-blue hover:border-gomoku-blue focus:text-gomoku-blue  focus:border-gomoku-blue focus:outline-none rounded-lg px-10 py-1"
+          class="border-2 border-gray-300 border-opacity-50 shadow-md text-gray-500 dark:text-gray-300 dark:hover:text-gomoku-blue hover:text-gomoku-blue hover:border-gomoku-blue focus:text-gomoku-blue dark:focus:text-gomoku-blue  focus:border-gomoku-blue focus:outline-none rounded-lg px-10 py-1"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -142,7 +154,7 @@ export default defineComponent({
 .separator::after {
   content: "";
   flex: 1;
-  @apply border-gray-600;
+  @apply border-current;
   @apply border-b-2;
 }
 .separator::before {

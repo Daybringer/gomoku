@@ -1,5 +1,5 @@
 {
-  "name": "test-vue3",
+  "name": "gomoku",
   "version": "0.1.0",
   "private": true,
   "scripts": {
