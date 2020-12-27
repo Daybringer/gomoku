@@ -1,395 +1,158 @@
 <template>
-  <div id="ober-container">
-    <div class="page-container" :style="cssVars">
-      <h1 class="page-title" :style="cssVars">Register</h1>
-      <div class="form-footer" :style="cssVars">
-        <form v-on:submit="register">
-          <fieldset>
-            <p id="successField"></p>
-            <p id="errorField"></p>
-            <label for="usernameRegister">Username</label>
-            <input type="text" name="usernameRegister" id="usernameRegister" />
-            <label for="emailRegister">Email</label>
-            <input type="text" name="emailRegister" id="emailRegister" />
-            <label for="passwordRegister">Password</label>
-            <input
-              type="password"
-              name="passwordRegister"
-              id="passwordRegister"
-            />
-            <label for="passwordRepeatRegister">Confirm Password</label>
-            <input
-              type="password"
-              name="passwordRepeatRegister"
-              id="passwordRepeatRegister"
-              :style="cssVars"
-            />
-          </fieldset>
-          <input
-            id="form-footer-submit"
-            type="submit"
-            value="Register"
-            :style="cssVars"
-          />
-          <router-link class="grad-link" to="login" :style="cssVars"
-            >Log in</router-link
+  <div
+    class="min-height-screen-calc flex-align-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8"
+  >
+    <div
+      class="absolute-center-top-third max-w-lg w-full md:p-8 p-4  space-y-8 rounded-lg border-gray-50  bg-white border-opacity-30 border-t-1 shadow-2xl border-2"
+    >
+      <h2 class="text-center text-gray-900 font-extrabold text-3xl">
+        Register
+      </h2>
+      <hr />
+      <form class="flex flex-col p-2 pb-0">
+        <label for="email" class="text-gray-900 text-lg">Email</label>
+        <input
+          name="email"
+          type="email"
+          autocomplete="email"
+          class="mt-2 py-1 px-2 rounded-md block border-2 border-gray-300 border-opacity-50 shadow-sm text-xl text-gray-900 focus:outline-none focus:border-gomoku-blue focus:ring-gomoku-blue focus:ring-1"
+        />
+        <label for="username" class="text-gray-900 text-lg mt-2"
+          >Username</label
+        >
+        <input
+          name="username"
+          type="text"
+          autocomplete="username"
+          class="mt-2 py-1 px-2 rounded-md block border-2 border-gray-300 border-opacity-50 shadow-sm text-xl text-gray-900 focus:outline-none focus:border-gomoku-blue focus:ring-gomoku-blue focus:ring-1"
+        />
+        <label for="password" class="mt-4 text-gray-900 text-lg"
+          >Password</label
+        >
+        <input
+          name="password"
+          type="password"
+          autocomplete="new-password"
+          class="mt-2 py-1 px-2 rounded-md block border-2 border-gray-300 border-opacity-50 shadow-sm text-lg text-gray-900 focus:outline-none focus:border-gomoku-blue focus:ring-gomoku-blue focus:ring-1"
+        />
+        <label for="password2" class="mt-2 text-gray-900 text-lg"
+          >Confirm password</label
+        >
+        <input
+          name="password2"
+          type="password"
+          autocomplete="new-password"
+          class="mt-2 py-1 px-2 rounded-md block border-2 border-gray-300 border-opacity-50 shadow-sm text-lg text-gray-900 focus:outline-none focus:border-gomoku-blue focus:ring-gomoku-blue focus:ring-1"
+        />
+
+        <button
+          class="w-full mt-8 py-2 rounded-lg text-gray-50 font-medium text-lg bg-gomoku-blue hover:bg-gomoku-blue-dark focus:bg-gomoku-blue-dark"
+          @click.prevent="register"
+        >
+          Register
+        </button>
+        <router-link
+          class="text-right mt-3 -mb-3 text-gomoku-blue hover:text-gomoku-blue-dark focus:text-gomoku-blue-dark focus:outline-none"
+          to="/login"
+          >Already have an account?</router-link
+        >
+      </form>
+      <div
+        class="separator flex items-center text-center leading-5 text-gray-700"
+      >
+        Or continue with
+      </div>
+      <div class="flex flex-row justify-around">
+        <button
+          class="border-2 border-gray-300 border-opacity-50 shadow-md text-gray-500 hover:text-gomoku-blue hover:border-gomoku-blue focus:text-gomoku-blue  focus:border-gomoku-blue focus:outline-none rounded-lg px-10 py-1"
+        >
+          <svg
+            role="img"
+            class="text-current fill-current h-5"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
           >
-        </form>
+            <title>Google login</title>
+            <path
+              d="M12.24 10.285V14.4h6.806c-.275 1.765-2.056 5.174-6.806 5.174-4.095 0-7.439-3.389-7.439-7.574s3.345-7.574 7.439-7.574c2.33 0 3.891.989 4.785 1.849l3.254-3.138C18.189 1.186 15.479 0 12.24 0c-6.635 0-12 5.365-12 12s5.365 12 12 12c6.926 0 11.52-4.869 11.52-11.726 0-.788-.085-1.39-.189-1.989H12.24z"
+            />
+          </svg>
+        </button>
+        <button
+          class="border-2 border-gray-300 border-opacity-50 shadow-md text-gray-500 hover:text-gomoku-blue hover:border-gomoku-blue focus:text-gomoku-blue  focus:border-gomoku-blue focus:outline-none rounded-lg px-10 py-1"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="text-current fill-current h-7"
+            viewBox="0 0 24 24"
+            stroke-width="1"
+            stroke="current"
+            fill="none"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <title>Facebook login</title>
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path
+              d="M7 10v4h3v7h4v-7h3l1 -4h-4v-2a1 1 0 0 1 1 -1h3v-4h-3a5 5 0 0 0 -5 5v2h-3"
+            />
+          </svg>
+        </button>
       </div>
     </div>
   </div>
 </template>
 
-<script>
-// import router from "../router";
-import axios from "axios";
-export default {
+<script lang="ts">
+import { defineComponent } from "vue";
+export default defineComponent({
   name: "Register",
-  props: ["logged"],
-  computed: {
-    cssVars() {
-      return {
-        "--main": this.colorMain,
-        "--second": this.colorSecond,
-        "--mainDark": this.colorMainDark,
-      };
-    },
-  },
   data() {
     return {
-      colorMain: "#00b3fe",
-      colorMainDark: "#00ABF5",
+      usernameOrEmail: "",
+      password: "",
+      password2: "",
     };
   },
   methods: {
-    register: (e) => {
-      e.preventDefault();
-      let username = document.getElementById("usernameRegister").value.trim();
-      let email = document.getElementById("emailRegister").value.trim();
-      let password = document.getElementById("passwordRegister").value.trim();
-      let passwordRepeat = document
-        .getElementById("passwordRepeatRegister")
-        .value.trim();
-      let register = () => {
-        let data = {
-          username: username,
-          email: email,
-          password: password,
-          password2: passwordRepeat,
-        };
-        axios
-          .post("/api/register", data)
-          .then((response) => {
-            if (response.status === 200) {
-              document.getElementById("errorField").innerHTML = "";
-              document.getElementById("successField").innerHTML = response.data;
-              document.getElementById("errorField").style.display = "none";
-              document.getElementById("successField").style.display = "block";
-              document.getElementById("passwordRegister").value = "";
-              document.getElementById("passwordRepeatRegister").value = "";
-              document.getElementById("emailRegister").value = "";
-              document.getElementById("usernameRegister").value = "";
-            }
-          })
-          .catch((errors) => {
-            document.getElementById("successField").innerHTML = "";
-            document.getElementById("errorField").innerHTML =
-              errors.response.data;
-            document.getElementById("errorField").style.display = "block";
-            document.getElementById("successField").style.display = "none";
-            document.getElementById("passwordRegister").value = "";
-            document.getElementById("passwordRepeatRegister").value = "";
-          });
-      };
-      register();
-    },
-    resizeSkew() {
-      let mDiv = document.getElementById("ober-container");
-      let navHeight = document.getElementById("smallNav").clientHeight;
-
-      let cornerHeight =
-        (mDiv.offsetWidth / 2) * Math.tan((7.5 * Math.PI) / 180);
-
-      mDiv.style.top = cornerHeight + navHeight + "px";
+    // TODO find what type event has
+    register() {
+      console.log("register");
     },
   },
-  mounted() {
-    this.resizeSkew();
-    window.onresize = () => this.resizeSkew();
-  },
-};
+});
 </script>
+
 <style scoped>
-#ober-container {
-  position: absolute;
-  width: 100%;
-}
-#successField {
-  display: none;
-  color: white;
-  font-family: "Roboto", sans-serif;
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  border-radius: 4px;
-  font-size: 1rem;
-  margin: 0;
-  outline: 0;
-  padding: 10px;
-  width: 100%;
-  box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  background-color: #07a301c0;
-  -webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03) inset;
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03) inset;
-  margin-bottom: 30px;
-}
-#errorField {
-  display: none;
-  color: white;
-  font-family: "Roboto", sans-serif;
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  border-radius: 4px;
-  font-size: 1rem;
-  margin: 0;
-  outline: 0;
-  padding: 10px;
-  width: 100%;
-  box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  background-color: #da3636c0;
-  -webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03) inset;
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03) inset;
-  margin-bottom: 30px;
-}
-.page-container {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 100%;
-  height: 100%;
-}
-.page-title {
-  margin-top: 6vh;
-  text-align: center;
-  font-weight: 800;
-  color: #2e4052;
-  font-size: 3em;
-}
-.form-footer {
-  max-width: 30%;
-  padding: 10px 20px;
-  background: #f4f7f8;
-  margin: 10px auto;
-  padding: 20px;
-  background: #f4f7f8;
-  border-radius: 8px;
-  font-family: "Roboto", sans-serif;
-}
-.form-footer fieldset {
-  border: none;
-}
-.form-footer legend {
-  font-size: 1.4em;
-  margin-bottom: 10px;
-}
-.form-footer label {
-  display: block;
-  margin-bottom: 2px;
-  font-weight: 700;
-  font-size: 1rem;
-  color: var(--main);
-}
-.form-footer input[type="text"],
-.form-footer input[type="date"],
-.form-footer input[type="password"],
-.form-footer input[type="datetime"],
-.form-footer input[type="email"],
-.form-footer input[type="number"],
-.form-footer input[type="search"],
-.form-footer input[type="time"],
-.form-footer input[type="url"],
-.form-footer textarea,
-.form-footer select {
-  font-family: "Roboto", sans-serif;
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  border-radius: 4px;
-  font-size: 15px;
-  margin: 0;
-  outline: 0;
-  padding: 10px;
-  width: 100%;
-  box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  background-color: #e8eeef;
-  color: #2e4052;
-  -webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03) inset;
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03) inset;
-  margin-bottom: 30px;
-}
-.form-footer textarea {
-  resize: none;
-}
-.form-footer input[type="text"]:focus,
-.form-footer input[type="date"]:focus,
-.form-footer input[type="datetime"]:focus,
-.form-footer input[type="email"]:focus,
-.form-footer input[type="number"]:focus,
-.form-footer input[type="search"]:focus,
-.form-footer input[type="time"]:focus,
-.form-footer input[type="url"]:focus,
-.form-footer textarea:focus,
-.form-footer select:focus {
-  background: #d2d9dd;
-}
-.form-footer select {
-  -webkit-appearance: menulist-button;
-  height: 35px;
-}
-.form-footer input[type="submit"],
-.form-footer input[type="button"] {
-  position: relative;
-  display: block;
-  padding: 0.5rem 0.5rem;
-  color: #fff;
-  margin: 0 auto;
-  background: var(--main);
-  font-size: 2.5rem;
-  font-weight: 600;
-  text-align: center;
-  font-style: normal;
-  width: 80%;
-  border: 1px solid var(--mainDark);
-  border-width: 1px 1px 3px;
-  border-radius: 1em;
-  margin-bottom: 10px;
-  cursor: pointer;
-}
-.form-footer input[type="submit"]:hover,
-.form-footer input[type="button"]:hover {
-  background: var(--mainDark);
-}
-.grad-link {
-  padding-left: 0.5rem;
-  text-decoration: none;
-  position: relative;
-  display: inline;
-  font-size: 1.5em;
-  font-weight: 800;
-  color: #2e4052;
-  overflow: hidden;
-  background: linear-gradient(
-    to right,
-    var(--main),
-    var(--main) 50%,
-    #2e4052 50%
-  );
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-size: 200% 100%;
-  background-position: 100%;
-  transition: background-position 275ms ease;
-}
-
-#form-footer-submit::-moz-focus-inner {
-  border: 0;
-}
-.grad-link:visited {
-  color: black;
-}
-.grad-link:hover {
-  background-position: 0 100%;
-}
-@media only screen and (max-width: 600px) {
-  .page-title {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-  }
-  .form-footer {
-    min-width: 90%;
-    margin: 0px auto;
-    margin-top: 0px;
-    padding: 10px;
-    border-radius: 10px;
-    font-family: "Roboto", sans-serif;
-  }
-  .form-footer fieldset {
-    border: none;
-  }
-  .form-footer legend {
-    font-size: 1.4em;
-    margin-bottom: 10px;
-  }
-  .form-footer label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: 700;
-    color: var(--main);
-  }
-  .form-footer input[type="text"],
-  .form-footer input[type="date"],
-  .form-footer input[type="datetime"],
-  .form-footer input[type="email"],
-  .form-footer input[type="number"],
-  .form-footer input[type="search"],
-  .form-footer input[type="time"],
-  .form-footer input[type="url"],
-  .form-footer input[type="password"],
-  .form-footer textarea,
-  .form-footer select {
-    font-family: "Roboto", sans-serif;
-    background: rgba(255, 255, 255, 0.1);
-    border: none;
-    border-radius: 4px;
-    font-size: 15px;
-    margin: 0;
-    outline: 0;
-    padding: 10px;
-    width: 100%;
-    box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    background-color: #e8eeef;
-    color: #2e4052;
-    -webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03) inset;
-    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03) inset;
-    margin-bottom: 5px;
-  }
-
-  .form-footer input[type="submit"],
-  .form-footer input[type="button"] {
-    padding: 0.25rem 1rem;
-    font-weight: 600;
-    width: 80%;
-    border-radius: 4px;
-    font-size: 1.5rem;
-  }
-
-  #successField {
-    margin-bottom: 15px;
-  }
-  #errorField {
-    margin-bottom: 15px;
+@media (min-width: 768px) {
+  .absolute-center-top-third {
+    position: absolute;
+    left: 50%;
+    margin-top: 4rem;
+    top: 10%;
+    transform: translate(-50%, 0);
   }
 }
 
-/* Medium devices (landscape tablets, 768px and up) */
-@media only screen and (min-width: 768px) and (max-width: 1200px) {
-  .form-footer {
-    min-width: 60%;
+@media (max-width: 768px) {
+  .flex-align-center {
+    display: flex;
+    justify-content: center;
+    place-items: center;
   }
 }
 
-/* Large devices (laptops/desktops, 992px and up) */
-@media only screen and (min-width: 992px) {
-  .form-footer {
-    min-width: 40%;
-  }
+.separator::before,
+.separator::after {
+  content: "";
+  flex: 1;
+  @apply border-gray-600;
+  @apply border-b-2;
+}
+.separator::before {
+  margin-right: 1em;
+}
+.separator::after {
+  margin-left: 1em;
 }
 </style>

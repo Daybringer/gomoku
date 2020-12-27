@@ -1,107 +1,37 @@
 <template>
-  <div id="app">
-    <Navbar id="navbar"></Navbar>
-    <router-view />
-  </div>
+  <navbar id="navbar" :activeIntersection="activeIntersection"></navbar>
+  <router-view
+    class="min-height-screen-calc"
+    @intersectionCrossed="setIntersection"
+  />
 </template>
-<script>
-// @ is an alias to /src
+<script lang="ts">
+import { defineComponent } from "vue";
 import Navbar from "@/components/Navbar.vue";
-import axios from "axios";
-
-import router from "./router";
-export default {
+export default defineComponent({
   name: "App",
-  components: {
-    Navbar,
-  },
+  components: { Navbar },
   data() {
     return {
-      logged: false,
-      username: "",
-      colorMain: "#ffffff",
-      colorSecond: "#ffffff",
-      colorMainDark: "#ffffff",
+      activeIntersection: "",
     };
   },
   methods: {
-    pokeAPI() {
-      axios
-        .post("/api/mock")
-        .then((response) => {
-          console.log(response);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    },
-    isLogged() {
-      axios
-        .post(
-          "/api/islogged",
-          {},
-          {
-            headers: {
-              "auth-token": `${localStorage.getItem("jwtToken")}`,
-            },
-          }
-        )
-        .then((response) => {
-          if (response.data) {
-            this.logged = true;
-            this.username = response.data.username;
-          } else {
-            this.logged = false;
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    },
-    loggedIn(isLogged, username) {
-      this.logged = isLogged;
-      if (username) this.username = username;
-    },
-    loggedOut() {
-      axios
-        .post("/api/logout")
-        .then(() => {
-          this.logged = false;
-          router.push("logout");
-        })
-        .catch(() => {});
-    },
-    changeColorMain: function(color, darkColor) {
-      this.colorMain = color;
-      this.colorMainDark = darkColor;
-      let data = {
-        colorMain: this.colorMain,
-        colorSecond: this.colorSecond,
-        colorMainDark: this.colorMainDark,
-      };
-      this.changeFavicon(this.colorMain);
-      axios
-        .post("/api/changeColors", data)
-        .then(() => {})
-        .catch(() => {});
-    },
-    changeColorSecond: function(color) {
-      this.colorSecond = color;
-      let data = {
-        colorMain: this.colorMain,
-        colorSecond: this.colorSecond,
-        colorMainDark: this.colorMainDark,
-      };
-      axios
-        .post("/api/changeColors", data)
-        .then(() => {})
-        .catch(() => {});
+    setIntersection(intersectionName: string): void {
+      this.activeIntersection = intersectionName;
     },
   },
-  mounted() {},
-};
+});
 </script>
 <style>
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.min-height-screen-calc {
+  min-height: calc(100vh - 4rem);
+}
+
 html,
 body {
   margin: 0;
@@ -112,6 +42,7 @@ body {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   -webkit-tap-highlight-color: transparent;
 }
+
 a {
   text-decoration: none !important;
 }

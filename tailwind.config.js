@@ -1,9 +1,6 @@
 module.exports = {
-  future: {
-    removeDeprecatedGapUtilities: true,
-    purgeLayersByDefault: true,
-  },
-  purge: ["./src/**/*.html", "./src/**/*.vue"],
+  purge: ["./index.html", "./src/**/*.{vue,js,ts,jsx,tsx}"],
+  darkMode: "class", // or 'media' or 'class'
   theme: {
     extend: {
       colors: {
@@ -49,7 +46,7 @@ module.exports = {
     },
   },
   variants: {
-    // textColor: ["responsive", "hover", "focus", "visited", "active"],
+    extend: {},
   },
-  plugins: [],
+  plugins: [require("@tailwindcss/forms")],
 };
