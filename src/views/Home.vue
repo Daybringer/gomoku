@@ -24,13 +24,10 @@
       class=" w-90 h-90 flex flex-1 mb-8 bg-white dark:bg-gray-500 shadow-lg z-40 m-auto rounded-xl relative md:rounded-2xl -mt-16 md:-mt-12"
     >
       <!-- Gomoku repeated background -->
-      <!-- <div
-          class="absolute w-full h-full repeated-gomoku-background opacity-50 z-0"
-        ></div> -->
       <div class="m-auto">
         <router-link to="/q/search">
           <button
-            class="border-gray-800 dark:border-gray-200 border-4 text-gray-200 dark:text-gray-300 text-xl font-bold py-3 px-24 rounded-lg focus:shadow-outline-gray focus:outline-none"
+            class="border-gray-800 dark:border-gray-200 border-4 text-gray-800 dark:text-gray-300 text-xl font-bold py-3 px-24 rounded-lg focus:shadow-outline-gray focus:outline-none"
           >
             Play
           </button>

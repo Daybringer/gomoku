@@ -32,26 +32,6 @@ export default defineComponent({
   min-height: calc(100vh - 4rem);
 }
 
-.input-text {
-  @apply mt-2;
-  @apply py-1;
-  @apply px-2;
-  @apply rounded-md;
-  @apply block;
-  @apply border-2;
-  @apply border-gray-300;
-  @apply border-opacity-50;
-  @apply shadow-sm;
-  @apply text-xl;
-  @apply text-gray-900;
-}
-.input-text:focus {
-  @apply outline-none;
-  @apply border-gomoku-blue;
-  @apply ring-gomoku-blue;
-  @apply ring-1;
-}
-
 html,
 body {
   margin: 0;

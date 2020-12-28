@@ -6,40 +6,39 @@
       class="absolute-center-top-third max-w-lg w-full md:p-8 p-4  space-y-8 rounded-lg border-gray-50 bg-white dark:bg-gray-600 dark:border-transparent border-opacity-30 border-t-1 shadow-2xl border-2"
     >
       <h2
-        class="text-center text-gray-900 dark:text-gray-200 font-extrabold text-3xl"
+        class="text-center text-gray-900 dark:text-gray-100 font-extrabold text-3xl"
       >
         Sign in
       </h2>
       <hr class="dark:border-gray-500" />
-      <form class="flex flex-col p-2 pb-0">
+      <form @submit.prevent="login" class="flex flex-col p-2 pb-0">
         <label
           for="usernameOrEmail"
-          class="text-gray-900 dark:text-gray-200  text-lg"
+          class="text-gray-900 dark:text-gray-100  text-lg"
           >Username or Email</label
         >
-        <input
-          name="usernameOrEmail"
-          type="text"
-          autocomplete="username"
-          class="input-text dark:bg-gray-300 dark:border-gray-500"
+        <input-base
+          :name="'usernameOrEmail'"
+          :type="'text'"
+          :autocomplete="'username'"
         />
         <label
           for="password"
-          class="mt-8 text-gray-900 dark:text-gray-200 text-lg"
+          class="mt-8 text-gray-900 dark:text-gray-100 text-lg"
           >Password</label
         >
-        <input
-          name="password"
-          type="password"
-          autocomplete="username"
-          class="input-text dark:bg-gray-300 dark:border-gray-500"
+        <input-base
+          :name="'password'"
+          :type="'password'"
+          :autocomplete="'password'"
         />
         <div class="mt-3 flex flex-row justify-between flex-wrap">
+          <!-- Remember me -->
           <div>
             <input
               type="checkbox"
               name="remember"
-              class="align-text-top h-4 w-4 text-gomoku-blue  bg-gray-300 rounded cursor-pointer focus:ring-0 focus:shadow-none focus:outline-none"
+              class="align-text-top h-4 w-4 text-gomoku-blue  bg-gray-50 rounded cursor-pointer focus:ring-0 focus:shadow-none focus:outline-none"
             />
             <label
               for="remember"
@@ -47,21 +46,18 @@
               >Remember me</label
             >
           </div>
+          <!-- Forgot password -->
           <router-link
-            class="text-gomoku-blue hover:text-gomoku-blue-dark focus:text-gomoku-blue-dark focus:outline-none"
+            class="text-gomoku-blue  hover:text-gomoku-blue-dark focus:text-gomoku-blue-dark focus:outline-none"
             to="/password-reset"
             >Forgot your password?</router-link
           >
         </div>
-
-        <button
-          class="w-full mt-8 py-2 rounded-lg text-gray-50 font-medium text-lg bg-gomoku-blue hover:bg-gomoku-blue-dark focus:bg-gomoku-blue-dark"
-          @click.prevent="login"
-        >
-          Sign in
-        </button>
+        <!-- Sign in button -->
+        <submit-button type="submit">Sign in</submit-button>
+        <!-- Login router link -->
         <router-link
-          class="text-right mt-3 -mb-3 text-gomoku-blue hover:text-gomoku-blue-dark focus:text-gomoku-blue-dark focus:outline-none"
+          class="text-right mt-3 -mb-3 text-lg text-gomoku-blue hover:text-gomoku-blue-dark focus:text-gomoku-blue-dark focus:outline-none"
           to="/register"
           >No account yet?</router-link
         >
@@ -72,50 +68,21 @@
         Or continue with
       </div>
       <div class="flex flex-row justify-around">
-        <button
-          class="border-2 border-gray-300 border-opacity-50 shadow-md text-gray-500 dark:text-gray-300 dark:hover:text-gomoku-blue hover:text-gomoku-blue hover:border-gomoku-blue focus:text-gomoku-blue dark:focus:text-gomoku-blue focus:border-gomoku-blue focus:outline-none rounded-lg px-10 py-1 "
-        >
-          <svg
-            role="img"
-            class="text-current fill-current h-5"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <title>Google login</title>
-            <path
-              d="M12.24 10.285V14.4h6.806c-.275 1.765-2.056 5.174-6.806 5.174-4.095 0-7.439-3.389-7.439-7.574s3.345-7.574 7.439-7.574c2.33 0 3.891.989 4.785 1.849l3.254-3.138C18.189 1.186 15.479 0 12.24 0c-6.635 0-12 5.365-12 12s5.365 12 12 12c6.926 0 11.52-4.869 11.52-11.726 0-.788-.085-1.39-.189-1.989H12.24z"
-            />
-          </svg>
-        </button>
-        <button
-          class="border-2 border-gray-300 border-opacity-50 shadow-md text-gray-500 dark:text-gray-300 dark:hover:text-gomoku-blue hover:text-gomoku-blue hover:border-gomoku-blue focus:text-gomoku-blue dark:focus:text-gomoku-blue  focus:border-gomoku-blue focus:outline-none rounded-lg px-10 py-1"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="text-current fill-current h-7"
-            viewBox="0 0 24 24"
-            stroke-width="1"
-            stroke="current"
-            fill="none"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <title>Facebook login</title>
-            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-            <path
-              d="M7 10v4h3v7h4v-7h3l1 -4h-4v-2a1 1 0 0 1 1 -1h3v-4h-3a5 5 0 0 0 -5 5v2h-3"
-            />
-          </svg>
-        </button>
+        <social-sign-in @click="googleLogin" :type="'google'"></social-sign-in
+        ><social-sign-in :type="'facebook'"> </social-sign-in>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
+import SubmitButton from "@/components/form/SubmitButton.vue";
+import InputBase from "@/components/form/InputBase.vue";
+import SocialSignIn from "@/components/form/SocialSignIn.vue";
 import { defineComponent } from "vue";
 export default defineComponent({
   name: "Login",
+  components: { SocialSignIn, InputBase, SubmitButton },
   data() {
     return {
       username: "",
@@ -126,6 +93,9 @@ export default defineComponent({
     // TODO find what type event has
     login() {
       console.log("login");
+    },
+    googleLogin() {
+      console.log("insert google login logic");
     },
   },
 });
