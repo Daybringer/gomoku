@@ -103,7 +103,7 @@
           class="absolute inset-y-0 right-0 flex items-center pr-2 xl:static xl:inset-auto xl:ml-6 xl:pr-0"
         >
           <!-- Profile dropdown -->
-          <div class="ml-3 relative" v-click-outside="clickedOutsideProfile">
+          <div class="ml-3 relative">
             <div>
               <button
                 v-show="logged"
@@ -218,10 +218,14 @@
 </template>
 
 <script lang="ts">
+// Components
 import HamburgerButton from "@/components/mini/HamburgerButton.vue";
 import NavbarNavigationLink from "@/components/mini/NavbarNavigationLink.vue";
 import MobileNavbarLink from "@/components/mini/MobileNavbarLink.vue";
+
+// Utility
 import { defineComponent } from "vue";
+
 export default defineComponent({
   name: "Navbar",
   props: { activeIntersection: String },
