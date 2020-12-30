@@ -1,11 +1,3 @@
-import { createStore } from "vuex";
+import { createPinia } from "pinia";
 
-const debug = process.env.NODE_ENV !== "production";
-
-export default createStore({
-  state: {},
-  mutations: {},
-  actions: {},
-  modules: {},
-  strict: debug,
-});
+export const pinia = createPinia();

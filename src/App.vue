@@ -1,7 +1,7 @@
 <template>
   <navbar id="navbar" :activeIntersection="activeIntersection"></navbar>
   <router-view
-    class="min-height-screen-calc"
+    class="min-height-screen-calc "
     @intersectionCrossed="setIntersection"
   />
 </template>

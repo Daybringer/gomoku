@@ -1,9 +1,9 @@
 <template>
   <div
-    class="min-height-screen-calc flex-align-center bg-gray-100 dark:bg-gray-700 py-12 px-4 sm:px-6 lg:px-8"
+    class="flex justify-center place-items-center bg-gray-100 dark:bg-gray-700 py-12 px-4 sm:px-6 lg:px-8"
   >
     <div
-      class="absolute-center-top-third max-w-lg w-full md:p-8 p-4  space-y-8 rounded-lg border-gray-50 bg-white dark:bg-gray-600 dark:border-transparent border-opacity-30 border-t-1 shadow-2xl border-2"
+      class="max-w-lg w-full md:p-8 p-4  space-y-8 rounded-lg border-gray-50 bg-white dark:bg-gray-600 dark:border-transparent border-opacity-30 border-t-1 shadow-2xl border-2"
     >
       <h2
         class="text-center text-gray-900 dark:text-gray-100 font-extrabold text-3xl"
@@ -102,24 +102,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
-@media (min-width: 768px) {
-  .absolute-center-top-third {
-    position: absolute;
-    left: 50%;
-    margin-top: 4rem;
-    top: 10%;
-    transform: translate(-50%, 0);
-  }
-}
-
-@media (max-width: 768px) {
-  .flex-align-center {
-    display: flex;
-    justify-content: center;
-    place-items: center;
-  }
-}
-
 .separator::before,
 .separator::after {
   content: "";

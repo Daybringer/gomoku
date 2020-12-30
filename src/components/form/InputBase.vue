@@ -7,7 +7,7 @@
     class="w-full mt-2 py-1 px-2 rounded-md block border-2 border-gray-300 border-opacity-50 shadow-sm text-xl text-gray-900 focus:outline-none focus:border-gomoku-blue focus:ring-gomoku-blue focus:ring-1 dark:bg-gray-50
    dark:border-gray-300"
     :class="classList"
-    :title="error || modelValue ? '✓' : title"
+    :title="error || (modelValue ? '✓' : title)"
     :placeholder="placeholder"
   />
 </template>

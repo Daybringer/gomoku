@@ -1,9 +1,9 @@
 <template>
   <div
-    class="min-height-screen-calc flex-align-center bg-gray-100  dark:bg-gray-700  py-12 px-4 sm:px-6 lg:px-8"
+    class=" flex justify-center place-items-center  bg-gray-100  dark:bg-gray-700  py-12 px-4 sm:px-6 lg:px-8"
   >
     <div
-      class="absolute-center-top-third max-w-lg w-full md:p-8 p-4  space-y-8 rounded-lg border-gray-50 dark:bg-gray-600 dark:border-transparent  bg-white border-opacity-30 border-t-1 shadow-2xl border-2"
+      class="max-w-lg w-full md:p-8 p-4  space-y-8 rounded-lg border-gray-50 dark:bg-gray-600 dark:border-transparent  bg-white border-opacity-30 border-t-1 shadow-2xl border-2"
     >
       <h2
         class="text-center text-gray-900 dark:text-gray-200 font-extrabold text-3xl"
@@ -88,13 +88,25 @@
 </template>
 
 <script lang="ts">
-import axios from "axios";
-import { object, string, ref } from "yup";
+// Utility
+import { throttle } from "throttle-debounce";
+import { defineComponent } from "vue";
+
+// Components
 import SubmitButton from "@/components/form/SubmitButton.vue";
 import InputBase from "@/components/form/InputBase.vue";
 import SocialSignIn from "@/components/form/SocialSignIn.vue";
-import { defineComponent } from "vue";
 
+// Axios repositories
+import { RepositoryFactory } from "@/repositories/RepositoryFactory";
+const UsersRepository = RepositoryFactory.getUserRepository;
+const AuthRepository = RepositoryFactory.getAuthRepository;
+
+// Pinie store
+import { userAuthStore } from "@/store/auth";
+
+// yup validation
+import { object, string, ref } from "yup";
 const registerFormSchema = object().shape({
   email: string()
     .required("Email is required")
@@ -141,41 +153,52 @@ export default defineComponent({
   },
   methods: {
     register() {
-      console.log("register");
+      // validate all
+
+      const auth = userAuthStore();
+      auth
+        .register(this.user)
+        .then((res) => {
+          console.log("the response", res);
+        })
+        .catch((err) => console.log("the error", err));
     },
     googleLogin() {
       console.log("here handle google login");
     },
+    usernameExists() {
+      UsersRepository.userWithUsernameExists(this.user.username)
+        .then((res) => {
+          if (res.data) {
+            this.errors.username = "Username is already taken";
+          } else {
+            this.errors.username = "";
+          }
+        })
+        .catch(() => (this.errors.username = "Server error"));
+    },
+    emailExists() {
+      UsersRepository.userWithMailExists(this.user.email)
+        .then((res) => {
+          if (res.data) {
+            this.errors.email = "Email is already taken";
+          } else {
+            this.errors.email = "";
+          }
+        })
+        .catch(() => (this.errors.email = "Server error"));
+    },
+    throttledFunction: throttle(500, (call) => {
+      call();
+    }),
     validate(field: "email" | "username" | "password" | "passwordConfirm") {
       registerFormSchema
         .validateAt(field, this.user)
         .then(() => {
           if (field === "email") {
-            console.log("hitting email API");
-            axios
-              .post("api/users/check-email", { email: this.user.email })
-              .then((res) => {
-                if (res.data) {
-                  this.errors.email = "Email is already taken";
-                } else {
-                  this.errors.email = "";
-                }
-              })
-              .catch((err) => console.log(err));
+            this.throttledFunction(this.emailExists);
           } else if (field === "username") {
-            console.log("hitting username API");
-            axios
-              .post("api/users/check-username", {
-                username: this.user.username,
-              })
-              .then((res) => {
-                if (res.data) {
-                  this.errors.username = "Username is already taken";
-                } else {
-                  this.errors.username = "";
-                }
-              })
-              .catch((err) => console.log(err));
+            this.throttledFunction(this.usernameExists);
           } else {
             this.errors[field] = "";
           }
@@ -189,24 +212,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
-@media (min-width: 768px) {
-  .absolute-center-top-third {
-    position: absolute;
-    left: 50%;
-    margin-top: 4rem;
-    top: 10%;
-    transform: translate(-50%, 0);
-  }
-}
-
-@media (max-width: 768px) {
-  .flex-align-center {
-    display: flex;
-    justify-content: center;
-    place-items: center;
-  }
-}
-
 .separator::before,
 .separator::after {
   content: "";

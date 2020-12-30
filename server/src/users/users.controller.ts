@@ -28,9 +28,8 @@ export class UsersController {
   @Post('/check-username')
   @UsePipes(new ValidationPipe())
   async checkUsername(@Body() req: CheckUsernameDTO): Promise<boolean> {
-    console.log('username API hit \n');
     const user = await this.usersRepositoryService.findOneByUsername(
-      req.username,
+      req.username.toLowerCase(),
     );
     return !!user;
   }
@@ -38,8 +37,9 @@ export class UsersController {
   @Post('/check-email')
   @UsePipes(new ValidationPipe())
   async checkEmail(@Body() req: CheckEmailDTO): Promise<boolean> {
-    console.log('email API hit \n');
-    const user = await this.usersRepositoryService.findOneByEmail(req.email);
+    const user = await this.usersRepositoryService.findOneByEmail(
+      req.email.toLowerCase(),
+    );
     return !!user;
   }
 

@@ -113,19 +113,13 @@ export class AuthService {
       .findOneByUsername(username.toLowerCase())
       .then((user) => {
         if (user) {
-          return {
-            user: null,
-            errors: ['Username is already taken'],
-          };
+          throw new UnauthorizedException('Username is already in use');
         } else {
           return this.userRepositoryService
             .findOneByEmail(email.toLowerCase())
             .then((user) => {
               if (user) {
-                return {
-                  user: null,
-                  errors: ['Email is already in use'],
-                };
+                throw new UnauthorizedException('Email is already in use');
               } else {
                 return this.createUser(username, email, password).then(
                   (user) => {
