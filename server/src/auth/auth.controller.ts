@@ -135,13 +135,14 @@ export class AuthController {
     };
   }
 
+  /**
+   *
+   * @param user
+   */
   @Post('register')
   @UsePipes(new ValidationPipe())
   async register(@Body() user: SignUpDTO): Promise<AuthResponseObject> {
     const result = await this.authService.register(user);
-    console.log(result);
-    if (result) return { success: false, data: null, errors: result.errors };
-
     const token = await this.tokensService.generateAccessToken(result.user);
     const refresh = await this.tokensService.generateRefreshToken(
       result.user,

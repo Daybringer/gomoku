@@ -11,7 +11,20 @@
         Register
       </h2>
       <hr class="dark:border-gray-500" />
-      <form @submit.prevent="register" class="flex flex-col p-2 pb-0">
+      <div v-show="serverError" class="bg-red-500 px-4 py-2 w-full rounded-md">
+        <p class="text-white leading-6">{{ serverError }}</p>
+      </div>
+      <div
+        v-show="showSuccess"
+        class="bg-green-500 px-4 py-2 w-full rounded-md"
+      >
+        <p class="text-white leading-6">Please confirm your email.</p>
+      </div>
+      <form
+        v-show="!showSuccess"
+        @submit.prevent="register"
+        class="flex flex-col p-2 pb-0"
+      >
         <label for="email" class="text-gray-900 dark:text-gray-200 text-lg"
           >Email</label
         >
@@ -73,16 +86,20 @@
           to="/login"
           >Already have an account?</router-link
         >
+        <div
+          class="separator mt-8 flex items-center text-center leading-5 text-gray-700 dark:text-gray-200"
+        >
+          Or continue with
+        </div>
+        <div class="mt-5 flex flex-row justify-around">
+          <social-sign-in
+            @click="googleLogin"
+            :type="'google'"
+          ></social-sign-in>
+          <social-sign-in :type="'facebook'"></social-sign-in>
+        </div>
       </form>
-      <div
-        class="separator flex items-center text-center leading-5 text-gray-700 dark:text-gray-200"
-      >
-        Or continue with
-      </div>
-      <div class="flex flex-row justify-around">
-        <social-sign-in @click="googleLogin" :type="'google'"></social-sign-in>
-        <social-sign-in :type="'facebook'"></social-sign-in>
-      </div>
+      <div v-show="showSuccess"></div>
     </div>
   </div>
 </template>
@@ -102,8 +119,8 @@ import { RepositoryFactory } from "@/repositories/RepositoryFactory";
 const UsersRepository = RepositoryFactory.getUserRepository;
 const AuthRepository = RepositoryFactory.getAuthRepository;
 
-// Pinie store
-import { userAuthStore } from "@/store/auth";
+// Pinia store
+import { useStore } from "@/store/store";
 
 // yup validation
 import { object, string, ref } from "yup";
@@ -149,24 +166,27 @@ export default defineComponent({
         password: "",
         passwordConfirm: "",
       },
+      serverError: "",
+      showSuccess: false,
     };
   },
   methods: {
-    register() {
-      // validate all
+    async register() {
+      await this.validateAll();
 
-      const auth = userAuthStore();
-      auth
+      const store = useStore();
+      store
         .register(this.user)
         .then((res) => {
-          console.log("the response", res);
+          this.showSuccess = true;
+          // this.$router.push("/");
         })
-        .catch((err) => console.log("the error", err));
+        .catch((err) => (this.serverError = err));
     },
     googleLogin() {
       console.log("here handle google login");
     },
-    usernameExists() {
+    async usernameExists() {
       UsersRepository.userWithUsernameExists(this.user.username)
         .then((res) => {
           if (res.data) {
@@ -177,7 +197,7 @@ export default defineComponent({
         })
         .catch(() => (this.errors.username = "Server error"));
     },
-    emailExists() {
+    async emailExists() {
       UsersRepository.userWithMailExists(this.user.email)
         .then((res) => {
           if (res.data) {
@@ -191,7 +211,9 @@ export default defineComponent({
     throttledFunction: throttle(500, (call) => {
       call();
     }),
-    validate(field: "email" | "username" | "password" | "passwordConfirm") {
+    async validate(
+      field: "email" | "username" | "password" | "passwordConfirm"
+    ) {
       registerFormSchema
         .validateAt(field, this.user)
         .then(() => {
@@ -206,6 +228,14 @@ export default defineComponent({
         .catch((err) => {
           this.errors[field] = err.message;
         });
+    },
+    async validateAll() {
+      await Promise.all([
+        this.validate("email"),
+        this.validate("username"),
+        this.validate("password"),
+        this.validate("passwordConfirm"),
+      ]);
     },
   },
 });
