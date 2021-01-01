@@ -42,7 +42,9 @@ export class UsersRepositoryService {
   // ? One solution could be to do both searches and only take the valid one if one exists
   public async findByEmailOrUsername(usernameOrEmail: string): Promise<User> {
     if (usernameOrEmail.includes('@')) {
-      return this.userRepository.findOne({ email: usernameOrEmail });
+      return this.userRepository.findOne({
+        email: usernameOrEmail.toLowerCase(),
+      });
     } else {
       return this.userRepository.findOne({ username: usernameOrEmail });
     }

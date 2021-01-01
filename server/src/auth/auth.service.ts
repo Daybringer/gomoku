@@ -106,9 +106,7 @@ export class AuthService {
     registerUserDTO: SignUpDTO,
   ): Promise<{ user: User | null; errors: string[] }> {
     const { username, email, password } = registerUserDTO;
-
-    // TODO IDK why but this code looks like shit, it really does...
-    // ? REVISION: refactored a little bit, still the nested returns look a little bit odd
+    console.log(registerUserDTO);
     return this.userRepositoryService
       .findOneByUsername(username.toLowerCase())
       .then((user) => {
@@ -146,7 +144,7 @@ export class AuthService {
       });
   }
 
-  async validateUser(usernameOrEmail, password): Promise<User> {
+  async validateUser(usernameOrEmail: string, password: string): Promise<User> {
     return this.userRepositoryService
       .findByEmailOrUsername(usernameOrEmail)
       .then((user) => {

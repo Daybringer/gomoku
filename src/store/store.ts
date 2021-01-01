@@ -49,7 +49,17 @@ export const useStore = defineStore({
           });
       });
     },
-
+    async login(usernameOrEmail: string, password: string) {
+      return new Promise((resolve, reject) => {
+        AuthRepository.login(usernameOrEmail, password)
+          .then((res) => {
+            resolve("");
+          })
+          .catch((err) => {
+            reject(err.response.data.message);
+          });
+      });
+    },
     consumeAuthResponse(response: AxiosResponse): void {
       const data = response.data.data;
       const token = data.payload.token;

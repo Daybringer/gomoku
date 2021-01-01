@@ -11,15 +11,16 @@
         Register
       </h2>
       <hr class="dark:border-gray-500" />
-      <div v-show="serverError" class="bg-red-500 px-4 py-2 w-full rounded-md">
-        <p class="text-white leading-6">{{ serverError }}</p>
-      </div>
-      <div
+      <status-message
         v-show="showSuccess"
-        class="bg-green-500 px-4 py-2 w-full rounded-md"
-      >
-        <p class="text-white leading-6">Please confirm your email.</p>
-      </div>
+        :type="'success'"
+        :text="'Please confirm your email to finish the registration.'"
+      ></status-message>
+      <status-message
+        v-show="serverError"
+        :type="'error'"
+        :text="serverError"
+      ></status-message>
       <form
         v-show="!showSuccess"
         @submit.prevent="register"
@@ -91,7 +92,7 @@
         >
           Or continue with
         </div>
-        <div class="mt-5 flex flex-row justify-around">
+        <div class="mt-8 flex flex-row justify-around">
           <social-sign-in
             @click="googleLogin"
             :type="'google'"
@@ -99,7 +100,9 @@
           <social-sign-in :type="'facebook'"></social-sign-in>
         </div>
       </form>
-      <div v-show="showSuccess"></div>
+      <div v-show="showSuccess">
+        Some email confirmation, IDK :smile:
+      </div>
     </div>
   </div>
 </template>
@@ -113,6 +116,7 @@ import { defineComponent } from "vue";
 import SubmitButton from "@/components/form/SubmitButton.vue";
 import InputBase from "@/components/form/InputBase.vue";
 import SocialSignIn from "@/components/form/SocialSignIn.vue";
+import StatusMessage from "@/components/form/StatusMessage.vue";
 
 // Axios repositories
 import { RepositoryFactory } from "@/repositories/RepositoryFactory";
@@ -151,7 +155,7 @@ const registerFormSchema = object().shape({
 
 export default defineComponent({
   name: "Register",
-  components: { InputBase, SocialSignIn, SubmitButton },
+  components: { InputBase, SocialSignIn, SubmitButton, StatusMessage },
   data() {
     return {
       user: {
@@ -178,6 +182,7 @@ export default defineComponent({
       store
         .register(this.user)
         .then((res) => {
+          this.serverError = "";
           this.showSuccess = true;
           // this.$router.push("/");
         })
