@@ -135,11 +135,14 @@ export class AuthService {
 
   async login(loginUserDTO: LogInDTO): Promise<User> {
     const { usernameOrEmail, password } = loginUserDTO;
+    console.log(loginUserDTO);
     return this.validateUser(usernameOrEmail, password)
       .then((user) => {
+        console.log('should be user: ', user);
         return user;
       })
       .catch((err) => {
+        console.log('thrown exception');
         throw new UnauthorizedException('Invalid Credentials');
       });
   }
@@ -151,17 +154,17 @@ export class AuthService {
         if (!user) {
           throw Error;
         } else {
-          if (user.googleID)
-            return this.comparePassword(password, user.password).then(
-              (passwordsMatch) => {
-                if (passwordsMatch) {
-                  const { password, ...result } = user;
-                  return result;
-                } else {
-                  throw Error;
-                }
-              },
-            );
+          if (user.googleID) return user;
+          return this.comparePassword(password, user.password).then(
+            (passwordsMatch) => {
+              if (passwordsMatch) {
+                const { password, ...result } = user;
+                return result;
+              } else {
+                throw Error;
+              }
+            },
+          );
         }
       });
   }

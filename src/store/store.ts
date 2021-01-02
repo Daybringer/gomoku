@@ -38,12 +38,10 @@ export const useStore = defineStore({
       return new Promise((resolve, reject) => {
         AuthRepository.registerUser(user)
           .then((res) => {
-            console.log(res);
             this.consumeAuthResponse(res);
             resolve("Registered");
           })
           .catch((err) => {
-            console.log(err);
             this.logout();
             reject(err.response.data.message);
           });
@@ -53,9 +51,11 @@ export const useStore = defineStore({
       return new Promise((resolve, reject) => {
         AuthRepository.login(usernameOrEmail, password)
           .then((res) => {
-            resolve("");
+            this.consumeAuthResponse(res);
+            resolve("Logged in");
           })
           .catch((err) => {
+            this.logout();
             reject(err.response.data.message);
           });
       });

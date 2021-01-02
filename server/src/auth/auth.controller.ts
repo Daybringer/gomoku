@@ -143,6 +143,7 @@ export class AuthController {
   @UsePipes(new ValidationPipe())
   async register(@Body() user: SignUpDTO): Promise<AuthResponseObject> {
     const result = await this.authService.register(user);
+    console.log(result);
     const token = await this.tokensService.generateAccessToken(result.user);
     const refresh = await this.tokensService.generateRefreshToken(
       result.user,
@@ -162,9 +163,7 @@ export class AuthController {
   @UsePipes(new ValidationPipe())
   async login(@Body() user: LogInDTO): Promise<AuthResponseObject> {
     const validatedUser = await this.authService.login(user);
-    if (!validatedUser)
-      return { success: false, data: null, errors: ['Invalid Credentials'] };
-
+    console.log(validatedUser);
     const token = await this.tokensService.generateAccessToken(validatedUser);
     const refresh = await this.tokensService.generateRefreshToken(
       validatedUser,

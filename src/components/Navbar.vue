@@ -188,6 +188,7 @@
     >
       <div class="px-2 pt-2 pb-3 z-50" id="navbarDropdown">
         <router-link
+          v-show="!logged"
           to="/login"
           class="inline-block w-auto px-4 py-2 text-base bg-gomoku-blue hover:bg-gomoku-blue-dark text-gray-800 shadow-lg font-semibold border-transparent rounded focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
           >Sign in</router-link
@@ -223,8 +224,11 @@ import HamburgerButton from "@/components/mini/HamburgerButton.vue";
 import NavbarNavigationLink from "@/components/mini/NavbarNavigationLink.vue";
 import MobileNavbarLink from "@/components/mini/MobileNavbarLink.vue";
 
+// Pinia
+import { useStore } from "@/store/store";
+
 // Utility
-import { defineComponent } from "vue";
+import { defineComponent, ref, reactive } from "vue";
 
 export default defineComponent({
   name: "Navbar",
@@ -251,15 +255,8 @@ export default defineComponent({
   },
   methods: {
     logout() {
-      // this.$store
-      //   .dispatch("authLogOut")
-      //   .then(() => {
-      //     if (this.profileDropdownIsToggled) this.profileToggle();
-      //     if (this.$router.currentRoute.path != "/") this.$router.push("/");
-      //   })
-      //   .catch((err) => {
-      //     console.log(err);
-      //   });
+      const store = useStore();
+      store.logout();
     },
     routeToSettings(path: string) {
       if (this.profileDropdownIsToggled) this.profileToggle();
@@ -286,8 +283,8 @@ export default defineComponent({
       return false;
     },
     logged(): boolean {
-      // return this.$store.getters.isAuthenticated;
-      return false;
+      const store = useStore();
+      return store.isAuthenticated;
     },
   },
 });
