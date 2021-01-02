@@ -103,7 +103,7 @@
           class="absolute inset-y-0 right-0 flex items-center pr-2 xl:static xl:inset-auto xl:ml-6 xl:pr-0"
         >
           <!-- Profile dropdown -->
-          <div class="ml-3 relative">
+          <div class="ml-3 relative" v-click-outside="closeProfile">
             <div>
               <button
                 v-show="logged"
@@ -226,7 +226,7 @@ import MobileNavbarLink from "@/components/mini/MobileNavbarLink.vue";
 
 // Pinia
 import { useStore } from "@/store/store";
-
+const store = useStore();
 // Utility
 import { defineComponent, ref, reactive } from "vue";
 
@@ -255,7 +255,7 @@ export default defineComponent({
   },
   methods: {
     logout() {
-      const store = useStore();
+      this.closeProfile();
       store.logout();
     },
     routeToSettings(path: string) {
@@ -271,7 +271,7 @@ export default defineComponent({
     routerLinkToLogin() {
       this.$router.push("/login");
     },
-    clickedOutsideProfile() {
+    closeProfile() {
       if (this.profileDropdownIsToggled) {
         this.profileToggle();
       }
@@ -283,7 +283,6 @@ export default defineComponent({
       return false;
     },
     logged(): boolean {
-      const store = useStore();
       return store.isAuthenticated;
     },
   },
