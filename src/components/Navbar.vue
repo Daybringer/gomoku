@@ -62,7 +62,9 @@
             </div>
           </div>
         </div>
-        <label class="px-6 flex items-center cursor-pointer select-none">
+        <label
+          class="px-6 hidden xl:flex items-center cursor-pointer select-none"
+        >
           <!-- toggle -->
           <div class="relative">
             <!-- input -->
@@ -213,6 +215,43 @@
           :active="activeIntersection === 'contact' && isHomePage"
           >Contact</mobile-navbar-link
         >
+        <label class="px-3 py-2 flex items-center cursor-pointer select-none">
+          <!-- toggle -->
+          <div class="relative">
+            <!-- input -->
+            <input
+              id="toogleA"
+              type="checkbox"
+              v-model="darkModeToggled"
+              class="hidden"
+            />
+            <!-- line -->
+            <div
+              class="toggle__line w-16 bg-gray-300 dark:bg-gray-400 rounded-full shadow-inner"
+              style="height:1.90rem;"
+            ></div>
+            <!-- dot -->
+            <div
+              class="toggle__dot absolute flex place-items-center justify-items-center w-8 h-8 text-yellow-300 bg-white rounded-full shadow inset-y-0 left-0"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="flex-1 h-7 fill-current  stroke-current"
+                viewBox="0 0 24 24"
+                stroke-width="0"
+                stroke="#000000"
+                fill="none"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path
+                  d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"
+                />
+              </svg>
+            </div>
+          </div>
+        </label>
       </div>
     </div>
   </nav>
