@@ -14,11 +14,13 @@ export class UsersRepositoryService {
     username: string,
     email: string,
     password: string,
+    googleID?: string,
   ): Promise<User> {
     const newUser = new UserEntity();
     newUser.username = username;
     newUser.email = email;
     newUser.password = password;
+    newUser.googleID = googleID;
     return this.userRepository.save(newUser);
   }
 

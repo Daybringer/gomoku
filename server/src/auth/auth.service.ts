@@ -41,7 +41,7 @@ export class AuthService {
     return ticket.getPayload();
   }
 
-  public async validateGoogleUser(email: string): Promise<User> {
+  public async findUserByEmail(email: string): Promise<User> {
     return this.userRepositoryService.findOneByEmail(email);
   }
 
@@ -59,12 +59,15 @@ export class AuthService {
   async setGoogleUsername(username: string, email: string): Promise<User> {
     return this.userRepositoryService
       .findOneByUsername(username)
-      .then((user) => {
+      .then(async (user) => {
         if (user) {
           throw new Error('Username is already taken');
         } else {
+          const namelessGUser = await this.namelessGUserRepositoryService.findOneByEmail(
+            email,
+          );
           return this.userRepositoryService
-            .create(username, email, '')
+            .create(username, email, '', namelessGUser.googleID)
             .then((user) => {
               return this.namelessGUserRepositoryService
                 .deleteOneByEmail(email)
@@ -106,7 +109,6 @@ export class AuthService {
     registerUserDTO: SignUpDTO,
   ): Promise<{ user: User | null; errors: string[] }> {
     const { username, email, password } = registerUserDTO;
-    console.log(registerUserDTO);
     return this.userRepositoryService
       .findOneByUsername(username.toLowerCase())
       .then((user) => {
@@ -135,14 +137,11 @@ export class AuthService {
 
   async login(loginUserDTO: LogInDTO): Promise<User> {
     const { usernameOrEmail, password } = loginUserDTO;
-    console.log(loginUserDTO);
     return this.validateUser(usernameOrEmail, password)
       .then((user) => {
-        console.log('should be user: ', user);
         return user;
       })
       .catch((err) => {
-        console.log('thrown exception');
         throw new UnauthorizedException('Invalid Credentials');
       });
   }

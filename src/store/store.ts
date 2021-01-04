@@ -47,6 +47,22 @@ export const useStore = defineStore({
           });
       });
     },
+    async setGUsername(username: string) {
+      return new Promise((resolve, reject) => {
+        AuthRepository.setGUsername(this.googleIDToken, username)
+          .then((res) => {
+            console.log(res);
+            this.googleIDToken = "";
+            this.consumeAuthResponse(res);
+            resolve("Logged in");
+          })
+          .catch((err) => {
+            console.log(err);
+            this.logout();
+            reject(err.response.data.message);
+          });
+      });
+    },
     async login(usernameOrEmail: string, password: string) {
       return new Promise((resolve, reject) => {
         AuthRepository.login(usernameOrEmail, password)
@@ -60,8 +76,27 @@ export const useStore = defineStore({
           });
       });
     },
+    async googleLogin(id_token: string) {
+      return new Promise((resolve, reject) => {
+        AuthRepository.googleLogin(id_token)
+          .then((res) => {
+            if (res.data) {
+              this.consumeAuthResponse(res);
+              resolve(true);
+            } else {
+              this.googleIDToken = id_token;
+              resolve(false);
+            }
+          })
+          .catch((err) => {
+            this.googleIDToken = "";
+            this.logout();
+            reject(err.response.data.message);
+          });
+      });
+    },
     consumeAuthResponse(response: AxiosResponse): void {
-      const data = response.data.data;
+      const data = response.data;
       const token = data.payload.token;
       this.saveUserProfile(data.user);
       this.saveToken(token);

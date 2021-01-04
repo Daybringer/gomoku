@@ -79,19 +79,16 @@
           to="/register"
           >No account yet?</router-link
         >
-        <div
-          class="separator mt-8 flex items-center text-center leading-5 text-gray-700 dark:text-gray-200"
-        >
-          Or continue with
-        </div>
-        <div class="mt-8 flex flex-row justify-around">
-          <social-sign-in
-            @click="googleLogin"
-            :type="'google'"
-          ></social-sign-in>
-          <social-sign-in :type="'facebook'"></social-sign-in>
-        </div>
       </form>
+      <div
+        class="separator mt-2 flex items-center text-center leading-5 text-gray-700 dark:text-gray-200"
+      >
+        Or continue with
+      </div>
+      <div class=" flex flex-row justify-around">
+        <social-sign-in @click="googleLogin" :type="'google'"></social-sign-in>
+        <social-sign-in :type="'facebook'"></social-sign-in>
+      </div>
     </div>
   </div>
 </template>
@@ -115,6 +112,7 @@ const loginFormSchema = object().shape({
 
 // Utility
 import { defineComponent } from "vue";
+import { AxiosResponse } from "axios";
 
 export default defineComponent({
   name: "Login",
@@ -151,8 +149,23 @@ export default defineComponent({
           });
       }
     },
-    googleLogin() {
-      console.log("insert google login logic");
+    async googleLogin() {
+      const store = useStore();
+      // @ts-ignore
+      await this.$gAuth
+        .signIn()
+        .then((res: any) => {
+          return store.googleLogin(res.xc.id_token);
+        })
+        .then((askForUsername: boolean) => {
+          if (askForUsername) {
+            this.serverError = "";
+            this.showSuccess = true;
+          } else {
+            this.$router.push("/set-username");
+          }
+        })
+        .catch((err: string) => (this.serverError = err));
     },
     validate(field: "usernameOrEmail" | "password") {
       loginFormSchema

@@ -294,6 +294,8 @@ export default defineComponent({
   },
   methods: {
     logout() {
+      //@ts-ignore
+      this.$gAuth.signOut();
       this.closeProfile();
       store.logout();
     },

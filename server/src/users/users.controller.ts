@@ -13,6 +13,7 @@ import { UsersRepositoryService } from './usersRepository.service';
 // DTOs
 import { CheckUsernameDTO } from './dto/check-username.dto';
 import { CheckEmailDTO } from './dto/check-email.dto';
+import { UserInterface } from './models/user.interface';
 
 @Controller('/users')
 export class UsersController {
@@ -29,7 +30,7 @@ export class UsersController {
   @UsePipes(new ValidationPipe())
   async checkUsername(@Body() req: CheckUsernameDTO): Promise<boolean> {
     const user = await this.usersRepositoryService.findOneByUsername(
-      req.username.toLowerCase(),
+      req.username,
     );
     return !!user;
   }
@@ -45,14 +46,10 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  async fetchUser(@Req() req) {
+  async fetchUser(@Req() req): Promise<UserInterface> {
     const userUUID = req.user.uuid;
 
     const user = await this.usersRepositoryService.findByUUID(userUUID);
-
-    return {
-      success: true,
-      data: user,
-    };
+    return user;
   }
 }

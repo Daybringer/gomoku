@@ -8,6 +8,7 @@ import {
   Redirect,
   Req,
   Res,
+  UnauthorizedException,
   UseGuards,
   UsePipes,
   ValidationPipe,
@@ -22,6 +23,7 @@ import { LogInDTO } from './dto/log-in.dto';
 import { GoogleSignInDTO } from './dto/google-sign-in.dto';
 import { SetUsernameDTO } from './dto/set-username.dto';
 import { JwtAuthGuard } from './guards/jwt.guard';
+import { NamelessGUser } from 'src/users/models/namelessGUser.interface';
 
 interface ResponseObject {
   success: boolean;
@@ -61,64 +63,57 @@ export class AuthController {
   @UsePipes(new ValidationPipe())
   async signIn(
     @Body() req: GoogleSignInDTO,
-  ): Promise<GenericResponseObject | AuthResponseObject> {
+  ): Promise<AuthenticationPayload | null> {
     const payload = await this.authService.validateGoogleID(req.id_token);
-    if (!payload)
-      return { success: false, data: null, errors: ['Invalid Google user'] };
+    if (!payload) throw new UnauthorizedException('Invalid Google User');
 
-    console.log(payload);
-
-    const user = await this.authService.validateGoogleUser(payload.email);
+    const user = await this.authService.findUserByEmail(payload.email);
 
     if (!user) {
-      const user = this.authService.namelessGoogleExists(payload.email);
-      if (!user)
-        this.authService
-          .createNamelessGoogle(payload.email, payload.sub)
-          .then(() => {});
-
-      return {
-        success: false,
-        data: { id_token: req.id_token },
-        errors: ['Set username'],
-      };
+      const user = await this.authService.namelessGoogleExists(payload.email);
+      if (!user) {
+        const nameless = await this.authService.createNamelessGoogle(
+          payload.email,
+          payload.sub,
+        );
+        return null;
+      }
+      return null;
     } else {
-      const token = await this.tokensService.generateAccessToken(user);
-      const refresh = await this.tokensService.generateRefreshToken(
-        user,
-        60 * 60 * 24 * 100,
-      );
+      if (user.googleID) {
+        const token = await this.tokensService.generateAccessToken(user);
+        const refresh = await this.tokensService.generateRefreshToken(
+          user,
+          60 * 60 * 24 * 100,
+        );
 
-      const authPayload = this.buildResponsePayload(user, token, refresh);
+        const payload = this.buildResponsePayload(user, token, refresh);
 
-      return {
-        success: true,
-        data: authPayload,
-        errors: [],
-      };
+        return payload;
+      } else {
+        throw new UnauthorizedException(
+          'This email is linked to standard account.',
+        );
+      }
     }
   }
 
-  @Post('setUsername')
+  @Post('setGUsername')
   @UsePipes(new ValidationPipe())
-  async setUsername(@Body() req: SetUsernameDTO): Promise<AuthResponseObject> {
+  async setUsername(
+    @Body() req: SetUsernameDTO,
+  ): Promise<AuthenticationPayload> {
     const { username, id_token } = req;
 
     const payload = await this.authService.validateGoogleID(id_token);
-    if (!payload)
-      return { success: false, data: null, errors: ['Invalid Google user'] };
+    if (!payload) throw new UnauthorizedException('Invalid Google User');
 
     const user = await this.authService.setGoogleUsername(
       username,
       payload.email,
     );
 
-    if (!user)
-      return {
-        success: false,
-        data: null,
-        errors: ['Username is already taken'],
-      };
+    if (!user) throw new UnauthorizedException('Username is already taken');
 
     const token = await this.tokensService.generateAccessToken(user);
     const refresh = await this.tokensService.generateRefreshToken(
@@ -128,11 +123,7 @@ export class AuthController {
 
     const authPayload = this.buildResponsePayload(user, token, refresh);
 
-    return {
-      success: true,
-      data: authPayload,
-      errors: [],
-    };
+    return authPayload;
   }
 
   /**
@@ -141,9 +132,8 @@ export class AuthController {
    */
   @Post('register')
   @UsePipes(new ValidationPipe())
-  async register(@Body() user: SignUpDTO): Promise<AuthResponseObject> {
+  async register(@Body() user: SignUpDTO): Promise<AuthenticationPayload> {
     const result = await this.authService.register(user);
-    console.log(result);
     const token = await this.tokensService.generateAccessToken(result.user);
     const refresh = await this.tokensService.generateRefreshToken(
       result.user,
@@ -152,18 +142,13 @@ export class AuthController {
 
     const payload = this.buildResponsePayload(user, token, refresh);
 
-    return {
-      success: true,
-      data: payload,
-      errors: [],
-    };
+    return payload;
   }
 
   @Post('login')
   @UsePipes(new ValidationPipe())
-  async login(@Body() user: LogInDTO): Promise<AuthResponseObject> {
+  async login(@Body() user: LogInDTO): Promise<AuthenticationPayload> {
     const validatedUser = await this.authService.login(user);
-    console.log(validatedUser);
     const token = await this.tokensService.generateAccessToken(validatedUser);
     const refresh = await this.tokensService.generateRefreshToken(
       validatedUser,
@@ -174,15 +159,13 @@ export class AuthController {
 
     const payload = this.buildResponsePayload(response, token, refresh);
 
-    return {
-      success: true,
-      data: payload,
-      errors: [],
-    };
+    return payload;
   }
 
+  // TODO rewrite response
+  // TODO Contemplate if I even need refresh tokens
   @Post('refresh')
-  async refresh(@Body() body: RefreshTokenDTO): Promise<AuthResponseObject> {
+  async refresh(@Body() body: RefreshTokenDTO): Promise<AuthenticationPayload> {
     const {
       user,
       token,
@@ -192,11 +175,7 @@ export class AuthController {
 
     const payload = this.buildResponsePayload(user, token);
 
-    return {
-      success: true,
-      data: payload,
-      errors: [],
-    };
+    return payload;
   }
 
   private buildResponsePayload(

@@ -121,7 +121,6 @@ import StatusMessage from "@/components/form/StatusMessage.vue";
 // Axios repositories
 import { RepositoryFactory } from "@/repositories/RepositoryFactory";
 const UsersRepository = RepositoryFactory.getUserRepository;
-const AuthRepository = RepositoryFactory.getAuthRepository;
 
 // Pinia store
 import { useStore } from "@/store/store";

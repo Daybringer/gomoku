@@ -16,6 +16,7 @@
     "throttle-debounce": "^3.0.1",
     "vue": "^3.0.0",
     "vue-router": "^4.0.2",
+    "vue3-google-auth": "0.0.2",
     "vue3-google-oauth2": "^1.0.4",
     "yup": "^0.32.8"
   },
