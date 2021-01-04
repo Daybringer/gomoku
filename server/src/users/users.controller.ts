@@ -45,11 +45,12 @@ export class UsersController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('me')
+  @Post('me')
   async fetchUser(@Req() req): Promise<UserInterface> {
-    const userUUID = req.user.uuid;
+    console.log('API HIT');
+    // const userUUID = req.user.uuid;
 
-    const user = await this.usersRepositoryService.findByUUID(userUUID);
-    return user;
+    // const user = await this.usersRepositoryService.findByUUID(userUUID);
+    return req.user;
   }
 }

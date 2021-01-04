@@ -9,4 +9,8 @@ const baseURL = `${baseDomain}/api`;
 console.log(baseURL);
 export default axios.create({
   baseURL,
+  headers: {
+    Authorization: "JWT_TOKEN",
+    "Content-Type": "application/json",
+  },
 });

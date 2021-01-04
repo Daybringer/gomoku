@@ -103,7 +103,11 @@ export const useStore = defineStore({
     },
     saveToken(token: string): void {
       localStorage.setItem("access-token", token);
-      Repository.defaults.headers.common["Authorization"] = token;
+      console.log("Bearer " + token);
+      Object.assign(Repository.defaults, {
+        headers: { Authorization: "Bearer " + token },
+      });
+      // Repository.defaults.headers.common["Auth-Token"] = token;
       this.token = token;
     },
     saveUserProfile(userProfile: UserProfile) {

@@ -16,7 +16,7 @@ require('dotenv').config();
   imports: [
     JwtModule.register({
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '1h' },
+      signOptions: { expiresIn: '100h' },
     }),
     TypeOrmModule.forFeature([RefreshTokenEntity]),
     TypeOrmModule.forFeature([UserEntity]),

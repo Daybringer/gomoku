@@ -153,13 +153,14 @@
                 >
                   <a
                     href="#"
+                    @click.prevent="pushAndCloseDropdown('/profile')"
                     class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
                     role="menuitem"
                     >Your Profile</a
                   >
                   <a
                     href="#"
-                    @click.prevent="routeToSettings('/settings')"
+                    @click.prevent="pushAndCloseDropdown('/settings')"
                     class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
                     role="menuitem"
                     >Settings</a
@@ -299,7 +300,7 @@ export default defineComponent({
       this.closeProfile();
       store.logout();
     },
-    routeToSettings(path: string) {
+    pushAndCloseDropdown(path: string) {
       if (this.profileDropdownIsToggled) this.profileToggle();
       this.$router.push(path);
     },

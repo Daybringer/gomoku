@@ -8,4 +8,8 @@ export default {
   userWithUsernameExists(username: string) {
     return Repository.post(`${resource}/check-username`, { username });
   },
+  // getUserProfile() {},
+  getOwnUserProfile() {
+    return Repository.post(`${resource}/me`);
+  },
 };
