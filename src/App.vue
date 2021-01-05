@@ -6,6 +6,7 @@
   />
 </template>
 <script lang="ts">
+import { useStore } from "@/store/store";
 import { defineComponent } from "vue";
 import Navbar from "@/components/Navbar.vue";
 export default defineComponent({
@@ -15,6 +16,10 @@ export default defineComponent({
     return {
       activeIntersection: "",
     };
+  },
+  beforeMount() {
+    const store = useStore();
+    if (store.isAuthenticated) store.setBearer(store.token);
   },
   methods: {
     setIntersection(intersectionName: string): void {

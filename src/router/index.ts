@@ -35,10 +35,12 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/register",
     component: Register,
+    meta: { prohibitsAuth: true },
   },
   {
     path: "/set-username",
     component: () => import("../views/SetUsername.vue"),
+    meta: { prohibitsAuth: true },
   },
   {
     path: "/profile",
