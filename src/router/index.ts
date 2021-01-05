@@ -1,42 +1,50 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
+// Vue router
+import {
+  createRouter,
+  createWebHistory,
+  RouteParams,
+  RouteRecordRaw,
+} from "vue-router";
+// Components
 import Home from "../views/Home.vue";
 import Login from "../views/Login.vue";
 import Register from "../views/Register.vue";
+// Pinia
+import { useStore } from "@/store/store";
+
+declare module "vue-router" {
+  interface RouteMeta {
+    // is optional
+    isAdmin?: boolean;
+    prohibitsAuth?: boolean;
+    // must be declared by every route
+    requiresAuth?: boolean;
+  }
+}
+
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
-    name: "Home",
     component: Home,
   },
   {
     path: "/login",
-    name: "Login",
     component: Login,
+    meta: { prohibitsAuth: true },
   },
   {
     path: "/register",
-    name: "Register",
     component: Register,
   },
   {
     path: "/set-username",
-    name: "SetUsername",
     component: () => import("../views/SetUsername.vue"),
   },
   {
     path: "/profile",
-    name: "Profile",
     component: () => import("../views/UserProfile.vue"),
+    meta: { requiresAuth: true },
   },
-  // {
-  //   path: "/about",
-  //   name: "About",
-  //   // route level code-splitting
-  //   // this generates a separate chunk (about.[hash].js) for this route
-  //   // which is lazy-loaded when the route is visited.
-  //   component: () =>
-  //     import(/* webpackChunkName: "about" */ "../views/About.vue")
-  // }
 ];
 
 const router = createRouter({
@@ -51,6 +59,22 @@ const router = createRouter({
       };
     }
   },
+});
+
+router.beforeEach((to, from) => {
+  const store = useStore();
+
+  if (to.meta.requiresAuth && !store.isAuthenticated) {
+    return {
+      path: "/login",
+      // save the location we were at to come back later
+      // query: { redirect: to.fullPath },
+    };
+  }
+
+  if (to.meta.prohibitsAuth && store.isAuthenticated) {
+    return from;
+  }
 });
 
 export default router;

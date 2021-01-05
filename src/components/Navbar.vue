@@ -299,6 +299,7 @@ export default defineComponent({
       this.$gAuth.signOut();
       this.closeProfile();
       store.logout();
+      this.$router.push("/");
     },
     pushAndCloseDropdown(path: string) {
       if (this.profileDropdownIsToggled) this.profileToggle();
