@@ -1,6 +1,6 @@
 <template>
   <button
-    class="hamburger hamburger--elastic "
+    class="hamburger hamburger--elastic focus:ring-4 focus:ring-inset focus:ring-opacity-75"
     :class="activeClass"
     type="button"
   >

@@ -62,8 +62,9 @@
             </div>
           </div>
         </div>
-        <label
-          class="px-6 hidden xl:flex items-center cursor-pointer select-none"
+        <button
+          class="mx-6 hidden xl:flex items-center cursor-pointer select-none rounded-full ring-opacity-50 focus:ring-4 focus:ring-gomoku-blue focus:outline-none"
+          @click="toggleDarkMode"
         >
           <!-- toggle -->
           <div class="relative">
@@ -100,7 +101,7 @@
               </svg>
             </div>
           </div>
-        </label>
+        </button>
         <div
           class="absolute inset-y-0 right-0 flex items-center pr-2 xl:static xl:inset-auto xl:ml-6 xl:pr-0"
         >
@@ -216,7 +217,11 @@
           :active="activeIntersection === 'contact' && isHomePage"
           >Contact</mobile-navbar-link
         >
-        <label class="px-3 py-2 flex items-center cursor-pointer select-none">
+
+        <button
+          class="mx-3 my-2 flex items-center cursor-pointer select-none rounded-full ring-opacity-50 focus:ring-4 focus:ring-gomoku-blue focus:outline-none"
+          @click="toggleDarkMode"
+        >
           <!-- toggle -->
           <div class="relative">
             <!-- input -->
@@ -252,7 +257,7 @@
               </svg>
             </div>
           </div>
-        </label>
+        </button>
       </div>
     </div>
   </nav>
@@ -304,6 +309,10 @@ export default defineComponent({
     pushAndCloseDropdown(path: string) {
       if (this.profileDropdownIsToggled) this.profileToggle();
       this.$router.push(path);
+    },
+    toggleDarkMode() {
+      console.log("toggled");
+      this.darkModeToggled = !this.darkModeToggled;
     },
     burgerToggle() {
       this.burgerDropdownIsToggled = !this.burgerDropdownIsToggled;
