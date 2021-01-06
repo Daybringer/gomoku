@@ -47,6 +47,11 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("../views/UserProfile.vue"),
     meta: { requiresAuth: true },
   },
+  //
+  {
+    path: "/q/search",
+    component: () => import("../views/Game/CasualSearch.vue"),
+  },
 ];
 
 const router = createRouter({
