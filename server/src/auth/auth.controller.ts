@@ -82,12 +82,12 @@ export class AuthController {
     } else {
       if (user.googleID) {
         const token = await this.tokensService.generateAccessToken(user);
-        const refresh = await this.tokensService.generateRefreshToken(
-          user,
-          60 * 60 * 24 * 100,
-        );
+        // const refresh = await this.tokensService.generateRefreshToken(
+        //   user,
+        //   60 * 60 * 24 * 100,
+        // );
 
-        const payload = this.buildResponsePayload(user, token, refresh);
+        const payload = this.buildResponsePayload(user, token); //,refresh
 
         return payload;
       } else {
@@ -116,12 +116,12 @@ export class AuthController {
     if (!user) throw new UnauthorizedException('Username is already taken');
 
     const token = await this.tokensService.generateAccessToken(user);
-    const refresh = await this.tokensService.generateRefreshToken(
-      user,
-      60 * 60 * 24 * 100,
-    );
+    // const refresh = await this.tokensService.generateRefreshToken(
+    //   user,
+    //   60 * 60 * 24 * 100,
+    // );
 
-    const authPayload = this.buildResponsePayload(user, token, refresh);
+    const authPayload = this.buildResponsePayload(user, token); // ,refresh
 
     return authPayload;
   }
@@ -135,12 +135,12 @@ export class AuthController {
   async register(@Body() user: SignUpDTO): Promise<AuthenticationPayload> {
     const result = await this.authService.register(user);
     const token = await this.tokensService.generateAccessToken(result.user);
-    const refresh = await this.tokensService.generateRefreshToken(
-      result.user,
-      60 * 60 * 24 * 100,
-    );
+    // const refresh = await this.tokensService.generateRefreshToken(
+    //   result.user,
+    //   60 * 60 * 24 * 100,
+    // );
 
-    const payload = this.buildResponsePayload(user, token, refresh);
+    const payload = this.buildResponsePayload(user, token); //,refresh
 
     return payload;
   }
@@ -150,14 +150,14 @@ export class AuthController {
   async login(@Body() user: LogInDTO): Promise<AuthenticationPayload> {
     const validatedUser = await this.authService.login(user);
     const token = await this.tokensService.generateAccessToken(validatedUser);
-    const refresh = await this.tokensService.generateRefreshToken(
-      validatedUser,
-      60 * 60 * 24 * 30,
-    );
+    // const refresh = await this.tokensService.generateRefreshToken(
+    //   validatedUser,
+    //   60 * 60 * 24 * 30,
+    // );
 
     const { password, ...response } = validatedUser;
 
-    const payload = this.buildResponsePayload(response, token, refresh);
+    const payload = this.buildResponsePayload(response, token); //,refresh
 
     return payload;
   }

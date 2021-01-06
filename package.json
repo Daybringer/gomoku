@@ -13,6 +13,7 @@
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
     "pinia": "^2.0.0-alpha.5",
+    "socket.io-client": "^3.0.5",
     "throttle-debounce": "^3.0.1",
     "vue": "^3.0.0",
     "vue-router": "^4.0.2",
@@ -23,9 +24,7 @@
   "devDependencies": {
     "@tailwindcss/forms": "^0.2.1",
     "@tailwindcss/postcss7-compat": "^2.0.2",
-    "@types/debounce": "^1.2.0",
-    "@types/jest": "^24.0.19",
-    "@types/lodash.throttle": "^4.1.6",
+    "@types/socket.io-client": "^1.4.34",
     "@types/throttle-debounce": "^2.1.0",
     "@typescript-eslint/eslint-plugin": "^2.33.0",
     "@typescript-eslint/parser": "^2.33.0",
