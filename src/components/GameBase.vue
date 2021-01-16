@@ -77,7 +77,7 @@
               </h1>
               <router-link
                 to="q/search"
-                class="w-full mt-8 py-2 text-center rounded-lg text-gray-50 font-medium text-lg bg-gomoku-blue hover:bg-gomoku-blue-dark focus:bg-gomoku-blue-dark"
+                class="w-full mt-2 xl:mt-8 py-2 text-center rounded-lg text-gray-50 font-medium text-lg bg-gomoku-blue hover:bg-gomoku-blue-dark focus:bg-gomoku-blue-dark"
               >
                 New Game
               </router-link>
@@ -85,7 +85,7 @@
                 <svg
                   v-show="gameState === 'victory'"
                   version="1.1"
-                  class="absolute bottom-10 left-10 h-90 xl:h-50"
+                  class="absolute bottom-0 xl:bottom-10 left-0 xl:left-10 h-80 xl:h-50"
                   id="Layer_1"
                   xmlns="http://www.w3.org/2000/svg"
                   xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -331,7 +331,7 @@
                 <svg
                   v-show="gameState === 'defeat'"
                   viewBox="0 0 347.51588 263.47151"
-                  class="absolute bottom-10 left-10 xl:h-50"
+                  class="absolute bottom-0 left-0 xl:bottom-10 xl:left-10 h-80 xl:h-50"
                 >
                   <g
                     id="g1711"
