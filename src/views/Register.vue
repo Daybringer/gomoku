@@ -187,8 +187,23 @@ export default defineComponent({
         })
         .catch((err) => (this.serverError = err));
     },
-    googleLogin() {
-      console.log("here handle google login");
+    async googleLogin() {
+      const store = useStore();
+      // @ts-ignore
+      await this.$gAuth
+        .signIn()
+        .then((res: any) => {
+          return store.googleLogin(res.getAuthResponse().id_token);
+        })
+        .then((askForUsername: boolean) => {
+          if (askForUsername) {
+            this.serverError = "";
+            this.showSuccess = true;
+          } else {
+            this.$router.push("/set-username");
+          }
+        })
+        .catch((err: string) => (this.serverError = err));
     },
     async usernameExists() {
       UsersRepository.userWithUsernameExists(this.user.username)

@@ -155,7 +155,7 @@ export default defineComponent({
       await this.$gAuth
         .signIn()
         .then((res: any) => {
-          return store.googleLogin(res.xc.id_token);
+          return store.googleLogin(res.getAuthResponse().id_token);
         })
         .then((askForUsername: boolean) => {
           if (askForUsername) {
