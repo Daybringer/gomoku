@@ -7,12 +7,19 @@ const AuthRepository = RepositoryFactory.getAuthRepository;
 interface UserProfile {
   username: string;
   gameBoard: string;
+  myColor: string;
+  enemyColor: string;
 }
 
 export const useStore = defineStore({
   id: "store",
   state: () => ({
-    userProfile: { username: "", gameBoard: "" },
+    userProfile: {
+      username: "",
+      gameBoard: "",
+      myColor: "#00b3fe",
+      enemyColor: "#ff2079",
+    },
     token: localStorage.getItem("access-token") || "",
     googleIDToken: "",
     refreshToken: "",
@@ -115,7 +122,12 @@ export const useStore = defineStore({
       this.userProfile = userProfile;
     },
     flushUserProfile() {
-      this.userProfile = { username: "", gameBoard: "" };
+      this.userProfile = {
+        username: "",
+        gameBoard: "",
+        myColor: "#00b3fe",
+        enemyColor: "#ff2079",
+      };
     },
     logout(): void {
       this.flushUserProfile();

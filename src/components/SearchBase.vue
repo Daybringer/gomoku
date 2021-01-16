@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="min-height-screen-calc text-center bg-gray-100 dark:bg-gray-700 py-12 px-4 sm:px-6 lg:px-8"
-  >
+  <view-base>
     <div class="top-0">
       <h1 class="text-gray-900 dark:text-gray-100 text-4xl font-bold">
         Searching
@@ -133,15 +131,16 @@
         </g>
       </g>
     </svg>
-  </div>
+  </view-base>
 </template>
 
 <script lang="ts">
 // Components
+import ViewBase from "@/components/ViewBase.vue";
 import { defineComponent } from "vue";
 export default defineComponent({
   name: "SearchBase",
-  components: {},
+  components: { ViewBase },
   data() {
     return {
       interval: 0,

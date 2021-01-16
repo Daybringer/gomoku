@@ -9,6 +9,8 @@ import {
 import Home from "../views/Home.vue";
 import Login from "../views/Login.vue";
 import Register from "../views/Register.vue";
+import NotFound from "../views/NotFound.vue";
+import CasualGame from "../views/Game/CasualGame.vue";
 // Pinia
 import { useStore } from "@/store/store";
 
@@ -47,11 +49,15 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("../views/UserProfile.vue"),
     meta: { requiresAuth: true },
   },
-  //
+  {
+    path: "/q/game",
+    component: CasualGame,
+  },
   {
     path: "/q/search",
     component: () => import("../views/Game/CasualSearch.vue"),
   },
+  { path: "/:pathMatch(.*)*", name: "not-found", component: NotFound },
 ];
 
 const router = createRouter({
