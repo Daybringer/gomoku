@@ -1,8 +1,12 @@
+# dev-assets
+dev-assets
+
+# Server
 .DS_Store
-node_modules
 server/node_modules
 server/dist
-server/.env
+#Client
+client/node_modules
 # local env files
 .env.local
 .env.*.local

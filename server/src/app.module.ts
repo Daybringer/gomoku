@@ -4,9 +4,8 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
-import { UserEntity } from './users/models/user.entity';
-import { RefreshTokenEntity } from './auth/models/refresh-token.entity';
-import { NamelessGUserEntity } from './users/models/namelessGUser.entity';
+import { QuickSearchGateway, GameGateway } from './app.gateway';
+import { GameService } from './game/game.service';
 
 require('dotenv').config();
 
@@ -14,12 +13,8 @@ require('dotenv').config();
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'nightrider',
-      password: process.env.DATABASE_PASSWORD,
-      database: 'gomokuDatabase',
-      entities: [UserEntity, RefreshTokenEntity, NamelessGUserEntity],
+      url: process.env.DATABASE_URL,
+      autoLoadEntities: true,
       synchronize: true,
     }),
     AuthModule,
@@ -29,6 +24,6 @@ require('dotenv').config();
     }),
   ],
   controllers: [],
-  providers: [],
+  providers: [QuickSearchGateway, GameGateway, GameService],
 })
 export class AppModule {}
