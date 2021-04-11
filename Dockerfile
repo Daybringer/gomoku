@@ -8,7 +8,7 @@ COPY server/tsconfig.build.json ./
 COPY server/tsconfig.json ./
 COPY server/nest-cli.json ./
 RUN yarn install
-COPY . .
+COPY server ./
 RUN yarn build
 
 #Building client
@@ -18,7 +18,7 @@ WORKDIR /client
 COPY client/package.json ./
 COPY client/tsconfig.json ./
 RUN yarn install
-COPY . .
+COPY client ./
 RUN yarn build
 
 # Run the application
