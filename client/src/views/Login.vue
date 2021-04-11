@@ -107,7 +107,7 @@ import { useStore } from "@/store/store";
 import { object, string } from "yup";
 const loginFormSchema = object().shape({
   usernameOrEmail: string().required("Field is required"),
-  password: string().required("Password is required")
+  password: string().required("Password is required"),
 });
 
 // Utility
@@ -121,14 +121,14 @@ export default defineComponent({
     return {
       user: {
         usernameOrEmail: "",
-        password: ""
+        password: "",
       },
       errors: {
         usernameOrEmail: "",
-        password: ""
+        password: "",
       },
       showSuccess: false,
-      serverError: ""
+      serverError: "",
     };
   },
   methods: {
@@ -140,11 +140,11 @@ export default defineComponent({
         const store = useStore();
         store
           .login(this.user.usernameOrEmail, this.user.password)
-          .then(res => {
+          .then(() => {
             this.serverError = "";
             this.showSuccess = true;
           })
-          .catch(err => {
+          .catch((err) => {
             this.serverError = err;
           });
       }
@@ -173,11 +173,11 @@ export default defineComponent({
         .then(() => {
           this.errors[field] = "";
         })
-        .catch(err => {
+        .catch((err) => {
           this.errors[field] = err.message;
         });
-    }
-  }
+    },
+  },
 });
 </script>
 

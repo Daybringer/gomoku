@@ -18,7 +18,7 @@
           :id="array"
           class="bg-white dark:bg-gray-500 cursor-pointer relative"
           :class="lastPositionID == array ? 'currPositionOutline' : ''"
-          @click="gameClick(array[0])"
+          @click="gameClick(array)"
         ></div>
         <!-- Button for toggling after game overlay -->
         <button
@@ -721,7 +721,7 @@ export default defineComponent({
       gameState: "coinflip",
       afterGameModal: false,
       muted: false,
-      messages: [{ author: "opponent", text: "Ahoj tade, jak se mas?" }]
+      messages: [{ author: "opponent", text: "Ahoj tade, jak se mas?" }],
     };
   },
   computed: {
@@ -739,14 +739,14 @@ export default defineComponent({
       return !this.amIStartingPlayer ? "circle" : "cross";
     },
     genArray() {
-      const array = [];
+      const array: number[] = [];
 
       for (let i = 0; i < 225; i++) {
-        array.push([i]);
+        array.push(i);
       }
 
       return array;
-    }
+    },
   },
   props: [],
   methods: {
@@ -802,7 +802,7 @@ export default defineComponent({
 
       gameContainer.style.width = smallerDimension + "px";
       gameContainer.style.height = smallerDimension + "px";
-    }
+    },
   },
   beforeMount() {
     const store = useStore();
@@ -816,7 +816,7 @@ export default defineComponent({
   },
   unmounted() {
     window.removeEventListener("resize", this.equalizeGameContDimensions);
-  }
+  },
 });
 </script>
 <style scoped>

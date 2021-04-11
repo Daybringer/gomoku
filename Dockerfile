@@ -1,25 +1,30 @@
 
 # Building server
 
-FROM node:10 AS server-build
+FROM node:14 AS server-build
 WORKDIR /server
 COPY server/package.json ./
+COPY server/tsconfig.build.json ./
+COPY server/tsconfig.json ./
+COPY server/nest-cli.json ./
 RUN yarn install
 COPY . .
 RUN yarn build
 
 #Building client
 
-FROM node:10 AS client-build
+FROM node:14 AS client-build
 WORKDIR /client
 COPY client/package.json ./
+COPY client/tsconfig.json ./
 RUN yarn install
 COPY . .
 RUN yarn build
 
 # Run the application
 
-FROM node:10-alpine
+FROM node:14-alpine
+ENV NODE_ENV=production
 WORKDIR /app
 COPY --from=server-build /server ./
 COPY --from=client-build /client/dist ./dist/public

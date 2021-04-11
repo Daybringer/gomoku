@@ -1,6 +1,8 @@
 # dev-assets
 dev-assets
 
+dist
+
 # Server
 .DS_Store
 server/node_modules
