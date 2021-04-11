@@ -3,7 +3,7 @@ import {
   createRouter,
   createWebHistory,
   RouteParams,
-  RouteRecordRaw
+  RouteRecordRaw,
 } from "vue-router";
 // Components
 import Home from "../views/Home.vue";
@@ -12,9 +12,6 @@ import Register from "../views/Register.vue";
 import NotFound from "../views/NotFound.vue";
 import Game from "../views/Game/Game.vue";
 import Search from "../views/Game/Search.vue";
-// Test views
-import Test from "../views/Test.vue";
-import Test2 from "../views/Test2.vue";
 // Pinia
 import { useStore } from "@/store/store";
 
@@ -31,45 +28,37 @@ declare module "vue-router" {
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
-    component: Home
-  },
-  {
-    path: "/test",
-    component: Test
-  },
-  {
-    path: "/test2",
-    component: Test2
+    component: Home,
   },
   {
     path: "/login",
     component: Login,
-    meta: { prohibitsAuth: true }
+    meta: { prohibitsAuth: true },
   },
   {
     path: "/register",
     component: Register,
-    meta: { prohibitsAuth: true }
+    meta: { prohibitsAuth: true },
   },
   {
     path: "/set-username",
     component: () => import("../views/SetUsername.vue"),
-    meta: { prohibitsAuth: true }
+    meta: { prohibitsAuth: true },
   },
   {
     path: "/profile",
     component: () => import("../views/UserProfile.vue"),
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true },
   },
   {
     path: "/game",
-    component: Game
+    component: Game,
   },
   {
     path: "/search",
-    component: Search
+    component: Search,
   },
-  { path: "/:pathMatch(.*)*", name: "not-found", component: NotFound }
+  { path: "/:pathMatch(.*)*", name: "not-found", component: NotFound },
 ];
 
 const router = createRouter({
@@ -80,10 +69,10 @@ const router = createRouter({
       return {
         el: to.hash,
         // 4rem
-        top: 16 * 4
+        top: 16 * 4,
       };
     }
-  }
+  },
 });
 
 router.beforeEach((to, from) => {
@@ -91,7 +80,7 @@ router.beforeEach((to, from) => {
 
   if (to.meta.requiresAuth && !store.isAuthenticated) {
     return {
-      path: "/login"
+      path: "/login",
       // save the location we were at to come back later
       // query: { redirect: to.fullPath },
     };

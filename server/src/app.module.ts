@@ -20,7 +20,7 @@ require('dotenv').config();
     AuthModule,
     UsersModule,
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'dist/public'),
+      rootPath: join(__dirname, 'public'),
     }),
   ],
   controllers: [],

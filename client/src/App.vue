@@ -7,24 +7,23 @@
 </template>
 <script lang="ts">
 import { useStore } from "@/store/store";
-import { defineComponent } from "vue";
+import { defineComponent, ref, reactive, toRefs } from "vue";
 import Navbar from "@/components/Navbar.vue";
 export default defineComponent({
   name: "App",
   components: { Navbar },
-  data() {
-    return {
-      activeIntersection: "",
-    };
-  },
-  beforeMount() {
+  setup() {
     const store = useStore();
-    if (store.isAuthenticated) store.setBearer(store.token);
-  },
-  methods: {
-    setIntersection(intersectionName: string): void {
-      this.activeIntersection = intersectionName;
-    },
+    const state = reactive({ activeIntersection: "" });
+
+    const setIntersection = (intersectionName: string) => {
+      state.activeIntersection = intersectionName;
+    };
+
+    return {
+      ...toRefs(state),
+      setIntersection,
+    };
   },
 });
 </script>

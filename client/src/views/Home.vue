@@ -21,18 +21,22 @@
 
     <div class=" bg-gray-800 h-20 z-30 w-full m-auto"></div>
     <div
-      class=" w-90 h-90 flex flex-1 mb-8 bg-white dark:bg-gray-500 shadow-lg z-40 m-auto rounded-xl relative md:rounded-2xl -mt-16 md:-mt-12"
+      id="mainCard"
+      ref="mainCard"
+      class=" w-90 h-90 flex flex-1 mb-8 bg-white dark:bg-gray-500 shadow-xl z-40 m-auto rounded-xl relative md:rounded-2xl overflow-hidden -mt-16 md:-mt-12"
     >
-      <!-- Gomoku repeated background -->
-      <div class="m-auto">
+      <!-- Play button -->
+      <div class="m-auto z-20">
         <router-link to="/search?type=quick">
           <button
-            class="border-gray-800 dark:border-gray-200 border-4 text-gray-800 dark:text-gray-300 text-xl font-bold py-3 px-24 rounded-lg focus:shadow-outline-gray focus:outline-none"
+            class="border-gray-800 text-white dark:text-gray-500 dark:border-gray-200 border-4 bg-gray-800 dark:bg-gray-300 text-xl font-bold py-3 px-24 rounded-lg focus:shadow-outline-gray focus:outline-none"
           >
             Play
           </button>
         </router-link>
       </div>
+      <!-- Gomoku game simulation canvas -->
+      <game-simulation></game-simulation>
     </div>
   </div>
   <!-- Matces -->
@@ -439,15 +443,18 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, reactive, computed, toRefs } from "vue";
 import IntersectionObserver from "@/components/mini/IntersectionObserver.vue";
 import RuleSection from "../components/RuleSection.vue";
+import GameSimulation from "@/components/GameSimulation.vue";
 export default defineComponent({
   name: "Home",
-  props: ["logged"],
-  components: { RuleSection, IntersectionObserver },
-  data() {
-    return {
+  components: { RuleSection, IntersectionObserver, GameSimulation },
+  props: {
+    logged: Boolean,
+  },
+  setup(props, context) {
+    const state = reactive({
       activeRule: "basics",
       expanded: {
         swap1: { toggled: false },
@@ -458,19 +465,28 @@ export default defineComponent({
           quick: { toggled: false },
           ranked: { toggled: false },
           custom: { toggled: false },
-          ai: { toggled: false }
-        }
-      }
+          ai: { toggled: false },
+        },
+      },
+    });
+
+    // Methods
+    const intersectionCrossed = (intersectionName: string) => {
+      context.emit("intersectionCrossed", intersectionName);
+    };
+    return {
+      ...toRefs(state),
+      intersectionCrossed,
     };
   },
-  methods: {
-    intersectionCrossed(intersectionName: string) {
-      this.$emit("intersectionCrossed", intersectionName);
-    }
-  }
 });
 </script>
 <style>
+.shadow-box {
+  box-shadow: 0px 0px 15px 30px rgba(255, 255, 255, 1);
+  -webkit-box-shadow: 0px 0px 15px 30px rgba(255, 255, 255, 1);
+  -moz-box-shadow: 0px 0px 15px 30px rgba(255, 255, 255, 1);
+}
 .scroll-margin-navbar {
   scroll-margin-top: 4em;
 }
