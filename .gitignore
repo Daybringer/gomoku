@@ -2,6 +2,8 @@
 dev-assets
 
 dist
+./gameAnim.js
+
 
 # Server
 .DS_Store

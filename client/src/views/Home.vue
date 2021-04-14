@@ -23,13 +23,28 @@
     <div
       id="mainCard"
       ref="mainCard"
-      class=" w-90 h-90 flex flex-1 mb-8 bg-white dark:bg-gray-500 shadow-xl z-40 m-auto rounded-xl relative md:rounded-2xl overflow-hidden -mt-16 md:-mt-12"
+      class=" w-90 h-90 flex flex-1 mb-8 bg-white dark:bg-gray-200 shadow-xl z-40 m-auto rounded-xl relative md:rounded-2xl overflow-hidden -mt-16 md:-mt-12"
     >
       <!-- Play button -->
       <div class="m-auto z-20">
         <router-link to="/search?type=quick">
           <button
-            class="border-gray-800 text-white dark:text-gray-500 dark:border-gray-200 border-4 bg-gray-800 dark:bg-gray-300 text-xl font-bold py-3 px-24 rounded-lg focus:shadow-outline-gray focus:outline-none"
+            class="
+            border-gray-800
+            bg-white
+            dark:bg-gray-800
+            dark:border-transparent
+            border-4
+            text-gray-800
+            dark:text-gray-200
+            text-3xl
+            font-bold
+            py-4
+            px-28
+            rounded-lg
+            hover:shadow-outline-gray
+            focus:shadow-outline-gray
+            focus:outline-none"
           >
             Play
           </button>

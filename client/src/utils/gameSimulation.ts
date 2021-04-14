@@ -15,10 +15,9 @@ export default class GameSimulation {
   };
   //   Debouncing
   private debounceHandle = 0;
-  private debounceTime = 300; // ms
+  private debounceTime = 500; // ms
   //   Loop
   private abort = false;
-  private loopIntervalTime = 1000; // ms
   private GamePlanCollection = new GamePlanCollection();
   // Grid info
   private nX = 0;
@@ -151,8 +150,8 @@ export default class GameSimulation {
   ) {
     if (planHeight > nY || planWidth > nX) return -1;
 
-    const originX = Math.round(Math.random() * (nX - planWidth));
-    const originY = Math.round(Math.random() * (nY - planHeight));
+    const originX = Math.floor(Math.random() * (nX - planWidth));
+    const originY = Math.floor(Math.random() * (nY - planHeight));
     return [originX, originY];
   }
 
@@ -183,6 +182,9 @@ export default class GameSimulation {
   }
 
   private async drawPlans(gamePlans: GamePlan[]) {
+    if (this.abort) return;
+    await this.wait(1000);
+
     for (let i = 0; i < gamePlans.length; i++) {
       for (let j = 0; j < gamePlans[i].positionOrder.length; j++) {
         if (this.abort) return;
@@ -191,9 +193,8 @@ export default class GameSimulation {
         } else {
           this.drawCross(gamePlans[i].positionOrder[j]);
         }
-        await this.wait(50);
+        await this.wait(1000 * this.options.drawSpeed);
       }
-      await this.wait(1000);
     }
   }
 
@@ -265,36 +266,62 @@ export default class GameSimulation {
   private drawCircle(gridPosition: number[]) {
     const calculatedPosition = this.calculatePosition(gridPosition);
 
+    const strokeWidth = 5;
+
     this.ctx.beginPath();
     this.ctx.arc(
       calculatedPosition[0],
       calculatedPosition[1],
-      10,
+      this.options.cellSize / 2 - strokeWidth - this.options.gridLineWidth,
       0,
       2 * Math.PI,
       false
     );
 
-    this.ctx.lineWidth = 5;
-    this.ctx.strokeStyle = "blue";
+    this.ctx.lineWidth = strokeWidth;
+    this.ctx.strokeStyle = this.options.secondaryColor;
     this.ctx.stroke();
   }
 
   private drawCross(gridPosition: number[]) {
     const calculatedPosition = this.calculatePosition(gridPosition);
 
+    const strokeWidth = 5;
+
     this.ctx.beginPath();
-    this.ctx.arc(
-      calculatedPosition[0],
-      calculatedPosition[1],
-      10,
-      0,
-      2 * Math.PI,
-      false
+    // const offCenter =
+    //   Math.sqrt(
+    //     Math.pow(this.options.cellSize / 2, 2) +
+    //       Math.pow(this.options.cellSize / 2, 2)
+    //   ) -
+    //   strokeWidth / 2 -
+    //   20 / this.options.gridLineWidth;
+
+    const radius = this.options.cellSize / 2;
+
+    const hypotenuse = Math.sqrt(Math.pow(radius, 2) + Math.pow(radius, 2));
+
+    this.ctx.moveTo(
+      calculatedPosition[0] - hypotenuse / 2,
+      calculatedPosition[1] - hypotenuse / 2
+    );
+    this.ctx.lineTo(
+      calculatedPosition[0] + hypotenuse / 2,
+      calculatedPosition[1] + hypotenuse / 2
     );
 
-    this.ctx.lineWidth = 5;
-    this.ctx.strokeStyle = "red";
+    this.ctx.moveTo(
+      calculatedPosition[0] - hypotenuse / 2,
+      calculatedPosition[1] + hypotenuse / 2
+    );
+    this.ctx.lineTo(
+      calculatedPosition[0] + hypotenuse / 2,
+      calculatedPosition[1] - hypotenuse / 2
+    );
+
+    this.ctx.lineCap = "round";
+    this.ctx.lineWidth = strokeWidth;
+    this.ctx.strokeStyle = this.options.primaryColor;
     this.ctx.stroke();
   }
 }

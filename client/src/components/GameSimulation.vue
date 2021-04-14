@@ -13,11 +13,11 @@ export default defineComponent({
   name: "GameSimulation",
   setup(props, context) {
     const gameSimulation = new GameSimulation({
-      drawSpeed: 1,
+      drawSpeed: 0.75,
       gridLineWidth: 1,
       primaryColor: "#00b3fe",
       secondaryColor: "#ff2079",
-      gridColor: "rgba(100, 100, 227, 1)",
+      gridColor: "#8f8f8f",
       cellSize: 35,
     });
 
