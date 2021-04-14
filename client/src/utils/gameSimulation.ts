@@ -1,15 +1,31 @@
-import { Options } from "./gameSimulation.types";
+import GamePlanCollection from "./gamePlanCollection";
+import { GamePlan, Options } from "./types.dt";
 
 export default class GameSimulation {
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
   private isInitialized: boolean;
-  private options: Options;
+  private options: {
+    drawSpeed: number;
+    gridLineWidth: number; // in pixels
+    cellSize: number;
+    primaryColor: string;
+    secondaryColor: string;
+    gridColor: string;
+  };
   //   Debouncing
   private debounceHandle = 0;
-  private debounceTime = 300;
+  private debounceTime = 300; // ms
   //   Loop
-  private loopIntervalHandle = 0;
+  private abort = false;
+  private loopIntervalTime = 1000; // ms
+  private GamePlanCollection = new GamePlanCollection();
+  // Grid info
+  private nX = 0;
+  private nY = 0;
+  private pX = 0;
+  private pY = 0;
+
   constructor(options: Options) {
     const canvas = document.createElement("canvas") as HTMLCanvasElement;
     const ctx = canvas.getContext("2d", {
@@ -22,7 +38,7 @@ export default class GameSimulation {
     this.options = options;
   }
 
-  public initialize(canvasID: string) {
+  public async initialize(canvasID: string) {
     const canvas = document.getElementById(canvasID) as HTMLCanvasElement;
     const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 
@@ -36,12 +52,15 @@ export default class GameSimulation {
   }
 
   public destroy() {
+    this.abort = true;
     window.removeEventListener("resize", this._debounceResize);
   }
 
   private _debounceResize = () => {
     clearTimeout(this.debounceHandle);
-    this.clearCanvas(this.canvas, this.ctx);
+
+    this.abort = true;
+
     this.debounceHandle = setTimeout(() => {
       this.resizeHandle();
     }, this.debounceTime);
@@ -52,7 +71,130 @@ export default class GameSimulation {
       ?.clientWidth as number;
     this.canvas.height = document.getElementById("mainCard")
       ?.clientHeight as number;
-    this.drawGrid();
+    this.abort = false;
+    this.simulationLoop();
+  }
+
+  private async simulationLoop() {
+    while (!this.abort) {
+      // clearing canvas
+      this.clearCanvas(this.canvas, this.ctx);
+
+      const fetchPromise = this.GamePlanCollection.fetchGamePlans(
+        "gamePlans.json"
+      );
+
+      this.drawGrid();
+
+      await fetchPromise;
+
+      // assigning grid positions
+      const parceledPlans = this.parcel(this.GamePlanCollection.getGamePlans());
+
+      await this.drawPlans(parceledPlans);
+    }
+    return;
+  }
+
+  private parcel(gamePlans: GamePlan[]): GamePlan[] {
+    const parceledPlans: GamePlan[] = [];
+    const parceledPositions: {
+      width: number;
+      height: number;
+      origin: number[];
+    }[] = [];
+
+    for (let i = 0; i < gamePlans.length; i++) {
+      const { width, height } = gamePlans[i];
+
+      for (let j = 0; j < 100; j++) {
+        const origin = this.generateRandomOrigin(
+          height,
+          width,
+          this.nX,
+          this.nY
+        );
+        if (origin === -1) break;
+
+        if (
+          this.isOriginAvailable(
+            origin as number[],
+            width,
+            height,
+            parceledPositions
+          )
+        ) {
+          const parceledPositionOrder = gamePlans[
+            i
+          ].positionOrder.map((position) => [
+            +position[0] + origin[0],
+            +position[1] + origin[1],
+          ]);
+
+          gamePlans[i].positionOrder = parceledPositionOrder;
+
+          parceledPlans.push(gamePlans[i]);
+          parceledPositions.push({ origin, width, height });
+          break;
+        }
+      }
+    }
+
+    return parceledPlans;
+  }
+
+  private generateRandomOrigin(
+    planHeight: number,
+    planWidth: number,
+    nX: number,
+    nY: number
+  ) {
+    if (planHeight > nY || planWidth > nX) return -1;
+
+    const originX = Math.round(Math.random() * (nX - planWidth));
+    const originY = Math.round(Math.random() * (nY - planHeight));
+    return [originX, originY];
+  }
+
+  private isOriginAvailable(
+    origin: number[],
+    width: number,
+    height: number,
+    parceledPositions: {
+      width: number;
+      height: number;
+      origin: number[];
+    }[]
+  ): boolean {
+    if (parceledPositions.length === 0) return true;
+    for (let x = 0; x < parceledPositions.length; x++) {
+      if (
+        !(
+          origin[0] + width < parceledPositions[x].origin[0] ||
+          origin[0] > parceledPositions[x].origin[0] + width ||
+          origin[1] + height < parceledPositions[x].origin[1] ||
+          origin[1] > parceledPositions[x].origin[1] + height
+        )
+      ) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private async drawPlans(gamePlans: GamePlan[]) {
+    for (let i = 0; i < gamePlans.length; i++) {
+      for (let j = 0; j < gamePlans[i].positionOrder.length; j++) {
+        if (this.abort) return;
+        if (j % 2 === 0) {
+          this.drawCircle(gamePlans[i].positionOrder[j]);
+        } else {
+          this.drawCross(gamePlans[i].positionOrder[j]);
+        }
+        await this.wait(50);
+      }
+      await this.wait(1000);
+    }
   }
 
   private clearCanvas(
@@ -62,39 +204,47 @@ export default class GameSimulation {
     ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
   }
 
-  //   private _initGameLoop = ()=> {
+  private wait = (delay) =>
+    new Promise<void>((resolve) => setTimeout(resolve, delay));
 
-  //   }
+  // calculated position is return in the center of a cell
+  private calculatePosition(gridPosition: number[]): number[] {
+    return [
+      gridPosition[0] * this.options.cellSize +
+        this.pX -
+        this.options.cellSize / 2,
+      gridPosition[1] * this.options.cellSize +
+        this.pY -
+        this.options.cellSize / 2,
+    ];
+  }
 
-  //   private gameLoop() {}
-
+  // render methods
   private drawGrid() {
-    this.ctx.strokeStyle = "rgba(31, 41, 55, 1)";
+    this.ctx.strokeStyle = this.options.gridColor;
 
     this.ctx.lineWidth = this.options.gridLineWidth;
 
-    console.log(this.canvas.clientHeight, this.canvas.clientWidth);
-
     const padding = 1; // in cells
 
-    const nX = Math.floor(
+    this.nX = Math.floor(
       this.canvas.clientWidth / this.options.cellSize - padding
     );
-    const nY = Math.floor(
+    this.nY = Math.floor(
       this.canvas.clientHeight / this.options.cellSize - padding
     );
 
-    const pX = Math.floor(
-      (this.canvas.clientWidth - nX * this.options.cellSize) / 2
+    this.pX = Math.floor(
+      (this.canvas.clientWidth - this.nX * this.options.cellSize) / 2
     );
-    const pY = Math.floor(
-      (this.canvas.clientHeight - nY * this.options.cellSize) / 2
+    this.pY = Math.floor(
+      (this.canvas.clientHeight - this.nY * this.options.cellSize) / 2
     );
 
     this.ctx.beginPath();
     for (
-      let x = pX;
-      x <= this.canvas.clientWidth - pX;
+      let x = this.pX;
+      x <= this.canvas.clientWidth - this.pX;
       x += this.options.cellSize
     ) {
       this.ctx.moveTo(x, 0);
@@ -102,14 +252,49 @@ export default class GameSimulation {
     }
 
     for (
-      let y = pY;
-      y <= this.canvas.clientHeight - pY;
+      let y = this.pY;
+      y <= this.canvas.clientHeight - this.pY;
       y += this.options.cellSize
     ) {
       this.ctx.moveTo(0, y);
       this.ctx.lineTo(this.canvas.clientWidth, y);
     }
     this.ctx.stroke();
-    // this.ctx.translate(-0.5, -0.5);
+  }
+
+  private drawCircle(gridPosition: number[]) {
+    const calculatedPosition = this.calculatePosition(gridPosition);
+
+    this.ctx.beginPath();
+    this.ctx.arc(
+      calculatedPosition[0],
+      calculatedPosition[1],
+      10,
+      0,
+      2 * Math.PI,
+      false
+    );
+
+    this.ctx.lineWidth = 5;
+    this.ctx.strokeStyle = "blue";
+    this.ctx.stroke();
+  }
+
+  private drawCross(gridPosition: number[]) {
+    const calculatedPosition = this.calculatePosition(gridPosition);
+
+    this.ctx.beginPath();
+    this.ctx.arc(
+      calculatedPosition[0],
+      calculatedPosition[1],
+      10,
+      0,
+      2 * Math.PI,
+      false
+    );
+
+    this.ctx.lineWidth = 5;
+    this.ctx.strokeStyle = "red";
+    this.ctx.stroke();
   }
 }

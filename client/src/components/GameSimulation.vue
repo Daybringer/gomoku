@@ -17,7 +17,7 @@ export default defineComponent({
       gridLineWidth: 1,
       primaryColor: "#00b3fe",
       secondaryColor: "#ff2079",
-      gridColor: "rgba(227, 227, 227, 1)",
+      gridColor: "rgba(100, 100, 227, 1)",
       cellSize: 35,
     });
 
