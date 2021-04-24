@@ -1,4 +1,4 @@
-import { UserInterface as User } from '../../users/models/user.interface';
+import { UserEntity } from 'src/users/models/user.entity';
 
 enum gameType {
   RANKED = 'ranked',
@@ -15,12 +15,12 @@ enum typeOfWin {
 
 export interface GameInterface {
   id?: number;
-  players?: User[];
+  players?: UserEntity[];
   date?: Date[];
   type?: gameType;
   eloDifference?: number;
   time?: number;
-  winner?: User | null;
+  winner?: UserEntity | null;
   typeOfWin?: typeOfWin;
   finalState?: number[][];
 }

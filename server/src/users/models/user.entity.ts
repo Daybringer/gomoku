@@ -6,42 +6,54 @@ import {
   ManyToMany,
   JoinTable,
   BeforeInsert,
+  PrimaryColumn,
 } from 'typeorm';
 
-import { GameEntity as Game } from '../../game/models/game.entity';
+// import { GameEntity as Game } from '../../game/models/game.entity';
 
-import { IconEntity as Icon } from './icon.entity';
-import { SocialBladeSkinEntity as SocialBladeSkin } from './socialBladeSkin.entity';
+// import { IconEntity as Icon } from './icon.entity';
+// import { SocialBladeSkinEntity as SocialBladeSkin } from './socialBladeSkin.entity';
 
-export interface colors {
-  enemeyColor: string;
-  playerColor: string;
-}
+// export interface colors {
+//   enemeyColor: string;
+//   playerColor: string;
+// }
 
-enum GameBoard {
-  NORMAL = 'normal',
-  TRADITIONAL = 'traditional',
-  MODERN = 'modern',
-}
+// enum GameBoard {
+//   NORMAL = 'normal',
+//   TRADITIONAL = 'traditional',
+//   MODERN = 'modern',
+// }
+
+type LoginStrategy = 'local' | 'google' | 'facebook';
 
 @Entity()
 export class UserEntity {
   @PrimaryGeneratedColumn('uuid')
   UUID: string;
 
-  @Column({ unique: true })
+  @Column()
+  gID?: string;
+
+  @Column()
+  fID?: string;
+
+  @PrimaryColumn()
   username: string;
 
-  @Column({ unique: true })
+  @PrimaryColumn()
   email: string;
 
   @CreateDateColumn()
   created: Date;
 
-  @Column({ default: '' })
-  googleID: string;
+  @Column()
+  strategy: LoginStrategy;
 
-  @Column({ default: '' })
+  @Column({ default: false })
+  verified: boolean;
+
+  @Column()
   password?: string;
 
   // @Column({default:false})
@@ -75,8 +87,8 @@ export class UserEntity {
   // @Column()
   // availableSocialBladeSkins?: SocialBladeSkin[];
 
-  @BeforeInsert()
-  emailToLowerCase() {
-    this.email = this.email.toLowerCase();
-  }
+  // @BeforeInsert()
+  // emailToLowerCase() {
+  //   this.email = this.email.toLowerCase();
+  // }
 }

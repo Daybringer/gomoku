@@ -1,35 +1,28 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { RefreshTokenEntity } from 'src/auth/models/refresh-token.entity';
-import { UserEntity } from 'src/users/models/user.entity';
+import { MailModule } from 'src/mail/mail.module';
 import { UsersModule } from 'src/users/users.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt.guard';
-import { GoogleStrategy } from './strategies/google.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { TokensService } from './token.service';
-require('dotenv').config();
+import { ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    JwtModule.register({
-      secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '100h' },
+    JwtModule.registerAsync({
+      useFactory: async (config: ConfigService) => ({
+        secret: config.get('JWT_SECRET'),
+        signOptions: { expiresIn: '100h' },
+      }),
+      inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([RefreshTokenEntity]),
-    TypeOrmModule.forFeature([UserEntity]),
     forwardRef(() => UsersModule),
+    MailModule,
   ],
   controllers: [AuthController],
-  providers: [
-    JwtAuthGuard,
-    JwtStrategy,
-    AuthService,
-    TokensService,
-    // GoogleStrategy,
-  ],
-  exports: [JwtAuthGuard, JwtStrategy],
+  providers: [JwtAuthGuard, JwtStrategy, AuthService, TokensService],
+  exports: [AuthService],
 })
 export class AuthModule {}

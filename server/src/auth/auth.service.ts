@@ -1,82 +1,33 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import {
+  Injectable,
+  NotAcceptableException,
+  UnauthorizedException,
+} from '@nestjs/common';
 
-import { UserInterface as User } from 'src/users/models/user.interface';
-import { NamelessGUserRepositoryService } from 'src/users/namelessGUserRepository.service';
-import { UsersRepositoryService } from 'src/users/usersRepository.service';
-
+import { UsersService } from 'src/users/users.service';
+import { UserEntity } from 'src/users/models/user.entity';
+// DTOs
 import { LogInDTO } from './dto/log-in.dto';
 import { SignUpDTO } from './dto/sign-up.dto';
 
-import { OAuth2Client } from 'google-auth-library';
-import { NamelessGUser } from 'src/users/models/namelessGUser.interface';
+// Mails
+import { MailService } from '../mail/mail.service';
 
-const bcrypt = require('bcrypt');
+import bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly jwtService: JwtService,
-    private readonly userRepositoryService: UsersRepositoryService,
-    private readonly namelessGUserRepositoryService: NamelessGUserRepositoryService,
+    private readonly usersService: UsersService,
+    private readonly mailService: MailService,
   ) {}
-
-  async generateJWT(user: User): Promise<string> {
-    return this.jwtService.signAsync({ user });
-  }
 
   async hashPassword(password: string): Promise<string> {
     return bcrypt.hash(password, 13);
   }
 
-  async validateGoogleID(googleIDToken: string) {
-    const client = new OAuth2Client(
-      process.env.GOOGLE_CLIENT_ID,
-      process.env.GOOGLE_CLIENT_SECRET,
-    );
-    const ticket = await client.verifyIdToken({
-      idToken: googleIDToken,
-      audience: process.env.GOOGLE_CLIENT_ID,
-    });
-    return ticket.getPayload();
-  }
-
-  public async findUserByEmail(email: string): Promise<User> {
-    return this.userRepositoryService.findOneByEmail(email);
-  }
-
-  async namelessGoogleExists(email: string): Promise<NamelessGUser> {
-    return this.namelessGUserRepositoryService.findOneByEmail(email);
-  }
-
-  async createNamelessGoogle(
-    email: string,
-    googleID: string,
-  ): Promise<NamelessGUser> {
-    return this.namelessGUserRepositoryService.create(email, googleID);
-  }
-
-  async setGoogleUsername(username: string, email: string): Promise<User> {
-    return this.userRepositoryService
-      .findOneByUsername(username)
-      .then(async (user) => {
-        if (user) {
-          throw new Error('Username is already taken');
-        } else {
-          const namelessGUser = await this.namelessGUserRepositoryService.findOneByEmail(
-            email,
-          );
-          return this.userRepositoryService
-            .create(username, email, '', namelessGUser.googleID)
-            .then((user) => {
-              return this.namelessGUserRepositoryService
-                .deleteOneByEmail(email)
-                .then(() => {
-                  return user;
-                });
-            });
-        }
-      });
+  public async findUserByEmail(email: string): Promise<UserEntity> {
+    return this.usersService.findOneByEmail(email);
   }
 
   async comparePassword(
@@ -90,9 +41,9 @@ export class AuthService {
     username: string,
     email: string,
     password: string,
-  ): Promise<User> {
+  ): Promise<UserEntity> {
     const hashedPassword = await this.hashPassword(password);
-    const user = await this.userRepositoryService.create(
+    const user = await this.usersService.createLocal(
       username,
       email,
       hashedPassword,
@@ -105,29 +56,25 @@ export class AuthService {
     }
   }
 
-  async register(
-    registerUserDTO: SignUpDTO,
-  ): Promise<{ user: User | null; errors: string[] }> {
-    const { username, email, password } = registerUserDTO;
-    return this.userRepositoryService
+  async register(signUpDTO: SignUpDTO): Promise<UserEntity> {
+    const { username, email, password } = signUpDTO;
+
+    return this.usersService
       .findOneByUsername(username.toLowerCase())
       .then((user) => {
         if (user) {
-          throw new UnauthorizedException('Username is already in use');
+          // Error: User with same username exists
+          throw new NotAcceptableException('Username is already in use');
         } else {
-          return this.userRepositoryService
+          return this.usersService
             .findOneByEmail(email.toLowerCase())
             .then((user) => {
+              // Error: User with same username exists
               if (user) {
-                throw new UnauthorizedException('Email is already in use');
+                throw new NotAcceptableException('Email is already in use');
               } else {
                 return this.createUser(username, email, password).then(
-                  (user) => {
-                    return {
-                      user,
-                      errors: [],
-                    };
-                  },
+                  (user) => user,
                 );
               }
             });
@@ -135,7 +82,7 @@ export class AuthService {
       });
   }
 
-  async login(loginUserDTO: LogInDTO): Promise<User> {
+  async login(loginUserDTO: LogInDTO): Promise<UserEntity> {
     const { usernameOrEmail, password } = loginUserDTO;
     return this.validateUser(usernameOrEmail, password)
       .then((user) => {
@@ -146,14 +93,21 @@ export class AuthService {
       });
   }
 
-  async validateUser(usernameOrEmail: string, password: string): Promise<User> {
-    return this.userRepositoryService
+  async sendMail(email: string) {
+    await this.mailService.sendVerifyEmail(email);
+  }
+
+  async validateUser(
+    usernameOrEmail: string,
+    password: string,
+  ): Promise<UserEntity> {
+    return this.usersService
       .findByEmailOrUsername(usernameOrEmail)
       .then((user) => {
         if (!user) {
           throw Error;
         } else {
-          if (user.googleID) return user;
+          if (user.gID) return user;
           return this.comparePassword(password, user.password).then(
             (passwordsMatch) => {
               if (passwordsMatch) {

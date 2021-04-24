@@ -23,9 +23,6 @@ export class SignUpDTO {
   @IsString()
   @MinLength(4, { message: 'Password is too short' })
   @MaxLength(40, { message: 'Password is too long' })
-  @Matches(/((?=.*\d)|(?=.*\W+))(?=.*[A-Z])(?=.*[a-z]).*$/, {
-    message: 'Password is too weak',
-  })
   readonly password: string;
 
   @Match('password', { message: "Passwords don't match" })

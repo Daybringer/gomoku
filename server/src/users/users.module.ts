@@ -3,9 +3,7 @@ import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './models/user.entity';
-import { UsersRepositoryService } from './usersRepository.service';
 import { AuthModule } from 'src/auth/auth.module';
-import { NamelessGUserRepositoryService } from './namelessGUserRepository.service';
 import { NamelessGUserEntity } from './models/namelessGUser.entity';
 
 @Module({
@@ -15,11 +13,7 @@ import { NamelessGUserEntity } from './models/namelessGUser.entity';
     forwardRef(() => AuthModule),
   ],
   controllers: [UsersController],
-  providers: [
-    UsersService,
-    UsersRepositoryService,
-    NamelessGUserRepositoryService,
-  ],
-  exports: [UsersRepositoryService, NamelessGUserRepositoryService],
+  providers: [UsersService],
+  exports: [UsersService],
 })
 export class UsersModule {}
