@@ -32,10 +32,10 @@ export class UserEntity {
   @PrimaryGeneratedColumn('uuid')
   UUID: string;
 
-  @Column()
+  @Column({ nullable: true })
   gID?: string;
 
-  @Column()
+  @Column({ nullable: true })
   fID?: string;
 
   @PrimaryColumn()
@@ -44,8 +44,9 @@ export class UserEntity {
   @PrimaryColumn()
   email: string;
 
-  @CreateDateColumn()
-  created: Date;
+  // number representation of a date
+  @Column()
+  created: string;
 
   @Column()
   strategy: LoginStrategy;
@@ -53,7 +54,7 @@ export class UserEntity {
   @Column({ default: false })
   verified: boolean;
 
-  @Column()
+  @Column({ nullable: true })
   password?: string;
 
   // @Column({default:false})

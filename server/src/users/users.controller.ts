@@ -14,15 +14,11 @@ import { UserEntity } from './models/user.entity';
 // DTOs
 import { CheckUsernameDTO } from './dto/check-username.dto';
 import { CheckEmailDTO } from './dto/check-email.dto';
+import { PasswordChangeDTO } from './dto/password-change.dto';
 
 @Controller('/users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-
-  @Get()
-  async returnAllUser() {
-    return this.usersService.findAll();
-  }
 
   @Post('/check-username')
   @UsePipes(new ValidationPipe())
@@ -41,12 +37,16 @@ export class UsersController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('me')
-  async fetchUser(@Req() req): Promise<UserEntity> {
-    console.log('API HIT');
-    // const userUUID = req.user.uuid;
+  @UsePipes(new ValidationPipe())
+  @Post('change-password')
+  changePassword(@Req() req, @Body() passwordChangeDTO: PasswordChangeDTO) {
+    this.usersService.updatePassword(req.user, passwordChangeDTO.password);
+  }
 
-    // const user = await this.usersService.findByUUID(userUUID);
-    return req.user;
+  @UseGuards(JwtAuthGuard)
+  @Get('profile')
+  async fetchUser(@Req() req): Promise<UserEntity> {
+    const { password, ...rest } = req.user;
+    return rest;
   }
 }

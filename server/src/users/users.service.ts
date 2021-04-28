@@ -20,6 +20,7 @@ export class UsersService {
     newUser.email = email;
     newUser.password = password;
     newUser.strategy = 'local';
+    newUser.created = String(Date.now());
     return this.userRepository.save(newUser);
   }
 
@@ -27,8 +28,21 @@ export class UsersService {
     return this.userRepository.findOne({ username });
   }
 
-  isVerified(user: UserEntity): boolean {
-    return user.verified;
+  isVerificationTimedOut(user: UserEntity): boolean {
+    const verificationTimeSpan = 1000 * 60; // 1h
+    return Number(user.created) + verificationTimeSpan < Date.now();
+  }
+
+  async verifyUser(user: UserEntity) {
+    return this.userRepository.update(user, { verified: true });
+  }
+
+  async updatePassword(user: UserEntity, newPassword: string) {
+    return this.userRepository.update(user, { password: newPassword });
+  }
+
+  async removeOneByUUID(UUID: string) {
+    return this.userRepository.delete({ UUID });
   }
 
   async findOneByEmail(email: string): Promise<UserEntity> {
@@ -39,8 +53,8 @@ export class UsersService {
     return this.userRepository.find();
   }
 
-  async findByUUID(uuid: string): Promise<UserEntity> {
-    return this.userRepository.findOne({ UUID: uuid });
+  async findOneByUUID(UUID: string): Promise<UserEntity> {
+    return this.userRepository.findOne({ UUID });
   }
 
   async findByEmailOrUsername(usernameOrEmail: string): Promise<UserEntity> {

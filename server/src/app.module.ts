@@ -6,7 +6,6 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { QuickSearchGateway, GameGateway } from './app.gateway';
 import { GameService } from './game/game.service';
-import { MailModule } from './mail/mail.module';
 import { ConfigModule } from '@nestjs/config';
 
 require('dotenv').config();
@@ -24,7 +23,6 @@ require('dotenv').config();
     }),
     AuthModule,
     UsersModule,
-    MailModule,
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, 'public'),
     }),
