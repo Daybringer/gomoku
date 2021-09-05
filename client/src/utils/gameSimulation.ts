@@ -70,6 +70,7 @@ export default class GameSimulation {
       ?.clientWidth as number;
     this.canvas.height = document.getElementById("mainCard")
       ?.clientHeight as number;
+
     this.abort = false;
     this.simulationLoop();
   }

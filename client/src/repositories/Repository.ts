@@ -2,7 +2,7 @@ import axios from "axios";
 
 const baseDomain =
   process.env.NODE_ENV === "development"
-    ? "http://localhost:8080"
+    ? "http://localhost:3000"
     : "https://gomoku.vanata.dev";
 
 const baseURL = `${baseDomain}/api`;

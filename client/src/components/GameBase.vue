@@ -715,7 +715,7 @@ export default defineComponent({
       myColor: "",
       enemyColor: "",
       chatInput: "",
-      lastPositionID: "",
+      lastPositionID: 0,
       round: 0,
       // waiting, coinflip, running, victory/defeat
       gameState: "coinflip",
@@ -751,7 +751,7 @@ export default defineComponent({
   props: [],
   methods: {
     // Move upwards
-    gameClick(id: string) {
+    gameClick(id: number) {
       let node;
       if (this.round % 2 === 0) {
         node = document.getElementById("svgCircleOrigin");
@@ -764,7 +764,7 @@ export default defineComponent({
       clone.classList.remove("hidden");
       clone.classList.add("svgCC");
 
-      document.getElementById(id)?.appendChild(clone);
+      document.getElementById(String(id))?.appendChild(clone);
       this.lastPositionID = id;
       this.round++;
     },

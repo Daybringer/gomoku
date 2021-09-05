@@ -14,6 +14,9 @@ export default defineComponent({
   components: { Navbar },
   setup() {
     const store = useStore();
+
+    if (store.token) store.setBearer(store.token);
+
     const state = reactive({ activeIntersection: "" });
 
     const setIntersection = (intersectionName: string) => {

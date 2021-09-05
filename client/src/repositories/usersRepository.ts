@@ -10,6 +10,6 @@ export default {
   },
   // getUserProfile() {},
   getOwnUserProfile() {
-    return Repository.post(`${resource}/me`);
-  }
+    return Repository.get(`${resource}/profile`);
+  },
 };
