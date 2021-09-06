@@ -38,7 +38,7 @@ export default defineComponent({
     socket.on("invalidRoomID", () => {
       // TODO show some notification instead of console log
       console.log("Invalid Room ID");
-      this.$router.push("/");
+      // this.$router.push("/");
     });
 
     socket.on("gameStarted", (game: {}) => {

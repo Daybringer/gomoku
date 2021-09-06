@@ -5,7 +5,7 @@ import { QuickGame, RankedGame, Player } from './game.class';
 export class GameService {
   quickGames: { [id: string]: QuickGame } = {};
 
-  generateRoomID(rooms: Object) {
+  private generateRoomID(rooms: Object) {
     const IDLength = 6;
     for (let x = 0; x < 100; x++) {
       let randID = Math.random().toString(36).substr(2, IDLength).toUpperCase();
@@ -18,7 +18,9 @@ export class GameService {
 
   generateQuickGame() {
     const roomID = this.generateRoomID(this.quickGames);
-    return new QuickGame(roomID);
+    const newQuickGame = new QuickGame(roomID);
+    this.quickGames[newQuickGame.id] = newQuickGame;
+    return newQuickGame;
   }
 
   roomExist(roomID: string): boolean {
