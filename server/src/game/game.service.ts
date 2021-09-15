@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { QuickGame, RankedGame, Player } from './game.class';
+import { QuickGame, RankedGame, Player, GameState } from './game.class';
 
 @Injectable()
 export class GameService {
@@ -29,11 +29,17 @@ export class GameService {
 
   getGameInfo(roomID: string) {
     const players = this.quickGames[roomID].players;
-    return { players };
+    const startingPlayer = this.quickGames[roomID].getStartingPlayer();
+    return { players, startingPlayer };
   }
 
   isStarted(roomID: string): boolean {
     return this.quickGames[roomID].gameState === 'RUNNING';
+  }
+
+  startGame(roomID: string): Player {
+    this.quickGames[roomID].setGameState(GameState.running);
+    return this.quickGames[roomID].selectRandomStartingPlayer();
   }
 
   addPlayer(
@@ -41,9 +47,14 @@ export class GameService {
     socketID: string,
     logged: boolean,
     username: string,
-  ) {
+  ): void {
     const player: Player = { socketID, username, logged };
     if (!this.quickGames[roomID].isFull())
       this.quickGames[roomID].addPlayer(player);
+    if (
+      this.quickGames[roomID].isFull() &&
+      !this.quickGames[roomID].isStarted()
+    )
+      this.startGame(roomID);
   }
 }

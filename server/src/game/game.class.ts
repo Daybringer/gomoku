@@ -4,7 +4,7 @@ enum GameType {
   custom = 'CUSTOM',
 }
 
-enum GameState {
+export enum GameState {
   waiting = 'WAITING',
   running = 'RUNNING',
   finished = 'FINISHED',
@@ -63,12 +63,26 @@ abstract class Game {
     }
   }
 
-  public setStartingPlayer(): Player {
-    return (this.startingPlayer = this.players[Math.round(Math.random())]);
+  public setGameState(gameState: GameState) {
+    this.gameState = gameState;
+  }
+
+  public selectRandomStartingPlayer(): Player {
+    const startingPlayer = this.players[Math.round(Math.random())];
+    this.startingPlayer = startingPlayer;
+    return startingPlayer;
+  }
+
+  public getStartingPlayer(): Player {
+    return this.startingPlayer;
   }
 
   public isFull(): boolean {
     return this.players.length >= 2;
+  }
+
+  public isStarted(): Boolean {
+    return this.gameState === GameState.running;
   }
 
   private generateGameboard(size: number): number[][] {

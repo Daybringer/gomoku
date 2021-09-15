@@ -61,15 +61,13 @@ export class GameGateway implements OnGatewayDisconnect {
     clientData: { roomID: string; logged: boolean; username: string },
   ): void {
     const { roomID, logged, username } = clientData;
-    for (let game in this.gameService.quickGames) {
-      console.log(this.gameService.quickGames[game]);
-      console.log('roomID:' + roomID);
-    }
+
     if (this.gameService.roomExist(roomID)) {
       this.gameService.addPlayer(roomID, client.id, logged, username);
+
       if (this.gameService.isStarted(roomID)) {
         const gameInfo = this.gameService.getGameInfo(roomID);
-        client.emit('gameStarted', gameInfo);
+        this.server.emit('gameStarted', gameInfo);
       }
     } else {
       client.emit('invalidRoomID');

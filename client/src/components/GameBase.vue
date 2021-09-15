@@ -46,8 +46,9 @@
         <!-- Coinflip overlay -->
         <div
           class="absolute z-20 flex place-items-center justify-center h-full w-full bg-gray-100 dark:bg-gray-700"
+          v-if="gameState === 'coinflip' || gameState === 'waiting'"
         >
-          <div id="coin" :class="coinSide">
+          <div id="coin" :class="coinSide" v-if="gameState === 'coinflip'">
             <!-- heads -->
             <div class="side-a" :style="`background-color:${myColor};`"></div>
             <!-- tails -->
@@ -226,6 +227,7 @@
                   <g></g>
                   <g></g>
                 </svg>
+                <!-- Overlay victory -->
                 <svg
                   v-show="gameState === 'victory'"
                   version="1.1"
@@ -349,6 +351,7 @@
                   <g></g>
                   <g></g>
                 </svg>
+                <!-- Overlay defeat -->
                 <svg
                   v-show="gameState === 'defeat'"
                   viewBox="0 0 347.51588 263.47151"
@@ -698,30 +701,29 @@
 import ViewBase from "@/components/ViewBase.vue";
 import SocialBlade from "@/components/SocialBlade.vue";
 import ChatMessage from "@/components/mini/ChatMessage.vue";
-// Pinia
-import { useStore } from "@/store/store";
 // Utils
 import { defineComponent } from "vue";
 export default defineComponent({
   name: "GameBase",
   components: { ViewBase, SocialBlade, ChatMessage },
+  props: {
+    myTime: String,
+    enemyTime: String,
+    amIStartingPlayer: Boolean,
+    myNickname: String,
+    enemyNickname: String,
+    myColor: String,
+    enemyColor: String,
+    messages: Array,
+    lastPositionID: Number,
+    round: Number,
+    gameState: String,
+  },
   data() {
     return {
-      myTime: "2:30",
-      enemyTime: "2:30",
-      amIStartingPlayer: true,
-      myNickname: "Daybringer",
-      enemyNickname: "Villfuk02",
-      myColor: "",
-      enemyColor: "",
       chatInput: "",
-      lastPositionID: 0,
-      round: 0,
-      // waiting, coinflip, running, victory/defeat
-      gameState: "coinflip",
       afterGameModal: false,
       muted: false,
-      messages: [{ author: "opponent", text: "Ahoj tade, jak se mas?" }],
     };
   },
   computed: {
@@ -748,25 +750,25 @@ export default defineComponent({
       return array;
     },
   },
-  props: [],
+
   methods: {
-    // Move upwards
     gameClick(id: number) {
-      let node;
-      if (this.round % 2 === 0) {
-        node = document.getElementById("svgCircleOrigin");
-      } else {
-        node = document.getElementById("svgCrossOrigin");
-      }
-      const clone = node?.cloneNode(true) as HTMLElement;
+      // let node;
+      // if (this.round % 2 === 0) {
+      //   node = document.getElementById("svgCircleOrigin");
+      // } else {
+      //   node = document.getElementById("svgCrossOrigin");
+      // }
+      // const clone = node?.cloneNode(true) as HTMLElement;
 
-      clone.id = `${id}symbol`;
-      clone.classList.remove("hidden");
-      clone.classList.add("svgCC");
+      // clone.id = `${id}symbol`;
+      // clone.classList.remove("hidden");
+      // clone.classList.add("svgCC");
 
-      document.getElementById(String(id))?.appendChild(clone);
-      this.lastPositionID = id;
-      this.round++;
+      // document.getElementById(String(id))?.appendChild(clone);
+      // this.lastPositionID = id;
+      // this.round++;
+      console.log(`${id} has been pressed`);
     },
     sendMessage() {
       this.chatInput = this.chatInput.trim();
@@ -778,17 +780,16 @@ export default defineComponent({
     },
     addMessage(message: { author: string; text: string }) {
       // @ts-ignore
-      this.messages.push(message);
-      const chatContainer = document.getElementById(
-        "chatContainer"
-      ) as HTMLElement;
-      setTimeout(() => {
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-      }, 1);
+      // this.messages.push(message);
+      // const chatContainer = document.getElementById(
+      //   "chatContainer"
+      // ) as HTMLElement;
+      // setTimeout(() => {
+      //   chatContainer.scrollTop = chatContainer.scrollHeight;
+      // }, 1);
     },
     //
     toogleMute() {
-      console.log(this.muted);
       this.muted = !this.muted;
     },
     equalizeGameContDimensions() {
@@ -805,10 +806,10 @@ export default defineComponent({
     },
   },
   beforeMount() {
-    const store = useStore();
-    const userProfile = store.getUserProfile;
-    this.myColor = userProfile.myColor;
-    this.enemyColor = userProfile.enemyColor;
+    // const store = useStore();
+    // const userProfile = store.getUserProfile;
+    // this.myColor = userProfile.myColor;
+    // this.enemyColor = userProfile.enemyColor;
   },
   mounted() {
     this.equalizeGameContDimensions();
@@ -938,16 +939,16 @@ export default defineComponent({
   transform: rotateY(-180deg);
 }
 #coin.heads {
-  -webkit-animation: flipHeads 3s ease-out forwards;
-  -moz-animation: flipHeads 3s ease-out forwards;
-  -o-animation: flipHeads 3s ease-out forwards;
-  animation: flipHeads 3s ease-out forwards;
+  -webkit-animation: flipHeads 3s ease-in-out forwards;
+  -moz-animation: flipHeads 3s ease-in-out forwards;
+  -o-animation: flipHeads 3s ease-in-out forwards;
+  animation: flipHeads 3s ease-in-out forwards;
 }
 #coin.tails {
-  -webkit-animation: flipTails 3s ease-out forwards;
-  -moz-animation: flipTails 3s ease-out forwards;
-  -o-animation: flipTails 3s ease-out forwards;
-  animation: flipTails 3s ease-out forwards;
+  -webkit-animation: flipTails 3s ease-in-out forwards;
+  -moz-animation: flipTails 3s ease-in-out forwards;
+  -o-animation: flipTails 3s ease-in-out forwards;
+  animation: flipTails 3s ease-in-out forwards;
 }
 @keyframes flipHeads {
   from {

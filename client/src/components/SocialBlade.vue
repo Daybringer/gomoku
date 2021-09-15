@@ -6,11 +6,12 @@
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 7.684 7.684"
       class="h-8 ml-4 pr-2"
-      v-if="symbol === 'cross' && symbolColor"
+      v-if="symbol === 'cross'"
     >
       <g
+        id="cross"
         transform="rotate(33.203 -466.024 -176.195)"
-        fill="#00b3fe"
+        :fill="symbolColor"
         paint-order="markers fill stroke"
       >
         <rect
@@ -38,12 +39,13 @@
       class="h-8 ml-4 pr-2"
     >
       <ellipse
+        id="circle"
         cx="113.29025"
         cy="147.48361"
         rx="2.984288"
         ry="3.1113634"
         fill="none"
-        stroke="#ff2079"
+        :stroke="symbolColor"
         stroke-width=".887159"
         stroke-linejoin="round"
         paint-order="markers fill stroke"
@@ -95,15 +97,13 @@ export default defineComponent({
     symbol: String,
     symbolColor: String,
     time: String,
-    nickname: String
+    nickname: String,
   },
-
   components: {},
   data() {
     return {};
   },
-
-  methods: {}
+  methods: {},
 });
 </script>
 <style scoped></style>
