@@ -7,10 +7,11 @@ enum GameType {
 export enum GameState {
   waiting = 'WAITING',
   running = 'RUNNING',
-  finished = 'FINISHED',
+  win = 'WIN',
+  tie = 'TIE',
 }
 
-enum WinCondition {
+export enum WinCondition {
   combination = 'COMBINATION',
   time = 'TIME',
   disconnect = 'DISCONNECT',
@@ -37,7 +38,7 @@ abstract class Game {
   round: number = 0;
   gameboardSize: number = 15;
   gameboard: number[][] = this.generateGameboard(this.gameboardSize);
-  turns: Array<[number, number]>;
+  turns: Array<[number, number]> = [];
   gameType: GameType;
   gameState: GameState;
   opening: Opening;
@@ -67,6 +68,10 @@ abstract class Game {
     this.gameState = gameState;
   }
 
+  public setWinCondition(winCondition: WinCondition) {
+    this.winCondition = winCondition;
+  }
+
   public selectRandomStartingPlayer(): Player {
     const startingPlayer = this.players[Math.round(Math.random())];
     this.startingPlayer = startingPlayer;
@@ -83,6 +88,14 @@ abstract class Game {
 
   public isStarted(): Boolean {
     return this.gameState === GameState.running;
+  }
+
+  public iterateRound(): void {
+    this.round++;
+  }
+
+  public saveTurn(position: [number, number]): void {
+    this.turns.push(position);
   }
 
   private generateGameboard(size: number): number[][] {

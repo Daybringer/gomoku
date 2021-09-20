@@ -7,8 +7,8 @@ import { Profile, Strategy } from 'passport-facebook';
 export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
   constructor(private configService: ConfigService) {
     super({
-      clientID: configService.get('FACEBOOK_CLIENT_ID'),
-      clientSecret: configService.get('FACEBOOK_CLIENT_SECRET'),
+      clientID: 'testID', //configService.get('FACEBOOK_CLIENT_ID'),
+      clientSecret: 'testSecret', // configService.get('FACEBOOK_CLIENT_SECRET'),
       callbackURL:
         process.env.NODE_ENV === 'production'
           ? 'https://gomoku.vanata.dev/api/auth/facebook/redirect'

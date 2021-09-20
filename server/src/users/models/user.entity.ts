@@ -48,7 +48,7 @@ export class UserEntity {
   @Column()
   created: string;
 
-  @Column()
+  @Column({ default: '' })
   strategy: LoginStrategy;
 
   @Column({ default: false })

@@ -9,7 +9,7 @@ import { GameService } from './game/game.service';
 import { ConfigModule } from '@nestjs/config';
 
 require('dotenv').config();
-
+// Just squezing some comment for prod
 @Module({
   imports: [
     TypeOrmModule.forRoot({

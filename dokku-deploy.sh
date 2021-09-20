@@ -2,7 +2,11 @@
 
 # Workaround for dokku deployment
 
+
 shopt -s extglob
+
+set -o errexit # preventing the removal of whole directory
+ # better way might be throwing errors https://www.redhat.com/sysadmin/bash-error-handling
 
 cd server 
 
@@ -13,6 +17,7 @@ yarn build-less
 cd ..
 
 cd dist
+
 
 rm -r !(".git"|"Procfile")
 

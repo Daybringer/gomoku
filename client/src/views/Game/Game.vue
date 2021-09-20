@@ -11,13 +11,14 @@
     :enemyColor="enemyColor"
     :enemyNickname="enemyNickname"
     :messages="messages"
+    @gameClick="gameClick"
   ></GameBase>
 </template>
 <script lang="ts">
 // SocketIO
 import io from "socket.io-client";
+const socket = io("/game/quick", { port: "3001" });
 
-let socket: any;
 // Components
 import GameBase from "@/components/GameBase.vue";
 // Pinia
@@ -38,14 +39,20 @@ export default defineComponent({
       myColor: "",
       enemyColor: "",
       chatInput: "",
-      lastPositionID: undefined,
+      lastPositionID: 0,
       round: 0,
-      gameState: "waiting", // waiting, coinflip, running, victory/defeat
+      gameState: "waiting", // waiting, coinflip, running, victory, defeat, tie
       messages: [
         { author: "opponent", text: "I'm testing" },
         { author: "me", text: "I'm testing too" },
       ],
+      boardSize: 15,
     };
+  },
+  methods: {
+    gameClick(position) {
+      socket.emit("gameClick", { roomID: this.roomID, position });
+    },
   },
   mounted() {
     const store = useStore();
@@ -57,7 +64,6 @@ export default defineComponent({
     this.enemyColor = userProfile.enemyColor;
 
     if (this.gameType === "quick") {
-      socket = io("/game/quick", { port: "3001" });
       socket.emit("joinGame", {
         roomID: this.roomID,
         logged: this.myNickname ? true : false,
@@ -86,6 +92,15 @@ export default defineComponent({
       }, 4200);
 
       this.amIStartingPlayer = socket.id === gameInfo.startingPlayer.socketID;
+    });
+
+    socket.on("stonePlaced", (position: number[]) => {
+      this.round++;
+      this.lastPositionID = position[1] * this.boardSize + position[0];
+    });
+
+    socket.on("gameEnded", (socketID: string) => {
+      this.gameState = socketID === socket.id ? "victory" : "defeat";
     });
   },
   computed: {

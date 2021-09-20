@@ -7,6 +7,7 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { GameState, WinCondition } from './game/game.class';
 import { GameService } from './game/game.service';
 
 const quickSearch: string[] = [];
@@ -15,7 +16,8 @@ const activeSockets = {};
 
 @WebSocketGateway({ namespace: '/search/quick' })
 export class QuickSearchGateway
-  implements OnGatewayConnection, OnGatewayDisconnect {
+  implements OnGatewayConnection, OnGatewayDisconnect
+{
   constructor(private gameService: GameService) {}
 
   private logger: Logger = new Logger('AppGateway');
@@ -23,7 +25,7 @@ export class QuickSearchGateway
   @WebSocketServer() server: Server;
 
   handleConnection(client: Socket, ...args: any[]) {
-    this.logger.log(`Client connected QuickSearch: ${client.id}`);
+    // this.logger.log(`Client connected QuickSearch: ${client.id}`);
     quickSearch.push(client.id);
 
     if (quickSearch.length >= 2) {
@@ -64,13 +66,42 @@ export class GameGateway implements OnGatewayDisconnect {
 
     if (this.gameService.roomExist(roomID)) {
       this.gameService.addPlayer(roomID, client.id, logged, username);
-
+      client.join(`${roomID}`);
       if (this.gameService.isStarted(roomID)) {
         const gameInfo = this.gameService.getGameInfo(roomID);
-        this.server.emit('gameStarted', gameInfo);
+        this.server.to(`${roomID}`).emit('gameStarted', gameInfo);
       }
     } else {
       client.emit('invalidRoomID');
+    }
+  }
+
+  @SubscribeMessage('gameClick')
+  hangleGameClick(
+    client: Socket,
+    clientData: { roomID: string; position: [number, number] },
+  ): void {
+    const { roomID, position } = clientData;
+    if (this.gameService.isPlayersTurn(client.id, roomID)) {
+      try {
+        this.gameService.placeStone(position, client.id, roomID);
+        this.server.to(`${roomID}`).emit('stonePlaced', position);
+
+        const currGameState = this.gameService.checkWin(position, roomID);
+        if (currGameState === GameState.win) {
+          this.gameService.endGame(WinCondition.combination, false, roomID);
+          this.server
+            .to(`${roomID}`)
+            .emit('gameEnded', this.gameService.playerOnTurn(roomID).socketID);
+        } // else if(currGameState === GameState.tie){
+
+        // }
+      } catch (error) {
+        console.log(error);
+        client.emit(error);
+      }
+    } else {
+      client.emit('notPlayersTurn');
     }
   }
 }

@@ -1,5 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { QuickGame, RankedGame, Player, GameState } from './game.class';
+import {
+  QuickGame,
+  RankedGame,
+  Player,
+  GameState,
+  WinCondition,
+} from './game.class';
 
 @Injectable()
 export class GameService {
@@ -27,6 +33,39 @@ export class GameService {
     return this.quickGames.hasOwnProperty(roomID);
   }
 
+  playerOnTurn(roomID: string): Player {
+    const game = this.quickGames[roomID];
+    return game.round % 2 == 0
+      ? game.getStartingPlayer()
+      : game.players[
+          Math.abs(game.players.indexOf(game.getStartingPlayer()) - 1)
+        ];
+  }
+
+  isPlayersTurn(socketID: string, roomID: string): boolean {
+    return this.playerOnTurn(roomID).socketID === socketID;
+  }
+
+  placeStone(
+    position: [number, number],
+    socketID: string,
+    roomID: string,
+  ): void {
+    const game = this.quickGames[roomID];
+    if (game.isStarted()) {
+      if (game.gameboard[position[0]][position[1]] === 0) {
+        game.gameboard[position[0]][position[1]] =
+          game.getStartingPlayer().socketID === socketID ? 1 : 2;
+        game.iterateRound();
+        game.saveTurn(position);
+      } else {
+        throw 'takenPosition';
+      }
+    } else {
+      throw 'gameNotRunning';
+    }
+  }
+
   getGameInfo(roomID: string) {
     const players = this.quickGames[roomID].players;
     const startingPlayer = this.quickGames[roomID].getStartingPlayer();
@@ -40,6 +79,66 @@ export class GameService {
   startGame(roomID: string): Player {
     this.quickGames[roomID].setGameState(GameState.running);
     return this.quickGames[roomID].selectRandomStartingPlayer();
+  }
+
+  checkWin(position: number[], roomID: string) {
+    const game = this.quickGames[roomID];
+    const round = game.round;
+    const gamePlan = game.gameboard;
+
+    const [xPos, yPos] = position;
+    const tile = round % 2 ? 1 : 2;
+    let horizont = 0;
+    let vertical = 0;
+    let diagonalR = 0;
+    let diagonalL = 0;
+    for (let x = -4; x < 5; x++) {
+      // * Horizontal check
+      if (xPos + x >= 0 && xPos + x <= 14) {
+        if (gamePlan[xPos + x][yPos] === tile) {
+          horizont++;
+        } else {
+          horizont = 0;
+        }
+      }
+      if (yPos + x >= 0 && yPos + x <= 14) {
+        if (gamePlan[xPos][yPos + x] === tile) {
+          vertical++;
+        } else {
+          vertical = 0;
+        }
+      }
+      if (yPos + x >= 0 && yPos + x <= 14 && xPos + x >= 0 && xPos + x <= 14) {
+        if (gamePlan[xPos + x][yPos + x] === tile) {
+          diagonalR++;
+        } else {
+          diagonalR = 0;
+        }
+      }
+      if (yPos + x >= 0 && yPos + x <= 14 && xPos - x >= 0 && xPos - x <= 14) {
+        if (gamePlan[xPos - x][yPos + x] === tile) {
+          diagonalL++;
+        } else {
+          diagonalL = 0;
+        }
+      }
+      if (horizont >= 5 || vertical >= 5 || diagonalL >= 5 || diagonalR >= 5) {
+        return GameState.win;
+      }
+    }
+    if (horizont >= 5 || vertical >= 5 || diagonalL >= 5 || diagonalR >= 5) {
+      return GameState.win;
+    } else if (round === 225) {
+      return GameState.tie;
+    } else {
+      return GameState.running;
+    }
+  }
+
+  endGame(winCondition: WinCondition, isTie: boolean, roomID: string): void {
+    const game = this.quickGames[roomID];
+    game.setGameState(isTie ? GameState.tie : GameState.win);
+    game.winCondition = winCondition;
   }
 
   addPlayer(

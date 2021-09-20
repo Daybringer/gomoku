@@ -17,7 +17,9 @@
           :key="array"
           :id="array"
           class="bg-white dark:bg-gray-500 cursor-pointer relative"
-          :class="lastPositionID == array ? 'currPositionOutline' : ''"
+          :class="
+            lastPositionID == array && round !== 0 ? 'currPositionOutline' : ''
+          "
           @click="gameClick(array)"
         ></div>
         <!-- Button for toggling after game overlay -->
@@ -69,7 +71,12 @@
                   : 'rainy-background'
                 : 'minimizeAfterGameModal'
             "
-            v-show="gameState !== 'running' && afterGameModal"
+            v-show="
+              (gameState === 'victory' ||
+                gameState === 'defeat' ||
+                gameState === 'tie') &&
+                afterGameModal
+            "
           >
             <div
               class="w-full h-full rounded-lg p-4 bg-white dark:bg-gray-500 shadow-2xl flex relative flex-col"
@@ -649,7 +656,7 @@
         <g
           data-v-69bfb0ac=""
           transform="rotate(33.203 -466.024 -176.195)"
-          fill="#00b3fe"
+          :fill="!amIStartingPlayer ? myColor : enemyColor"
           paint-order="markers fill stroke"
         >
           <rect
@@ -686,7 +693,7 @@
           rx="2.984288"
           ry="3.1113634"
           fill="none"
-          stroke="#ff2079"
+          :stroke="amIStartingPlayer ? myColor : enemyColor"
           stroke-width=".887159"
           stroke-linejoin="round"
           paint-order="markers fill stroke"
@@ -722,7 +729,7 @@ export default defineComponent({
   data() {
     return {
       chatInput: "",
-      afterGameModal: false,
+      afterGameModal: true,
       muted: false,
     };
   },
@@ -750,25 +757,31 @@ export default defineComponent({
       return array;
     },
   },
-
+  watch: {
+    lastPositionID: function() {
+      console.log("changed position");
+      this.placeStone(this.lastPositionID!);
+    },
+  },
   methods: {
     gameClick(id: number) {
-      // let node;
-      // if (this.round % 2 === 0) {
-      //   node = document.getElementById("svgCircleOrigin");
-      // } else {
-      //   node = document.getElementById("svgCrossOrigin");
-      // }
-      // const clone = node?.cloneNode(true) as HTMLElement;
+      const position = [id % 15, Math.floor(id / 15)];
+      this.$emit("gameClick", position);
+    },
+    placeStone(id: number) {
+      let node;
+      if (this.round! % 2 === 1) {
+        node = document.getElementById("svgCircleOrigin");
+      } else {
+        node = document.getElementById("svgCrossOrigin");
+      }
+      const clone = node?.cloneNode(true) as HTMLElement;
 
-      // clone.id = `${id}symbol`;
-      // clone.classList.remove("hidden");
-      // clone.classList.add("svgCC");
+      clone.id = `${id}symbol`;
+      clone.classList.remove("hidden");
+      clone.classList.add("svgCC");
 
-      // document.getElementById(String(id))?.appendChild(clone);
-      // this.lastPositionID = id;
-      // this.round++;
-      console.log(`${id} has been pressed`);
+      document.getElementById(String(id))?.appendChild(clone);
     },
     sendMessage() {
       this.chatInput = this.chatInput.trim();
@@ -804,12 +817,6 @@ export default defineComponent({
       gameContainer.style.width = smallerDimension + "px";
       gameContainer.style.height = smallerDimension + "px";
     },
-  },
-  beforeMount() {
-    // const store = useStore();
-    // const userProfile = store.getUserProfile;
-    // this.myColor = userProfile.myColor;
-    // this.enemyColor = userProfile.enemyColor;
   },
   mounted() {
     this.equalizeGameContDimensions();
