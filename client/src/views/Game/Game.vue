@@ -100,7 +100,7 @@ export default defineComponent({
     });
 
     socket.on("gameEnded", (socketID: string) => {
-      this.gameState = socketID === socket.id ? "victory" : "defeat";
+      this.gameState = socketID !== socket.id ? "victory" : "defeat";
     });
   },
   computed: {

@@ -86,7 +86,7 @@ export class GameGateway implements OnGatewayDisconnect {
       try {
         this.gameService.placeStone(position, client.id, roomID);
         this.server.to(`${roomID}`).emit('stonePlaced', position);
-
+        this.gameService.iterateRound(roomID);
         const currGameState = this.gameService.checkWin(position, roomID);
         if (currGameState === GameState.win) {
           this.gameService.endGame(WinCondition.combination, false, roomID);

@@ -56,7 +56,6 @@ export class GameService {
       if (game.gameboard[position[0]][position[1]] === 0) {
         game.gameboard[position[0]][position[1]] =
           game.getStartingPlayer().socketID === socketID ? 1 : 2;
-        game.iterateRound();
         game.saveTurn(position);
       } else {
         throw 'takenPosition';
@@ -64,6 +63,10 @@ export class GameService {
     } else {
       throw 'gameNotRunning';
     }
+  }
+
+  iterateRound(roomID: string) {
+    this.quickGames[roomID].iterateRound();
   }
 
   getGameInfo(roomID: string) {
