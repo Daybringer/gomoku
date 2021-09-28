@@ -29,10 +29,10 @@ export class QuickSearchGateway
     quickSearch.push(client.id);
 
     if (quickSearch.length >= 2) {
-      const game = this.gameService.generateQuickGame();
+      const { roomID } = this.gameService.generateQuickGameRoom();
 
-      this.server.to(quickSearch[0]).emit('gameCreated', game.id);
-      this.server.to(quickSearch[1]).emit('gameCreated', game.id);
+      this.server.to(quickSearch[0]).emit('gameCreated', roomID);
+      this.server.to(quickSearch[1]).emit('gameCreated', roomID);
 
       quickSearch.splice(0, 2);
     }
@@ -64,7 +64,7 @@ export class GameGateway implements OnGatewayDisconnect {
   ): void {
     const { roomID, logged, username } = clientData;
 
-    if (this.gameService.roomExist(roomID)) {
+    if (this.gameService.roomExists(roomID)) {
       this.gameService.addPlayer(roomID, client.id, logged, username);
       client.join(`${roomID}`);
       if (this.gameService.isStarted(roomID)) {

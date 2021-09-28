@@ -4,14 +4,14 @@ enum GameType {
   custom = 'CUSTOM',
 }
 
-export enum GameState {
+enum GameState {
   waiting = 'WAITING',
   running = 'RUNNING',
   win = 'WIN',
   tie = 'TIE',
 }
 
-export enum WinCondition {
+enum WinCondition {
   combination = 'COMBINATION',
   time = 'TIME',
   disconnect = 'DISCONNECT',
@@ -23,7 +23,7 @@ enum Opening {
   swap2 = 'SWAP2',
 }
 
-export interface Player {
+interface Player {
   socketID: string;
   username: string;
   logged: boolean;
@@ -31,7 +31,6 @@ export interface Player {
 }
 
 abstract class Game {
-  id: string;
   players: Player[] = [];
   winner: Player;
   startingPlayer: Player;
@@ -46,11 +45,7 @@ abstract class Game {
   calibrationTimestamp: number;
   winCondition: WinCondition;
 
-  constructor(id: string) {
-    this.id = id;
-  }
-
-  public addPlayer(player: Player): void {
+  addPlayer(player: Player): void {
     if (this.players.length < 2) {
       if (this.players[0]) {
         if (this.players[0].username === player.username && player.username) {
@@ -64,37 +59,35 @@ abstract class Game {
     }
   }
 
-  public setGameState(gameState: GameState) {
-    this.gameState = gameState;
-  }
-
-  public setWinCondition(winCondition: WinCondition) {
-    this.winCondition = winCondition;
-  }
-
-  public selectRandomStartingPlayer(): Player {
+  selectRandomStartingPlayer(): Player {
     const startingPlayer = this.players[Math.round(Math.random())];
     this.startingPlayer = startingPlayer;
     return startingPlayer;
   }
 
-  public getStartingPlayer(): Player {
-    return this.startingPlayer;
+  getPlayerOnTurn(): Player {
+    return this.round % 2 == 0
+      ? this.startingPlayer
+      : this.players[Math.abs(this.players.indexOf(this.startingPlayer) - 1)];
   }
 
-  public isFull(): boolean {
+  isFull(): boolean {
     return this.players.length >= 2;
   }
 
-  public isStarted(): Boolean {
+  isStarted(): boolean {
     return this.gameState === GameState.running;
   }
 
-  public iterateRound(): void {
+  setGameState(gameState: GameState): void {
+    this.gameState = gameState;
+  }
+
+  iterateRound(): void {
     this.round++;
   }
 
-  public saveTurn(position: [number, number]): void {
+  saveTurn(position: [number, number]): void {
     this.turns.push(position);
   }
 
@@ -119,4 +112,12 @@ class RankedGame extends Game {
   eloDiff: number = 0;
 }
 
-export { QuickGame, RankedGame };
+export {
+  QuickGame,
+  RankedGame,
+  GameType,
+  GameState,
+  WinCondition,
+  Opening,
+  Player,
+};

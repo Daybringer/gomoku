@@ -5,45 +5,64 @@ import {
   Player,
   GameState,
   WinCondition,
+  GameType,
 } from './game.class';
 
 @Injectable()
 export class GameService {
-  quickGames: { [id: string]: QuickGame } = {};
+  quickGameRooms: { [id: string]: QuickGame } = {};
+  // test object
+  rankedGameRooms: { [id: string]: RankedGame } = {};
 
-  private generateRoomID(rooms: Object) {
+  gameRooms = [this.quickGameRooms, this.rankedGameRooms];
+
+  private generateRoomID(...rooms: Object[]) {
     const IDLength = 6;
     for (let x = 0; x < 100; x++) {
       let randID = Math.random().toString(36).substr(2, IDLength).toUpperCase();
-      if (!rooms.hasOwnProperty(randID)) {
+
+      let isTaken = false;
+
+      rooms.forEach((room) => {
+        if (room.hasOwnProperty(randID)) {
+          isTaken = true;
+        }
+      });
+
+      if (!isTaken) {
         return randID;
       }
     }
     throw 'generateRoomID overlooped';
   }
 
-  generateQuickGame() {
-    const roomID = this.generateRoomID(this.quickGames);
-    const newQuickGame = new QuickGame(roomID);
-    this.quickGames[newQuickGame.id] = newQuickGame;
-    return newQuickGame;
+  generateQuickGameRoom(): { game: QuickGame | RankedGame; roomID: string } {
+    const roomID = this.generateRoomID(...this.gameRooms);
+    const newQuickGameRoom = new QuickGame();
+    this.quickGameRooms[roomID] = newQuickGameRoom;
+    return { game: newQuickGameRoom, roomID };
   }
 
-  roomExist(roomID: string): boolean {
-    return this.quickGames.hasOwnProperty(roomID);
+  roomExists(roomID: string): boolean {
+    let roomExists = false;
+
+    this.gameRooms.forEach((gameDictionary) => {
+      if (gameDictionary.hasOwnProperty(roomID)) roomExists = true;
+    });
+
+    return roomExists;
   }
 
-  playerOnTurn(roomID: string): Player {
-    const game = this.quickGames[roomID];
-    return game.round % 2 == 0
-      ? game.getStartingPlayer()
-      : game.players[
-          Math.abs(game.players.indexOf(game.getStartingPlayer()) - 1)
-        ];
+  findGame(roomID: string): QuickGame | RankedGame {
+    this.gameRooms.forEach((anyGameRooms) => {
+      if (anyGameRooms.hasOwnProperty(roomID)) return anyGameRooms[roomID];
+    });
+
+    throw 'GameDoesNotExist';
   }
 
   isPlayersTurn(socketID: string, roomID: string): boolean {
-    return this.playerOnTurn(roomID).socketID === socketID;
+    return this.findGame(roomID).getPlayerOnTurn().socketID === socketID;
   }
 
   placeStone(
@@ -51,11 +70,11 @@ export class GameService {
     socketID: string,
     roomID: string,
   ): void {
-    const game = this.quickGames[roomID];
+    const game = this.findGame(roomID);
     if (game.isStarted()) {
       if (game.gameboard[position[0]][position[1]] === 0) {
         game.gameboard[position[0]][position[1]] =
-          game.getStartingPlayer().socketID === socketID ? 1 : 2;
+          game.startingPlayer.socketID === socketID ? 1 : 2;
         game.saveTurn(position);
       } else {
         throw 'takenPosition';
@@ -65,27 +84,33 @@ export class GameService {
     }
   }
 
-  iterateRound(roomID: string) {
-    this.quickGames[roomID].iterateRound();
+  public iterateRound(roomID: string): void {
+    this.findGame(roomID).iterateRound();
   }
 
+  // Util functions; might move gateway logic here
+
   getGameInfo(roomID: string) {
-    const players = this.quickGames[roomID].players;
-    const startingPlayer = this.quickGames[roomID].getStartingPlayer();
+    const { players, startingPlayer } = this.findGame(roomID);
     return { players, startingPlayer };
   }
 
   isStarted(roomID: string): boolean {
-    return this.quickGames[roomID].gameState === 'RUNNING';
+    return this.findGame(roomID).isStarted();
+  }
+
+  playerOnTurn(roomID: string): Player {
+    return this.findGame(roomID).getPlayerOnTurn();
   }
 
   startGame(roomID: string): Player {
-    this.quickGames[roomID].setGameState(GameState.running);
-    return this.quickGames[roomID].selectRandomStartingPlayer();
+    const game = this.findGame(roomID);
+    game.setGameState(GameState.running);
+    return game.selectRandomStartingPlayer();
   }
 
   checkWin(position: number[], roomID: string) {
-    const game = this.quickGames[roomID];
+    const game = this.findGame(roomID);
     const round = game.round;
     const gamePlan = game.gameboard;
 
@@ -139,7 +164,7 @@ export class GameService {
   }
 
   endGame(winCondition: WinCondition, isTie: boolean, roomID: string): void {
-    const game = this.quickGames[roomID];
+    const game = this.findGame(roomID);
     game.setGameState(isTie ? GameState.tie : GameState.win);
     game.winCondition = winCondition;
   }
@@ -151,12 +176,8 @@ export class GameService {
     username: string,
   ): void {
     const player: Player = { socketID, username, logged };
-    if (!this.quickGames[roomID].isFull())
-      this.quickGames[roomID].addPlayer(player);
-    if (
-      this.quickGames[roomID].isFull() &&
-      !this.quickGames[roomID].isStarted()
-    )
-      this.startGame(roomID);
+    const game = this.findGame(roomID);
+    if (!game.isFull()) game.addPlayer(player);
+    if (game.isFull() && !game.isStarted()) this.startGame(roomID);
   }
 }
