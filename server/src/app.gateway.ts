@@ -85,9 +85,32 @@ export class GameGateway implements OnGatewayDisconnect {
     if (this.gameService.isPlayersTurn(client.id, roomID)) {
       try {
         this.gameService.placeStone(position, client.id, roomID);
-        this.server.to(`${roomID}`).emit('stonePlaced', position);
+
+        clearTimeout(this.gameService.getTimeoutHandle(roomID));
+
+        setTimeout(() => {
+          console.log('no time');
+          // this.server.to(`${roomID}`).emit('gameEnded')
+        }, this.gameService.switchTime(roomID));
+
+        const playerOnTurn = this.gameService.playerOnTurn(roomID);
+
+        const turnData = {
+          position,
+          updatedPlayerTime: {
+            socketID: playerOnTurn.socketID,
+            time: playerOnTurn.secondsLeft,
+          },
+        };
+
+        console.log(turnData, ' :turnData');
+
+        this.server.to(`${roomID}`).emit('stonePlaced', turnData);
+
         this.gameService.iterateRound(roomID);
+
         const currGameState = this.gameService.checkWin(position, roomID);
+
         if (currGameState === GameState.win) {
           this.gameService.endGame(WinCondition.combination, false, roomID);
           this.server

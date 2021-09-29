@@ -54,10 +54,14 @@ export class GameService {
   }
 
   findGame(roomID: string): QuickGame | RankedGame {
+    let game;
     this.gameRooms.forEach((anyGameRooms) => {
-      if (anyGameRooms.hasOwnProperty(roomID)) return anyGameRooms[roomID];
+      if (anyGameRooms.hasOwnProperty(roomID)) {
+        game = anyGameRooms[roomID];
+        return;
+      }
     });
-
+    if (game) return game;
     throw 'GameDoesNotExist';
   }
 
@@ -84,15 +88,47 @@ export class GameService {
     }
   }
 
-  public iterateRound(roomID: string): void {
-    this.findGame(roomID).iterateRound();
+  saveTimeoutHandle(roomID: string, saveTimeoutHandle: number): void {
+    const game = this.findGame(roomID);
+    game.timeoutHandleID = saveTimeoutHandle;
+  }
+
+  getTimeoutHandle(roomID: string): number {
+    return this.findGame(roomID).timeoutHandleID;
+  }
+
+  // getPlayersTimes(roomID: string): { [socketID: string]: number } {
+  //   const playersTimes = {};
+  //   const players = this.findGame(roomID).players;
+  //   playersTimes[players[0].socketID] = players[0].secondsLeft;
+  //   playersTimes[players[1].socketID] = players[1].secondsLeft;
+  //   return playersTimes;
+  // }
+
+  switchTime(roomID: string) {
+    const game = this.findGame(roomID);
+    const timeNow = Date.now();
+    const player = game.getPlayerOnTurn();
+    console.log(player.secondsLeft);
+    player.secondsLeft -= Math.floor(
+      (timeNow - game.lastCalibrationTimestamp) / 1000,
+    );
+
+    console.log(player.secondsLeft);
+    game.lastCalibrationTimestamp = timeNow;
+    return Math.floor(timeNow / 1000);
   }
 
   // Util functions; might move gateway logic here
 
+  public iterateRound(roomID: string): void {
+    this.findGame(roomID).iterateRound();
+  }
+
   getGameInfo(roomID: string) {
-    const { players, startingPlayer } = this.findGame(roomID);
-    return { players, startingPlayer };
+    const { players, startingPlayer, timeLimitInSeconds } =
+      this.findGame(roomID);
+    return { players, startingPlayer, timeLimitInSeconds };
   }
 
   isStarted(roomID: string): boolean {
@@ -106,6 +142,7 @@ export class GameService {
   startGame(roomID: string): Player {
     const game = this.findGame(roomID);
     game.setGameState(GameState.running);
+    game.lastCalibrationTimestamp = Date.now() + 5000;
     return game.selectRandomStartingPlayer();
   }
 

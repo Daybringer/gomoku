@@ -71,7 +71,7 @@
     </svg>
 
     <div class="flex-1 text-center text-xl text-gray-900 dark:text-gray-100">
-      {{ time }}
+      {{ humanReadableTime }}
     </div>
     <div class="flex-1 text-center text-xl text-gray-900 dark:text-gray-100">
       {{ nickname }}
@@ -96,8 +96,15 @@ export default defineComponent({
   props: {
     symbol: String,
     symbolColor: String,
-    time: String,
+    time: Number,
     nickname: String,
+  },
+  computed: {
+    humanReadableTime(this: any) {
+      return `${Math.floor(this.time / 60)}:${
+        this.time % 60 == 0 ? "00" : this.time % 60
+      }`;
+    },
   },
   components: {},
   data() {

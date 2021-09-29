@@ -714,7 +714,7 @@ export default defineComponent({
   name: "GameBase",
   components: { ViewBase, SocialBlade, ChatMessage },
   props: {
-    myTime: String,
+    myTime: Number,
     enemyTime: String,
     amIStartingPlayer: Boolean,
     myNickname: String,

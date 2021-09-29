@@ -31,11 +31,11 @@ export default defineComponent({
   components: { GameBase },
   data() {
     return {
-      myTime: "2:30",
-      enemyTime: "2:30",
+      myTime: 0,
+      enemyTime: 0,
       amIStartingPlayer: true,
-      myNickname: "Daybringer",
-      enemyNickname: "Villfuk02",
+      myNickname: "-",
+      enemyNickname: "-",
       myColor: "",
       enemyColor: "",
       chatInput: "",
@@ -47,11 +47,24 @@ export default defineComponent({
         { author: "me", text: "I'm testing too" },
       ],
       boardSize: 15,
+
+      intervalHandle: 0,
     };
   },
   methods: {
     gameClick(position) {
       socket.emit("gameClick", { roomID: this.roomID, position });
+    },
+    startCountdown(meOrEnemy: string): number {
+      if (meOrEnemy === "me") {
+        return setInterval(() => {
+          this.myTime = this.myTime - 1;
+        }, 1000);
+      } else {
+        return setInterval(() => {
+          this.enemyTime = this.enemyTime - 1;
+        }, 1000);
+      }
     },
   },
   mounted() {
@@ -80,23 +93,37 @@ export default defineComponent({
     });
 
     socket.on("gameStarted", (gameInfo) => {
-      setTimeout(() => {
-        this.gameState = "coinflip";
-      }, 200);
-      this.myNickname = "This is me";
-      this.enemyNickname = "This is enemy";
-      console.log("Game started:", gameInfo, gameInfo.startingPlayer);
+      this.gameState = "coinflip";
+      this.myTime = this.enemyTime = gameInfo.timeLimitInSeconds;
+      // console.log("Game started:", gameInfo, gameInfo.startingPlayer);
       setTimeout(() => {
         this.gameState = "running";
-        console.log("Changed gamestate, ", this.amIStartingPlayer);
+        this.intervalHandle = this.startCountdown(
+          this.amIStartingPlayer ? "me" : "enemy"
+        );
       }, 4200);
 
       this.amIStartingPlayer = socket.id === gameInfo.startingPlayer.socketID;
+      this.myNickname = "This is me";
+      this.enemyNickname = "This is enemy";
     });
 
-    socket.on("stonePlaced", (position: number[]) => {
+    socket.on("stonePlaced", (data) => {
+      const { position, updatedPlayerTime } = data;
+
+      console.log(updatedPlayerTime);
+
       this.round++;
       this.lastPositionID = position[1] * this.boardSize + position[0];
+      clearInterval(this.intervalHandle);
+
+      if (updatedPlayerTime.socketID == socket.id) {
+        this.myTime = updatedPlayerTime.time;
+        this.intervalHandle = this.startCountdown("enemy");
+      } else {
+        this.enemyTime = updatedPlayerTime.time;
+        this.intervalHandle = this.startCountdown("me");
+      }
     });
 
     socket.on("gameEnded", (socketID: string) => {

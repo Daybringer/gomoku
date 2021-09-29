@@ -42,7 +42,8 @@ abstract class Game {
   gameState: GameState;
   opening: Opening;
   timeLimitInSeconds: number;
-  calibrationTimestamp: number;
+  lastCalibrationTimestamp: number;
+  timeoutHandleID: number;
   winCondition: WinCondition;
 
   addPlayer(player: Player): void {
