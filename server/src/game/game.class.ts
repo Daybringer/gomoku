@@ -18,7 +18,7 @@ enum WinCondition {
 }
 
 enum Opening {
-  standart = 'STANDART',
+  standart = 'STANDARD',
   swap = 'SWAP',
   swap2 = 'SWAP2',
 }
@@ -34,8 +34,8 @@ abstract class Game {
   players: Player[] = [];
   winner: Player;
   startingPlayer: Player;
-  round: number = 0;
-  gameboardSize: number = 15;
+  round = 0;
+  gameboardSize = 15;
   gameboard: number[][] = this.generateGameboard(this.gameboardSize);
   turns: Array<[number, number]> = [];
   gameType: GameType;
@@ -49,6 +49,7 @@ abstract class Game {
   addPlayer(player: Player): void {
     if (this.players.length < 2) {
       if (this.players[0]) {
+        // Player with same username tries to log in
         if (this.players[0].username === player.username && player.username) {
           throw 'Are you a schizophrenic?';
         }
@@ -76,7 +77,7 @@ abstract class Game {
     return this.players.length >= 2;
   }
 
-  isStarted(): boolean {
+  isRunning(): boolean {
     return this.gameState === GameState.running;
   }
 
@@ -113,6 +114,8 @@ class RankedGame extends Game {
   eloDiff: number = 0;
 }
 
+type AnyGame = QuickGame | RankedGame;
+
 export {
   QuickGame,
   RankedGame,
@@ -121,4 +124,5 @@ export {
   WinCondition,
   Opening,
   Player,
+  AnyGame,
 };

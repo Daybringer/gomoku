@@ -1,12 +1,14 @@
 import { Injectable } from '@nestjs/common';
+
 import {
+  AnyGame,
+  GameState,
+  GameType,
+  Player,
   QuickGame,
   RankedGame,
-  Player,
-  GameState,
   WinCondition,
-  GameType,
-} from './game.class';
+} from '../game.class';
 
 @Injectable()
 export class GameService {
@@ -16,10 +18,14 @@ export class GameService {
 
   gameRooms = [this.quickGameRooms, this.rankedGameRooms];
 
-  private generateRoomID(...rooms: Object[]) {
+  private generateRoomID(...rooms: Record<string, unknown>[]) {
     const IDLength = 6;
+
     for (let x = 0; x < 100; x++) {
-      let randID = Math.random().toString(36).substr(2, IDLength).toUpperCase();
+      const randID = Math.random()
+        .toString(36)
+        .substr(2, IDLength)
+        .toUpperCase();
 
       let isTaken = false;
 
@@ -31,12 +37,13 @@ export class GameService {
 
       if (!isTaken) {
         return randID;
+      } else {
+        throw 'generateRoomID overlooped';
       }
     }
-    throw 'generateRoomID overlooped';
   }
 
-  generateQuickGameRoom(): { game: QuickGame | RankedGame; roomID: string } {
+  generateQuickGameRoom(): { game: AnyGame; roomID: string } {
     const roomID = this.generateRoomID(...this.gameRooms);
     const newQuickGameRoom = new QuickGame();
     this.quickGameRooms[roomID] = newQuickGameRoom;
@@ -54,7 +61,7 @@ export class GameService {
   }
 
   findGame(roomID: string): QuickGame | RankedGame {
-    let game;
+    let game = undefined;
     this.gameRooms.forEach((anyGameRooms) => {
       if (anyGameRooms.hasOwnProperty(roomID)) {
         game = anyGameRooms[roomID];
@@ -69,13 +76,31 @@ export class GameService {
     return this.findGame(roomID).getPlayerOnTurn().socketID === socketID;
   }
 
+  findGameBySocketID(socketID: string): AnyGame {
+    // comment
+
+    let game = undefined;
+
+    this.gameRooms.forEach((anyGameRooms: { [id: string]: AnyGame }) => {
+      for (const key in anyGameRooms) {
+        anyGameRooms[key].players.forEach((player) => {
+          if (player.socketID === socketID) {
+            game = anyGameRooms[key];
+          }
+        });
+      }
+    });
+    if (game) return game;
+    throw 'GameDoesNotExist';
+  }
+
   placeStone(
     position: [number, number],
     socketID: string,
     roomID: string,
   ): void {
     const game = this.findGame(roomID);
-    if (game.isStarted()) {
+    if (game.isRunning()) {
       if (game.gameboard[position[0]][position[1]] === 0) {
         game.gameboard[position[0]][position[1]] =
           game.startingPlayer.socketID === socketID ? 1 : 2;
@@ -109,12 +134,10 @@ export class GameService {
     const game = this.findGame(roomID);
     const timeNow = Date.now();
     const player = game.getPlayerOnTurn();
-    console.log(player.secondsLeft);
     player.secondsLeft -= Math.floor(
       (timeNow - game.lastCalibrationTimestamp) / 1000,
     );
 
-    console.log(player.secondsLeft);
     game.lastCalibrationTimestamp = timeNow;
     return Math.floor(timeNow / 1000);
   }
@@ -131,8 +154,8 @@ export class GameService {
     return { players, startingPlayer, timeLimitInSeconds };
   }
 
-  isStarted(roomID: string): boolean {
-    return this.findGame(roomID).isStarted();
+  isRunning(roomID: string): boolean {
+    return this.findGame(roomID).isRunning();
   }
 
   playerOnTurn(roomID: string): Player {
@@ -214,7 +237,16 @@ export class GameService {
   ): void {
     const player: Player = { socketID, username, logged };
     const game = this.findGame(roomID);
+
     if (!game.isFull()) game.addPlayer(player);
-    if (game.isFull() && !game.isStarted()) this.startGame(roomID);
+    if (game.isFull() && !game.isRunning()) this.startGame(roomID);
+  }
+
+  removePlayer(roomID: string, socketID: string): void {
+    if (roomID) {
+      // TODO
+    } else {
+      // TODO
+    }
   }
 }

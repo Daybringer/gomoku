@@ -1,4 +1,5 @@
 <template>
+  <!-- FIXME find way to change the terrible string literal comparations on gameEnding and gameState -->
   <view-base>
     <div class="absolute top-16 w-full h-2/6 bg-gray-800  z-0"></div>
     <!-- flex-1 min-h-0 relative flex xl:flex-row flex-col xl:w-3/4 w-90 bg-gray-700 custom-shadow rounded-md  m-auto overflow-hidden -->
@@ -13,21 +14,18 @@
       >
         <!-- Game component -->
         <div
-          v-for="array in genArray"
-          :key="array"
-          :id="array"
+          v-for="cellID in genArray"
+          :key="cellID"
+          :id="cellID"
           class="bg-white dark:bg-gray-500 cursor-pointer relative"
           :class="
-            lastPositionID == array && round !== 0 ? 'currPositionOutline' : ''
+            lastPositionID == cellID && round !== 0 ? 'currPositionOutline' : ''
           "
-          @click="gameClick(array)"
+          @click="gameClick(cellID)"
         ></div>
         <!-- Button for toggling after game overlay -->
         <button
-          v-show="
-            afterGameModal === false &&
-              (gameState === 'victory' || gameState === 'defeat')
-          "
+          v-show="afterGameModal === false && gameState == 'ended'"
           @click="afterGameModal = true"
           class="absolute top-2 left-2 p-1 rounded-full bg-gray-200  text-gray-900 focus:outline-none"
         >
@@ -66,17 +64,12 @@
             class="absolute z-20 flex p-6 xl:p-12 flex-col h-full w-full bg-gray-100 dark:bg-gray-700"
             :class="
               afterGameModal
-                ? gameState == 'victory'
+                ? isGameEndingVictory
                   ? 'confetti-background'
                   : 'rainy-background'
                 : 'minimizeAfterGameModal'
             "
-            v-show="
-              (gameState === 'victory' ||
-                gameState === 'defeat' ||
-                gameState === 'tie') &&
-                afterGameModal
-            "
+            v-show="gameState === 'ended' && afterGameModal"
           >
             <div
               class="w-full h-full rounded-lg p-4 bg-white dark:bg-gray-500 shadow-2xl flex relative flex-col"
@@ -102,7 +95,7 @@
               <h1
                 class="w-full text-center text-5xl p-4 xl:text-7xl font-medium text text-gomoku-blue"
               >
-                {{ gameState === "victory" ? "Victory!" : "Defeat!" }}
+                {{ isGameEndingVictory ? "Victory!" : "Defeat!" }}
               </h1>
               <router-link
                 to="q/search"
@@ -111,132 +104,14 @@
                 New Game
               </router-link>
               <div class="flex-1 relative">
-                <svg
-                  v-show="gameState === 'victory'"
-                  version="1.1"
-                  class="absolute bottom-0 xl:bottom-10 left-0 xl:left-10 h-80 xl:h-50"
-                  id="Layer_1"
-                  xmlns="http://www.w3.org/2000/svg"
-                  xmlns:xlink="http://www.w3.org/1999/xlink"
-                  viewBox="0 0 366.636 366.636"
-                  style="enable-background:new 0 0 366.636 366.636;"
-                  xml:space="preserve"
-                >
-                  <g>
-                    <g>
-                      <polygon
-                        style="fill:#FFB819;"
-                        points="7.261,366.636 230.796,262.472 109.313,142.129 		"
-                      />
-                      <circle
-                        style="fill:#FFD26C;"
-                        cx="139.46"
-                        cy="232.5"
-                        r="27.121"
-                      />
-                      <path
-                        style="fill:#FFD26C;"
-                        d="M64.791,240.073c7.507,0.439,15.158-2.219,20.866-7.982c10.454-10.552,10.455-27.525,0.076-38.087
-			L64.791,240.073z"
-                      />
-                      <path
-                        style="fill:#FFD26C;"
-                        d="M34.985,337.966c-5.319,5.371-7.93,12.403-7.847,19.408l44.797-20.876
-			C61.238,327.277,45.076,327.78,34.985,337.966z"
-                      />
-                      <path
-                        style="fill:#FFD26C;"
-                        d="M142.845,283.129c-6.434,6.495-8.903,15.423-7.436,23.792l47.484-22.127
-			c-0.534-0.634-1.093-1.252-1.693-1.846C170.559,272.407,153.387,272.488,142.845,283.129z"
-                      />
-                      <circle
-                        style="fill:#FFD26C;"
-                        cx="77.177"
-                        cy="286.451"
-                        r="27.121"
-                      />
-                      <polygon
-                        style="fill:#004D7A;"
-                        points="96.306,170.743 202.305,275.748 230.796,262.472 109.313,142.129 		"
-                      />
-                    </g>
-                    <circle
-                      style="fill:#00BCB4;"
-                      cx="135"
-                      cy="86.679"
-                      r="18.497"
-                    />
-                    <circle
-                      style="fill:#00BCB4;"
-                      cx="276.53"
-                      cy="235.558"
-                      r="18.497"
-                    />
-                    <circle
-                      style="fill:#FFB819;"
-                      cx="316.74"
-                      cy="153.038"
-                      r="18.497"
-                    />
-                    <circle
-                      style="fill:#FFB819;"
-                      cx="176.102"
-                      cy="18.497"
-                      r="18.497"
-                    />
-                    <circle
-                      style="fill:#D85C72;"
-                      cx="228.315"
-                      cy="181.419"
-                      r="18.497"
-                    />
-                    <circle
-                      style="fill:#D85C72;"
-                      cx="239.536"
-                      cy="74.687"
-                      r="18.497"
-                    />
-                    <circle
-                      style="fill:#D85C72;"
-                      cx="334.385"
-                      cy="83.179"
-                      r="18.497"
-                    />
-                    <path
-                      style="fill:#00BCB4;"
-                      d="M133.624,143.693c-3.767,0-6.819-3.053-6.819-6.819c0-3.766,3.052-6.819,6.819-6.819
-		c25.377,0,46.024-20.646,46.024-46.024c0-32.898,26.764-59.662,59.662-59.662c32.897,0,59.661,26.764,59.661,59.662
-		c0,3.766-3.053,6.818-6.818,6.818c-3.765,0-6.818-3.052-6.818-6.818c0-25.378-20.647-46.024-46.024-46.024
-		c-25.378,0-46.024,20.646-46.024,46.024C193.285,116.929,166.52,143.693,133.624,143.693z"
-                    />
-                    <path
-                      style="fill:#FFB819;"
-                      d="M312.259,210.037c-25.978,0-47.115-21.136-47.115-47.115c0-18.459-15.019-33.479-33.478-33.479
-		c-18.46,0-33.479,15.019-33.479,33.479c0,3.766-3.053,6.818-6.817,6.818c-3.767,0-6.819-3.052-6.819-6.818
-		c0-25.979,21.136-47.115,47.115-47.115c25.979,0,47.115,21.136,47.115,47.115c0,18.46,15.018,33.478,33.478,33.478
-		s33.478-15.018,33.478-33.478c0-3.766,3.054-6.818,6.82-6.818c3.764,0,6.817,3.052,6.817,6.818
-		C359.375,188.901,338.239,210.037,312.259,210.037z"
-                    />
-                  </g>
-                  <g></g>
-                  <g></g>
-                  <g></g>
-                  <g></g>
-                  <g></g>
-                  <g></g>
-                  <g></g>
-                  <g></g>
-                  <g></g>
-                  <g></g>
-                  <g></g>
-                  <g></g>
-                  <g></g>
-                  <g></g>
-                  <g></g>
-                </svg>
                 <!-- Overlay victory -->
-                <svg
+                <img
+                  :src="victoryConfettiCone"
+                  class="absolute bottom-0 xl:bottom-10 left-0 xl:left-10 h-80 xl:h-50"
                   v-show="gameState === 'victory'"
+                />
+                <svg
+                  v-show="isGameEndingVictory"
                   version="1.1"
                   class="absolute bottom-10 right-10 h-0 xl:h-50"
                   id="Layer_2"
@@ -360,7 +235,7 @@
                 </svg>
                 <!-- Overlay defeat -->
                 <svg
-                  v-show="gameState === 'defeat'"
+                  v-show="!isGameEndingVictory"
                   viewBox="0 0 347.51588 263.47151"
                   class="absolute bottom-0 left-0 xl:bottom-10 xl:left-10 h-80 xl:h-50"
                 >
@@ -679,40 +554,36 @@
           ></rect>
         </g>
       </svg>
-      <svg
-        data-v-69bfb0ac=""
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 6.8557348 7.1098857"
-        id="svgCircleOrigin"
-        class="hidden"
-      >
-        <ellipse
-          data-v-69bfb0ac=""
-          cx="113.29025"
-          cy="147.48361"
-          rx="2.984288"
-          ry="3.1113634"
-          fill="none"
-          :stroke="amIStartingPlayer ? myColor : enemyColor"
-          stroke-width=".887159"
-          stroke-linejoin="round"
-          paint-order="markers fill stroke"
-          transform="translate(-109.86239 -143.92867)"
-        ></ellipse>
-      </svg>
+      <CircleOrigin
+        :amIStartingPlayer="amIStartingPlayer"
+        :enemyColor="enemyColor"
+        :myColor="myColor"
+      />
     </div>
   </view-base>
 </template>
 <script lang="ts">
+// Types
+import { GameState, Ending } from "@/types";
+// SVGs
+import victoryConfettiCone from "@/assets/svg/victoryConfettiCone.svg";
+import circleOrigin from "@/assets/svg/circleOrigin.svg";
+import CircleOrigin from "@/components/svg/CircleOrigin.vue";
+enum Symbol {
+  Cross,
+  Circle,
+}
+
 // Components
 import ViewBase from "@/components/ViewBase.vue";
 import SocialBlade from "@/components/SocialBlade.vue";
 import ChatMessage from "@/components/mini/ChatMessage.vue";
 // Utils
 import { defineComponent } from "vue";
+
 export default defineComponent({
   name: "GameBase",
-  components: { ViewBase, SocialBlade, ChatMessage },
+  components: { ViewBase, SocialBlade, ChatMessage, CircleOrigin },
   props: {
     myTime: Number,
     enemyTime: String,
@@ -725,6 +596,13 @@ export default defineComponent({
     lastPositionID: Number,
     round: Number,
     gameState: String,
+    gameEnding: String,
+  },
+  setup() {
+    return {
+      victoryConfettiCone,
+      circleOrigin,
+    };
   },
   data() {
     return {
@@ -738,14 +616,27 @@ export default defineComponent({
       return this.amIStartingPlayer ? "heads" : "tails";
     },
     mySymbol(): string {
-      if (this.gameState == "coinflip" || this.gameState == "waiting")
+      if (
+        this.gameState == GameState.Coinflip ||
+        this.gameState == GameState.Waiting
+      )
         return "";
       return this.amIStartingPlayer ? "circle" : "cross";
     },
     enemySymbol(): string {
-      if (this.gameState == "coinflip" || this.gameState == "waiting")
+      if (
+        this.gameState == GameState.Coinflip ||
+        this.gameState == GameState.Waiting
+      )
         return "";
       return !this.amIStartingPlayer ? "circle" : "cross";
+    },
+    isGameEndingVictory(): boolean {
+      return (
+        this.gameEnding === "victoryFiveInRow" ||
+        this.gameEnding === "victoryTimeout" ||
+        this.gameEnding === "victoryDisconnect"
+      );
     },
     genArray() {
       const array: number[] = [];
@@ -759,7 +650,6 @@ export default defineComponent({
   },
   watch: {
     lastPositionID: function() {
-      console.log("changed position");
       this.placeStone(this.lastPositionID!);
     },
   },

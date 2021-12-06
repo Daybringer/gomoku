@@ -1,4 +1,3 @@
-import { Logger } from '@nestjs/common';
 import {
   OnGatewayConnection,
   OnGatewayDisconnect,
@@ -8,53 +7,53 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { GameState, WinCondition } from './game/game.class';
-import { GameService } from './game/game.service';
+import { GameService } from './game/services/game.service';
+import { SearchService } from './game/services/search.service';
 
-const quickSearch: string[] = [];
-
-const activeSockets = {};
-
+// SEARCH
 @WebSocketGateway({ namespace: '/search/quick' })
 export class QuickSearchGateway
   implements OnGatewayConnection, OnGatewayDisconnect
 {
-  constructor(private gameService: GameService) {}
-
-  private logger: Logger = new Logger('AppGateway');
+  constructor(
+    private gameService: GameService,
+    private searchService: SearchService,
+  ) {}
 
   @WebSocketServer() server: Server;
 
   handleConnection(client: Socket, ...args: any[]) {
-    // this.logger.log(`Client connected QuickSearch: ${client.id}`);
-    quickSearch.push(client.id);
+    this.searchService.joinQuickQueue(client.id);
 
-    if (quickSearch.length >= 2) {
+    const matchedPlayers = this.searchService.tryMatchPlayersQuickQue();
+    if (matchedPlayers !== null) {
       const { roomID } = this.gameService.generateQuickGameRoom();
 
-      this.server.to(quickSearch[0]).emit('gameCreated', roomID);
-      this.server.to(quickSearch[1]).emit('gameCreated', roomID);
-
-      quickSearch.splice(0, 2);
+      this.server.to(matchedPlayers[0]).emit('gameCreated', roomID);
+      this.server.to(matchedPlayers[1]).emit('gameCreated', roomID);
     }
   }
 
   handleDisconnect(client: Socket) {
-    if (quickSearch.includes(client.id)) {
-      let indexOfSocket = quickSearch.indexOf(client.id);
-      quickSearch.splice(indexOfSocket, 1);
-    }
+    this.searchService.leaveQuickQueue(client.id);
   }
 }
 
+// GAME
 @WebSocketGateway({ namespace: '/game/quick' })
 export class GameGateway implements OnGatewayDisconnect {
-  private logger: Logger = new Logger('AppGateway');
   constructor(private gameService: GameService) {}
 
   @WebSocketServer() server: Server;
 
   handleDisconnect(client: Socket) {
-    this.logger.log(`Client disconnected GameGateway: ${client.id}`);
+    // I assume that findGameBySocketID always returns a game
+    const game = this.gameService.findGameBySocketID(client.id);
+    if (game.isRunning()) {
+      console.log('Game is running and somebody left the game');
+    } else {
+      console.log('Game is over and somebody left the game');
+    }
   }
 
   @SubscribeMessage('joinGame')
@@ -65,9 +64,12 @@ export class GameGateway implements OnGatewayDisconnect {
     const { roomID, logged, username } = clientData;
 
     if (this.gameService.roomExists(roomID)) {
+      // Adds a players and starts game if the room is full
       this.gameService.addPlayer(roomID, client.id, logged, username);
+      // Subscribing socket to socketIO room
       client.join(`${roomID}`);
-      if (this.gameService.isStarted(roomID)) {
+
+      if (this.gameService.isRunning(roomID)) {
         const gameInfo = this.gameService.getGameInfo(roomID);
         this.server.to(`${roomID}`).emit('gameStarted', gameInfo);
       }
@@ -89,7 +91,7 @@ export class GameGateway implements OnGatewayDisconnect {
         clearTimeout(this.gameService.getTimeoutHandle(roomID));
 
         setTimeout(() => {
-          console.log('no time');
+          // TODO implement time out scenario
           // this.server.to(`${roomID}`).emit('gameEnded')
         }, this.gameService.switchTime(roomID));
 
@@ -102,8 +104,6 @@ export class GameGateway implements OnGatewayDisconnect {
             time: playerOnTurn.secondsLeft,
           },
         };
-
-        console.log(turnData, ' :turnData');
 
         this.server.to(`${roomID}`).emit('stonePlaced', turnData);
 
