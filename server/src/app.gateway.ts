@@ -10,6 +10,10 @@ import { GameState, WinCondition } from './game/game.class';
 import { GameService } from './game/services/game.service';
 import { SearchService } from './game/services/search.service';
 
+// DTOs
+import { GameClickDTO } from 'gomoku-shared-types/';
+// TODO impolement somehow DTOs -> problem with shared code
+
 // SEARCH
 @WebSocketGateway({ namespace: '/search/quick' })
 export class QuickSearchGateway
@@ -79,10 +83,7 @@ export class GameGateway implements OnGatewayDisconnect {
   }
 
   @SubscribeMessage('gameClick')
-  hangleGameClick(
-    client: Socket,
-    clientData: { roomID: string; position: [number, number] },
-  ): void {
+  hangleGameClick(client: Socket, clientData: GameClickDTO): void {
     const { roomID, position } = clientData;
     if (this.gameService.isPlayersTurn(client.id, roomID)) {
       try {

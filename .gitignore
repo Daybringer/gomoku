@@ -4,6 +4,9 @@ dev-assets
 dist
 ./gameAnim.js
 
+*/dist
+shared/dist
+shared/node_modules
 
 # Server
 .DS_Store

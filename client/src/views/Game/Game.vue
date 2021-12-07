@@ -18,6 +18,8 @@
 <script lang="ts">
 // Types
 import { GameState, Ending } from "@/types";
+// Backend-frontend shared types
+import { position, GameClickDTO, GameEvents } from "@/shared/types";
 
 // SocketIO
 import io from "socket.io-client";
@@ -62,8 +64,12 @@ export default defineComponent({
     /**
      * Forwards click event from GameBase component to game server
      */
-    gameClick(position: [number, number]): void {
-      socket.emit("gameClick", { roomID: this.getRoomIDFromURL, position });
+    gameClick(position: position): void {
+      const gameClickDTO: GameClickDTO = {
+        roomID: this.getRoomIDFromURL || "",
+        position: position,
+      };
+      socket.emit(GameEvents.GameClick, gameClickDTO);
     },
 
     /**
@@ -94,7 +100,7 @@ export default defineComponent({
     this.opponent.color = userProfile.enemyColor;
 
     if (this.getGameTypeFromURL === "quick") {
-      socket.emit("joinGame", {
+      socket.emit(GameEvents.JoinGame, {
         roomID: this.getRoomIDFromURL,
         logged: this.me.nickname ? true : false,
         username: this.me.nickname,
@@ -104,9 +110,8 @@ export default defineComponent({
       this.$router.push("/");
     }
 
-    socket.on("invalidRoomID", () => {
-      // TODO show some notification instead of console log
-      console.log("Invalid Room ID");
+    socket.on(GameEvents.InvalidRoomID, () => {
+      // TODO show some notification
       this.$router.push("/");
     });
 
@@ -128,8 +133,6 @@ export default defineComponent({
     socket.on("stonePlaced", (data) => {
       const { position, updatedPlayerTime } = data;
 
-      console.log(updatedPlayerTime);
-
       this.round++;
       this.lastPositionID = position[1] * this.boardSize + position[0];
       clearInterval(this.intervalHandle);
@@ -145,7 +148,8 @@ export default defineComponent({
 
     // Different game endings
 
-    socket.on("playerDisconnected", (socketID: string) => {
+    //smth disconnect
+    socket.on(GameEvents.GameEndedByDisconnect, (socketID: string) => {
       // I have been disconnected
       if (socket.id === socketID) {
         this.gameState = GameState.Ended;
@@ -157,12 +161,17 @@ export default defineComponent({
       }
     });
 
-    socket.on("gameEnded", (socketID: string) => {
+    // gameEnded
+    socket.on(GameEvents.GameEndedByCombination, (socketID: string) => {
       this.gameState = GameState.Ended;
       this.gameEnding =
         socketID !== socket.id
           ? Ending.VictoryFiveInRow
           : Ending.DefeatFiveInRow;
+    });
+
+    socket.on(GameEvents.GameEndedByTimeout, (socketID: string) => {
+      console.log(socketID);
     });
 
     // TODO refactor ending events to these
