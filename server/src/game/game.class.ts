@@ -1,26 +1,27 @@
 enum GameType {
-  ranked = 'RANKED',
-  quick = 'QUICK',
-  custom = 'CUSTOM',
+  Ranked = 'RANKED',
+  Quick = 'QUICK',
+  Custom = 'CUSTOM',
 }
 
 enum GameState {
-  waiting = 'WAITING',
-  running = 'RUNNING',
-  win = 'WIN',
-  tie = 'TIE',
+  Waiting = 'WAITING',
+  Running = 'RUNNING',
+  Ended = 'ENDED',
 }
 
-enum WinCondition {
-  combination = 'COMBINATION',
-  time = 'TIME',
-  disconnect = 'DISCONNECT',
+enum GameEnding {
+  None = 'None',
+  Combination = 'COMBINATION',
+  Timeout = 'TIMEOUT',
+  Disconnect = 'DISCONNECT',
+  Tie = 'TIE',
 }
 
 enum Opening {
-  standart = 'STANDARD',
-  swap = 'SWAP',
-  swap2 = 'SWAP2',
+  Standart = 'STANDARD',
+  Swap1 = 'SWAP1',
+  Swap2 = 'SWAP2',
 }
 
 interface Player {
@@ -39,26 +40,27 @@ abstract class Game {
   gameboard: number[][] = this.generateGameboard(this.gameboardSize);
   turns: Array<[number, number]> = [];
   gameType: GameType;
-  gameState: GameState;
   opening: Opening;
   timeLimitInSeconds: number;
+  gameState: GameState = GameState.Waiting;
+  gameEnding: GameEnding;
   lastCalibrationTimestamp: number;
   timeoutHandleID: number;
-  winCondition: WinCondition;
 
   addPlayer(player: Player): void {
-    if (this.players.length < 2) {
-      if (this.players[0]) {
-        // Player with same username tries to log in
-        if (this.players[0].username === player.username && player.username) {
-          throw 'Are you a schizophrenic?';
+    if (this.isWaiting())
+      if (this.players.length < 2) {
+        if (this.players[0]) {
+          // Player with same username tries to log in
+          if (this.players[0].username === player.username && player.username) {
+            throw 'Are you a schizophrenic?';
+          }
         }
+        player.secondsLeft = this.timeLimitInSeconds;
+        this.players.push(player);
+      } else {
+        throw 'Game is already full';
       }
-      player.secondsLeft = this.timeLimitInSeconds;
-      this.players.push(player);
-    } else {
-      throw 'Game is already full';
-    }
   }
 
   selectRandomStartingPlayer(): Player {
@@ -73,16 +75,44 @@ abstract class Game {
       : this.players[Math.abs(this.players.indexOf(this.startingPlayer) - 1)];
   }
 
+  setWinner(winnerSocketID: string): void {
+    this.players.forEach((player) => {
+      if (player.socketID == winnerSocketID) this.winner = player;
+    });
+  }
+
+  getOtherPlayersIDByFirstOnes(firstOneID: string): string {
+    let id = '';
+    this.players.forEach((player) => {
+      if (player.socketID !== firstOneID) {
+        id = player.socketID;
+      }
+    });
+    return id;
+  }
+
   isFull(): boolean {
     return this.players.length >= 2;
   }
 
+  isWaiting(): boolean {
+    return this.gameState === GameState.Waiting;
+  }
+
   isRunning(): boolean {
-    return this.gameState === GameState.running;
+    return this.gameState === GameState.Running;
+  }
+
+  isEnded(): boolean {
+    return this.gameState === GameState.Ended;
   }
 
   setGameState(gameState: GameState): void {
     this.gameState = gameState;
+  }
+
+  setGameEnding(gameEnding: GameEnding): void {
+    this.gameEnding = gameEnding;
   }
 
   iterateRound(): void {
@@ -121,7 +151,7 @@ export {
   RankedGame,
   GameType,
   GameState,
-  WinCondition,
+  GameEnding,
   Opening,
   Player,
   AnyGame,

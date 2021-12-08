@@ -4,10 +4,10 @@ import {
   AnyGame,
   GameState,
   GameType,
+  GameEnding,
   Player,
   QuickGame,
   RankedGame,
-  WinCondition,
 } from '../game.class';
 
 @Injectable()
@@ -43,6 +43,10 @@ export class GameService {
     }
   }
 
+  printQuickGameRooms(): void {
+    console.log(this.quickGameRooms);
+  }
+
   generateQuickGameRoom(): { game: AnyGame; roomID: string } {
     const roomID = this.generateRoomID(...this.gameRooms);
     const newQuickGameRoom = new QuickGame();
@@ -68,30 +72,31 @@ export class GameService {
         return;
       }
     });
-    if (game) return game;
-    throw 'GameDoesNotExist';
+    return game;
   }
 
   isPlayersTurn(socketID: string, roomID: string): boolean {
-    return this.findGame(roomID).getPlayerOnTurn().socketID === socketID;
+    const game = this.findGame(roomID);
+    if (game) {
+      return game.getPlayerOnTurn().socketID === socketID;
+    }
   }
 
-  findGameBySocketID(socketID: string): AnyGame {
-    // comment
-
-    let game = undefined;
+  findGameBySocketID(socketID: string): { game: AnyGame; roomID: string } {
+    let game: AnyGame = undefined;
+    let roomID: string = '';
 
     this.gameRooms.forEach((anyGameRooms: { [id: string]: AnyGame }) => {
       for (const key in anyGameRooms) {
         anyGameRooms[key].players.forEach((player) => {
           if (player.socketID === socketID) {
             game = anyGameRooms[key];
+            roomID = key;
           }
         });
       }
     });
-    if (game) return game;
-    throw 'GameDoesNotExist';
+    return { game, roomID };
   }
 
   placeStone(
@@ -100,16 +105,16 @@ export class GameService {
     roomID: string,
   ): void {
     const game = this.findGame(roomID);
-    if (game.isRunning()) {
-      if (game.gameboard[position[0]][position[1]] === 0) {
-        game.gameboard[position[0]][position[1]] =
-          game.startingPlayer.socketID === socketID ? 1 : 2;
-        game.saveTurn(position);
-      } else {
-        throw 'takenPosition';
+    if (game) {
+      if (game.isRunning()) {
+        if (game.gameboard[position[0]][position[1]] === 0) {
+          game.gameboard[position[0]][position[1]] =
+            game.startingPlayer.socketID === socketID ? 1 : 2;
+          game.saveTurn(position);
+        } else {
+          throw 'TakenPosition';
+        }
       }
-    } else {
-      throw 'gameNotRunning';
     }
   }
 
@@ -122,29 +127,23 @@ export class GameService {
     return this.findGame(roomID).timeoutHandleID;
   }
 
-  // getPlayersTimes(roomID: string): { [socketID: string]: number } {
-  //   const playersTimes = {};
-  //   const players = this.findGame(roomID).players;
-  //   playersTimes[players[0].socketID] = players[0].secondsLeft;
-  //   playersTimes[players[1].socketID] = players[1].secondsLeft;
-  //   return playersTimes;
-  // }
-
-  switchTime(roomID: string) {
+  switchTime(roomID: string): number {
     const game = this.findGame(roomID);
-    const timeNow = Date.now();
-    const player = game.getPlayerOnTurn();
-    player.secondsLeft -= Math.floor(
-      (timeNow - game.lastCalibrationTimestamp) / 1000,
-    );
+    if (game) {
+      const timeNow = Date.now();
+      const player = game.getPlayerOnTurn();
+      player.secondsLeft -= Math.floor(
+        (timeNow - game.lastCalibrationTimestamp) / 1000,
+      );
 
-    game.lastCalibrationTimestamp = timeNow;
-    return Math.floor(timeNow / 1000);
+      game.lastCalibrationTimestamp = timeNow;
+      return Math.floor(timeNow / 1000);
+    }
   }
 
   // Util functions; might move gateway logic here
 
-  public iterateRound(roomID: string): void {
+  iterateRound(roomID: string): void {
     this.findGame(roomID).iterateRound();
   }
 
@@ -155,21 +154,27 @@ export class GameService {
   }
 
   isRunning(roomID: string): boolean {
-    return this.findGame(roomID).isRunning();
+    const game = this.findGame(roomID);
+    return game ? game.isRunning() : false;
   }
 
   playerOnTurn(roomID: string): Player {
-    return this.findGame(roomID).getPlayerOnTurn();
+    const game = this.findGame(roomID);
+    if (game) {
+      return game.getPlayerOnTurn();
+    }
   }
 
   startGame(roomID: string): Player {
     const game = this.findGame(roomID);
-    game.setGameState(GameState.running);
-    game.lastCalibrationTimestamp = Date.now() + 5000;
-    return game.selectRandomStartingPlayer();
+    if (game) {
+      game.setGameState(GameState.Running);
+      game.lastCalibrationTimestamp = Date.now() + 5000;
+      return game.selectRandomStartingPlayer();
+    }
   }
 
-  checkWin(position: number[], roomID: string) {
+  checkWin(position: number[], roomID: string): GameEnding {
     const game = this.findGame(roomID);
     const round = game.round;
     const gamePlan = game.gameboard;
@@ -180,6 +185,7 @@ export class GameService {
     let vertical = 0;
     let diagonalR = 0;
     let diagonalL = 0;
+    // FIXME replace constants with gameBoardsize equivalent
     for (let x = -4; x < 5; x++) {
       // * Horizontal check
       if (xPos + x >= 0 && xPos + x <= 14) {
@@ -211,22 +217,52 @@ export class GameService {
         }
       }
       if (horizont >= 5 || vertical >= 5 || diagonalL >= 5 || diagonalR >= 5) {
-        return GameState.win;
+        return GameEnding.Combination;
       }
     }
     if (horizont >= 5 || vertical >= 5 || diagonalL >= 5 || diagonalR >= 5) {
-      return GameState.win;
+      return GameEnding.Combination;
     } else if (round === 225) {
-      return GameState.tie;
+      return GameEnding.Tie;
     } else {
-      return GameState.running;
+      return GameEnding.None;
     }
   }
 
-  endGame(winCondition: WinCondition, isTie: boolean, roomID: string): void {
+  saveGame(game: AnyGame): void {
+    //TODO implement saving logic
+    console.log('Saving game logic => TODO');
+  }
+
+  endGame(
+    gameEnding: GameEnding,
+    roomID: string,
+    winnerSocketID?: string,
+  ): void {
     const game = this.findGame(roomID);
-    game.setGameState(isTie ? GameState.tie : GameState.win);
-    game.winCondition = winCondition;
+    if (game) {
+      game.setGameState(GameState.Ended);
+      game.setGameEnding(gameEnding);
+      if (gameEnding !== GameEnding.Tie) {
+        if (winnerSocketID) {
+          game.setWinner(winnerSocketID);
+        } else {
+          throw 'None WinnerSocketID given';
+        }
+      }
+      this.saveGame(game);
+    }
+  }
+
+  // FIXME only works on two players
+  endGameDisconnect(disconnecteeID: string, roomID: string) {
+    const game = this.findGame(roomID);
+    if (game) {
+      game.setGameState(GameState.Ended);
+      game.setGameEnding(GameEnding.Disconnect);
+      game.setWinner(game.getOtherPlayersIDByFirstOnes(disconnecteeID));
+      this.saveGame(game);
+    }
   }
 
   addPlayer(
@@ -237,9 +273,11 @@ export class GameService {
   ): void {
     const player: Player = { socketID, username, logged };
     const game = this.findGame(roomID);
-
-    if (!game.isFull()) game.addPlayer(player);
-    if (game.isFull() && !game.isRunning()) this.startGame(roomID);
+    if (game) {
+      if (!game.isFull()) game.addPlayer(player);
+      if (game.isFull() && !game.isRunning()) this.startGame(roomID);
+      console.log(game.isRunning());
+    }
   }
 
   removePlayer(roomID: string, socketID: string): void {

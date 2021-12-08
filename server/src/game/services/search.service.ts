@@ -4,6 +4,10 @@ import { Injectable } from '@nestjs/common';
 export class SearchService {
   quickSearchQueue: number[] = [];
 
+  printQueue(): void {
+    console.log(this.quickSearchQueue);
+  }
+
   joinQuickQueue(socketID: number) {
     this.quickSearchQueue.push(socketID);
   }

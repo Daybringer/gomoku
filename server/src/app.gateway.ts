@@ -6,13 +6,12 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { GameState, WinCondition } from './game/game.class';
+import { GameState, GameEnding } from './game/game.class';
 import { GameService } from './game/services/game.service';
 import { SearchService } from './game/services/search.service';
 
 // DTOs
-import { GameClickDTO } from 'gomoku-shared-types/';
-// TODO impolement somehow DTOs -> problem with shared code
+import { GameClickDTO, GameEvents, SearchEvents } from 'gomoku-shared-types/';
 
 // SEARCH
 @WebSocketGateway({ namespace: '/search/quick' })
@@ -33,8 +32,8 @@ export class QuickSearchGateway
     if (matchedPlayers !== null) {
       const { roomID } = this.gameService.generateQuickGameRoom();
 
-      this.server.to(matchedPlayers[0]).emit('gameCreated', roomID);
-      this.server.to(matchedPlayers[1]).emit('gameCreated', roomID);
+      this.server.to(matchedPlayers[0]).emit(SearchEvents.GameCreated, roomID);
+      this.server.to(matchedPlayers[1]).emit(SearchEvents.GameCreated, roomID);
     }
   }
 
@@ -51,16 +50,18 @@ export class GameGateway implements OnGatewayDisconnect {
   @WebSocketServer() server: Server;
 
   handleDisconnect(client: Socket) {
-    // I assume that findGameBySocketID always returns a game
-    const game = this.gameService.findGameBySocketID(client.id);
-    if (game.isRunning()) {
-      console.log('Game is running and somebody left the game');
-    } else {
-      console.log('Game is over and somebody left the game');
+    const { game, roomID } = this.gameService.findGameBySocketID(client.id);
+    if (game) {
+      if (game.isRunning()) {
+        this.gameService.endGameDisconnect(client.id, roomID);
+        this.server
+          .to(roomID)
+          .emit(GameEvents.GameEndedByDisconnect, client.id);
+      }
     }
   }
 
-  @SubscribeMessage('joinGame')
+  @SubscribeMessage(GameEvents.JoinGame)
   handleMessage(
     client: Socket,
     clientData: { roomID: string; logged: boolean; username: string },
@@ -71,18 +72,18 @@ export class GameGateway implements OnGatewayDisconnect {
       // Adds a players and starts game if the room is full
       this.gameService.addPlayer(roomID, client.id, logged, username);
       // Subscribing socket to socketIO room
-      client.join(`${roomID}`);
+      client.join(roomID);
 
       if (this.gameService.isRunning(roomID)) {
         const gameInfo = this.gameService.getGameInfo(roomID);
-        this.server.to(`${roomID}`).emit('gameStarted', gameInfo);
+        this.server.to(roomID).emit(GameEvents.GameStarted, gameInfo);
       }
     } else {
-      client.emit('invalidRoomID');
+      client.emit(GameEvents.InvalidRoomID);
     }
   }
 
-  @SubscribeMessage('gameClick')
+  @SubscribeMessage(GameEvents.GameClick)
   hangleGameClick(client: Socket, clientData: GameClickDTO): void {
     const { roomID, position } = clientData;
     if (this.gameService.isPlayersTurn(client.id, roomID)) {
@@ -106,22 +107,23 @@ export class GameGateway implements OnGatewayDisconnect {
           },
         };
 
-        this.server.to(`${roomID}`).emit('stonePlaced', turnData);
+        this.server.to(roomID).emit(GameEvents.StonePlaced, turnData);
 
         this.gameService.iterateRound(roomID);
 
         const currGameState = this.gameService.checkWin(position, roomID);
 
-        if (currGameState === GameState.win) {
-          this.gameService.endGame(WinCondition.combination, false, roomID);
+        if (currGameState === GameEnding.Combination) {
+          const winner = this.gameService.playerOnTurn(roomID);
+          this.gameService.endGame(currGameState, roomID, winner.socketID);
           this.server
-            .to(`${roomID}`)
-            .emit('gameEnded', this.gameService.playerOnTurn(roomID).socketID);
-        } // else if(currGameState === GameState.tie){
-
-        // }
+            .to(roomID)
+            .emit(GameEvents.GameEndedByCombination, winner.socketID);
+        } else if (currGameState === GameEnding.Tie) {
+          this.gameService.endGame(currGameState, roomID);
+          this.server.to(roomID).emit(GameEvents.GameEndedByTie);
+        }
       } catch (error) {
-        console.log(error);
         client.emit(error);
       }
     } else {

@@ -74,6 +74,12 @@
               >
                 {{ isGameEndingVictory ? "Victory!" : "Defeat!" }}
               </h1>
+              <h3
+                v-show="isGameEndindVictoryByDisconnect"
+                class="w-full text-center text-gray-800 text-2xl"
+              >
+                Opponent has disconnected
+              </h3>
               <router-link
                 to="q/search"
                 class="w-full mt-2 xl:mt-8 py-2 text-center rounded-lg text-gray-50 font-medium text-lg bg-gomoku-blue hover:bg-gomoku-blue-dark focus:bg-gomoku-blue-dark"
@@ -302,6 +308,9 @@ export default defineComponent({
         this.gameEnding === Ending.VictoryTimeout ||
         this.gameEnding === Ending.VictoryDisconnect
       );
+    },
+    isGameEndindVictoryByDisconnect(): boolean {
+      return this.gameEnding === Ending.VictoryDisconnect;
     },
   },
   watch: {

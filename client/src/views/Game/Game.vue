@@ -13,17 +13,17 @@
     :enemyNickname="opponent.nickname"
     :messages="messages"
     @gameClick="gameClick"
-  ></GameBase>
+  />
 </template>
 <script lang="ts">
 // Types
 import { GameState, Ending } from "@/types";
 // Backend-frontend shared types
-import { position, GameClickDTO, GameEvents } from "@/shared/types";
+import { position, GameClickDTO, GameEvents, GameType } from "@/shared/types";
 
 // SocketIO
 import io from "socket.io-client";
-const socket = io("/game/quick", { port: "3001" });
+let socket: any;
 // Components
 import GameBase from "@/components/GameBase.vue";
 // Pinia
@@ -90,6 +90,7 @@ export default defineComponent({
     },
   },
   mounted() {
+    socket = io("/game/quick", { port: "3001" });
     // initalizing Pinia store
     const store = useStore();
 
@@ -99,7 +100,7 @@ export default defineComponent({
     this.me.color = userProfile.myColor;
     this.opponent.color = userProfile.enemyColor;
 
-    if (this.getGameTypeFromURL === "quick") {
+    if (this.getGameTypeFromURL === GameType.Quick) {
       socket.emit(GameEvents.JoinGame, {
         roomID: this.getRoomIDFromURL,
         logged: this.me.nickname ? true : false,
@@ -116,12 +117,14 @@ export default defineComponent({
     });
 
     // Game has begun
-    socket.on("gameStarted", (gameInfo) => {
+    socket.on(GameEvents.GameStarted, (gameInfo) => {
       this.gameState = GameState.Coinflip;
       this.me.time = this.opponent.time = gameInfo.timeLimitInSeconds;
       setTimeout(() => {
-        this.gameState = GameState.Running;
-        this.intervalHandle = this.startCountdown(this.amIStartingPlayer);
+        if (this.gameState === GameState.Waiting) {
+          this.gameState = GameState.Running;
+          this.intervalHandle = this.startCountdown(this.amIStartingPlayer);
+        }
       }, 4200);
 
       this.amIStartingPlayer = socket.id === gameInfo.startingPlayer.socketID;
@@ -148,7 +151,6 @@ export default defineComponent({
 
     // Different game endings
 
-    //smth disconnect
     socket.on(GameEvents.GameEndedByDisconnect, (socketID: string) => {
       // I have been disconnected
       if (socket.id === socketID) {
@@ -161,7 +163,6 @@ export default defineComponent({
       }
     });
 
-    // gameEnded
     socket.on(GameEvents.GameEndedByCombination, (socketID: string) => {
       this.gameState = GameState.Ended;
       this.gameEnding =
@@ -173,11 +174,6 @@ export default defineComponent({
     socket.on(GameEvents.GameEndedByTimeout, (socketID: string) => {
       console.log(socketID);
     });
-
-    // TODO refactor ending events to these
-    // socket.on("gameEndedByDisconnect", () => {});
-    // socket.on("gameEndedByCombination", () => {});
-    // socket.on("gameEndedByTimeout", () => {});
   },
   computed: {
     getURLParams() {

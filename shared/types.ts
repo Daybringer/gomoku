@@ -14,6 +14,7 @@ enum GameEvents {
   GameEndedByDisconnect = "gameEndedByDisconnect",
   GameEndedByCombination = "gameEndedByCombination",
   GameEndedByTimeout = "gameEndedByTimout",
+  GameEndedByTie = "gameEndedByTie",
 }
 
 enum GameType {
@@ -22,11 +23,13 @@ enum GameType {
   Custom = "custom",
 }
 
-enum SearchEvents {}
+enum SearchEvents {
+  GameCreated = "gameCreated",
+}
 
 // interface SocketEvents {
 //   GameEvents: GameEvents;
 //   SearchEvents: SearchEvents;
 // }
 
-export { position, GameClickDTO, GameEvents, GameType };
+export { position, GameClickDTO, GameEvents, SearchEvents, GameType };
