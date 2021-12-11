@@ -121,7 +121,7 @@ export default defineComponent({
       this.gameState = GameState.Coinflip;
       this.me.time = this.opponent.time = gameInfo.timeLimitInSeconds;
       setTimeout(() => {
-        if (this.gameState === GameState.Waiting) {
+        if (this.gameState === GameState.Coinflip) {
           this.gameState = GameState.Running;
           this.intervalHandle = this.startCountdown(this.amIStartingPlayer);
         }
@@ -172,7 +172,15 @@ export default defineComponent({
     });
 
     socket.on(GameEvents.GameEndedByTimeout, (socketID: string) => {
-      console.log(socketID);
+      // I have timed out
+      if (socket.id === socketID) {
+        this.gameState = GameState.Ended;
+        this.gameEnding = Ending.DefeatTimeout;
+        // Enemy has timed out
+      } else {
+        this.gameState = GameState.Ended;
+        this.gameEnding = Ending.VictoryTimeout;
+      }
     });
   },
   computed: {

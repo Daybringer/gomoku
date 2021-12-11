@@ -45,7 +45,7 @@ abstract class Game {
   gameState: GameState = GameState.Waiting;
   gameEnding: GameEnding;
   lastCalibrationTimestamp: number;
-  timeoutHandleID: number;
+  timeoutHandleID: NodeJS.Timeout;
 
   addPlayer(player: Player): void {
     if (this.isWaiting())
@@ -71,6 +71,12 @@ abstract class Game {
 
   getPlayerOnTurn(): Player {
     return this.round % 2 == 0
+      ? this.startingPlayer
+      : this.players[Math.abs(this.players.indexOf(this.startingPlayer) - 1)];
+  }
+
+  getNextPlayerOnTurn(): Player {
+    return this.round % 2 == 1
       ? this.startingPlayer
       : this.players[Math.abs(this.players.indexOf(this.startingPlayer) - 1)];
   }

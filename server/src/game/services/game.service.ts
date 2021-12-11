@@ -118,15 +118,20 @@ export class GameService {
     }
   }
 
-  saveTimeoutHandle(roomID: string, saveTimeoutHandle: number): void {
+  saveTimeoutHandle(roomID: string, saveTimeoutHandle: NodeJS.Timeout): void {
     const game = this.findGame(roomID);
     game.timeoutHandleID = saveTimeoutHandle;
   }
 
-  getTimeoutHandle(roomID: string): number {
+  getTimeoutHandle(roomID: string): NodeJS.Timeout {
     return this.findGame(roomID).timeoutHandleID;
   }
 
+  /**
+   * Saves current timestamp and returns rest seconds of next player's time
+   * @param roomID string
+   * @returns number of rest eeconds
+   */
   switchTime(roomID: string): number {
     const game = this.findGame(roomID);
     if (game) {
@@ -137,7 +142,8 @@ export class GameService {
       );
 
       game.lastCalibrationTimestamp = timeNow;
-      return Math.floor(timeNow / 1000);
+      console.log(game.getNextPlayerOnTurn().secondsLeft);
+      return game.getNextPlayerOnTurn().secondsLeft;
     }
   }
 

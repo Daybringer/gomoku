@@ -92,10 +92,18 @@ export class GameGateway implements OnGatewayDisconnect {
 
         clearTimeout(this.gameService.getTimeoutHandle(roomID));
 
-        setTimeout(() => {
-          // TODO implement time out scenario
-          // this.server.to(`${roomID}`).emit('gameEnded')
-        }, this.gameService.switchTime(roomID));
+        this.gameService.saveTimeoutHandle(
+          roomID,
+          setTimeout(() => {
+            this.server
+              .to(`${roomID}`)
+              .emit(
+                GameEvents.GameEndedByTimeout,
+                this.gameService.findGame(roomID).getNextPlayerOnTurn()
+                  .socketID,
+              );
+          }, this.gameService.switchTime(roomID) * 1000),
+        );
 
         const playerOnTurn = this.gameService.playerOnTurn(roomID);
 
