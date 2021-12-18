@@ -11,7 +11,12 @@ import { GameService } from './game/services/game.service';
 import { SearchService } from './game/services/search.service';
 
 // DTOs
-import { GameClickDTO, GameEvents, SearchEvents } from 'gomoku-shared-types/';
+import {
+  GameClickDTO,
+  GameEvents,
+  JoinGameDTO,
+  SearchEvents,
+} from 'gomoku-shared-types/';
 
 // SEARCH
 @WebSocketGateway({ namespace: '/search/quick' })
@@ -53,7 +58,7 @@ export class GameGateway implements OnGatewayDisconnect {
     const { game, roomID } = this.gameService.findGameBySocketID(client.id);
     if (game) {
       if (game.isRunning()) {
-        this.gameService.endGameDisconnect(client.id, roomID);
+        this.gameService.endGameDisconnect(game, client.id);
         this.server
           .to(roomID)
           .emit(GameEvents.GameEndedByDisconnect, client.id);
@@ -62,80 +67,12 @@ export class GameGateway implements OnGatewayDisconnect {
   }
 
   @SubscribeMessage(GameEvents.JoinGame)
-  handleMessage(
-    client: Socket,
-    clientData: { roomID: string; logged: boolean; username: string },
-  ): void {
-    const { roomID, logged, username } = clientData;
-
-    if (this.gameService.roomExists(roomID)) {
-      // Adds a players and starts game if the room is full
-      this.gameService.addPlayer(roomID, client.id, logged, username);
-      // Subscribing socket to socketIO room
-      client.join(roomID);
-
-      if (this.gameService.isRunning(roomID)) {
-        const gameInfo = this.gameService.getGameInfo(roomID);
-        this.server.to(roomID).emit(GameEvents.GameStarted, gameInfo);
-      }
-    } else {
-      client.emit(GameEvents.InvalidRoomID);
-    }
+  handleJoinGame(client: Socket, joinGameDTO: JoinGameDTO): void {
+    this.gameService.handleJoinGame(this.server, client, joinGameDTO);
   }
 
   @SubscribeMessage(GameEvents.GameClick)
-  hangleGameClick(client: Socket, clientData: GameClickDTO): void {
-    const { roomID, position } = clientData;
-    if (this.gameService.isPlayersTurn(client.id, roomID)) {
-      try {
-        this.gameService.placeStone(position, client.id, roomID);
-
-        clearTimeout(this.gameService.getTimeoutHandle(roomID));
-
-        this.gameService.saveTimeoutHandle(
-          roomID,
-          setTimeout(() => {
-            this.server
-              .to(`${roomID}`)
-              .emit(
-                GameEvents.GameEndedByTimeout,
-                this.gameService.findGame(roomID).getNextPlayerOnTurn()
-                  .socketID,
-              );
-          }, this.gameService.switchTime(roomID) * 1000),
-        );
-
-        const playerOnTurn = this.gameService.playerOnTurn(roomID);
-
-        const turnData = {
-          position,
-          updatedPlayerTime: {
-            socketID: playerOnTurn.socketID,
-            time: playerOnTurn.secondsLeft,
-          },
-        };
-
-        this.server.to(roomID).emit(GameEvents.StonePlaced, turnData);
-
-        this.gameService.iterateRound(roomID);
-
-        const currGameState = this.gameService.checkWin(position, roomID);
-
-        if (currGameState === GameEnding.Combination) {
-          const winner = this.gameService.playerOnTurn(roomID);
-          this.gameService.endGame(currGameState, roomID, winner.socketID);
-          this.server
-            .to(roomID)
-            .emit(GameEvents.GameEndedByCombination, winner.socketID);
-        } else if (currGameState === GameEnding.Tie) {
-          this.gameService.endGame(currGameState, roomID);
-          this.server.to(roomID).emit(GameEvents.GameEndedByTie);
-        }
-      } catch (error) {
-        client.emit(error);
-      }
-    } else {
-      client.emit('notPlayersTurn');
-    }
+  hangleGameClick(client: Socket, gameClickDTO: GameClickDTO): void {
+    this.gameService.handleGameClick(this.server, client, gameClickDTO);
   }
 }

@@ -29,6 +29,8 @@ interface Player {
   username: string;
   logged: boolean;
   secondsLeft?: number;
+  // in ms
+  timeLeft?: number;
 }
 
 abstract class Game {
@@ -46,6 +48,7 @@ abstract class Game {
   gameEnding: GameEnding;
   lastCalibrationTimestamp: number;
   timeoutHandleID: NodeJS.Timeout;
+  calibrationIntervalHandle: NodeJS.Timer;
 
   addPlayer(player: Player): void {
     if (this.isWaiting())
@@ -56,7 +59,7 @@ abstract class Game {
             throw 'Are you a schizophrenic?';
           }
         }
-        player.secondsLeft = this.timeLimitInSeconds;
+        player.timeLeft = this.timeLimitInSeconds * 1000;
         this.players.push(player);
       } else {
         throw 'Game is already full';

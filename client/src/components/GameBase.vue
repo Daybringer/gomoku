@@ -10,7 +10,7 @@
       <!-- Game container -->
       <div
         ref="gameContainer"
-        class="dark:bg-gray-300 w-0 grid-template-15 relative"
+        class="dark:bg-gray-700 w-0 grid-template-15 relative"
       >
         <!-- Cell grid -->
         <div

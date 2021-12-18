@@ -18,6 +18,7 @@
 <script lang="ts">
 // Types
 import { GameState, Ending } from "@/types";
+import { COIN_SPIN_DURATION } from "@/shared/constants";
 // Backend-frontend shared types
 import { position, GameClickDTO, GameEvents, GameType } from "@/shared/types";
 
@@ -57,7 +58,6 @@ export default defineComponent({
         { author: "me", text: "I'm testing too" },
       ],
       boardSize: 15,
-      intervalHandle: 0,
     };
   },
   methods: {
@@ -70,23 +70,6 @@ export default defineComponent({
         position: position,
       };
       socket.emit(GameEvents.GameClick, gameClickDTO);
-    },
-
-    /**
-     * Switches countdown to my or opponent's time
-     * @param {boolean} me - True if I am playing; False if an opponent is
-     * @returns {number} - interval's ID
-     */
-    startCountdown(me: boolean): number {
-      if (me) {
-        return setInterval(() => {
-          this.me.time = this.me.time - 1;
-        }, 1000);
-      } else {
-        return setInterval(() => {
-          this.opponent.time = this.opponent.time - 1;
-        }, 1000);
-      }
     },
   },
   mounted() {
@@ -123,29 +106,43 @@ export default defineComponent({
       setTimeout(() => {
         if (this.gameState === GameState.Coinflip) {
           this.gameState = GameState.Running;
-          this.intervalHandle = this.startCountdown(this.amIStartingPlayer);
         }
-      }, 4200);
+      }, COIN_SPIN_DURATION - 200);
 
       this.amIStartingPlayer = socket.id === gameInfo.startingPlayer.socketID;
       this.me.nickname = "This is me";
       this.opponent.nickname = "This is enemy";
     });
 
+    socket.on(
+      GameEvents.TimeCalibration,
+      (socketTimeDict: Record<string, number>) => {
+        for (const socketID in socketTimeDict) {
+          //FIXME this scenario only works with exactly two socket IDs in the dict
+          // socketID is mine
+          if (socketID == socket.id) {
+            this.me.time = socketTimeDict[socketID];
+          } else {
+            this.opponent.time = socketTimeDict[socketID];
+          }
+        }
+      }
+    );
+
     // Player made a move
-    socket.on("stonePlaced", (data) => {
-      const { position, updatedPlayerTime } = data;
+    socket.on(GameEvents.StonePlaced, (data) => {
+      const { position, times } = data;
 
       this.round++;
       this.lastPositionID = position[1] * this.boardSize + position[0];
-      clearInterval(this.intervalHandle);
-
-      if (updatedPlayerTime.socketID == socket.id) {
-        this.me.time = updatedPlayerTime.time;
-        this.intervalHandle = this.startCountdown(false);
-      } else {
-        this.opponent.time = updatedPlayerTime.time;
-        this.intervalHandle = this.startCountdown(true);
+      for (const socketID in times) {
+        //FIXME this scenario only works with exactly two socket IDs in the dict
+        // socketID is mine
+        if (socketID == socket.id) {
+          this.me.time = times[socketID];
+        } else {
+          this.opponent.time = times[socketID];
+        }
       }
     });
 

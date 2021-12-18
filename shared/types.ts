@@ -5,6 +5,12 @@ interface GameClickDTO {
   position: position;
 }
 
+interface JoinGameDTO {
+  roomID: string;
+  logged: boolean;
+  username: string;
+}
+
 enum GameEvents {
   JoinGame = "joinGame",
   InvalidRoomID = "invalidRoomID",
@@ -15,6 +21,7 @@ enum GameEvents {
   GameEndedByCombination = "gameEndedByCombination",
   GameEndedByTimeout = "gameEndedByTimout",
   GameEndedByTie = "gameEndedByTie",
+  TimeCalibration = "timeCalibration",
 }
 
 enum GameType {
@@ -32,4 +39,11 @@ enum SearchEvents {
 //   SearchEvents: SearchEvents;
 // }
 
-export { position, GameClickDTO, GameEvents, SearchEvents, GameType };
+export {
+  position,
+  GameClickDTO,
+  GameEvents,
+  SearchEvents,
+  GameType,
+  JoinGameDTO,
+};

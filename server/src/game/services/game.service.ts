@@ -1,5 +1,11 @@
 import { Injectable } from '@nestjs/common';
-
+import {
+  JoinGameDTO,
+  GameEvents,
+  SearchEvents,
+  GameClickDTO,
+} from 'gomoku-shared-types/';
+import { Server, Socket } from 'socket.io';
 import {
   AnyGame,
   GameState,
@@ -47,6 +53,130 @@ export class GameService {
     console.log(this.quickGameRooms);
   }
 
+  calibrateTimesAcrossClients(
+    socketServer: Server,
+    socketRoomID: string,
+    socketTimeDict: Record<string, number>,
+  ) {
+    socketServer
+      .to(`${socketRoomID}`)
+      .emit(GameEvents.TimeCalibration, socketTimeDict);
+  }
+
+  calibrateTime(socketServer: Server, roomID: string, game: AnyGame) {
+    // deducting one secund from currentPlayer
+    game.getPlayerOnTurn().timeLeft -= 1000;
+
+    const playerTimes = this.getPlayerTimes(game);
+
+    this.calibrateTimesAcrossClients(socketServer, roomID, playerTimes);
+
+    for (const playerSocketID in playerTimes) {
+      if (playerTimes[playerSocketID] <= 0) {
+        this.endGame(
+          game,
+          GameEnding.Timeout,
+          game.getNextPlayerOnTurn().socketID,
+        );
+        socketServer
+          .to(`${roomID}`)
+          .emit(GameEvents.GameEndedByTimeout, playerSocketID);
+      }
+    }
+  }
+
+  getPlayerTimes(game: AnyGame): Record<string, number> {
+    const socketTimeDict = {};
+    game.players.forEach((player) => {
+      socketTimeDict[player.socketID] = player.timeLeft;
+    });
+    return socketTimeDict;
+  }
+
+  handleJoinGame(socketServer: Server, client: Socket, joinGame: JoinGameDTO) {
+    const { roomID, logged, username } = joinGame;
+    const game = this.findGame(roomID);
+
+    if (!game) {
+      client.emit(GameEvents.InvalidRoomID);
+    } else {
+      // Adds a players and starts game if the room is full
+      this.addPlayer(roomID, client.id, logged, username);
+
+      // FIXME might separate logic from addPlayer into
+      // something like addPlayer, checkStartConditions, startGame
+
+      // Subscribing socket to socketIO room
+      client.join(roomID);
+
+      if (this.isRunning(roomID)) {
+        const gameInfo = this.getGameInfo(roomID);
+        socketServer.to(roomID).emit(GameEvents.GameStarted, gameInfo);
+
+        // Delaying the 1s interval for calibration by the time the coin
+        // is spinning on client
+        setTimeout(() => {
+          // set the minute timer
+          if (this.findGame(roomID).isRunning) {
+            game.calibrationIntervalHandle = setInterval(() => {
+              this.calibrateTime(socketServer, roomID, game);
+            }, 1000);
+          }
+        }, 4200);
+      }
+    }
+  }
+
+  handleGameClick(
+    socketServer: Server,
+    client: Socket,
+    gameClickDTO: GameClickDTO,
+  ) {
+    const { roomID, position } = gameClickDTO;
+    const game = this.findGame(roomID);
+    if (!game) return;
+
+    if (this.isPlayersTurn(game, client.id)) {
+      try {
+        this.placeStone(game, position, client.id);
+
+        clearInterval(game.calibrationIntervalHandle);
+
+        const playerOnTurn = game.getPlayerOnTurn();
+
+        const turnData = {
+          position,
+          times: this.getPlayerTimes(game),
+        };
+
+        socketServer.to(roomID).emit(GameEvents.StonePlaced, turnData);
+
+        game.iterateRound();
+
+        const currGameState = this.checkWin(game, position);
+
+        if (currGameState === GameEnding.Combination) {
+          const winner = game.getPlayerOnTurn();
+          this.endGame(game, currGameState, winner.socketID);
+          socketServer
+            .to(roomID)
+            .emit(GameEvents.GameEndedByCombination, winner.socketID);
+        } else if (currGameState === GameEnding.Tie) {
+          this.endGame(game, currGameState);
+          socketServer.to(roomID).emit(GameEvents.GameEndedByTie);
+        } else {
+          game.calibrationIntervalHandle = setInterval(() => {
+            this.calibrateTime(socketServer, roomID, game);
+          }, 1000);
+        }
+      } catch (error) {
+        client.emit(error);
+      }
+    } else {
+      client.emit('notPlayersTurn');
+    }
+  }
+
   generateQuickGameRoom(): { game: AnyGame; roomID: string } {
     const roomID = this.generateRoomID(...this.gameRooms);
     const newQuickGameRoom = new QuickGame();
@@ -75,11 +205,8 @@ export class GameService {
     return game;
   }
 
-  isPlayersTurn(socketID: string, roomID: string): boolean {
-    const game = this.findGame(roomID);
-    if (game) {
-      return game.getPlayerOnTurn().socketID === socketID;
-    }
+  isPlayersTurn(game: AnyGame, socketID: string): boolean {
+    return game.getPlayerOnTurn().socketID === socketID;
   }
 
   findGameBySocketID(socketID: string): { game: AnyGame; roomID: string } {
@@ -100,20 +227,17 @@ export class GameService {
   }
 
   placeStone(
+    game: AnyGame,
     position: [number, number],
     socketID: string,
-    roomID: string,
   ): void {
-    const game = this.findGame(roomID);
-    if (game) {
-      if (game.isRunning()) {
-        if (game.gameboard[position[0]][position[1]] === 0) {
-          game.gameboard[position[0]][position[1]] =
-            game.startingPlayer.socketID === socketID ? 1 : 2;
-          game.saveTurn(position);
-        } else {
-          throw 'TakenPosition';
-        }
+    if (game.isRunning()) {
+      if (game.gameboard[position[0]][position[1]] === 0) {
+        game.gameboard[position[0]][position[1]] =
+          game.startingPlayer.socketID === socketID ? 1 : 2;
+        game.saveTurn(position);
+      } else {
+        throw 'TakenPosition';
       }
     }
   }
@@ -121,6 +245,16 @@ export class GameService {
   saveTimeoutHandle(roomID: string, saveTimeoutHandle: NodeJS.Timeout): void {
     const game = this.findGame(roomID);
     game.timeoutHandleID = saveTimeoutHandle;
+  }
+
+  setCalibrationHandle(roomID: string, handle: NodeJS.Timer) {
+    const game = this.findGame(roomID);
+    game.calibrationIntervalHandle = handle;
+  }
+
+  getCalibrationHandle(roomID: string, handle: NodeJS.Timer) {
+    const game = this.findGame(roomID);
+    return game.calibrationIntervalHandle;
   }
 
   getTimeoutHandle(roomID: string): NodeJS.Timeout {
@@ -180,8 +314,7 @@ export class GameService {
     }
   }
 
-  checkWin(position: number[], roomID: string): GameEnding {
-    const game = this.findGame(roomID);
+  checkWin(game: AnyGame, position: number[]): GameEnding {
     const round = game.round;
     const gamePlan = game.gameboard;
 
@@ -241,34 +374,30 @@ export class GameService {
   }
 
   endGame(
+    game: AnyGame,
     gameEnding: GameEnding,
-    roomID: string,
     winnerSocketID?: string,
   ): void {
-    const game = this.findGame(roomID);
-    if (game) {
-      game.setGameState(GameState.Ended);
-      game.setGameEnding(gameEnding);
-      if (gameEnding !== GameEnding.Tie) {
-        if (winnerSocketID) {
-          game.setWinner(winnerSocketID);
-        } else {
-          throw 'None WinnerSocketID given';
-        }
+    clearInterval(game.calibrationIntervalHandle);
+    game.setGameState(GameState.Ended);
+    game.setGameEnding(gameEnding);
+    if (gameEnding !== GameEnding.Tie) {
+      if (winnerSocketID) {
+        game.setWinner(winnerSocketID);
+      } else {
+        throw 'None WinnerSocketID given';
       }
       this.saveGame(game);
     }
   }
 
   // FIXME only works on two players
-  endGameDisconnect(disconnecteeID: string, roomID: string) {
-    const game = this.findGame(roomID);
-    if (game) {
-      game.setGameState(GameState.Ended);
-      game.setGameEnding(GameEnding.Disconnect);
-      game.setWinner(game.getOtherPlayersIDByFirstOnes(disconnecteeID));
-      this.saveGame(game);
-    }
+  endGameDisconnect(game: AnyGame, disconnecteeID: string) {
+    clearInterval(game.calibrationIntervalHandle);
+    game.setGameState(GameState.Ended);
+    game.setGameEnding(GameEnding.Disconnect);
+    game.setWinner(game.getOtherPlayersIDByFirstOnes(disconnecteeID));
+    this.saveGame(game);
   }
 
   addPlayer(
@@ -283,14 +412,6 @@ export class GameService {
       if (!game.isFull()) game.addPlayer(player);
       if (game.isFull() && !game.isRunning()) this.startGame(roomID);
       console.log(game.isRunning());
-    }
-  }
-
-  removePlayer(roomID: string, socketID: string): void {
-    if (roomID) {
-      // TODO
-    } else {
-      // TODO
     }
   }
 }
