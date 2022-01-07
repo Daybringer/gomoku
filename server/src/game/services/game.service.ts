@@ -177,6 +177,11 @@ export class GameService {
     }
   }
 
+  handleSendMessage(socketServer: Server, client: Socket, message: string) {
+    const game = this.findGameBySocketID(client.id);
+    client.to(game.roomID).emit(GameEvents.RecieveMessage, message);
+  }
+
   generateQuickGameRoom(): { game: AnyGame; roomID: string } {
     const roomID = this.generateRoomID(...this.gameRooms);
     const newQuickGameRoom = new QuickGame();

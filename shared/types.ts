@@ -22,6 +22,8 @@ enum GameEvents {
   GameEndedByTimeout = "gameEndedByTimout",
   GameEndedByTie = "gameEndedByTie",
   TimeCalibration = "timeCalibration",
+  SendMessage = "sendMessage",
+  RecieveMessage = "recieveMessage",
 }
 
 enum GameType {

@@ -330,6 +330,22 @@ export default defineComponent({
         endingSFX.play();
       }
     },
+    messages: {
+      handler() {
+        const messageSFX = new Howl({
+          src: [`sounds/message.mp3`],
+          volume: 1.5,
+        });
+        messageSFX.play();
+        const chatContainer = document.getElementById(
+          "chatContainer"
+        ) as HTMLElement;
+        setTimeout(() => {
+          chatContainer.scrollTop = chatContainer.scrollHeight;
+        }, 1);
+      },
+      deep: true,
+    },
   },
   methods: {
     gameClick(id: number) {
@@ -359,22 +375,10 @@ export default defineComponent({
     sendMessage() {
       this.chatInput = this.chatInput.trim();
       if (this.chatInput) {
-        const message = { author: "me", text: this.chatInput };
-        this.addMessage(message);
+        this.$emit("sendMessage", this.chatInput);
         this.chatInput = "";
       }
     },
-    addMessage(message: { author: string; text: string }) {
-      // @ts-ignore
-      // this.messages.push(message);
-      // const chatContainer = document.getElementById(
-      //   "chatContainer"
-      // ) as HTMLElement;
-      // setTimeout(() => {
-      //   chatContainer.scrollTop = chatContainer.scrollHeight;
-      // }, 1);
-    },
-    //
     toogleMute() {
       this.muted = !this.muted;
     },

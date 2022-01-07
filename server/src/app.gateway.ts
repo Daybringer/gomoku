@@ -75,4 +75,8 @@ export class GameGateway implements OnGatewayDisconnect {
   hangleGameClick(client: Socket, gameClickDTO: GameClickDTO): void {
     this.gameService.handleGameClick(this.server, client, gameClickDTO);
   }
+  @SubscribeMessage(GameEvents.SendMessage)
+  handleSendMessage(socket: Socket, message: string): void {
+    this.gameService.handleSendMessage(this.server, socket, message);
+  }
 }

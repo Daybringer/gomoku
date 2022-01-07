@@ -102,8 +102,10 @@ export default defineComponent({
   computed: {
     humanReadableTime(this: any) {
       const time = Math.floor(this.time / 1000);
-      return `${Math.floor(time / 60)}:${
-        time % 60 == 0 ? "00" : time % 60 < 10 ? "0" + time : time % 60
+      const minutes = Math.floor(time / 60);
+      const seconds = time % 60;
+      return `${minutes}:${
+        seconds == 0 ? "00" : seconds < 10 ? "0" + seconds : seconds
       }`;
     },
   },

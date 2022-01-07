@@ -13,6 +13,7 @@
     :enemyNickname="opponent.nickname"
     :messages="messages"
     @gameClick="gameClick"
+    @sendMessage="sendMessage"
   />
 </template>
 <script lang="ts">
@@ -53,10 +54,7 @@ export default defineComponent({
       round: 0,
       gameState: GameState.Waiting,
       gameEnding: Ending.None,
-      messages: [
-        { author: "opponent", text: "I'm testing" },
-        { author: "me", text: "I'm testing too" },
-      ],
+      messages: [] as Array<Record<string, string>>,
       boardSize: 15,
     };
   },
@@ -70,6 +68,14 @@ export default defineComponent({
         position: position,
       };
       socket.emit(GameEvents.GameClick, gameClickDTO);
+    },
+    /**
+     *
+     */
+    sendMessage(message: string) {
+      const messageObj = { author: "me", text: message };
+      this.messages.push(messageObj);
+      socket.emit(GameEvents.SendMessage, message);
     },
   },
   mounted() {
@@ -128,6 +134,12 @@ export default defineComponent({
         }
       }
     );
+
+    // New message
+
+    socket.on(GameEvents.RecieveMessage, (message) => {
+      this.messages.push({ author: "opponent", text: message });
+    });
 
     // Player made a move
     socket.on(GameEvents.StonePlaced, (data) => {
