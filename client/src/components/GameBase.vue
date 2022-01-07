@@ -215,6 +215,8 @@ enum Symbol {
   Cross,
   Circle,
 }
+// Howler
+import { Howl, Howler } from "howler";
 // SVGs
 import VictoryConfettiConeSVG from "@/components/svg/VictoryConfettiCone.vue";
 import CircleOriginSVG from "@/components/svg/CircleOrigin.vue";
@@ -317,6 +319,17 @@ export default defineComponent({
     lastPositionID: function() {
       this.placeStone(this.lastPositionID!);
     },
+    gameState: function() {
+      if (this.gameState === GameState.Ended) {
+        const endingSFX = new Howl({
+          src: [
+            `sounds/${this.isGameEndingVictory ? "victory.mp3" : "defeat.mp3"}`,
+          ],
+          volume: 0.4,
+        });
+        endingSFX.play();
+      }
+    },
   },
   methods: {
     gameClick(id: number) {
@@ -337,6 +350,11 @@ export default defineComponent({
       clone.classList.add("svgCC");
 
       document.getElementById(String(id))?.appendChild(clone);
+
+      const stonePlacedSoundEffect = new Howl({
+        src: ["sounds/click1.ogg"],
+      });
+      stonePlacedSoundEffect.play();
     },
     sendMessage() {
       this.chatInput = this.chatInput.trim();

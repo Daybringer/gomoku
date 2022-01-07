@@ -135,6 +135,7 @@ export default defineComponent({
 
       this.round++;
       this.lastPositionID = position[1] * this.boardSize + position[0];
+
       for (const socketID in times) {
         //FIXME this scenario only works with exactly two socket IDs in the dict
         // socketID is mine
