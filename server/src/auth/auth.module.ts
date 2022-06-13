@@ -32,6 +32,6 @@ import { FacebookStrategy } from './strategies/facebook.strategy';
     GoogleStrategy,
     FacebookStrategy,
   ],
-  exports: [AuthService],
+  exports: [AuthService, TokensService],
 })
 export class AuthModule {}

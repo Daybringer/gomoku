@@ -12,6 +12,7 @@ import Register from "../views/Register.vue";
 import NotFound from "../views/NotFound.vue";
 import Game from "../views/Game/Game.vue";
 import Search from "../views/Game/Search.vue";
+import VerifyMailLanding from "../views/VerifyMailLanding.vue";
 // Pinia
 import { useStore } from "@/store/store";
 
@@ -57,6 +58,10 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/search",
     component: Search,
+  },
+  {
+    path: "/verify",
+    component: VerifyMailLanding,
   },
   { path: "/:pathMatch(.*)*", name: "not-found", component: NotFound },
 ];

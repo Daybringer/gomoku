@@ -10,6 +10,11 @@ export default {
   }) {
     return Repository.post(`${resource}/register`, user);
   },
+  verifyMail(verificationCode: string, username: string) {
+    return Repository.post(
+      `${resource}/verify?code=${verificationCode}&username=${username}`
+    );
+  },
   login(usernameOrEmail: string, password: string) {
     return Repository.post(`${resource}/login`, { usernameOrEmail, password });
   },
@@ -18,5 +23,5 @@ export default {
   },
   setGUsername(id_token: string, username: string) {
     return Repository.post(`${resource}/setGUsername`, { username, id_token });
-  }
+  },
 };

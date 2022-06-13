@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 
 import { UsersService } from 'src/users/users.service';
-import { UserEntity } from 'src/users/models/user.entity';
+import { LoginStrategy, UserEntity } from 'src/models/user.entity';
 // DTOs
 import { LogInDTO } from './dto/log-in.dto';
 import { SignUpDTO } from './dto/sign-up.dto';
@@ -58,15 +58,17 @@ export class AuthService {
     const { username, email, password } = signUpDTO;
 
     return this.usersService.findOneByUsername(username).then(async (user) => {
+      // User Exists
       if (user) {
-        // Error: User with same username exists
+        // Error: User exists and is verified
         if (user.verified) {
           throw new NotAcceptableException('Username is already in use');
         } else {
           if (this.usersService.isVerificationTimedOut(user)) {
-            await this.usersService.removeOneByUUID(user.UUID);
+            await this.usersService.removeOneByID(user.id);
             return this.registerLocal(signUpDTO);
           } else {
+            // Error: User exists and is not verified, but still has time to do so
             throw new NotAcceptableException('Username is already in use');
           }
         }
@@ -81,7 +83,7 @@ export class AuthService {
                 throw new NotAcceptableException('Email is already in use');
               } else {
                 if (this.usersService.isVerificationTimedOut(user)) {
-                  await this.usersService.removeOneByUUID(user.UUID);
+                  await this.usersService.removeOneByID(user.id);
                   return this.registerLocal(signUpDTO);
                 } else {
                   throw new NotAcceptableException('Email is already in use');
@@ -93,13 +95,15 @@ export class AuthService {
                 email.toLowerCase(),
                 password,
               );
-              // send verification mail
-              const verificationToken = await this.tokenService.generateVerificationToken(
-                newUser,
-              );
+              // verification token is generated while creating user with createLocal method
+              // might be better to generate here and then save it to according user?
+              // const verificationToken =
+              //   await this.tokenService.generateVerificationToken(newUser);
+
               this.mailService.sendVerificationEmail(
                 newUser.email,
-                verificationToken,
+                newUser.username,
+                newUser.mailVerificationCode,
               );
 
               return newUser;
@@ -109,32 +113,24 @@ export class AuthService {
     });
   }
 
-  async verify(token: string) {
+  async verify(code: string, username: string) {
+    console.log(code, username, 'xd');
     let user: UserEntity;
-    try {
-      const userUUID = await this.tokenService.decodeVerificationToken(token);
-      user = await this.usersService.findOneByUUID(userUUID);
-    } catch (error) {
-      console.log(error);
-      throw new NotAcceptableException('Incorrect verification code.');
-    }
+    user = await this.usersService.findOneByUsername(username);
 
-    if (user) {
-      if (!user.verified) {
-        if (this.usersService.isVerificationTimedOut(user)) {
-          await this.usersService.removeOneByUUID(user.UUID);
-          throw new NotAcceptableException(
-            'Time for verification has run out.',
-          );
-        } else {
-          await this.usersService.verifyUser(user);
-          return 'Account has been successfully verified.';
-        }
-      } else {
-        throw new NotAcceptableException('User is already verified');
-      }
-    } else {
+    if (!user)
+      throw new NotAcceptableException("User with given username doesn'exist");
+    if (user.mailVerificationCode !== code)
       throw new NotAcceptableException('Incorrect verification code.');
+    if (user.verified)
+      throw new NotAcceptableException('User is already verified');
+
+    if (this.usersService.isVerificationTimedOut(user)) {
+      await this.usersService.removeOneByID(user.id);
+      throw new NotAcceptableException('Time for verification has run out.');
+    } else {
+      await this.usersService.verifyUser(user);
+      return 'Account has been successfully verified.';
     }
   }
 
@@ -159,7 +155,7 @@ export class AuthService {
         if (!user) {
           throw new NotAcceptableException('Incorrect credentials');
         } else {
-          if (user.strategy !== 'local')
+          if (user.strategy !== LoginStrategy.LOCAL)
             throw new NotAcceptableException(
               'Email is associated with different login strategy',
             );

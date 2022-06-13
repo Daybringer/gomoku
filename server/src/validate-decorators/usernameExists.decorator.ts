@@ -6,7 +6,7 @@ import {
   ValidationArguments,
 } from 'class-validator';
 import { getRepository } from 'typeorm';
-import { UserEntity } from '../users/models/user.entity';
+import { UserEntity } from '../models/user.entity';
 
 const userRepository = getRepository(UserEntity);
 

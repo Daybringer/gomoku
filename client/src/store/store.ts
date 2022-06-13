@@ -54,6 +54,13 @@ export const useStore = defineStore({
           });
       });
     },
+    async verifyMail(verificationCode: string, username: string) {
+      return new Promise((resolve, reject) => {
+        AuthRepository.verifyMail(verificationCode, username)
+          .then((res) => resolve(res))
+          .catch((err) => reject(err.response.data.message));
+      });
+    },
     async setGUsername(username: string) {
       return new Promise((resolve, reject) => {
         AuthRepository.setGUsername(this.googleIDToken, username)

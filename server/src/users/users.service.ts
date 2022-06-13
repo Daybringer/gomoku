@@ -1,13 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SignUpDTO } from 'src/auth/dto/sign-up.dto';
+import { TokensService } from 'src/auth/token.service';
 import { Repository } from 'typeorm';
-import { UserEntity } from './models/user.entity';
+import { LoginStrategy, UserEntity } from '../models/user.entity';
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+    private readonly tokenService: TokensService,
   ) {}
 
   async createLocal(
@@ -19,8 +21,12 @@ export class UsersService {
     newUser.username = username;
     newUser.email = email;
     newUser.password = password;
-    newUser.strategy = 'local';
-    newUser.created = String(Date.now());
+    newUser.strategy = LoginStrategy.LOCAL;
+    newUser.mailVerificationCode = this.tokenService.generateRandomToken(
+      12,
+      false,
+    );
+    // newUser.createdTimestamp = String(Date.now());
     return this.userRepository.save(newUser);
   }
 
@@ -29,20 +35,22 @@ export class UsersService {
   }
 
   isVerificationTimedOut(user: UserEntity): boolean {
-    const verificationTimeSpan = 1000 * 60; // 1h
-    return Number(user.created) + verificationTimeSpan < Date.now();
+    const verificationTimeSpan = 1000 * 60 * 60; // 1h
+    return user.createdAt.getTime() + verificationTimeSpan < Date.now();
   }
 
   async verifyUser(user: UserEntity) {
-    return this.userRepository.update(user, { verified: true });
+    user.verified = true;
+    return this.userRepository.save(user);
   }
 
   async updatePassword(user: UserEntity, newPassword: string) {
+    //FIXME not how update works
     return this.userRepository.update(user, { password: newPassword });
   }
 
-  async removeOneByUUID(UUID: string) {
-    return this.userRepository.delete({ UUID });
+  async removeOneByID(id: number) {
+    return this.userRepository.delete({ id });
   }
 
   async findOneByEmail(email: string): Promise<UserEntity> {
@@ -53,8 +61,8 @@ export class UsersService {
     return this.userRepository.find();
   }
 
-  async findOneByUUID(UUID: string): Promise<UserEntity> {
-    return this.userRepository.findOne({ UUID });
+  async findOneByID(id: number): Promise<UserEntity> {
+    return this.userRepository.findOne({ id });
   }
 
   async findByEmailOrUsername(usernameOrEmail: string): Promise<UserEntity> {

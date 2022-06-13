@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   Req,
   UnauthorizedException,
   UseGuards,
@@ -14,7 +15,7 @@ import { AuthService } from './auth.service';
 import { TokensService } from './token.service';
 import { SignUpDTO } from './dto/sign-up.dto';
 import { LogInDTO } from './dto/log-in.dto';
-import { UserEntity } from 'src/users/models/user.entity';
+import { UserEntity } from 'src/models/user.entity';
 import { AuthGuard } from '@nestjs/passport';
 
 interface AuthenticationPayload {
@@ -33,6 +34,7 @@ export class AuthController {
     private tokensService: TokensService,
   ) {}
 
+  // Local
   @Post('register')
   @UsePipes(new ValidationPipe())
   async registerLocal(@Body() signUpDTO: SignUpDTO): Promise<UserEntity> {
@@ -41,9 +43,11 @@ export class AuthController {
     return user;
   }
 
-  @Post('verify/:token')
-  async verify(@Param('token') token: string) {
-    return this.authService.verify(token);
+  @Post('verify')
+  async verify(@Query() params) {
+    const verificationCode = params.code;
+    const username = params.username;
+    return await this.authService.verify(verificationCode, username);
   }
 
   @Post('login')

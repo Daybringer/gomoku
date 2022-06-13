@@ -149,7 +149,7 @@ const registerFormSchema = object().shape({
   passwordConfirm: string().oneOf(
     [ref("password"), null],
     "Passwords must match"
-  )
+  ),
 });
 
 export default defineComponent({
@@ -161,16 +161,16 @@ export default defineComponent({
         email: "",
         username: "",
         password: "",
-        passwordConfirm: ""
+        passwordConfirm: "",
       },
       errors: {
         email: "",
         username: "",
         password: "",
-        passwordConfirm: ""
+        passwordConfirm: "",
       },
       serverError: "",
-      showSuccess: false
+      showSuccess: false,
     };
   },
   methods: {
@@ -180,12 +180,16 @@ export default defineComponent({
       const store = useStore();
       store
         .register(this.user)
-        .then(res => {
+        .then((res) => {
           this.serverError = "";
           this.showSuccess = true;
+          //FIXME console.log
           // this.$router.push("/");
         })
-        .catch(err => (this.serverError = err));
+        .catch((err) => {
+          this.serverError = err;
+          console.log("Error has occured whilst registering", err);
+        });
     },
     async googleLogin() {
       const store = useStore();
@@ -207,7 +211,7 @@ export default defineComponent({
     },
     async usernameExists() {
       UsersRepository.userWithUsernameExists(this.user.username)
-        .then(res => {
+        .then((res) => {
           if (res.data) {
             this.errors.username = "Username is already taken";
           } else {
@@ -218,7 +222,7 @@ export default defineComponent({
     },
     async emailExists() {
       UsersRepository.userWithMailExists(this.user.email)
-        .then(res => {
+        .then((res) => {
           if (res.data) {
             this.errors.email = "Email is already taken";
           } else {
@@ -227,7 +231,7 @@ export default defineComponent({
         })
         .catch(() => (this.errors.email = "Server error"));
     },
-    throttledFunction: throttle(500, call => {
+    throttledFunction: throttle(500, (call) => {
       call();
     }),
     async validate(
@@ -244,7 +248,7 @@ export default defineComponent({
             this.errors[field] = "";
           }
         })
-        .catch(err => {
+        .catch((err) => {
           this.errors[field] = err.message;
         });
     },
@@ -253,10 +257,10 @@ export default defineComponent({
         this.validate("email"),
         this.validate("username"),
         this.validate("password"),
-        this.validate("passwordConfirm")
+        this.validate("passwordConfirm"),
       ]);
-    }
-  }
+    },
+  },
 });
 </script>
 

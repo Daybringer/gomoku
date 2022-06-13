@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "skipLibCheck": true,
     "module": "commonjs",
     "declaration": true,
     "removeComments": true,
@@ -13,7 +14,8 @@
     "baseUrl": "./",
     "incremental": true,
     "paths": {
-      "gomoku-shared-types/": ["src/shared/types"]
+      "gomoku-shared-types/": ["src/shared/types"],
+      "gomoku-constants/": ["src/share/constants"]
     }
   }
 }

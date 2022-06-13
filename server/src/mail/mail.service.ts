@@ -1,47 +1,52 @@
-import { Injectable } from '@nestjs/common';
-import { createTransport } from 'nodemailer';
-import * as Mail from 'nodemailer/lib/mailer';
 import { ConfigService } from '@nestjs/config';
+import { Injectable } from '@nestjs/common';
+import * as Sendgrid from '@sendgrid/mail';
 
 @Injectable()
 export class MailService {
-  private nodemailerTransport: Mail;
-
   constructor(private readonly configService: ConfigService) {
-    this.nodemailerTransport = createTransport({
-      host: configService.get('MAIL_HOST'),
-      port: configService.get('MAIL_PORT'),
-      secure: false,
-      auth: {
-        user: configService.get('MAIL_USER'),
-        pass: configService.get('MAIL_PASSWORD'),
-      },
-    });
+    Sendgrid.setApiKey(this.configService.get<string>('SEND_GRID_KEY'));
   }
 
-  sendMail(options: Mail.Options) {
-    return this.nodemailerTransport.sendMail(options);
-  }
-
-  sendVerificationEmail(email: string, verificationToken: string) {
-    const domain =
+  getLink(verificationCode: string, username: string): string {
+    const base =
       process.env.NODE_ENV === 'production'
-        ? 'https://gomoku.vanata.dev/auth/verify/'
-        : 'localhost:3000/auth/verify/';
+        ? 'https://gomoku.vanata.dev/verify'
+        : 'http://localhost:8080/verify';
 
-    const link = domain + verificationToken;
+    return `${base}?code=${verificationCode}&username=${username}`;
+  }
 
-    this.sendMail({
-      from: 'vanata.michal@gmail.com',
+  async send(mail: Sendgrid.MailDataRequired) {
+    const transport = await Sendgrid.send(mail);
+
+    return transport;
+  }
+
+  async sendDummyMail(email: string) {
+    const mail: Sendgrid.MailDataRequired = {
       to: email,
-      subject: 'Email verification',
-      text: '',
-      html: `<h1>Email verification for Gomoku app</h1>
-        <h3>Click on this link to verify the email</h3>
-        <a href="${link}">${link}</a>
-        <br>
-        If you haven't registered, it's safe to ignore this mail.
-      `,
-    });
+      subject: 'Dummy mail',
+      from: 'mail@vanata.dev',
+      text: "Hi, I'm a dummmy email.",
+      html: "<h1>Hi, I'm a dummy mail</h1><p>There is a paragraph of text</p>",
+    };
+    return await Sendgrid.send(mail);
+  }
+  async sendVerificationEmail(
+    email: string,
+    username: string,
+    verificationToken: string,
+  ) {
+    const link = this.getLink(verificationToken, username);
+    const mail: Sendgrid.MailDataRequired = {
+      to: email,
+      subject: 'Gomoku - Email Verification',
+      from: 'mail@vanata.dev',
+      text: `<h1>Email verification</h1><p>Confirm your email by visiting <br> ${link} <br> With regards Gomoku team</p>`,
+      html: `<h1>Email verification</h1><p>Confirm your email by visiting <br> ${link} <br> With regards Gomoku team</p>`,
+    };
+
+    return await this.send(mail);
   }
 }

@@ -1,4 +1,4 @@
-import { UserEntity } from 'src/users/models/user.entity';
+import { UserEntity } from 'src/models/user.entity';
 
 enum gameType {
   RANKED = 'ranked',
