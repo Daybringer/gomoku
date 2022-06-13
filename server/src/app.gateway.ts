@@ -31,8 +31,7 @@ export class QuickSearchGateway
   @WebSocketServer() server: Server;
 
   handleConnection(client: Socket, ...args: any[]) {
-    this.searchService.joinQuickQueue(Number(client.id));
-
+    this.searchService.joinQuickQueue(client.id);
     const matchedPlayers = this.searchService.tryMatchPlayersQuickQue();
     if (matchedPlayers !== null) {
       const { roomID } = this.gameService.generateQuickGameRoom();
@@ -47,7 +46,7 @@ export class QuickSearchGateway
   }
 
   handleDisconnect(client: Socket) {
-    this.searchService.leaveQuickQueue(Number(client.id));
+    this.searchService.leaveQuickQueue(client.id);
   }
 }
 
