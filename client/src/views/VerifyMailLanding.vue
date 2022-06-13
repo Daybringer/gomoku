@@ -1,17 +1,36 @@
 <template>
-  <div
-    class="min-height-screen-calc flex lg:flex-row flex-col bg-gray-100 text-gray-900 dark:text-gray-100  dark:bg-gray-700"
-  >
-    <h2>Email verification</h2>
-  </div>
+  <view-base :placeItems="'start'">
+    <div
+      class="max-w-lg w-full md:p-8 p-4  space-y-6 rounded-lg border-gray-50 bg-white dark:bg-gray-600 dark:border-transparent border-opacity-30 border-t-1 shadow-2xl border-2"
+    >
+      <bold-headline>
+        Email confirmation
+      </bold-headline>
+      <status-message
+        v-show="resolved"
+        :type="!success ? 'error' : 'success'"
+        :text="statusText"
+      ></status-message>
+    </div>
+  </view-base>
 </template>
 <script lang="ts">
 import { defineComponent } from "vue";
+import StatusMessage from "@/components/form/StatusMessage.vue";
+import BoldHeadline from "@/components/BoldHeadline.vue";
+import ViewBase from "@/components/ViewBase.vue";
 
 import { useStore } from "@/store/store";
 export default defineComponent({
   name: "VerifyMailLanding",
-  data() {},
+  data() {
+    return {
+      resolved: false,
+      success: true,
+      statusText: "",
+    };
+  },
+  components: { StatusMessage, BoldHeadline, ViewBase },
   mounted() {
     const urlParams = new URLSearchParams(window.location.search);
 
@@ -22,10 +41,15 @@ export default defineComponent({
     store
       .verifyMail(verificationCode, username)
       .then((res) => {
-        console.log("success", res);
+        this.resolved = true;
+        this.success = true;
+        this.statusText =
+          "Email has been successfully confirmed. You can now log in.";
       })
       .catch((err) => {
-        console.log(err);
+        this.resolved = true;
+        this.success = false;
+        this.statusText = err;
       });
   },
 });

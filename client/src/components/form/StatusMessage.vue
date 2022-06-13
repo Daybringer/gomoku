@@ -3,7 +3,7 @@
     class="px-4 py-2 w-full rounded-md"
     :class="type === 'error' ? 'bg-red-500' : 'bg-green-500'"
   >
-    <p class="text-white leading-6">{{ text }}</p>
+    <p class="text-white leading-6 text-lg">{{ text }}</p>
   </div>
 </template>
 
@@ -17,9 +17,9 @@ export default defineComponent({
       type: String,
       validate: (val: string) => {
         ["error", "success"].indexOf(val) !== -1;
-      }
-    }
-  }
+      },
+    },
+  },
 });
 </script>
 

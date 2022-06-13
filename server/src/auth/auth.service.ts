@@ -57,64 +57,65 @@ export class AuthService {
   async registerLocal(signUpDTO: SignUpDTO): Promise<UserEntity> {
     const { username, email, password } = signUpDTO;
 
-    return this.usersService.findOneByUsername(username).then(async (user) => {
-      // User Exists
-      if (user) {
-        // Error: User exists and is verified
-        if (user.verified) {
-          throw new NotAcceptableException('Username is already in use');
-        } else {
-          if (this.usersService.isVerificationTimedOut(user)) {
-            await this.usersService.removeOneByID(user.id);
-            return this.registerLocal(signUpDTO);
-          } else {
-            // Error: User exists and is not verified, but still has time to do so
+    return await this.usersService
+      .findOneByUsername(username)
+      .then(async (user) => {
+        // User Exists
+        if (user) {
+          // Error: User exists and is verified
+          if (user.verified) {
             throw new NotAcceptableException('Username is already in use');
-          }
-        }
-      } else {
-        return this.usersService
-          .findOneByEmail(email.toLowerCase())
-          .then(async (user) => {
-            // Error: User with same email exists
-
-            if (user) {
-              if (user.verified) {
-                throw new NotAcceptableException('Email is already in use');
-              } else {
-                if (this.usersService.isVerificationTimedOut(user)) {
-                  await this.usersService.removeOneByID(user.id);
-                  return this.registerLocal(signUpDTO);
-                } else {
-                  throw new NotAcceptableException('Email is already in use');
-                }
-              }
+          } else {
+            if (this.usersService.isVerificationTimedOut(user)) {
+              await this.usersService.removeOneByID(user.id);
+              return await this.registerLocal(signUpDTO);
             } else {
-              const newUser = await this.createUser(
-                username,
-                email.toLowerCase(),
-                password,
-              );
-              // verification token is generated while creating user with createLocal method
-              // might be better to generate here and then save it to according user?
-              // const verificationToken =
-              //   await this.tokenService.generateVerificationToken(newUser);
-
-              this.mailService.sendVerificationEmail(
-                newUser.email,
-                newUser.username,
-                newUser.mailVerificationCode,
-              );
-
-              return newUser;
+              // Error: User exists and is not verified, but still has time to do so
+              throw new NotAcceptableException('Username is already in use');
             }
-          });
-      }
-    });
+          }
+        } else {
+          return await this.usersService
+            .findOneByEmail(email.toLowerCase())
+            .then(async (user) => {
+              // Error: User with same email exists
+
+              if (user) {
+                if (user.verified) {
+                  throw new NotAcceptableException('Email is already in use');
+                } else {
+                  if (this.usersService.isVerificationTimedOut(user)) {
+                    await this.usersService.removeOneByID(user.id);
+                    return await this.registerLocal(signUpDTO);
+                  } else {
+                    throw new NotAcceptableException('Email is already in use');
+                  }
+                }
+              } else {
+                const newUser = await this.createUser(
+                  username,
+                  email.toLowerCase(),
+                  password,
+                );
+                // verification token is generated while creating user with createLocal method
+                // might be better to generate here and then save it to according user?
+                // const verificationToken =
+                //   await this.tokenService.generateVerificationToken(newUser);
+
+                this.mailService.sendVerificationEmail(
+                  newUser.email,
+                  newUser.username,
+                  newUser.mailVerificationCode,
+                );
+
+                return newUser;
+              }
+            });
+        }
+      });
   }
 
   async verify(code: string, username: string) {
-    console.log(code, username, 'xd');
     let user: UserEntity;
     user = await this.usersService.findOneByUsername(username);
 
@@ -123,7 +124,7 @@ export class AuthService {
     if (user.mailVerificationCode !== code)
       throw new NotAcceptableException('Incorrect verification code.');
     if (user.verified)
-      throw new NotAcceptableException('User is already verified');
+      throw new NotAcceptableException('User is already verified.');
 
     if (this.usersService.isVerificationTimedOut(user)) {
       await this.usersService.removeOneByID(user.id);

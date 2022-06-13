@@ -45,12 +45,12 @@ export const useStore = defineStore({
       return new Promise((resolve, reject) => {
         AuthRepository.registerUser(user)
           .then((res) => {
-            this.consumeAuthResponse(res);
             resolve("Registered");
           })
           .catch((err) => {
             this.logout();
-            reject(err.response.data.message);
+            console.log(err);
+            reject(err);
           });
       });
     },

@@ -5,11 +5,7 @@
     <div
       class="max-w-lg w-full md:p-8 p-4  space-y-8 rounded-lg border-gray-50 dark:bg-gray-600 dark:border-transparent  bg-white border-opacity-30 border-t-1 shadow-2xl border-2"
     >
-      <h2
-        class="text-center text-gray-900 dark:text-gray-200 font-extrabold text-3xl"
-      >
-        Register
-      </h2>
+      <bold-headline>Register</bold-headline>
       <hr class="dark:border-gray-500" />
       <status-message
         v-show="showSuccess"
@@ -117,6 +113,7 @@ import SubmitButton from "@/components/form/SubmitButton.vue";
 import InputBase from "@/components/form/InputBase.vue";
 import SocialSignIn from "@/components/form/SocialSignIn.vue";
 import StatusMessage from "@/components/form/StatusMessage.vue";
+import BoldHeadline from "@/components/BoldHeadline.vue";
 
 // Axios repositories
 import { RepositoryFactory } from "@/repositories/RepositoryFactory";
@@ -154,7 +151,13 @@ const registerFormSchema = object().shape({
 
 export default defineComponent({
   name: "Register",
-  components: { InputBase, SocialSignIn, SubmitButton, StatusMessage },
+  components: {
+    InputBase,
+    SocialSignIn,
+    SubmitButton,
+    StatusMessage,
+    BoldHeadline,
+  },
   data() {
     return {
       user: {
@@ -180,15 +183,13 @@ export default defineComponent({
       const store = useStore();
       store
         .register(this.user)
-        .then((res) => {
+        .then(() => {
           this.serverError = "";
           this.showSuccess = true;
-          //FIXME console.log
-          // this.$router.push("/");
         })
         .catch((err) => {
-          this.serverError = err;
-          console.log("Error has occured whilst registering", err);
+          this.serverError = "Error has occured whilst registering";
+          console.log(err);
         });
     },
     async googleLogin() {
