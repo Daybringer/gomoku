@@ -12,4 +12,7 @@ export default {
   getOwnUserProfile() {
     return Repository.get(`${resource}/profile`);
   },
+  getRandomName() {
+    return Repository.post(`${resource}/generate-name`);
+  },
 };

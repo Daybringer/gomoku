@@ -27,6 +27,11 @@ export class UsersController {
     return !!user;
   }
 
+  @Post('/generate-name')
+  generateName(): string {
+    return this.usersService.generateRandomName();
+  }
+
   @Post('/check-email')
   @UsePipes(new ValidationPipe())
   async checkEmail(@Body() req: CheckEmailDTO): Promise<boolean> {

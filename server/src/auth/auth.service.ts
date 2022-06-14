@@ -4,6 +4,9 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 
+import { OAuth2Client } from 'google-auth-library';
+import { ConfigService } from '@nestjs/config';
+
 import { UsersService } from 'src/users/users.service';
 import { LoginStrategy, UserEntity } from 'src/models/user.entity';
 // DTOs
@@ -22,6 +25,7 @@ export class AuthService {
     private readonly usersService: UsersService,
     private readonly mailService: MailService,
     private readonly tokenService: TokensService,
+    private readonly configService: ConfigService,
   ) {}
 
   async hashPassword(password: string): Promise<string> {
@@ -115,6 +119,12 @@ export class AuthService {
       });
   }
 
+  /**
+   * Verifies account from sent email verification code
+   * @param code
+   * @param username
+   * @returns
+   */
   async verify(code: string, username: string) {
     let user: UserEntity;
     user = await this.usersService.findOneByUsername(username);
@@ -144,6 +154,42 @@ export class AuthService {
       .catch((err) => {
         throw new UnauthorizedException('Invalid Credentials');
       });
+  }
+
+  async loginGoogle(id_token: string): Promise<UserEntity> {
+    const client = new OAuth2Client(this.configService.get('GOOGLE_CLIENT_ID'));
+    try {
+      const ticket = await client.verifyIdToken({ idToken: id_token });
+      const payload = ticket.getPayload();
+      const userID = ticket.getUserId();
+      const email = payload.email;
+
+      // checking if user with given mail exists
+      const user = await this.usersService.findOneByEmail(email);
+
+      // user exists FLOW
+      if (user) {
+        if (user.strategy == LoginStrategy.GOOGLE) {
+          // Login
+          return user;
+        } else {
+          // Throw unauthorized error
+          throw new UnauthorizedException(
+            'Account with same email adress is already registered and requires password to log in',
+          );
+        }
+      } else {
+        // user DOESN'T exist FLOW
+        return this.registerGoogle(email, userID);
+      }
+    } catch (error) {
+      throw error;
+    }
+    return;
+  }
+
+  async registerGoogle(email: string, userID: string): Promise<UserEntity> {
+    return;
   }
 
   async validateUser(

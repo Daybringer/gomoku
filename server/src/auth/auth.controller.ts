@@ -68,18 +68,31 @@ export class AuthController {
   async resetPassword() {}
 
   // Google
-  @Get('google')
-  @UseGuards(AuthGuard('google'))
-  async googleAuth(@Req() req) {}
+  @Post('google')
+  async googleAuth(@Body() { id_token }: { id_token: string }) {
+    const user = await this.authService.loginGoogle(id_token);
+    const token = await this.tokensService.generateAccessToken(user);
+    const { password, ...response } = user;
 
-  @Get('google/redirect')
-  @UseGuards(AuthGuard('google'))
-  googleAuthRedirect(@Req() req) {
-    if (!req.user) {
-      throw new UnauthorizedException("Google user doesn't exist");
-    }
-    return req.user;
+    const payload = this.buildResponsePayload(response, token); //,refresh
+
+    return payload;
   }
+
+  // Google
+  // FIXME zero idea what this code does now :/
+  // @Get('google')
+  // @UseGuards(AuthGuard('google'))
+  // async googleAuth(@Req() req) {}
+
+  // @Get('google/redirect')
+  // @UseGuards(AuthGuard('google'))
+  // googleAuthRedirect(@Req() req) {
+  //   if (!req.user) {
+  //     throw new UnauthorizedException("Google user doesn't exist");
+  //   }
+  //   return req.user;
+  // }
 
   // Facebook
   @Get('facebook')

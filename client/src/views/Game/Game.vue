@@ -78,21 +78,34 @@ export default defineComponent({
       socket.emit(GameEvents.SendMessage, message);
     },
   },
-  mounted() {
+  async mounted() {
     socket = io("/game/quick", { port: "3001" });
     // initalizing Pinia store
     const store = useStore();
 
     const userProfile = store.getUserProfile;
 
-    this.me.nickname = userProfile.username;
+    const logged = store.isAuthenticated;
+    // TODO not logged in, temporary solution for nicknames
+    if (!logged) {
+      await store
+        .getRandomName()
+        .then((res) => {
+          console.log("My temp nickname:", res);
+          this.me.nickname = res;
+        })
+        .catch();
+    } else {
+      this.me.nickname = userProfile.username;
+    }
+
     this.me.color = userProfile.myColor;
     this.opponent.color = userProfile.enemyColor;
 
     if (this.getGameTypeFromURL === GameType.Quick) {
       socket.emit(GameEvents.JoinGame, {
         roomID: this.getRoomIDFromURL,
-        logged: this.me.nickname ? true : false,
+        logged: logged,
         username: this.me.nickname,
       });
     } else {
@@ -116,8 +129,15 @@ export default defineComponent({
       }, COIN_SPIN_DURATION - 200);
 
       this.amIStartingPlayer = socket.id === gameInfo.startingPlayer.socketID;
-      this.me.nickname = "This is me";
-      this.opponent.nickname = "This is enemy";
+      console.log(gameInfo);
+      this.me.nickname =
+        (socket.id === gameInfo.players[0].socketID
+          ? gameInfo.players[0].username
+          : gameInfo.players[1].username) + " (You)";
+      this.opponent.nickname =
+        socket.id !== gameInfo.players[0].socketID
+          ? gameInfo.players[0].username
+          : gameInfo.players[1].username;
     });
 
     socket.on(

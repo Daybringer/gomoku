@@ -93,7 +93,7 @@
             @click="googleLogin"
             :type="'google'"
           ></social-sign-in>
-          <social-sign-in :type="'facebook'"></social-sign-in>
+          <social-sign-in :disabled="true" :type="'facebook'"></social-sign-in>
         </div>
       </form>
       <div v-show="showSuccess">

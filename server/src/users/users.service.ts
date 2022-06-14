@@ -4,6 +4,7 @@ import { SignUpDTO } from 'src/auth/dto/sign-up.dto';
 import { TokensService } from 'src/auth/token.service';
 import { Repository } from 'typeorm';
 import { LoginStrategy, UserEntity } from '../models/user.entity';
+import { adjectives, nouns } from './randomNameDict';
 @Injectable()
 export class UsersService {
   constructor(
@@ -28,6 +29,23 @@ export class UsersService {
     );
     // newUser.createdTimestamp = String(Date.now());
     return this.userRepository.save(newUser);
+  }
+
+  // took me 3 hours xd
+  generateRandomName(): string {
+    const randLetter = String.fromCharCode(97 + Math.floor(Math.random() * 26));
+    const chosenAdj: string =
+      adjectives[randLetter][
+        Math.floor(Math.random() * adjectives[randLetter].length)
+      ];
+    const chosenNoun: string =
+      nouns[randLetter][Math.floor(Math.random() * nouns[randLetter].length)];
+    const randName = chosenAdj + ' ' + chosenNoun;
+    return randName;
+  }
+
+  async createGoogle(email: string, gID: string): Promise<UserEntity> {
+    return;
   }
 
   async findOneByUsername(username: string): Promise<UserEntity> {
@@ -65,6 +83,7 @@ export class UsersService {
     return this.userRepository.findOne({ id });
   }
 
+  // FIXME very lazy and dangerous approach >> requires usernames without @
   async findByEmailOrUsername(usernameOrEmail: string): Promise<UserEntity> {
     if (usernameOrEmail.includes('@')) {
       return this.userRepository.findOne({

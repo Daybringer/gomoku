@@ -102,6 +102,7 @@ export class GameService {
     } else {
       // Adds a players and starts game if the room is full
       this.addPlayer(roomID, client.id, logged, username);
+      console.log(username, client.id);
 
       // FIXME might separate logic from addPlayer into
       // something like addPlayer, checkStartConditions, startGame

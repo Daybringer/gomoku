@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import Repository from "../repositories/Repository";
 import { RepositoryFactory } from "@/repositories/RepositoryFactory";
 import { AxiosResponse } from "axios";
+const UsersRepository = RepositoryFactory.getUserRepository;
 const AuthRepository = RepositoryFactory.getAuthRepository;
 
 interface UserProfile {
@@ -59,6 +60,18 @@ export const useStore = defineStore({
         AuthRepository.verifyMail(verificationCode, username)
           .then((res) => resolve(res))
           .catch((err) => reject(err.response.data.message));
+      });
+    },
+    async getRandomName() {
+      return new Promise((resolve, reject) => {
+        UsersRepository.getRandomName()
+          .then((res) => {
+            resolve(res.data);
+          })
+          .catch((err) => {
+            console.log(err);
+            reject(err);
+          });
       });
     },
     async setGUsername(username: string) {

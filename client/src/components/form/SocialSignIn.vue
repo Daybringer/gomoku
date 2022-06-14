@@ -1,6 +1,9 @@
 <template>
   <button
-    class="border-2 border-gray-300 border-opacity-50 shadow-md text-gray-500 dark:text-gray-300 dark:hover:text-gomoku-blue hover:text-gomoku-blue hover:border-gomoku-blue focus:text-gomoku-blue dark:focus:text-gomoku-blue  focus:border-gomoku-blue focus:outline-none rounded-lg px-10 py-1"
+    :disabled="disabled"
+    class="border-2 border-gray-300 border-opacity-50 shadow-md text-gray-500 dark:text-gray-300 dark:hover:text-gomoku-blue
+    hover:text-gomoku-blue hover:border-gomoku-blue focus:text-gomoku-blue dark:focus:text-gomoku-blue  focus:border-gomoku-blue focus:outline-none
+    rounded-lg px-10 py-1"
   >
     <!-- Facebook -->
     <svg
@@ -45,9 +48,10 @@ export default defineComponent({
       type: String,
       validator(val: string): boolean {
         return ["google", "facebook"].indexOf(val) !== -1;
-      }
-    }
-  }
+      },
+    },
+    disabled: Boolean,
+  },
 });
 </script>
 

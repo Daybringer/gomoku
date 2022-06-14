@@ -87,7 +87,7 @@
       </div>
       <div class=" flex flex-row justify-around">
         <social-sign-in @click="googleLogin" :type="'google'"></social-sign-in>
-        <social-sign-in :type="'facebook'"></social-sign-in>
+        <social-sign-in :disabled="true" :type="'facebook'"></social-sign-in>
       </div>
     </div>
   </div>
@@ -155,6 +155,7 @@ export default defineComponent({
       await this.$gAuth
         .signIn()
         .then((res: any) => {
+          console.log("Response:", res.getAuthResponse().id_token);
           return store.googleLogin(res.getAuthResponse().id_token);
         })
         .then((askForUsername: boolean) => {
