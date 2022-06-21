@@ -1,25 +1,15 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Colors, GameBoard } from '../shared/types';
 
-import { IconEntity as Icon } from './icon.entity';
-import { SocialBladeSkinEntity as SocialBladeSkin } from './socialBladeSkin.entity';
-export interface colors {
-  enemeyColor: string;
-  playerColor: string;
-}
-enum GameBoard {
-  NORMAL = 'normal',
-  TRADITIONAL = 'traditional',
-  MODERN = 'modern',
-}
 @Entity()
 export class UserConfigEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column('json')
-  colors?: colors;
+  colors?: Colors;
 
-  @Column({ type: 'enum', enum: GameBoard, default: GameBoard.NORMAL })
+  @Column({ type: 'enum', enum: GameBoard, default: GameBoard.Normal })
   gameBoard?: GameBoard;
 
   @Column('int')

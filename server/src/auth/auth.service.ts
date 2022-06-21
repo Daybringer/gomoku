@@ -8,7 +8,8 @@ import { OAuth2Client } from 'google-auth-library';
 import { ConfigService } from '@nestjs/config';
 
 import { UsersService } from 'src/users/users.service';
-import { LoginStrategy, UserEntity } from 'src/models/user.entity';
+import { UserEntity } from 'src/models/user.entity';
+import { LoginStrategy } from '../shared/types';
 // DTOs
 import { LogInDTO } from './dto/log-in.dto';
 import { SignUpDTO } from './dto/sign-up.dto';
@@ -39,7 +40,7 @@ export class AuthService {
     return compare(newPassword, passwordHash);
   }
 
-  async createUser(
+  async createLocalUser(
     username: string,
     email: string,
     password: string,
@@ -96,7 +97,7 @@ export class AuthService {
                   }
                 }
               } else {
-                const newUser = await this.createUser(
+                const newUser = await this.createLocalUser(
                   username,
                   email.toLowerCase(),
                   password,
@@ -164,18 +165,18 @@ export class AuthService {
       const userID = ticket.getUserId();
       const email = payload.email;
 
-      // checking if user with given mail exists
+      // checking whether user with given email exists
       const user = await this.usersService.findOneByEmail(email);
 
       // user exists FLOW
       if (user) {
-        if (user.strategy == LoginStrategy.GOOGLE) {
+        if (user.strategy == LoginStrategy.Google) {
           // Login
           return user;
         } else {
           // Throw unauthorized error
           throw new UnauthorizedException(
-            'Account with same email adress is already registered and requires password to log in',
+            'Account with same email adress already exists and requires password to log in.',
           );
         }
       } else {
@@ -189,7 +190,7 @@ export class AuthService {
   }
 
   async registerGoogle(email: string, userID: string): Promise<UserEntity> {
-    return;
+    return this.usersService.createGoogle(email, userID);
   }
 
   async validateUser(
@@ -202,7 +203,7 @@ export class AuthService {
         if (!user) {
           throw new NotAcceptableException('Incorrect credentials');
         } else {
-          if (user.strategy !== LoginStrategy.LOCAL)
+          if (user.strategy !== LoginStrategy.Local)
             throw new NotAcceptableException(
               'Email is associated with different login strategy',
             );

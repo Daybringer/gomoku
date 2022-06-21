@@ -56,7 +56,7 @@ const setUsernameSchema = object().shape({
     .matches(
       /^[a-z0-9]+$/i,
       "Username can only contain alhpanumeric characters"
-    )
+    ),
 });
 // Utility
 import { defineComponent } from "vue";
@@ -67,13 +67,13 @@ export default defineComponent({
   data() {
     return {
       user: {
-        username: ""
+        username: "",
       },
       errors: {
-        username: ""
+        username: "",
       },
       showSuccess: false,
-      serverError: ""
+      serverError: "",
     };
   },
   methods: {
@@ -82,11 +82,11 @@ export default defineComponent({
         const store = useStore();
         store
           .setGUsername(this.user.username)
-          .then(res => {
+          .then((res) => {
             this.serverError = "";
             this.showSuccess = true;
           })
-          .catch(err => {
+          .catch((err) => {
             this.showSuccess = false;
             this.serverError = err;
           });
@@ -96,7 +96,7 @@ export default defineComponent({
     },
     async usernameExists() {
       UsersRepository.userWithUsernameExists(this.user.username)
-        .then(res => {
+        .then((res) => {
           if (res.data) {
             this.errors.username = "Username is already taken";
           } else {
@@ -105,7 +105,7 @@ export default defineComponent({
         })
         .catch(() => (this.errors.username = "Server error"));
     },
-    throttledFunction: throttle(500, call => {
+    throttledFunction: throttle(500, (call) => {
       call();
     }),
     async validate() {
@@ -115,11 +115,11 @@ export default defineComponent({
         .then(() => {
           this.throttledFunction(this.usernameExists);
         })
-        .catch(err => {
+        .catch((err) => {
           this.errors[field] = err.message;
         });
-    }
-  }
+    },
+  },
 });
 </script>
 

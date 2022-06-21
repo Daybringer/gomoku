@@ -93,7 +93,7 @@
             @click="googleLogin"
             :type="'google'"
           ></social-sign-in>
-          <social-sign-in :disabled="true" :type="'facebook'"></social-sign-in>
+          <social-sign-in :type="'facebook'"></social-sign-in>
         </div>
       </form>
       <div v-show="showSuccess">
@@ -179,7 +179,6 @@ export default defineComponent({
   methods: {
     async register() {
       await this.validateAll();
-
       const store = useStore();
       store
         .register(this.user)
@@ -200,10 +199,11 @@ export default defineComponent({
         .then((res: any) => {
           return store.googleLogin(res.getAuthResponse().id_token);
         })
-        .then((askForUsername: boolean) => {
-          if (askForUsername) {
+        .then((newUser: boolean) => {
+          if (!newUser) {
             this.serverError = "";
             this.showSuccess = true;
+            // this.$router.push("/");
           } else {
             this.$router.push("/set-username");
           }

@@ -27,9 +27,33 @@ enum GameEvents {
 }
 
 enum GameType {
-  Quick = "quick",
-  Ranked = "ranked",
-  Custom = "custom",
+  Quick,
+  Ranked,
+  Custom,
+}
+
+enum TypeOfWin {
+  Combination,
+  Time,
+  Surrender,
+  Tie,
+}
+
+enum GameBoard {
+  Normal,
+  Traditional,
+  Modern,
+}
+
+interface Colors {
+  playerColor: string;
+  enemyColor: string;
+}
+
+enum LoginStrategy {
+  Local,
+  Google,
+  Facebook,
 }
 
 enum SearchEvents {
@@ -47,5 +71,9 @@ export {
   GameEvents,
   SearchEvents,
   GameType,
+  TypeOfWin,
   JoinGameDTO,
+  LoginStrategy,
+  Colors,
+  GameBoard,
 };

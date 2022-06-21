@@ -17,11 +17,7 @@ import { PlayerGameProfile } from './playerGameProfile.entity';
 
 import { UserConfigEntity as UserConfig } from './userConfig.entity';
 
-export enum LoginStrategy {
-  LOCAL,
-  GOOGLE,
-  FACEBOOK,
-}
+import { LoginStrategy } from '../shared/types';
 
 @Entity()
 export class UserEntity {
@@ -58,7 +54,7 @@ export class UserEntity {
   createdAt: Date;
 
   @Column({ default: false })
-  admin: false;
+  admin: boolean;
 
   @Column({ type: 'enum', enum: LoginStrategy })
   strategy: LoginStrategy;
@@ -81,6 +77,9 @@ export class UserEntity {
 
   @Column({ default: 0 })
   credit?: number;
+
+  @Column({ default: 0 })
+  nameChangeTokens: number;
 
   @OneToOne(() => UserConfig)
   @JoinColumn()

@@ -3,7 +3,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { SignUpDTO } from 'src/auth/dto/sign-up.dto';
 import { TokensService } from 'src/auth/token.service';
 import { Repository } from 'typeorm';
-import { LoginStrategy, UserEntity } from '../models/user.entity';
+
+import { UserEntity } from '../models/user.entity';
+import { LoginStrategy } from '../shared/types';
+
 import { adjectives, nouns } from './randomNameDict';
 @Injectable()
 export class UsersService {
@@ -22,7 +25,7 @@ export class UsersService {
     newUser.username = username;
     newUser.email = email;
     newUser.password = password;
-    newUser.strategy = LoginStrategy.LOCAL;
+    newUser.strategy = LoginStrategy.Local;
     newUser.mailVerificationCode = this.tokenService.generateRandomToken(
       12,
       false,
@@ -32,6 +35,7 @@ export class UsersService {
   }
 
   // took me 3 hours xd
+  // TODO capitalize every word
   generateRandomName(): string {
     const randLetter = String.fromCharCode(97 + Math.floor(Math.random() * 26));
     const chosenAdj: string =
@@ -45,7 +49,22 @@ export class UsersService {
   }
 
   async createGoogle(email: string, gID: string): Promise<UserEntity> {
-    return;
+    const newUser = new UserEntity();
+    let randName =
+      this.generateRandomName() + String(Math.floor(Math.random() * 100));
+    let user = await this.findOneByUsername(randName);
+    while (user) {
+      randName =
+        this.generateRandomName() + String(Math.floor(Math.random() * 100));
+      user = await this.findOneByUsername(randName);
+    }
+    newUser.email = email;
+    newUser.username = randName;
+    newUser.socialID = gID;
+    newUser.strategy = LoginStrategy.Google;
+    newUser.nameChangeTokens = 1;
+    newUser.verified = true;
+    return this.userRepository.save(newUser);
   }
 
   async findOneByUsername(username: string): Promise<UserEntity> {
@@ -63,8 +82,8 @@ export class UsersService {
   }
 
   async updatePassword(user: UserEntity, newPassword: string) {
-    //FIXME not how update works
-    return this.userRepository.update(user, { password: newPassword });
+    user.password = newPassword;
+    return this.userRepository.save(user);
   }
 
   async removeOneByID(id: number) {

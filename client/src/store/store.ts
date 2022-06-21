@@ -109,8 +109,10 @@ export const useStore = defineStore({
           .then((res) => {
             if (res.data) {
               this.consumeAuthResponse(res);
+              // this.userProfile.something = ""
               resolve(true);
             } else {
+              // FIXME this branch never executes
               this.googleIDToken = id_token;
               resolve(false);
             }

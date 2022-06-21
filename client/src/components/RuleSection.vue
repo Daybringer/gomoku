@@ -10,7 +10,7 @@
       <svg
         xmlns="http://www.w3.org/2000/svg"
         class="icon icon-tabler icon-tabler-chevrons-down stroke-current h-full transform transition-transform ease-in duration-100"
-        :class="toggleTarget.toggled ? '-rotate-90 ' : 'rotate-0'"
+        :class="!toggleTarget.toggled ? '-rotate-90 ' : 'rotate-0'"
         viewBox="0 0 24 24"
         stroke-width="1.5"
         fill="none"
@@ -37,8 +37,8 @@ export default {
   methods: {
     toggleExpand(toExpand) {
       toExpand.toggled = !toExpand.toggled;
-    }
-  }
+    },
+  },
 };
 </script>
 <style>
