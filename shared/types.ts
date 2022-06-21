@@ -29,7 +29,7 @@ enum GameEvents {
 }
 
 /**
- * Has string literals, because enum values are compared with URL params
+ * Has to have string literals, because enum values are compared with URL params
  */
 enum GameType {
   Quick = "quick",

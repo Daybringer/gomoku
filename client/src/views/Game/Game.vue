@@ -30,6 +30,7 @@ let socket: any;
 import GameBase from "@/components/GameBase.vue";
 // Pinia
 import { useStore } from "@/store/store";
+import { pinia } from "@/store/index";
 // Utils
 import { defineComponent } from "vue";
 
@@ -102,7 +103,7 @@ export default defineComponent({
     this.me.color = userProfile.myColor;
     this.opponent.color = userProfile.enemyColor;
 
-    if (this.getGameTypeFromURL === GameType[GameType.Quick]) {
+    if (this.getGameTypeFromURL === GameType.Quick) {
       socket.emit(GameEvents.JoinGame, {
         roomID: this.getRoomIDFromURL,
         logged: logged,
