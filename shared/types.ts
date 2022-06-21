@@ -1,3 +1,5 @@
+import { User } from "./interfaces/user.interface";
+
 /* eslint-disable */
 type position = [number, number];
 interface GameClickDTO {
@@ -26,10 +28,13 @@ enum GameEvents {
   RecieveMessage = "recieveMessage",
 }
 
+/**
+ * Has string literals, because enum values are compared with URL params
+ */
 enum GameType {
-  Quick,
-  Ranked,
-  Custom,
+  Quick = "quick",
+  Ranked = "ranked",
+  Custom = "custom",
 }
 
 enum TypeOfWin {
@@ -60,10 +65,21 @@ enum SearchEvents {
   GameCreated = "gameCreated",
 }
 
-// interface SocketEvents {
-//   GameEvents: GameEvents;
-//   SearchEvents: SearchEvents;
-// }
+interface AuthenticationPayload {
+  user: User;
+  payload: {
+    type: string;
+    token: string;
+    refresh_token?: string;
+  };
+}
+
+/**
+ * x,y position in this order
+ * X: column
+ * Y: row
+ */
+type Turn = [number, number];
 
 export {
   position,
@@ -76,4 +92,6 @@ export {
   LoginStrategy,
   Colors,
   GameBoard,
+  AuthenticationPayload,
+  Turn,
 };

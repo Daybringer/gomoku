@@ -3,28 +3,11 @@ import {
   CreateDateColumn,
   Entity,
   PrimaryGeneratedColumn,
-  ManyToMany,
   OneToMany,
-  ColumnTypeUndefinedError,
-  ManyToOne,
-  OneToOne,
 } from 'typeorm';
 import { PlayerGameProfile } from './playerGameProfile.entity';
 
-import { UserEntity as User } from './user.entity';
-
-enum gameType {
-  RANKED = 'ranked',
-  QUICK = 'quick',
-  CUSTOM = 'custom',
-}
-
-enum typeOfWin {
-  COMBINATION = 'combination',
-  TIME = 'time',
-  SURRENDER = 'surrender',
-  TIE = 'tie',
-}
+import { GameType, TypeOfWin, Turn } from '../shared/types';
 
 @Entity()
 export class GameEntity {
@@ -35,28 +18,28 @@ export class GameEntity {
     () => PlayerGameProfile,
     (playerGameProfile) => playerGameProfile.game,
   )
-  playerProfiles: PlayerGameProfile[];
+  playerProfiles?: PlayerGameProfile[];
 
   @CreateDateColumn()
-  date?: Date[];
+  createdAt?: Date[];
 
-  @Column({ type: 'enum', enum: gameType })
-  type?: gameType;
+  @Column({ type: 'enum', enum: GameType })
+  type?: GameType;
 
   @Column({ default: 0 })
   eloDelta?: number;
 
   @Column({ default: null, nullable: true })
-  winnerUUID?: string;
+  winnerID?: number;
 
-  @Column({ type: 'enum', enum: typeOfWin })
-  typeOfWin?: typeOfWin;
+  @Column({ type: 'enum', enum: TypeOfWin })
+  typeOfWin?: TypeOfWin;
 
   @Column('int', { array: true })
   finalState?: number[][];
 
   @Column('int', { array: true })
-  turnHistory: number[][];
+  turnHistory: Turn[];
 
   @Column()
   startingPlayerUUID: string;

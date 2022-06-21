@@ -51,16 +51,16 @@ export class UserEntity {
   // createdTimestamp: string;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt?: Date;
 
   @Column({ default: false })
-  admin: boolean;
+  admin?: boolean;
 
   @Column({ type: 'enum', enum: LoginStrategy })
   strategy: LoginStrategy;
 
   @Column({ default: false })
-  verified: boolean;
+  verified?: boolean;
 
   @Column({ default: 1000 })
   elo?: number;
@@ -69,7 +69,7 @@ export class UserEntity {
     () => PlayerGameProfile,
     (playerGameProfile) => playerGameProfile.user,
   )
-  gameProfiles: PlayerGameProfile[];
+  gameProfiles?: PlayerGameProfile[];
 
   @ManyToMany(() => Game)
   @JoinTable()
@@ -79,7 +79,7 @@ export class UserEntity {
   credit?: number;
 
   @Column({ default: 0 })
-  nameChangeTokens: number;
+  nameChangeTokens?: number;
 
   @OneToOne(() => UserConfig)
   @JoinColumn()

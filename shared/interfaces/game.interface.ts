@@ -1,14 +1,14 @@
-import { GameType, TypeOfWin } from "../types";
-import { User } from "./user.interface";
+import { GameType, TypeOfWin, Turn } from "../types";
+import { PlayerGameProfile } from "./playerGameProfile.interface";
 
 export interface Game {
   id?: number;
-  players?: User[];
-  date?: Date[];
+  playerProfiles?: PlayerGameProfile[];
+  createdAt?: Date[];
   type?: GameType;
-  eloDifference?: number;
-  time?: number;
-  winner?: User | null;
+  eloDelta?: number;
+  winnerID?: number;
   typeOfWin?: TypeOfWin;
   finalState?: number[][];
+  turnHistory: Turn[];
 }

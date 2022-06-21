@@ -22,9 +22,11 @@ export default defineComponent({
 
     const gameType = urlParams.get("type");
 
-    if (gameType === GameType.Quick) {
+    if (gameType === GameType[GameType.Quick]) {
       // @ts-ignore
+      console.log("TF");
       socket = io("/search/quick", { port: "3001" });
+      console.log("TF");
       socket.on(SearchEvents.GameCreated, (roomID: string) => {
         // Timeout for smoother experience (if player instantly finds game it jumps a lot)
         setTimeout(() => {

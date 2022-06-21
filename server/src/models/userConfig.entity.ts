@@ -16,11 +16,11 @@ export class UserConfigEntity {
   selectedIconID?: number;
 
   @Column('int', { array: true })
-  availableIcons?: number[];
+  availableIconIDs?: number[];
 
   @Column('int')
-  selectedSocialBladeSkin?: number;
+  selectedSocialBladeSkinID?: number;
 
   @Column('int', { array: true })
-  availableSocialBladeSkins?: number[];
+  availableSocialBladeSkinIDs?: number[];
 }

@@ -18,14 +18,8 @@ import { LogInDTO } from './dto/log-in.dto';
 import { UserEntity } from 'src/models/user.entity';
 import { AuthGuard } from '@nestjs/passport';
 
-interface AuthenticationPayload {
-  user: UserEntity;
-  payload: {
-    type: string;
-    token: string;
-    refresh_token?: string;
-  };
-}
+// @Types
+import { AuthenticationPayload } from '../shared/types';
 
 @Controller('auth')
 export class AuthController {

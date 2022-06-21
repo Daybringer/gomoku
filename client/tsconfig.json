@@ -27,5 +27,5 @@
     "tests/**/*.tsx",
     "types.d.ts"
   ],
-  "exclude": ["node_modules", "../shared"]
+  "exclude": ["node_modules"]
 }

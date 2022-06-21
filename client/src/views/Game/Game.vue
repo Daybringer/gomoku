@@ -102,7 +102,7 @@ export default defineComponent({
     this.me.color = userProfile.myColor;
     this.opponent.color = userProfile.enemyColor;
 
-    if (this.getGameTypeFromURL === GameType.Quick) {
+    if (this.getGameTypeFromURL === GameType[GameType.Quick]) {
       socket.emit(GameEvents.JoinGame, {
         roomID: this.getRoomIDFromURL,
         logged: logged,
