@@ -86,6 +86,16 @@ export class UsersService {
     return this.userRepository.save(user);
   }
 
+  async updateUsername(user: UserEntity, username: string) {
+    user.username = username;
+    return this.userRepository.save(user);
+  }
+
+  async decrementNameTokens(user: UserEntity) {
+    user.nameChangeTokens--;
+    return this.userRepository.save(user);
+  }
+
   async removeOneByID(id: number) {
     return this.userRepository.delete({ id });
   }

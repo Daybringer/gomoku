@@ -34,10 +34,11 @@ export default defineComponent({
   mounted() {
     const urlParams = new URLSearchParams(window.location.search);
 
-    const verificationCode = urlParams.get("code");
-    const username = urlParams.get("username");
+    const verificationCode = urlParams.get("code") || "";
+    const username = urlParams.get("username") || "";
 
     const store = useStore();
+
     store
       .verifyMail(verificationCode, username)
       .then((res) => {

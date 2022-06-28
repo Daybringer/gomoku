@@ -200,6 +200,7 @@ export default defineComponent({
           return store.googleLogin(res.getAuthResponse().id_token);
         })
         .then((newUser: boolean) => {
+          console.log(newUser);
           if (!newUser) {
             this.serverError = "";
             this.showSuccess = true;

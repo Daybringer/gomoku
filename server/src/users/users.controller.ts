@@ -4,6 +4,7 @@ import {
   Get,
   Post,
   Req,
+  UnauthorizedException,
   UseGuards,
   UsePipes,
   ValidationPipe,
@@ -15,6 +16,7 @@ import { UserEntity } from '../models/user.entity';
 import { CheckUsernameDTO } from './dto/check-username.dto';
 import { CheckEmailDTO } from './dto/check-email.dto';
 import { PasswordChangeDTO } from './dto/password-change.dto';
+import { UsernameChangeDTO } from './dto/username-change.dto';
 
 @Controller('/users')
 export class UsersController {
@@ -44,8 +46,33 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe())
   @Post('change-password')
-  changePassword(@Req() req, @Body() passwordChangeDTO: PasswordChangeDTO) {
-    this.usersService.updatePassword(req.user, passwordChangeDTO.password);
+  async changePassword(
+    @Req() req,
+    @Body() passwordChangeDTO: PasswordChangeDTO,
+  ) {
+    return this.usersService.updatePassword(
+      req.user,
+      passwordChangeDTO.password,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @UsePipes(new ValidationPipe())
+  @Post('change-username')
+  async changeUsername(
+    @Req() req,
+    @Body() usernameChangeDTO: UsernameChangeDTO,
+  ) {
+    const { username } = usernameChangeDTO;
+    const user = await this.usersService.findOneByUsername(username);
+    if (user) {
+      return new UnauthorizedException(
+        'User with given username already exists',
+      );
+    } else {
+      await this.usersService.decrementNameTokens(user);
+      return await this.usersService.updateUsername(user, username);
+    }
   }
 
   @UseGuards(JwtAuthGuard)

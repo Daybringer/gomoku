@@ -27,7 +27,7 @@ export default {
       id_token,
     });
   },
-  setGUsername(id_token: string, username: string) {
-    return Repository.post(`${resource}/setGUsername`, { username, id_token });
+  setUsername(username: string) {
+    return Repository.post(`${resource}/set-username`, { username });
   },
 };

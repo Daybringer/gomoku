@@ -13,7 +13,7 @@
       <status-message
         v-show="showSuccess"
         :type="'success'"
-        :text="'Successfully logged in'"
+        :text="'Successfully changed name'"
       ></status-message>
       <status-message
         v-show="serverError"
@@ -78,11 +78,11 @@ export default defineComponent({
   },
   methods: {
     setUsername() {
+      const store = useStore();
       if (!this.errors.username && this.user.username) {
-        const store = useStore();
         store
-          .setGUsername(this.user.username)
-          .then((res) => {
+          .setUsername(this.user.username)
+          .then(() => {
             this.serverError = "";
             this.showSuccess = true;
           })
@@ -91,7 +91,8 @@ export default defineComponent({
             this.serverError = err;
           });
       } else {
-        console.log(this.errors.username);
+        this.showSuccess = false;
+        this.serverError = this.errors.username;
       }
     },
     async usernameExists() {

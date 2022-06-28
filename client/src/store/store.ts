@@ -1,7 +1,6 @@
 import { defineStore } from "pinia";
 import Repository from "../repositories/Repository";
 import { RepositoryFactory } from "@/repositories/RepositoryFactory";
-import { AxiosError, AxiosResponse } from "axios";
 const UsersRepository = RepositoryFactory.getUserRepository;
 const AuthRepository = RepositoryFactory.getAuthRepository;
 
@@ -28,8 +27,7 @@ function userProfileBase(): UserProfile {
 
 // FIXME userProfile vs User type << unnecessary type,
 // but there might have been problems with inner interfaces
-export const useStore = defineStore({
-  id: "store",
+export const useStore = defineStore("store", {
   state: () => ({
     userProfile: userProfileBase(),
     token: localStorage.getItem("access-token") || "",
@@ -66,15 +64,25 @@ export const useStore = defineStore({
           });
       });
     },
+    /**
+     *
+     * @param verificationCode
+     * @param username
+     * @returns
+     */
     async verifyMail(verificationCode: string, username: string) {
-      return new Promise((resolve, reject) => {
+      return new Promise<any>((resolve, reject) => {
         AuthRepository.verifyMail(verificationCode, username)
           .then((res) => resolve(res))
           .catch((err) => reject(err.response.data.message));
       });
     },
+    /**
+     *
+     * @returns
+     */
     async getRandomName() {
-      return new Promise((resolve, reject) => {
+      return new Promise<string>((resolve, reject) => {
         UsersRepository.getRandomName()
           .then((res) => {
             resolve(res.data);
@@ -85,18 +93,19 @@ export const useStore = defineStore({
           });
       });
     },
-    async setGUsername(username: string) {
+    /**
+     *
+     * @param newUsername
+     * @returns
+     */
+    async setUsername(newUsername: string): Promise<string> {
       return new Promise((resolve, reject) => {
-        AuthRepository.setGUsername(this.googleIDToken, username)
-          .then((res) => {
-            // TODO changed code, might, and propably won't work
-            this.googleIDToken = "";
-            this.consumeAuthPayload(res.data);
-            resolve("Logged in");
+        AuthRepository.setUsername(newUsername)
+          .then(() => {
+            resolve("Username has been changed");
           })
           .catch((err) => {
             console.log(err);
-            this.logout();
             reject(err.response.data.message);
           });
       });
@@ -137,6 +146,7 @@ export const useStore = defineStore({
           .catch((err) => {
             this.googleIDToken = "";
             this.logout();
+            console.log("2");
             reject(err.response.data ? err.response.data : err);
           });
       });
@@ -148,7 +158,7 @@ export const useStore = defineStore({
 
       userProfile.username = user.username;
       userProfile.gameBoard = user.userConfig?.gameBoard || GameBoard.Normal;
-      userProfile.nameChangeTokens = user.nameChangeTokens || 0;
+      userProfile.nameChangeTokens = user.nameChangeTokens!;
 
       this.saveUserProfile(userProfile);
       this.saveToken(token);

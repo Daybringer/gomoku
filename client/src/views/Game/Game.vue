@@ -93,7 +93,8 @@ export default defineComponent({
         .getRandomName()
         .then((res) => {
           console.log("My temp nickname:", res);
-          this.me.nickname = res;
+          // FIXME after store getting types :)
+          this.me.nickname = String(res);
         })
         .catch();
     } else {
