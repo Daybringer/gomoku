@@ -51,6 +51,17 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("../views/UserProfile.vue"),
     meta: { requiresAuth: true },
   },
+  // FIXME remove dummies
+  {
+    path: "/profile-demo",
+    component: () => import("../views/UserProfileDemo.vue"),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/test",
+    component: () => import("../views/Test.vue"),
+  },
+  // END
   {
     path: "/game",
     component: Game,
