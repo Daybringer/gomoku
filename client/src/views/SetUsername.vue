@@ -38,9 +38,9 @@
 
 <script lang="ts">
 // Components
-import InputBase from "@/components/form/InputBase.vue";
-import SubmitButton from "@/components/form/SubmitButton.vue";
-import StatusMessage from "@/components/form/StatusMessage.vue";
+import InputBase from "@/components/FormInputBase.vue";
+import SubmitButton from "@/components/FormSubmitButton.vue";
+import StatusMessage from "@/components/FormStatusMessage.vue";
 // Axios repositories
 import { RepositoryFactory } from "@/repositories/RepositoryFactory";
 const UsersRepository = RepositoryFactory.getUserRepository;

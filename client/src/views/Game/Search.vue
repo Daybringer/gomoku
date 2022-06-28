@@ -7,7 +7,7 @@ import io from "socket.io-client";
 
 let socket: any;
 // Components
-import SearchBase from "@/components/SearchBase.vue";
+import SearchBase from "@/components/TheSearchBase.vue";
 // Utils
 import { defineComponent } from "vue";
 import { GameType, SearchEvents } from "@/shared/types";

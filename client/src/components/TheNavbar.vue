@@ -265,9 +265,9 @@
 
 <script lang="ts">
 // Components
-import HamburgerButton from "@/components/mini/HamburgerButton.vue";
-import NavbarNavigationLink from "../components/mini/NavbarNavigationLink.vue";
-import MobileNavbarLink from "../components/mini/MobileNavbarLink.vue";
+import HamburgerButton from "@/components/HamburgerButton.vue";
+import NavbarNavigationLink from "./NavbarNavigationLink.vue";
+import MobileNavbarLink from "./MobileNavbarLink.vue";
 
 // Pinia
 import { useStore } from "@/store/store";

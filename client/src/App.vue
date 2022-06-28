@@ -8,7 +8,7 @@
 <script lang="ts">
 import { useStore } from "@/store/store";
 import { defineComponent, ref, reactive, toRefs } from "vue";
-import Navbar from "@/components/Navbar.vue";
+import Navbar from "@/components/TheNavbar.vue";
 export default defineComponent({
   name: "App",
   components: { Navbar },

@@ -118,8 +118,8 @@ const UsersRepository = RepositoryFactory.getUserRepository;
 import { useStore } from "@/store/store";
 
 // Components
-import SocialBlade from "@/components/SocialBlade.vue";
-import EloChart from "@/components/charts/EloChart.vue";
+import SocialBlade from "@/components/GameSocialBlade.vue";
+import EloChart from "@/components/ProfileEloChart.vue";
 
 import { defineComponent } from "vue";
 

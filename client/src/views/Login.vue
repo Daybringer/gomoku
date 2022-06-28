@@ -95,10 +95,10 @@
 
 <script lang="ts">
 // Components
-import SubmitButton from "@/components/form/SubmitButton.vue";
-import InputBase from "@/components/form/InputBase.vue";
-import SocialSignIn from "@/components/form/SocialSignIn.vue";
-import StatusMessage from "@/components/form/StatusMessage.vue";
+import SubmitButton from "@/components/FormSubmitButton.vue";
+import InputBase from "@/components/FormInputBase.vue";
+import SocialSignIn from "@/components/FormSocialSignIn.vue";
+import StatusMessage from "@/components/FormStatusMessage.vue";
 
 // Pinia store
 import { useStore } from "@/store/store";

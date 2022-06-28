@@ -459,8 +459,8 @@
 </template>
 <script lang="ts">
 import { defineComponent, reactive, computed, toRefs } from "vue";
-import IntersectionObserver from "@/components/mini/IntersectionObserver.vue";
-import RuleSection from "../components/RuleSection.vue";
+import IntersectionObserver from "@/components/IntersectionObserver.vue";
+import RuleSection from "../components/AppRuleSection.vue";
 import GameSimulation from "@/components/GameSimulation.vue";
 export default defineComponent({
   name: "Home",

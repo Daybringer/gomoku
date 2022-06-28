@@ -27,7 +27,7 @@ import { position, GameClickDTO, GameEvents, GameType } from "@/shared/types";
 import io from "socket.io-client";
 let socket: any;
 // Components
-import GameBase from "@/components/GameBase.vue";
+import GameBase from "@/components/TheGameBase.vue";
 // Pinia
 import { useStore } from "@/store/store";
 import { pinia } from "@/store/index";

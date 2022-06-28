@@ -218,18 +218,18 @@ enum Symbol {
 // Howler
 import { Howl, Howler } from "howler";
 // SVGs
-import VictoryConfettiConeSVG from "@/components/svg/VictoryConfettiCone.vue";
-import CircleOriginSVG from "@/components/svg/CircleOrigin.vue";
-import CrossOriginSVG from "@/components/svg/CrossOrigin.vue";
-import OpenOverlaySVG from "@/components/svg/OpenOverlay.vue";
-import CloseIconSVG from "@/components/svg/CloseIcon.vue";
-import DefeatConeSVG from "@/components/svg/DefeatCone.vue";
-import MutedIconSVG from "@/components/svg/MutedIcon.vue";
-import UnmutedIconSVG from "@/components/svg/UnmutedIcon.vue";
+import VictoryConfettiConeSVG from "@/components/SVGVictoryConfettiCone.vue";
+import CircleOriginSVG from "@/components/SVGCircleOrigin.vue";
+import CrossOriginSVG from "@/components/SVGCrossOrigin.vue";
+import OpenOverlaySVG from "@/components/SVGOpenOverlay.vue";
+import CloseIconSVG from "@/components/SVGCloseIcon.vue";
+import DefeatConeSVG from "@/components/SVGDefeatCone.vue";
+import MutedIconSVG from "@/components/SVGMutedIcon.vue";
+import UnmutedIconSVG from "@/components/SVGUnmutedIcon.vue";
 // Components
 import ViewBase from "@/components/ViewBase.vue";
-import SocialBlade from "@/components/SocialBlade.vue";
-import ChatMessage from "@/components/mini/ChatMessage.vue";
+import SocialBlade from "@/components/GameSocialBlade.vue";
+import ChatMessage from "@/components/GameChatMessage.vue";
 // Utils
 import { defineComponent } from "vue";
 
