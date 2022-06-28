@@ -87,8 +87,7 @@ export class UsersService {
   }
 
   async updateUsername(user: UserEntity, username: string) {
-    user.username = username;
-    return this.userRepository.save(user);
+    return this.userRepository.update({ id: user.id }, { username: username });
   }
 
   async decrementNameTokens(user: UserEntity) {

@@ -44,7 +44,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/set-username",
     component: () => import("../views/SetUsername.vue"),
-    meta: { prohibitsAuth: true },
+    meta: { requiresAuth: true },
   },
   {
     path: "/profile",

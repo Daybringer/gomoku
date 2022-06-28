@@ -15,4 +15,7 @@ export default {
   getRandomName() {
     return Repository.post(`${resource}/generate-name`);
   },
+  changeUsername(username: string) {
+    return Repository.post(`${resource}/change-username`, { username });
+  },
 };

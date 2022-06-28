@@ -149,21 +149,20 @@ export default defineComponent({
           });
       }
     },
+    // FIXME Code duplication in Login/Register components
     async googleLogin() {
       const store = useStore();
       // @ts-ignore
       await this.$gAuth
         .signIn()
-        .then((res: any) => {
-          console.log("Response:", res.getAuthResponse().id_token);
-          return store.googleLogin(res.getAuthResponse().id_token);
-        })
-        .then((askForUsername: boolean) => {
-          if (askForUsername) {
-            this.serverError = "";
-            this.showSuccess = true;
-          } else {
+        .then(async (res: any) => {
+          const isNewUser = await store.googleLogin(
+            res.getAuthResponse().id_token
+          );
+          if (isNewUser) {
             this.$router.push("/set-username");
+          } else {
+            this.$router.push("/");
           }
         })
         .catch((err: string) => (this.serverError = err));

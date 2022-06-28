@@ -17,6 +17,7 @@ import { CheckUsernameDTO } from './dto/check-username.dto';
 import { CheckEmailDTO } from './dto/check-email.dto';
 import { PasswordChangeDTO } from './dto/password-change.dto';
 import { UsernameChangeDTO } from './dto/username-change.dto';
+import { User } from 'src/shared/interfaces/user.interface';
 
 @Controller('/users')
 export class UsersController {
@@ -64,14 +65,19 @@ export class UsersController {
     @Body() usernameChangeDTO: UsernameChangeDTO,
   ) {
     const { username } = usernameChangeDTO;
+    const verifiedUser: UserEntity = req.user;
     const user = await this.usersService.findOneByUsername(username);
     if (user) {
-      return new UnauthorizedException(
+      throw new UnauthorizedException(
         'User with given username already exists',
       );
+    } else if (verifiedUser.nameChangeTokens <= 0) {
+      throw new UnauthorizedException('Not enough name change tokens');
     } else {
-      await this.usersService.decrementNameTokens(user);
-      return await this.usersService.updateUsername(user, username);
+      const updatedUser = await this.usersService.decrementNameTokens(
+        verifiedUser,
+      );
+      return await this.usersService.updateUsername(updatedUser, username);
     }
   }
 

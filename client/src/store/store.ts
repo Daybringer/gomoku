@@ -100,7 +100,7 @@ export const useStore = defineStore("store", {
      */
     async setUsername(newUsername: string): Promise<string> {
       return new Promise((resolve, reject) => {
-        AuthRepository.setUsername(newUsername)
+        UsersRepository.changeUsername(newUsername)
           .then(() => {
             resolve("Username has been changed");
           })
@@ -138,8 +138,10 @@ export const useStore = defineStore("store", {
             this.consumeAuthPayload(res.data);
 
             if (this.userProfile.nameChangeTokens > 0) {
+              console.log("Store true");
               resolve(true);
             } else {
+              console.log("Store false");
               resolve(false);
             }
           })

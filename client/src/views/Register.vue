@@ -196,17 +196,14 @@ export default defineComponent({
       // @ts-ignore
       await this.$gAuth
         .signIn()
-        .then((res: any) => {
-          return store.googleLogin(res.getAuthResponse().id_token);
-        })
-        .then((newUser: boolean) => {
-          console.log(newUser);
-          if (!newUser) {
-            this.serverError = "";
-            this.showSuccess = true;
-            // this.$router.push("/");
-          } else {
+        .then(async (res: any) => {
+          const isNewUser = await store.googleLogin(
+            res.getAuthResponse().id_token
+          );
+          if (isNewUser) {
             this.$router.push("/set-username");
+          } else {
+            this.$router.push("/");
           }
         })
         .catch((err: string) => (this.serverError = err));
