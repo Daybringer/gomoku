@@ -1,5 +1,10 @@
 <template>
-  <div class="container flex-1 lg:py-8 py-4 lg:px-16 px-8 flex flex-col gap-2">
+  <div class="flex-1 flex flex-col  bg-green-200">
     <slot></slot>
   </div>
 </template>
+<style scoped>
+.custom-shadow {
+  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.75);
+}
+</style>
