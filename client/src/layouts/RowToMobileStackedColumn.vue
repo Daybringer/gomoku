@@ -1,5 +1,7 @@
 <template>
-  <div class="flex-1 flex flex-col  bg-green-200">
+  <div
+    class="flex-1 flex flex-col md:overflow-auto border-1 shadow-lg rounded-xl border-gray-700"
+  >
     <slot></slot>
   </div>
 </template>

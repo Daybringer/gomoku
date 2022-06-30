@@ -8,7 +8,7 @@
 
 <script lang="ts">
 // Components
-import ViewBase from "@/components/ViewBase.vue";
+import ViewBase from "@/components/ViewBaseFixedHeight.vue";
 // Utils
 import { defineComponent } from "vue";
 export default defineComponent({
@@ -16,7 +16,7 @@ export default defineComponent({
   components: { ViewBase },
   data() {
     return {};
-  }
+  },
 });
 </script>
 

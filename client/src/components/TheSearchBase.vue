@@ -136,7 +136,7 @@
 
 <script lang="ts">
 // Components
-import ViewBase from "@/components/ViewBase.vue";
+import ViewBase from "@/components/ViewBaseFixedHeight.vue";
 import { defineComponent } from "vue";
 export default defineComponent({
   name: "SearchBase",
@@ -144,7 +144,7 @@ export default defineComponent({
   data() {
     return {
       interval: 0,
-      currentTime: 0
+      currentTime: 0,
     };
   },
   computed: {
@@ -156,19 +156,19 @@ export default defineComponent({
     },
     timeToShow(): string {
       return `${this.minutes}:${this.seconds < 10 ? "0" : ""}${this.seconds}`;
-    }
+    },
   },
   methods: {
     timeChange() {
       this.currentTime += 1000;
-    }
+    },
   },
   mounted(): void {
     this.interval = setInterval(this.timeChange, 1000);
   },
   beforeUnmount() {
     clearInterval(this.interval);
-  }
+  },
 });
 </script>
 

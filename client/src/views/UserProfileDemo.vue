@@ -1,6 +1,6 @@
 <script lang="ts">
 // Components
-import ViewBase from "@/components/ViewBase.vue";
+import ViewBaseResponsive from "@/components/ViewBaseResponsive.vue";
 import RowToMobileStackedLayout from "@/layouts/RowToMobileStackedLayout.vue";
 import RowToMobileStackedColumn from "@/layouts/RowToMobileStackedColumn.vue";
 import BaseBoldHeadline from "@/components/BaseBoldHeadline.vue";
@@ -13,11 +13,12 @@ import EloChart from "@/components/ProfileEloChart.vue";
 
 import { defineComponent } from "vue";
 import UsersRepository from "@/repositories/usersRepository";
+import DarkContainer from "@/components/DarkContainer.vue";
 
 export default defineComponent({
   name: "UserProfileDemo",
   components: {
-    ViewBase,
+    ViewBaseResponsive,
     RowToMobileStackedLayout,
     RowToMobileStackedColumn,
     BaseBoldHeadline,
@@ -27,6 +28,7 @@ export default defineComponent({
     ProfileMatchBlade,
     ProfileMatchesContainer,
     EloChart,
+    DarkContainer,
   },
   data() {
     return {
@@ -55,11 +57,12 @@ export default defineComponent({
   },
 });
 </script>
-<template
-  ><view-base :placeItems="'start'"
-    ><row-to-mobile-stacked-layout>
-      <row-to-mobile-stacked-column>
-        <profile-general-container>
+<template>
+  <view-base-responsive :backgroundTint="'light'">
+    <dark-container>
+      <!-- First row -->
+      <div class="flex-1 flex flex-col md:flex-row gap-4 mb-4">
+        <div class="bg-gray-50 flex-1 rounded-2xl">
           <profile-info-container>
             <!-- Profile name -->
             <div
@@ -102,11 +105,36 @@ export default defineComponent({
                   alt=""
                 />
               </router-link>
-              <div class="text-xl">ELO: {{ user.elo }}</div>
-              <div class="text-xl">Matches played: 1000</div>
-              <div class="text-xl">Won: 669</div>
-              <div class="text-xl">Lost: 321</div>
-              <div class="text-xl">Tied: 10</div>
+              <div class="flex-1 flex flex-col ">
+                <div class="flex flex-col text-center md:flex-row md:gap-4">
+                  <p>
+                    <span class="text-xl font-medium">ELO: </span
+                    ><span class="text-lg">{{ user.elo }}</span>
+                  </p>
+                  <p>
+                    <span class="text-xl font-medium">Rank: </span
+                    ><span class="text-lg">1</span>
+                  </p>
+                </div>
+                <div class="flex flex-col text-center md:flex-row gap-4">
+                  <p class="whitespace-nowrap">
+                    <span class="text-lg font-medium">Total matches: </span>
+                    <span>1000</span>
+                  </p>
+                  <p class="whitespace-nowrap">
+                    <span class="text-lg font-medium">Won: </span>
+                    <span>669</span>
+                  </p>
+                  <p class="whitespace-nowrap">
+                    <span class="text-lg font-medium">Lost: </span>
+                    <span>321</span>
+                  </p>
+                  <p class="whitespace-nowrap">
+                    <span class="text-lg font-medium">Tied: </span>
+                    <span>10</span>
+                  </p>
+                </div>
+              </div>
             </div>
 
             <!-- Current balance -->
@@ -153,24 +181,38 @@ export default defineComponent({
               </div>
             </div>
           </profile-info-container>
+        </div>
+        <div class="bg-gray-50 flex-1 rounded-2xl">
+          <base-bold-headline>Match history</base-bold-headline>
+          <profile-matches-container>
+            <!-- Programatically load matches  -->
+            <profile-match-blade></profile-match-blade>
+            <profile-match-blade></profile-match-blade>
+            <profile-match-blade></profile-match-blade>
+            <profile-match-blade></profile-match-blade>
+          </profile-matches-container>
+        </div>
+      </div>
+      <!-- Second row -->
+      <div class="flex-1 flex flex-col md:flex-row gap-4">
+        <div class="bg-gray-50 flex-1 rounded-2xl">
           <profile-elo-container>
             <base-bold-headline>Elo history</base-bold-headline>
             <elo-chart></elo-chart>
           </profile-elo-container>
-        </profile-general-container>
-      </row-to-mobile-stacked-column>
-      <row-to-mobile-stacked-column
-        ><base-bold-headline>Match history</base-bold-headline>
-        <profile-matches-container>
-          <!-- Programatically load matches  -->
-          <profile-match-blade></profile-match-blade>
-          <profile-match-blade></profile-match-blade>
-          <profile-match-blade></profile-match-blade>
-          <profile-match-blade></profile-match-blade>
-        </profile-matches-container>
-      </row-to-mobile-stacked-column>
-    </row-to-mobile-stacked-layout> </view-base
-></template>
+        </div>
+        <div class="bg-gray-50 flex-1 rounded-2xl">
+          <base-bold-headline>Customizations</base-bold-headline>
+          <div>
+            <div>Change Email</div>
+            <div>Change password</div>
+            <div>Change username</div>
+          </div>
+        </div>
+      </div>
+    </dark-container>
+  </view-base-responsive>
+</template>
 <style scoped>
 .slide-enter-active,
 .slide-leave-active {

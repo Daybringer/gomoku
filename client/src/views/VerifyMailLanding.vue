@@ -18,7 +18,7 @@
 import { defineComponent } from "vue";
 import StatusMessage from "@/components/FormStatusMessage.vue";
 import BoldHeadline from "@/components/BaseBoldHeadline.vue";
-import ViewBase from "@/components/ViewBase.vue";
+import ViewBase from "@/components/ViewBaseFixedHeight.vue";
 
 import { useStore } from "@/store/store";
 export default defineComponent({

@@ -227,7 +227,7 @@ import DefeatConeSVG from "@/components/SVGDefeatCone.vue";
 import MutedIconSVG from "@/components/SVGMutedIcon.vue";
 import UnmutedIconSVG from "@/components/SVGUnmutedIcon.vue";
 // Components
-import ViewBase from "@/components/ViewBase.vue";
+import ViewBaseFixedHeight from "@/components/ViewBaseFixedHeight.vue";
 import SocialBlade from "@/components/GameSocialBlade.vue";
 import ChatMessage from "@/components/GameChatMessage.vue";
 // Utils
@@ -236,7 +236,7 @@ import { defineComponent } from "vue";
 export default defineComponent({
   name: "GameBase",
   components: {
-    ViewBase,
+    ViewBaseFixedHeight,
     SocialBlade,
     ChatMessage,
     //SVGs

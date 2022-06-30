@@ -13,7 +13,7 @@
 // Utils
 import { defineComponent } from "vue";
 export default defineComponent({
-  name: "ViewBase",
+  name: "ViewBaseFixedHeight",
   props: {
     placeItems: {
       type: String,

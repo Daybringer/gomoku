@@ -1,3 +1,3 @@
 <template>
-  <div class="flex-end bg-yellow-100"><slot> </slot></div>
+  <div class=""><slot> </slot></div>
 </template>

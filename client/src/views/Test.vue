@@ -4,5 +4,7 @@ export default defineComponent({
   name: "Test",
 });
 </script>
-<template></template>
+<template>
+  <view-base :placeItems="'start'"> </view-base>
+</template>
 <style scoped></style>
