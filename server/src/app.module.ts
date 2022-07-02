@@ -9,6 +9,7 @@ import { QuickSearchGateway, GameGateway } from './app.gateway';
 import { GameService } from './game/services/game.service';
 import { ConfigModule } from '@nestjs/config';
 import { SearchService } from './game/services/search.service';
+import { GameModule } from './game/game.module';
 
 require('dotenv').config();
 // Just squezing some comment for prod
@@ -25,10 +26,11 @@ require('dotenv').config();
     }),
     AuthModule,
     UsersModule,
+    GameModule,
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, 'public'),
     }),
   ],
-  providers: [QuickSearchGateway, GameGateway, GameService, SearchService],
+  providers: [QuickSearchGateway, GameGateway],
 })
 export class AppModule {}

@@ -3,17 +3,10 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   Column,
-  ManyToMany,
-  JoinTable,
-  BeforeInsert,
   PrimaryColumn,
   OneToOne,
   JoinColumn,
-  OneToMany,
 } from 'typeorm';
-
-import { GameEntity as Game } from './game.entity';
-import { PlayerGameProfile } from './playerGameProfile.entity';
 
 import { UserConfigEntity as UserConfig } from './userConfig.entity';
 
@@ -24,12 +17,6 @@ export class UserEntity {
   // Credentials
   @PrimaryGeneratedColumn('increment')
   id: number;
-
-  // @Column({ nullable: true })
-  // gID?: string;
-
-  // @Column({ nullable: true })
-  // fID?: string;
 
   @PrimaryColumn({ unique: true })
   username: string;
@@ -46,10 +33,6 @@ export class UserEntity {
   @Column({ nullable: true })
   mailVerificationCode?: string;
 
-  // TODO problem with postgres (TypeORMs) createdAt
-  // @Column()
-  // createdTimestamp: string;
-
   @CreateDateColumn()
   createdAt?: Date;
 
@@ -64,16 +47,6 @@ export class UserEntity {
 
   @Column({ default: 1000 })
   elo?: number;
-
-  @OneToMany(
-    () => PlayerGameProfile,
-    (playerGameProfile) => playerGameProfile.user,
-  )
-  gameProfiles?: PlayerGameProfile[];
-
-  @ManyToMany(() => Game)
-  @JoinTable()
-  games?: Game[];
 
   @Column({ default: 0 })
   credit?: number;

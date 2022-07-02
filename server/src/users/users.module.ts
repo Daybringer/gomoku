@@ -7,7 +7,6 @@ import { AuthModule } from 'src/auth/auth.module';
 import { PlayerGameProfile } from 'src/models/playerGameProfile.entity';
 import { UserConfigEntity } from 'src/models/userConfig.entity';
 import { GameEntity } from 'src/models/game.entity';
-import { TokensService } from 'src/auth/token.service';
 
 @Module({
   imports: [
@@ -17,7 +16,6 @@ import { TokensService } from 'src/auth/token.service';
       UserConfigEntity,
       GameEntity,
     ]),
-    TypeOrmModule.forFeature(),
     forwardRef(() => AuthModule),
   ],
   controllers: [UsersController],

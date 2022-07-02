@@ -3,9 +3,7 @@ import {
   CreateDateColumn,
   Entity,
   PrimaryGeneratedColumn,
-  OneToMany,
 } from 'typeorm';
-import { PlayerGameProfile } from './playerGameProfile.entity';
 
 import { GameType, TypeOfWin, Turn } from '../shared/types';
 
@@ -14,11 +12,8 @@ export class GameEntity {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
-  @OneToMany(
-    () => PlayerGameProfile,
-    (playerGameProfile) => playerGameProfile.game,
-  )
-  playerProfiles?: PlayerGameProfile[];
+  @Column('int', { array: true })
+  playerGameProfileIDs?: number[];
 
   @CreateDateColumn()
   createdAt?: Date[];
@@ -26,11 +21,11 @@ export class GameEntity {
   @Column({ type: 'enum', enum: GameType })
   type?: GameType;
 
-  @Column({ default: 0 })
-  eloDelta?: number;
+  @Column()
+  startingTime: number;
 
   @Column({ default: null, nullable: true })
-  winnerID?: number;
+  winnerGameProfileID?: number;
 
   @Column({ type: 'enum', enum: TypeOfWin })
   typeOfWin?: TypeOfWin;
@@ -41,9 +36,12 @@ export class GameEntity {
   @Column('int', { array: true })
   turnHistory: Turn[];
 
-  @Column()
-  startingPlayerUUID: string;
+  @Column({ nullable: true })
+  startingPlayerGameProfileID?: number;
 
-  @Column()
-  afterSwapStartingPlayerUUID: string;
+  @Column({ nullable: true })
+  afterSwap1StartingPlayerGameProfileID?: number;
+
+  @Column({ nullable: true })
+  afterSwap2StartingPlayerGameProfileID?: number;
 }

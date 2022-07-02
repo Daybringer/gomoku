@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import {
   JoinGameDTO,
   GameEvents,
@@ -6,6 +7,9 @@ import {
   GameClickDTO,
 } from 'gomoku-shared-types/';
 import { Server, Socket } from 'socket.io';
+import { GameEntity } from 'src/models/game.entity';
+import { PlayerGameProfile } from 'src/models/playerGameProfile.entity';
+import { Repository } from 'typeorm';
 import {
   AnyGame,
   GameState,
@@ -15,9 +19,17 @@ import {
   QuickGame,
   RankedGame,
 } from '../game.class';
+import { SearchService } from './search.service';
 
 @Injectable()
 export class GameService {
+  constructor(
+    @InjectRepository(GameEntity)
+    private readonly gameRepository: Repository<GameEntity>,
+    @InjectRepository(GameEntity)
+    private readonly playerGameProfileRepository: Repository<PlayerGameProfile>,
+    private readonly searchService: SearchService,
+  ) {}
   quickGameRooms: { [id: string]: QuickGame } = {};
   // test object
   rankedGameRooms: { [id: string]: RankedGame } = {};
@@ -374,16 +386,39 @@ export class GameService {
     }
   }
 
-  saveGame(game: AnyGame): void {
-    //TODO implement saving logic
-    console.log('Saving game logic => TODO');
+  async saveGame(game: AnyGame) {
+    const gameEntity: GameEntity = new GameEntity();
+    // Profiles
+    const playerGameProfileEntity: PlayerGameProfile = new PlayerGameProfile();
+    const [firstPlayer, secondPlayer] = game.players;
+    // playerGameProfileEntity.timeLeft = firstPlayer.secondsLeft;
+    // if (firstPlayer.logged) {
+    //   const user = await this.userService;
+    // }
+
+    // playerGameProfileEntity.userID = firstPlayer.logged
+    //   ? firstPlayer.username
+    //   : null;
+
+    // GameEntity
+    // gameEntity.playerProfiles = []
+    // gameEntity.type = game.gameType;
+    // gameEntity.finalState = game.gameboard;
+    // gameEntity.turnHistory = game.turns;
+
+    // Find userID
+
+    // Check if players are logged in and save games with their IDs
+
+    // gameEntity.winnerID = game.winner.username;
+    // Quick/Ranked branches
   }
 
-  endGame(
+  async endGame(
     game: AnyGame,
     gameEnding: GameEnding,
     winnerSocketID?: string,
-  ): void {
+  ) {
     clearInterval(game.calibrationIntervalHandle);
     game.setGameState(GameState.Ended);
     game.setGameEnding(gameEnding);
@@ -393,7 +428,7 @@ export class GameService {
       } else {
         throw 'None WinnerSocketID given';
       }
-      this.saveGame(game);
+      return await this.saveGame(game);
     }
   }
 

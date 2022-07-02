@@ -5,6 +5,6 @@ export default defineComponent({
 });
 </script>
 <template>
-  <view-base :placeItems="'start'"> </view-base>
+  <view-base :placeItems="'start'"></view-base>
 </template>
 <style scoped></style>

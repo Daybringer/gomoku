@@ -1,24 +1,16 @@
-import {
-  Column,
-  Entity,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
-import { GameEntity } from './game.entity';
-import { UserEntity } from './user.entity';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class PlayerGameProfile {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
-  @ManyToOne(() => UserEntity, (user) => user.gameProfiles)
-  user: UserEntity;
+  @Column({ default: null, nullable: true })
+  userID?: number;
 
   @Column()
   timeLeft: number;
 
-  @ManyToOne(() => GameEntity, (gameEntity) => gameEntity.playerProfiles)
-  game: GameEntity;
+  @Column({ nullable: true })
+  eloDelta?: number;
 }
