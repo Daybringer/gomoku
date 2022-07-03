@@ -5,6 +5,7 @@ import {
   GameEvents,
   SearchEvents,
   GameClickDTO,
+  EndingType,
 } from 'gomoku-shared-types/';
 import { Server, Socket } from 'socket.io';
 import { GameEntity } from 'src/models/game.entity';
@@ -15,7 +16,6 @@ import {
   AnyGame,
   GameState,
   GameType,
-  GameEnding,
   Player,
   QuickGame,
   RankedGame,
@@ -88,7 +88,7 @@ export class GameService {
       if (playerTimes[playerSocketID] <= 0) {
         this.endGame(
           game,
-          GameEnding.Timeout,
+          EndingType.Surrender,
           game.getNextPlayerOnTurn().socketID,
         );
         socketServer
@@ -169,13 +169,13 @@ export class GameService {
 
         const currGameState = this.checkWin(game, position);
 
-        if (currGameState === GameEnding.Combination) {
+        if (currGameState === EndingType.Combination) {
           const winner = game.getPlayerOnTurn();
           this.endGame(game, currGameState, winner.socketID);
           socketServer
             .to(roomID)
             .emit(GameEvents.GameEndedByCombination, winner.socketID);
-        } else if (currGameState === GameEnding.Tie) {
+        } else if (currGameState === EndingType.Tie) {
           this.endGame(game, currGameState);
           socketServer.to(roomID).emit(GameEvents.GameEndedByTie);
         } else {
@@ -333,7 +333,7 @@ export class GameService {
     }
   }
 
-  checkWin(game: AnyGame, position: number[]): GameEnding {
+  checkWin(game: AnyGame, position: number[]): EndingType {
     const round = game.round;
     const gamePlan = game.gameboard;
 
@@ -375,15 +375,15 @@ export class GameService {
         }
       }
       if (horizont >= 5 || vertical >= 5 || diagonalL >= 5 || diagonalR >= 5) {
-        return GameEnding.Combination;
+        return EndingType.Combination;
       }
     }
     if (horizont >= 5 || vertical >= 5 || diagonalL >= 5 || diagonalR >= 5) {
-      return GameEnding.Combination;
+      return EndingType.Combination;
     } else if (round === 225) {
-      return GameEnding.Tie;
+      return EndingType.Tie;
     } else {
-      return GameEnding.None;
+      return;
     }
   }
 
@@ -391,11 +391,12 @@ export class GameService {
     const gameEntity: GameEntity = new GameEntity();
     // Profiles
     const [firstPlayer, secondPlayer] = game.players;
-    // first player
+    const socketIDPlayerGameProfilePairs: { [socketID: string]: number } = {};
 
     game.players.forEach(async (player) => {
-      const playerGameProfileEntity: PlayerGameProfile =
-        new PlayerGameProfile();
+      const playerGameProfileEntity = new PlayerGameProfile();
+      socketIDPlayerGameProfilePairs[player.socketID] =
+        playerGameProfileEntity.id;
 
       playerGameProfileEntity.timeLeft = player.timeLeft;
       // find user's ID
@@ -407,34 +408,31 @@ export class GameService {
       gameEntity.playerGameProfileIDs.push(playerGameProfileEntity.id);
     });
 
+    // TODO
     // ranked game -> calculate Elo delta save it to profiles and update elos of users
     if (game.gameType === GameType.Ranked) {
       // get Elos
     }
-
-    // playerGameProfileEntity.timeLeft = firstPlayer.secondsLeft;
-    // if (firstPlayer.logged) {
-    //   const user = await this.userService;
-    // }
-
-    // playerGameProfileEntity.userID = firstPlayer.logged
-    //   ? firstPlayer.username
-    //   : null;
-
     gameEntity.type = game.gameType;
     gameEntity.finalState = game.gameboard;
     gameEntity.turnHistory = game.turns;
+    gameEntity.typeOfWin = game.gameEnding;
+    // there has to be a winner
+    if (game.gameEnding !== EndingType.Tie) {
+      gameEntity.winnerGameProfileID =
+        socketIDPlayerGameProfilePairs[game.winner.socketID];
+    }
   }
 
   async endGame(
     game: AnyGame,
-    gameEnding: GameEnding,
+    gameEnding: EndingType,
     winnerSocketID?: string,
   ) {
     clearInterval(game.calibrationIntervalHandle);
     game.setGameState(GameState.Ended);
     game.setGameEnding(gameEnding);
-    if (gameEnding !== GameEnding.Tie) {
+    if (gameEnding !== EndingType.Tie) {
       if (winnerSocketID) {
         game.setWinner(winnerSocketID);
       } else {
@@ -448,7 +446,7 @@ export class GameService {
   endGameDisconnect(game: AnyGame, disconnecteeID: string) {
     clearInterval(game.calibrationIntervalHandle);
     game.setGameState(GameState.Ended);
-    game.setGameEnding(GameEnding.Disconnect);
+    game.setGameEnding(EndingType.Surrender);
     game.setWinner(game.getOtherPlayersIDByFirstOnes(disconnecteeID));
     this.saveGame(game);
   }

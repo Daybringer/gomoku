@@ -1,3 +1,5 @@
+import { EndingType } from '../shared/types';
+
 enum GameType {
   Ranked = 'RANKED',
   Quick = 'QUICK',
@@ -8,14 +10,6 @@ enum GameState {
   Waiting = 'WAITING',
   Running = 'RUNNING',
   Ended = 'ENDED',
-}
-
-enum GameEnding {
-  None = 'None',
-  Combination = 'COMBINATION',
-  Timeout = 'TIMEOUT',
-  Disconnect = 'DISCONNECT',
-  Tie = 'TIE',
 }
 
 enum Opening {
@@ -45,7 +39,7 @@ abstract class Game {
   opening: Opening;
   timeLimitInSeconds: number;
   gameState: GameState = GameState.Waiting;
-  gameEnding: GameEnding;
+  gameEnding: EndingType;
   lastCalibrationTimestamp: number;
   timeoutHandleID: NodeJS.Timeout;
   calibrationIntervalHandle: NodeJS.Timer;
@@ -120,7 +114,7 @@ abstract class Game {
     this.gameState = gameState;
   }
 
-  setGameEnding(gameEnding: GameEnding): void {
+  setGameEnding(gameEnding: EndingType): void {
     this.gameEnding = gameEnding;
   }
 
@@ -155,13 +149,4 @@ class RankedGame extends Game {
 
 type AnyGame = QuickGame | RankedGame;
 
-export {
-  QuickGame,
-  RankedGame,
-  GameType,
-  GameState,
-  GameEnding,
-  Opening,
-  Player,
-  AnyGame,
-};
+export { QuickGame, RankedGame, GameType, GameState, Opening, Player, AnyGame };

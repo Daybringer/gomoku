@@ -5,7 +5,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-import { GameType, TypeOfWin, Turn } from '../shared/types';
+import { GameType, EndingType, Turn } from '../shared/types';
 
 @Entity()
 export class GameEntity {
@@ -24,8 +24,8 @@ export class GameEntity {
   @Column({ default: null, nullable: true })
   winnerGameProfileID?: number;
 
-  @Column({ type: 'enum', enum: TypeOfWin })
-  typeOfWin?: TypeOfWin;
+  @Column({ type: 'enum', enum: EndingType })
+  typeOfWin?: EndingType;
 
   @Column('int', { array: true })
   finalState?: number[][];
