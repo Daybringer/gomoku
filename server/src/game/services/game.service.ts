@@ -9,6 +9,7 @@ import {
 import { Server, Socket } from 'socket.io';
 import { GameEntity } from 'src/models/game.entity';
 import { PlayerGameProfile } from 'src/models/playerGameProfile.entity';
+import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
 import {
   AnyGame,
@@ -28,7 +29,7 @@ export class GameService {
     private readonly gameRepository: Repository<GameEntity>,
     @InjectRepository(GameEntity)
     private readonly playerGameProfileRepository: Repository<PlayerGameProfile>,
-    private readonly searchService: SearchService,
+    private readonly usersService: UsersService,
   ) {}
   quickGameRooms: { [id: string]: QuickGame } = {};
   // test object
@@ -389,8 +390,28 @@ export class GameService {
   async saveGame(game: AnyGame) {
     const gameEntity: GameEntity = new GameEntity();
     // Profiles
-    const playerGameProfileEntity: PlayerGameProfile = new PlayerGameProfile();
     const [firstPlayer, secondPlayer] = game.players;
+    // first player
+
+    game.players.forEach(async (player) => {
+      const playerGameProfileEntity: PlayerGameProfile =
+        new PlayerGameProfile();
+
+      playerGameProfileEntity.timeLeft = player.timeLeft;
+      // find user's ID
+      if (player.logged) {
+        const user = await this.usersService.findOneByUsername(player.username);
+        playerGameProfileEntity.userID = user.id;
+      }
+
+      gameEntity.playerGameProfileIDs.push(playerGameProfileEntity.id);
+    });
+
+    // ranked game -> calculate Elo delta save it to profiles and update elos of users
+    if (game.gameType === GameType.Ranked) {
+      // get Elos
+    }
+
     // playerGameProfileEntity.timeLeft = firstPlayer.secondsLeft;
     // if (firstPlayer.logged) {
     //   const user = await this.userService;
@@ -400,18 +421,9 @@ export class GameService {
     //   ? firstPlayer.username
     //   : null;
 
-    // GameEntity
-    // gameEntity.playerProfiles = []
-    // gameEntity.type = game.gameType;
-    // gameEntity.finalState = game.gameboard;
-    // gameEntity.turnHistory = game.turns;
-
-    // Find userID
-
-    // Check if players are logged in and save games with their IDs
-
-    // gameEntity.winnerID = game.winner.username;
-    // Quick/Ranked branches
+    gameEntity.type = game.gameType;
+    gameEntity.finalState = game.gameboard;
+    gameEntity.turnHistory = game.turns;
   }
 
   async endGame(

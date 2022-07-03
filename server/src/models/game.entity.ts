@@ -16,13 +16,10 @@ export class GameEntity {
   playerGameProfileIDs?: number[];
 
   @CreateDateColumn()
-  createdAt?: Date[];
+  createdAt?: Date;
 
   @Column({ type: 'enum', enum: GameType })
   type?: GameType;
-
-  @Column()
-  startingTime: number;
 
   @Column({ default: null, nullable: true })
   winnerGameProfileID?: number;

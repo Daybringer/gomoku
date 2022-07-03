@@ -1,9 +1,17 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class PlayerGameProfile {
   @PrimaryGeneratedColumn('increment')
   id: number;
+
+  @CreateDateColumn()
+  createdAt?: Date;
 
   @Column({ default: null, nullable: true })
   userID?: number;
