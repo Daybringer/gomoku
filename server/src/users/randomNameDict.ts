@@ -135,7 +135,7 @@ const nouns = {
     'alpaca',
     'alligator',
     'akita',
-    'acat',
+    'apricot',
   ],
   b: [
     'bear',
@@ -164,7 +164,7 @@ const nouns = {
     'lemur',
     'lobster',
     'leopard',
-    'lync',
+    'lynx',
   ],
   m: ['mamba', 'megalodon', 'manatee', 'mongoose', 'moose', 'mouser'],
   n: ['narwhal', 'newt', 'night snake', 'needlefish', 'nightingale'],

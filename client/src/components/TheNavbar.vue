@@ -27,7 +27,7 @@
             <div class="flex">
               <navbar-navigation-link
                 :active="activeIntersection === 'home' && isHomePage"
-                :to="'/q/search'"
+                :to="'/search?type=quick'"
                 :type="'primary'"
                 >Play</navbar-navigation-link
               >

@@ -47,14 +47,14 @@ const routes: Array<RouteRecordRaw> = [
     meta: { requiresAuth: true },
   },
   {
-    path: "/profile",
-    component: () => import("../views/UserProfile.vue"),
+    path: "/profile-old",
+    component: () => import("../views/UserProfileDemo.vue"),
     meta: { requiresAuth: true },
   },
   // FIXME remove dummies
   {
-    path: "/profile-demo",
-    component: () => import("../views/UserProfileDemo.vue"),
+    path: "/profile",
+    component: () => import("../views/UserProfile.vue"),
     meta: { requiresAuth: true },
   },
   {
