@@ -1,4 +1,5 @@
 import Repository from "./Repository";
+import { User } from "../shared/interfaces/user.interface";
 
 const resource = "/users";
 export default {
@@ -10,7 +11,7 @@ export default {
   },
   // getUserProfile() {},
   getOwnUserProfile() {
-    return Repository.get(`${resource}/profile`);
+    return Repository.get<User>(`${resource}/profile`);
   },
   getRandomName() {
     return Repository.post(`${resource}/generate-name`);

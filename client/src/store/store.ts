@@ -153,6 +153,15 @@ export const useStore = defineStore("store", {
           });
       });
     },
+    async fetchOwnProfile() {
+      // TODO complete user info + user config
+      UsersRepository.getOwnUserProfile()
+        .then((res) => {
+          const user = res.data;
+          this.userProfile.username = user.username;
+        })
+        .catch((err) => console.log(err));
+    },
     consumeAuthPayload(authPayload: AuthenticationPayload): void {
       const token = authPayload.payload.token;
       const userProfile = userProfileBase();

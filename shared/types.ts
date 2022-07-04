@@ -37,7 +37,7 @@ enum GameType {
   Custom = "custom",
 }
 
-enum TypeOfWin {
+enum EndingType {
   Combination,
   Time,
   Surrender,
@@ -87,7 +87,7 @@ export {
   GameEvents,
   SearchEvents,
   GameType,
-  TypeOfWin,
+  EndingType,
   JoinGameDTO,
   LoginStrategy,
   Colors,

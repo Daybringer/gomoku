@@ -27,7 +27,7 @@ export class GameService {
   constructor(
     @InjectRepository(GameEntity)
     private readonly gameRepository: Repository<GameEntity>,
-    @InjectRepository(GameEntity)
+    @InjectRepository(PlayerGameProfile)
     private readonly playerGameProfileRepository: Repository<PlayerGameProfile>,
     private readonly usersService: UsersService,
   ) {}
@@ -387,32 +387,40 @@ export class GameService {
     }
   }
 
+  async savePlayerGameProfile(player: Player): Promise<PlayerGameProfile> {
+    const playerGameProfileEntity = this.playerGameProfileRepository.create();
+
+    if (player.logged) {
+      const user = await this.usersService.findOneByUsername(player.username);
+      playerGameProfileEntity.userID = user.id;
+    }
+
+    playerGameProfileEntity.timeLeft = player.timeLeft;
+
+    return await this.playerGameProfileRepository.save(playerGameProfileEntity);
+  }
+
   async saveGame(game: AnyGame) {
-    const gameEntity: GameEntity = new GameEntity();
+    const gameEntity: GameEntity = this.gameRepository.create();
     // Profiles
-    const [firstPlayer, secondPlayer] = game.players;
-    const socketIDPlayerGameProfilePairs: { [socketID: string]: number } = {};
+    const socketIDtoPlayerGameProfileIDPairs: { [socketID: string]: number } =
+      {};
 
-    game.players.forEach(async (player) => {
-      const playerGameProfileEntity = new PlayerGameProfile();
-      socketIDPlayerGameProfilePairs[player.socketID] =
-        playerGameProfileEntity.id;
+    const [playerOne, playerTwo] = game.players;
 
-      playerGameProfileEntity.timeLeft = player.timeLeft;
-      // find user's ID
-      if (player.logged) {
-        const user = await this.usersService.findOneByUsername(player.username);
-        playerGameProfileEntity.userID = user.id;
-      }
-
-      gameEntity.playerGameProfileIDs.push(playerGameProfileEntity.id);
-    });
+    const playerOneProfile = await this.savePlayerGameProfile(playerOne);
+    const playerTwoProfile = await this.savePlayerGameProfile(playerTwo);
+    socketIDtoPlayerGameProfileIDPairs[playerOne.socketID] =
+      playerOneProfile.id;
+    socketIDtoPlayerGameProfileIDPairs[playerTwo.socketID] =
+      playerTwoProfile.id;
 
     // TODO
     // ranked game -> calculate Elo delta save it to profiles and update elos of users
     if (game.gameType === GameType.Ranked) {
       // get Elos
     }
+
     gameEntity.type = game.gameType;
     gameEntity.finalState = game.gameboard;
     gameEntity.turnHistory = game.turns;
@@ -420,8 +428,15 @@ export class GameService {
     // there has to be a winner
     if (game.gameEnding !== EndingType.Tie) {
       gameEntity.winnerGameProfileID =
-        socketIDPlayerGameProfilePairs[game.winner.socketID];
+        socketIDtoPlayerGameProfileIDPairs[game.winner.socketID];
     }
+
+    gameEntity.playerGameProfileIDs = [
+      playerOneProfile.id,
+      playerTwoProfile.id,
+    ];
+
+    return this.gameRepository.save(gameEntity);
   }
 
   async endGame(

@@ -1,10 +1,5 @@
 import { EndingType } from '../shared/types';
-
-enum GameType {
-  Ranked = 'RANKED',
-  Quick = 'QUICK',
-  Custom = 'CUSTOM',
-}
+import { GameType } from '../shared/types';
 
 enum GameState {
   Waiting = 'WAITING',
@@ -140,13 +135,19 @@ abstract class Game {
 
 class QuickGame extends Game {
   timeLimitInSeconds = 2 * 60;
+  gameType = GameType.Quick;
 }
 
 class RankedGame extends Game {
   timeLimitInSeconds = 3 * 60;
   eloDiff: number = 0;
+  gameType = GameType.Ranked;
 }
 
-type AnyGame = QuickGame | RankedGame;
+class CustomGame extends Game {
+  gameType = GameType.Custom;
+}
+
+type AnyGame = QuickGame | RankedGame | CustomGame;
 
 export { QuickGame, RankedGame, GameType, GameState, Opening, Player, AnyGame };

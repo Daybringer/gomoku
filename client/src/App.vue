@@ -15,7 +15,10 @@ export default defineComponent({
   setup() {
     const store = useStore();
 
-    if (store.token) store.setBearer(store.token);
+    if (store.token) {
+      store.setBearer(store.token);
+      store.fetchOwnProfile();
+    }
 
     const state = reactive({ activeIntersection: "" });
 

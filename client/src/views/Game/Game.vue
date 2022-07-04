@@ -104,6 +104,10 @@ export default defineComponent({
     this.me.color = userProfile.myColor;
     this.opponent.color = userProfile.enemyColor;
 
+    console.log(this.me);
+    console.log("UserProfile:>>");
+    console.log(userProfile.username, userProfile);
+
     if (this.getGameTypeFromURL === GameType.Quick) {
       socket.emit(GameEvents.JoinGame, {
         roomID: this.getRoomIDFromURL,
@@ -158,7 +162,6 @@ export default defineComponent({
     );
 
     // New message
-
     socket.on(GameEvents.RecieveMessage, (message) => {
       this.messages.push({ author: "opponent", text: message });
     });
@@ -182,7 +185,6 @@ export default defineComponent({
     });
 
     // Different game endings
-
     socket.on(GameEvents.GameEndedByDisconnect, (socketID: string) => {
       // I have been disconnected
       if (socket.id === socketID) {

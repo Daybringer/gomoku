@@ -1,5 +1,5 @@
 <template>
-  <view-base>
+  <view-base-fixed-height>
     <!-- Background top overlay -->
     <div class="absolute top-16 w-full h-2/6 bg-gray-800  z-0"></div>
     <!-- Game window -->
@@ -206,7 +206,7 @@
         :myColor="myColor"
       />
     </div>
-  </view-base>
+  </view-base-fixed-height>
 </template>
 <script lang="ts">
 // Types

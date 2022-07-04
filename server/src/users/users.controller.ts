@@ -83,7 +83,7 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Get('profile')
-  async fetchUser(@Req() req): Promise<UserEntity> {
+  async fetchUser(@Req() req): Promise<User> {
     const { password, ...rest } = req.user;
     return rest;
   }

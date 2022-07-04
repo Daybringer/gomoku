@@ -1,4 +1,4 @@
-import { GameType, TypeOfWin, Turn } from "../types";
+import { GameType, EndingType, Turn } from "../types";
 import { PlayerGameProfile } from "./playerGameProfile.interface";
 
 export interface Game {
@@ -8,7 +8,7 @@ export interface Game {
   type?: GameType;
   eloDelta?: number;
   winnerID?: number;
-  typeOfWin?: TypeOfWin;
+  typeOfWin?: EndingType;
   finalState?: number[][];
   turnHistory: Turn[];
 }
