@@ -5,7 +5,7 @@
     <!-- Game window -->
     <div
       ref="container"
-      class="xl:w-80 w-full overflow-hidden rounded-lg top-0 min-h-full custom-shadow bg-gray-600 z-10 flex xl:flex-row flex-col shadow-2xl"
+      class="xl:w-80 w-full overflow-hidden rounded-lg top-0 min-h-full custom-shadow bg-gray-400 z-10 flex xl:flex-row flex-col shadow-2xl"
     >
       <!-- Game container -->
       <div
@@ -401,6 +401,11 @@ export default defineComponent({
   },
   mounted() {
     this.equalizeGameContDimensions();
+    // FIXME why do I need to call it twice --> otherwise it doesn't fit fully and on small devices leaves a bar on side
+    setTimeout(() => {
+      this.equalizeGameContDimensions();
+    }, 1);
+
     window.addEventListener("resize", this.equalizeGameContDimensions);
 
     const urlParams = new URLSearchParams(window.location.search);
