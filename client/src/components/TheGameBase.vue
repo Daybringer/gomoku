@@ -81,7 +81,7 @@
                 Opponent has disconnected
               </h3>
               <router-link
-                to="q/search"
+                :to="newGameURL"
                 class="w-full mt-2 xl:mt-8 py-2 text-center rounded-lg text-gray-50 font-medium text-lg bg-gomoku-blue hover:bg-gomoku-blue-dark focus:bg-gomoku-blue-dark"
               >
                 New Game
@@ -268,6 +268,7 @@ export default defineComponent({
       chatInput: "",
       afterGameModal: true,
       muted: false,
+      gameType: "",
     };
   },
   computed: {
@@ -313,6 +314,9 @@ export default defineComponent({
     },
     isGameEndindVictoryByDisconnect(): boolean {
       return this.gameEnding === Ending.VictoryDisconnect;
+    },
+    newGameURL(): string {
+      return `search?type=${this.gameType || ""}`;
     },
   },
   watch: {
@@ -398,6 +402,11 @@ export default defineComponent({
   mounted() {
     this.equalizeGameContDimensions();
     window.addEventListener("resize", this.equalizeGameContDimensions);
+
+    const urlParams = new URLSearchParams(window.location.search);
+
+    const gameType = urlParams.get("type");
+    this.gameType = gameType || "";
   },
   unmounted() {
     window.removeEventListener("resize", this.equalizeGameContDimensions);
