@@ -174,10 +174,10 @@
           <!-- Input container -->
           <div
             v-show="!muted"
-            class="w-full rounded-full h-12 border-4 xl:px-8 p-2 px-4 border-gray-700 flex flex-row overflow-hidden justify-between"
+            class="w-full rounded-full min-h-12 border-4 xl:px-8 p-2 px-4 border-gray-700 gap-x-4 flex flex-wrap flex-row overflow-hidden justify-between"
           >
             <input
-              class="h-full bg-transparent placeholder-gray-400 dark:placeholder-gray-400 w-auto xl:flex-1 p-0 border-0 border-b-2 border-gray-500 dark:border-gray-300 text-gray-900 dark:text-gray-50 text-lg float-left focus:border-gomoku-blue focus:ring-transparent"
+              class="h-full bg-transparent placeholder-gray-400 dark:placeholder-gray-400 w-auto flex-1 p-0 border-0 border-b-2 border-gray-500 dark:border-gray-300 text-gray-900 dark:text-gray-50 text-lg float-left focus:border-gomoku-blue focus:ring-transparent"
               type="text"
               v-model="chatInput"
               placeholder="Write a message"

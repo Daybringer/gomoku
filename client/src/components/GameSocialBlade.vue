@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-white dark:bg-gray-500 w-full rounded-full h-12 flex flex-row items-center justify-between overflow-hidden shadow-md"
+    class="bg-white dark:bg-gray-500 w-full rounded-full min-h-12 flex flex-row items-center justify-between overflow-hidden shadow-md"
   >
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -74,13 +74,13 @@
       {{ humanReadableTime }}
     </div>
     <div class="flex-1 text-center text-xl text-gray-900 dark:text-gray-100">
-      {{ nickname }}
+      <p>{{ nickname }}</p>
     </div>
     <div
       class=" hover:bg-gray-300 dark:hover:bg-gray-400 cursor-pointer w-16 rounded-full h-full flex justify-between"
     >
       <img
-        class="m-auto h-80 w-auto align-middle"
+        class="m-auto h-12 w-auto align-middle"
         alt="user_icon"
         src="../assets/samurai_blue.svg"
       />
