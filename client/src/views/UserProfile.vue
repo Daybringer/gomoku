@@ -5,8 +5,6 @@ import RowToMobileStackedLayout from "@/layouts/RowToMobileStackedLayout.vue";
 import RowToMobileStackedColumn from "@/layouts/RowToMobileStackedColumn.vue";
 import BaseBoldHeadline from "@/components/BaseBoldHeadline.vue";
 import ProfileGeneralContainer from "@/components/ProfileGeneralContainer.vue";
-import ProfileEloContainer from "@/components/ProfileEloContainer.vue";
-import ProfileInfoContainer from "@/components/ProfileInfoContainer.vue";
 import ProfileMatchesContainer from "@/components/ProfileMatchesContainer.vue";
 import ProfileMatchBlade from "@/components/ProfileMatchBlade.vue";
 import EloChart from "@/components/ProfileEloChart.vue";
@@ -14,6 +12,9 @@ import EloChart from "@/components/ProfileEloChart.vue";
 import { defineComponent } from "vue";
 import UsersRepository from "@/repositories/usersRepository";
 import DarkContainer from "@/components/DarkContainer.vue";
+import ProfileSection from "@/components/ProfileSection.vue";
+import { Game, FilledGame } from "@/shared/interfaces/game.interface";
+import { EndingType, GameType } from "@/shared/types";
 
 export default defineComponent({
   name: "UserProfileDemo",
@@ -23,14 +24,23 @@ export default defineComponent({
     RowToMobileStackedColumn,
     BaseBoldHeadline,
     ProfileGeneralContainer,
-    ProfileInfoContainer,
-    ProfileEloContainer,
     ProfileMatchBlade,
     ProfileMatchesContainer,
     EloChart,
     DarkContainer,
+    ProfileSection,
   },
-  data() {
+  data(): {
+    koinHintToggled: boolean;
+    user: {
+      username: string;
+      elo: number;
+      balance: number;
+      settings: { gameStoneColor: { me: string; enemy: string } };
+    };
+    matches: Game[];
+    currPage: number;
+  } {
     return {
       koinHintToggled: false,
       user: {
@@ -44,6 +54,8 @@ export default defineComponent({
           },
         },
       },
+      matches: [],
+      currPage: 0,
     };
   },
   methods: {
@@ -54,6 +66,43 @@ export default defineComponent({
         })
         .catch((err) => console.log(err));
     },
+    /**
+     * Fetches first twenty matches
+     */
+    async fetchMatches() {
+      this.fetchMoreMatches(0);
+      const exampleGame1: FilledGame = {
+        id: 0,
+        turnHistory: [],
+        typeOfWin: EndingType.Surrender,
+        type: GameType.Quick,
+        winnerGameProfileID: 0,
+        finalState: [[]],
+        createdAt: new Date("2022-07-04 21:09:38.452"),
+        playerProfilesIDs: [0, 1],
+        startingPlayerGameProfileID: 0,
+        // extra
+        myDelta: 0,
+        myUsername: "Daybringer",
+        myRemainingTime: 119,
+        enemyRemainingTime: 112,
+        enemyUsername: "",
+        enemyLogged: false,
+        win: true,
+      };
+
+      this.matches.push(exampleGame1);
+    },
+    /**
+     * Fetches a page of matches. One page are twenty
+     * @param page - number
+     */
+    async fetchMoreMatches(page: number) {
+      this.currPage += 1;
+    },
+  },
+  mounted() {
+    this.fetchMatches();
   },
 });
 </script>
@@ -61,9 +110,10 @@ export default defineComponent({
   <view-base-responsive :backgroundTint="'light'">
     <dark-container>
       <!-- First row -->
-      <div class="flex-1 flex flex-col md:flex-row gap-4 mb-4">
-        <div class="bg-gray-50 flex-1 rounded-2xl">
-          <profile-info-container>
+      <div class="flex-1 flex flex-wrap flex-col md:flex-row gap-4 mb-4">
+        <!-- General info -->
+        <profile-section>
+          <div class="flex-1 p-2 flex flex-col  ">
             <!-- Profile name -->
             <div
               class="flex flex-row place-content-center lg:place-content-start"
@@ -180,35 +230,38 @@ export default defineComponent({
                 </transition>
               </div>
             </div>
-          </profile-info-container>
-        </div>
-        <div class="bg-gray-50 flex-1 rounded-2xl">
+          </div>
+        </profile-section>
+
+        <!-- Match history -->
+        <profile-section>
           <base-bold-headline>Match history</base-bold-headline>
           <profile-matches-container>
             <!-- Programatically load matches  -->
-            <profile-match-blade></profile-match-blade>
-            <profile-match-blade></profile-match-blade>
-            <profile-match-blade></profile-match-blade>
-            <profile-match-blade></profile-match-blade>
+            <profile-match-blade
+              v-for="match in matches"
+              :key="match.id"
+            ></profile-match-blade>
           </profile-matches-container>
-        </div>
+        </profile-section>
       </div>
       <!-- Second row -->
-      <div class="flex-1 flex flex-col md:flex-row gap-4">
-        <div class="bg-gray-50 flex-1 rounded-2xl">
-          <profile-elo-container>
-            <base-bold-headline>Elo history</base-bold-headline>
-            <elo-chart></elo-chart>
-          </profile-elo-container>
-        </div>
-        <div class="bg-gray-50 flex-1 rounded-2xl">
+      <div class="flex-1 flex  flex-col md:flex-row gap-4">
+        <!-- Elo chart -->
+        <profile-section>
+          <base-bold-headline>Elo history</base-bold-headline>
+          <elo-chart></elo-chart>
+        </profile-section>
+
+        <!-- Customizations -->
+        <profile-section>
           <base-bold-headline>Customizations</base-bold-headline>
           <div>
             <div>Change Email</div>
             <div>Change password</div>
             <div>Change username</div>
           </div>
-        </div>
+        </profile-section>
       </div>
     </dark-container>
   </view-base-responsive>

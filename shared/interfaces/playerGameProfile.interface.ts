@@ -1,9 +1,7 @@
-import { Game } from "./game.interface";
-import { User } from "./user.interface";
-
 export interface PlayerGameProfile {
   id: number;
-  user: User;
+  createdAt?: Date;
+  userID: number;
   timeLeft: number;
-  game: Game;
+  eloDelta?: number;
 }

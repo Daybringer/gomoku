@@ -1,14 +1,26 @@
 import { GameType, EndingType, Turn } from "../types";
-import { PlayerGameProfile } from "./playerGameProfile.interface";
 
+// Propagate
 export interface Game {
   id?: number;
-  playerProfiles?: PlayerGameProfile[];
-  createdAt?: Date[];
+  playerProfilesIDs?: number[];
+  createdAt?: Date;
   type?: GameType;
-  eloDelta?: number;
-  winnerID?: number;
+  winnerGameProfileID?: number;
   typeOfWin?: EndingType;
   finalState?: number[][];
   turnHistory: Turn[];
+  startingPlayerGameProfileID?: number;
+  afterSwap1StartingPlayerGameProfileID?: number;
+  afterSwap2StartingPlayerGameProfileID?: number;
+}
+
+export interface FilledGame extends Game {
+  myDelta: number;
+  myUsername: string;
+  myRemainingTime: number;
+  enemyRemainingTime: number;
+  enemyUsername: string;
+  enemyLogged: boolean;
+  win: boolean;
 }
