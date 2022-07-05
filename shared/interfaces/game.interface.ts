@@ -16,6 +16,7 @@ export interface Game {
 }
 
 export interface FilledGame extends Game {
+  dateString: string;
   myDelta: number;
   myUsername: string;
   myRemainingTime: number;

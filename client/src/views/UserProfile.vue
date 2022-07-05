@@ -38,7 +38,7 @@ export default defineComponent({
       balance: number;
       settings: { gameStoneColor: { me: string; enemy: string } };
     };
-    matches: Game[];
+    matches: FilledGame[];
     currPage: number;
   } {
     return {
@@ -78,7 +78,6 @@ export default defineComponent({
         type: GameType.Quick,
         winnerGameProfileID: 0,
         finalState: [[]],
-        createdAt: new Date("2022-07-04 21:09:38.452"),
         playerProfilesIDs: [0, 1],
         startingPlayerGameProfileID: 0,
         // extra
@@ -89,9 +88,50 @@ export default defineComponent({
         enemyUsername: "",
         enemyLogged: false,
         win: true,
+        dateString: "2022-07-04 21:09:38.452",
+      };
+      const exampleGame2: FilledGame = {
+        id: 1,
+        turnHistory: [],
+        typeOfWin: EndingType.Combination,
+        type: GameType.Ranked,
+        winnerGameProfileID: 0,
+        finalState: [[]],
+        playerProfilesIDs: [0, 1],
+        startingPlayerGameProfileID: 0,
+        // extra
+        myDelta: -12,
+        myUsername: "Daybringer",
+        myRemainingTime: 119,
+        enemyRemainingTime: 112,
+        enemyUsername: "Vojtesla",
+        enemyLogged: true,
+        win: false,
+        dateString: "2022-07-04 21:09:38.452",
+      };
+      const exampleGame3: FilledGame = {
+        id: 0,
+        turnHistory: [],
+        typeOfWin: EndingType.Surrender,
+        type: GameType.Custom,
+        winnerGameProfileID: 0,
+        finalState: [[]],
+        playerProfilesIDs: [0, 1],
+        startingPlayerGameProfileID: 0,
+        // extra
+        myDelta: 0,
+        myUsername: "Daybringer",
+        myRemainingTime: 119,
+        enemyRemainingTime: 112,
+        enemyUsername: "Hecubah",
+        enemyLogged: true,
+        win: true,
+        dateString: "2022-07-04 21:09:38.452",
       };
 
       this.matches.push(exampleGame1);
+      this.matches.push(exampleGame2);
+      this.matches.push(exampleGame3);
     },
     /**
      * Fetches a page of matches. One page are twenty
@@ -99,6 +139,9 @@ export default defineComponent({
      */
     async fetchMoreMatches(page: number) {
       this.currPage += 1;
+    },
+    isTie(typeOfWin: any): boolean {
+      return typeOfWin === EndingType.Tie;
     },
   },
   mounted() {
@@ -241,6 +284,15 @@ export default defineComponent({
             <profile-match-blade
               v-for="match in matches"
               :key="match.id"
+              :elo="match.myDelta"
+              :dateString="match.dateString"
+              :enemyLogged="match.enemyLogged"
+              :enemyUsername="match.enemyUsername"
+              :gameType="match.type"
+              :logged="true"
+              :username="match.myUsername"
+              :tie="isTie(match.typeOfWin)"
+              :win="match.win"
             ></profile-match-blade>
           </profile-matches-container>
         </profile-section>
