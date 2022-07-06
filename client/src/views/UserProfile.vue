@@ -109,8 +109,27 @@ export default defineComponent({
         win: false,
         dateString: "2022-07-04 21:09:38.452",
       };
+      const exampleGame4: FilledGame = {
+        id: 4,
+        turnHistory: [],
+        typeOfWin: EndingType.Combination,
+        type: GameType.Ranked,
+        winnerGameProfileID: 0,
+        finalState: [[]],
+        playerProfilesIDs: [0, 1],
+        startingPlayerGameProfileID: 0,
+        // extra
+        myDelta: 8,
+        myUsername: "Daybringer",
+        myRemainingTime: 119,
+        enemyRemainingTime: 112,
+        enemyUsername: "Vojtesla",
+        enemyLogged: true,
+        win: true,
+        dateString: "2022-07-05 21:09:38.452",
+      };
       const exampleGame3: FilledGame = {
-        id: 0,
+        id: 3,
         turnHistory: [],
         typeOfWin: EndingType.Surrender,
         type: GameType.Custom,
@@ -131,6 +150,7 @@ export default defineComponent({
 
       this.matches.push(exampleGame1);
       this.matches.push(exampleGame2);
+      this.matches.push(exampleGame4);
       this.matches.push(exampleGame3);
     },
     /**

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-white dark:bg-gray-500 w-full rounded-lg min-h-12 p-2 flex flex-row items-center justify-between shadow-md"
+    class="bg-white dark:bg-gray-500 w-full rounded-lg min-h-12 p-2 grid grid-flow-col items-center justify-between shadow-md"
   >
     <div class="flex flex-row items-center">
       <profile-match-blade-icon-name-box
@@ -58,7 +58,7 @@ export default defineComponent({
     },
     humanDate(): string {
       const date = new Date(this.dateString!);
-      return `${date.getDay()}.${date.getMonth()}.${date.getFullYear()}`;
+      return `${date.getDate()}.${date.getMonth()}.${date.getFullYear()}`;
     },
   },
 });
