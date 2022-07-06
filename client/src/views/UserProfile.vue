@@ -123,7 +123,7 @@ export default defineComponent({
         myUsername: "Daybringer",
         myRemainingTime: 119,
         enemyRemainingTime: 112,
-        enemyUsername: "Vojtesla",
+        enemyUsername: "Vojteslaasdfasdfasfd",
         enemyLogged: true,
         win: true,
         dateString: "2022-07-05 21:09:38.452",

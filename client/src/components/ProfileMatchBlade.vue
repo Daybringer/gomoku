@@ -1,26 +1,39 @@
 <template>
   <div
-    class="bg-white dark:bg-gray-500 w-full rounded-lg min-h-12 p-2 grid grid-flow-col items-center justify-between shadow-md"
+    class="bg-white dark:bg-gray-500 w-full rounded-lg min-h-12 p-2 grid md:grid-cols-2 gap-1 items-stretch md:flex-row  md:justify-between  shadow-md"
   >
-    <div class="flex flex-row items-center">
+    <!-- Names and icons -->
+    <div class="grid grid-cols-11 items-center flex-1 gap-1 mb-2 md:mb-0">
       <profile-match-blade-icon-name-box
         :logged="logged"
         :username="username"
+        class="col-span-5"
       />
-      <p class="px-2 text-lg">VS</p>
+      <p class="text-lg text-center">VS</p>
       <profile-match-blade-icon-name-box
         :logged="enemyLogged"
         :username="enemyUsername"
+        class="col-span-5"
       />
     </div>
-    <profile-match-blade-win-lose-icon :tie="tie" :win="win" />
-    <profile-match-blade-game-type-icon :gameType="gameType" />
-    <div>{{ eloString }}</div>
-    <div class="text-lg">{{ humanDate }}</div>
-    <div
-      class="rounded-full bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-50 hover:bg-gray-500 text-gray-900 cursor-pointer p-1"
-    >
-      <SVGWatchIcon />
+    <!-- Stuff -->
+    <div class="grid grid-flow-col-dense items-center gap-2">
+      <profile-match-blade-win-lose-icon
+        class="col-span-1"
+        :tie="tie"
+        :win="win"
+      />
+      <profile-match-blade-game-type-icon
+        class="col-span-1"
+        :gameType="gameType"
+      />
+      <div class="col-span-1">{{ eloString }}</div>
+      <div class="text-lg col-span-2">{{ humanDate }}</div>
+      <div
+        class="col-span-1 w-8 h-8 rounded-full  bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-50 hover:bg-gray-500 text-gray-900 cursor-pointer p-1"
+      >
+        <SVGWatchIcon />
+      </div>
     </div>
   </div>
 </template>

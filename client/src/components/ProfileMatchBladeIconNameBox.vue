@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-row place-items-center bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-50 hover:bg-gray-500 text-gray-900 font-normal gap-1 cursor-pointer rounded-lg py-1 px-3"
+    class="flex flex-row  place-items-center justify-start overflow-auto bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-50 hover:bg-gray-500 text-gray-900 font-normal gap-1 cursor-pointer rounded-lg py-1 px-1"
   >
     <SVGAnonymIcon v-if="!logged" />
     <rounded-small-user-icon v-if="logged"></rounded-small-user-icon
