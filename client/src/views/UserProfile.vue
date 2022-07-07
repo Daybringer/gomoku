@@ -304,6 +304,7 @@ export default defineComponent({
             <profile-match-blade
               v-for="match in matches"
               :key="match.id"
+              :gameID="match.id"
               :elo="match.myDelta"
               :dateString="match.dateString"
               :enemyLogged="match.enemyLogged"

@@ -29,11 +29,9 @@
       />
       <div class="col-span-1">{{ eloString }}</div>
       <div class="text-lg col-span-2">{{ humanDate }}</div>
-      <div
-        class="col-span-1 w-8 h-8 rounded-full  bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-50 hover:bg-gray-500 text-gray-900 cursor-pointer p-1"
-      >
-        <SVGWatchIcon />
-      </div>
+      <profile-match-blade-game-link
+        :gameID="gameID"
+      ></profile-match-blade-game-link>
     </div>
   </div>
 </template>
@@ -42,7 +40,7 @@ import { defineComponent } from "vue";
 import ProfileMatchBladeIconNameBox from "./ProfileMatchBladeIconNameBox.vue";
 import ProfileMatchBladeWinLoseIcon from "./ProfileMatchBladeWinLoseIcon.vue";
 import ProfileMatchBladeGameTypeIcon from "./ProfileMatchBladeGameTypeIcon.vue";
-import SVGWatchIcon from "./SVGWatchIcon.vue";
+import ProfileMatchBladeGameLink from "@/components/ProfileMatchBladeGameLink.vue";
 import { GameType } from "@/shared/types";
 export default defineComponent({
   name: "ProfileMatchBlade",
@@ -56,12 +54,13 @@ export default defineComponent({
     enemyUsername: String,
     gameType: String,
     dateString: String,
+    gameID: Number,
   },
   components: {
     ProfileMatchBladeIconNameBox,
     ProfileMatchBladeWinLoseIcon,
     ProfileMatchBladeGameTypeIcon,
-    SVGWatchIcon,
+    ProfileMatchBladeGameLink,
   },
   computed: {
     eloString(): string {
