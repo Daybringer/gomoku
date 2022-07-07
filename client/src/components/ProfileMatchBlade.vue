@@ -5,7 +5,7 @@
     <!-- Names and icons -->
     <div class="grid grid-cols-11 items-center flex-1 gap-1 mb-2 md:mb-0">
       <profile-match-blade-icon-name-box
-        :logged="logged"
+        :logged="true"
         :username="username"
         class="col-span-5"
       />

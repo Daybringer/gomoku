@@ -123,7 +123,7 @@ export default defineComponent({
         myUsername: "Daybringer",
         myRemainingTime: 119,
         enemyRemainingTime: 112,
-        enemyUsername: "Vojteslaasdfasdfasfd",
+        enemyUsername: "Vojtesla",
         enemyLogged: true,
         win: true,
         dateString: "2022-07-05 21:09:38.452",
@@ -281,8 +281,8 @@ export default defineComponent({
                 </div>
                 <transition name="slide">
                   <div
-                    v-if="koinHintToggled"
-                    class="bg-gray-200 rounded-lg absolute block mt-2 py-2 px-6 w-64 text-gray-900"
+                    v-show="koinHintToggled"
+                    class="bg-gray-200 rounded-lg absolute block mt-2 py-2 px-6 w-64  text-gray-900"
                   >
                     <span>
                       Koin is a currency that is used for buying profile icons,
@@ -338,14 +338,4 @@ export default defineComponent({
     </dark-container>
   </view-base-responsive>
 </template>
-<style scoped>
-.slide-enter-active,
-.slide-leave-active {
-  transition: all 0.5s ease;
-}
-
-.slide-enter-from,
-.slide-leave-to {
-  transform: translateY(-8px);
-}
-</style>
+<style scoped></style>
