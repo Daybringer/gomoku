@@ -4,6 +4,7 @@ import ViewBaseResponsive from "@/components/ViewBaseResponsive.vue";
 import RowToMobileStackedLayout from "@/layouts/RowToMobileStackedLayout.vue";
 import RowToMobileStackedColumn from "@/layouts/RowToMobileStackedColumn.vue";
 import BaseBoldHeadline from "@/components/BaseBoldHeadline.vue";
+import BaseButton from "@/components/BaseButton.vue";
 import ProfileGeneralContainer from "@/components/ProfileGeneralContainer.vue";
 import ProfileMatchesContainer from "@/components/ProfileMatchesContainer.vue";
 import ProfileMatchBlade from "@/components/ProfileMatchBlade.vue";
@@ -23,6 +24,7 @@ export default defineComponent({
     RowToMobileStackedLayout,
     RowToMobileStackedColumn,
     BaseBoldHeadline,
+    BaseButton,
     ProfileGeneralContainer,
     ProfileMatchBlade,
     ProfileMatchesContainer,
@@ -34,6 +36,7 @@ export default defineComponent({
     koinHintToggled: boolean;
     user: {
       username: string;
+      userID: number;
       elo: number;
       balance: number;
       settings: { gameStoneColor: { me: string; enemy: string } };
@@ -45,6 +48,7 @@ export default defineComponent({
       koinHintToggled: false,
       user: {
         username: "Daybringer",
+        userID: 0,
         elo: 0,
         balance: 0,
         settings: {
@@ -83,7 +87,9 @@ export default defineComponent({
         // extra
         myDelta: 0,
         myUsername: "Daybringer",
+        myID: 1,
         myRemainingTime: 119,
+        enemyID: 2,
         enemyRemainingTime: 112,
         enemyUsername: "",
         enemyLogged: false,
@@ -102,7 +108,9 @@ export default defineComponent({
         // extra
         myDelta: -12,
         myUsername: "Daybringer",
+        myID: 1,
         myRemainingTime: 119,
+        enemyID: 2,
         enemyRemainingTime: 112,
         enemyUsername: "Vojtesla",
         enemyLogged: true,
@@ -121,7 +129,9 @@ export default defineComponent({
         // extra
         myDelta: 8,
         myUsername: "Daybringer",
+        myID: 1,
         myRemainingTime: 119,
+        enemyID: 2,
         enemyRemainingTime: 112,
         enemyUsername: "Vojtesla",
         enemyLogged: true,
@@ -139,8 +149,10 @@ export default defineComponent({
         startingPlayerGameProfileID: 0,
         // extra
         myDelta: 0,
+        myID: 1,
         myUsername: "Daybringer",
         myRemainingTime: 119,
+        enemyID: 0,
         enemyRemainingTime: 112,
         enemyUsername: "Hecubah",
         enemyLogged: true,
@@ -305,8 +317,10 @@ export default defineComponent({
               v-for="match in matches"
               :key="match.id"
               :gameID="match.id"
+              :myID="match.myID"
               :elo="match.myDelta"
               :dateString="match.dateString"
+              :enemyID="match.enemyID"
               :enemyLogged="match.enemyLogged"
               :enemyUsername="match.enemyUsername"
               :gameType="match.type"
@@ -315,6 +329,13 @@ export default defineComponent({
               :tie="isTie(match.typeOfWin)"
               :win="match.win"
             ></profile-match-blade>
+            <router-link
+              :to="'/profile/' + this.user.userID + '/match-history'"
+            >
+              <base-button>
+                All matches
+              </base-button>
+            </router-link>
           </profile-matches-container>
         </profile-section>
       </div>

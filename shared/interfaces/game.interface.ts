@@ -19,8 +19,10 @@ export interface FilledGame extends Game {
   dateString: string;
   myDelta: number;
   myUsername: string;
+  myID: number;
   myRemainingTime: number;
   enemyRemainingTime: number;
+  enemyID?: number;
   enemyUsername: string;
   enemyLogged: boolean;
   win: boolean;

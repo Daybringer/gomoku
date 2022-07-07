@@ -1,16 +1,18 @@
 <template>
   <div
-    class="bg-white dark:bg-gray-500 w-full rounded-lg min-h-12 p-2 grid md:grid-cols-2 gap-1 items-stretch md:flex-row  md:justify-between  shadow-md"
+    class="bg-white dark:bg-gray-600 w-full rounded-lg min-h-12 p-2 grid md:grid-cols-2 gap-1 items-stretch md:flex-row  md:justify-between  shadow-md"
   >
     <!-- Names and icons -->
     <div class="grid grid-cols-11 items-center flex-1 gap-1 mb-2 md:mb-0">
       <profile-match-blade-icon-name-box
         :logged="true"
         :username="username"
+        :userID="myID"
         class="col-span-5"
       />
       <p class="text-lg text-center">VS</p>
       <profile-match-blade-icon-name-box
+        :userID="enemyID"
         :logged="enemyLogged"
         :username="enemyUsername"
         class="col-span-5"
@@ -50,6 +52,8 @@ export default defineComponent({
     tie: Boolean,
     win: Boolean,
     username: String,
+    myID: Number,
+    enemyID: Number,
     enemyLogged: Boolean,
     enemyUsername: String,
     gameType: String,
