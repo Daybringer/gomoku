@@ -9,7 +9,7 @@ export class UserConfigEntity {
   @Column('json')
   colors?: Colors;
 
-  @Column({ type: 'enum', enum: GameBoard, default: GameBoard.Normal })
+  @Column({ type: 'enum', enum: GameBoard, default: GameBoard.Standard })
   gameBoard?: GameBoard;
 
   @Column('int')

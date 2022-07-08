@@ -45,9 +45,9 @@ enum EndingType {
 }
 
 enum GameBoard {
-  Normal,
-  Traditional,
-  Modern,
+  Standard = "standard",
+  Classic = "classic",
+  Modern = "modern",
 }
 
 interface Colors {

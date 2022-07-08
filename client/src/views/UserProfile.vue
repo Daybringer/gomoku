@@ -15,7 +15,13 @@ import UsersRepository from "@/repositories/usersRepository";
 import DarkContainer from "@/components/DarkContainer.vue";
 import ProfileSection from "@/components/ProfileSection.vue";
 import { Game, FilledGame } from "@/shared/interfaces/game.interface";
-import { EndingType, GameType } from "@/shared/types";
+import { EndingType, GameBoard, GameType } from "@/shared/types";
+import BaseMidHeadline from "@/components/BaseMidHeadline.vue";
+import BaseLowHeadline from "@/components/BaseLowHeadline.vue";
+import SVGStandardBoardIcon from "@/components/SVGStandardBoardIcon.vue";
+import SVGClassicBoardIcon from "@/components/SVGClassicBoardIcon.vue";
+import SVGModernBoardIcon from "@/components/SVGModernBoardIcon.vue";
+import ProfileBoardButton from "@/components/ProfileBoardButton.vue";
 
 export default defineComponent({
   name: "UserProfileDemo",
@@ -31,6 +37,12 @@ export default defineComponent({
     EloChart,
     DarkContainer,
     ProfileSection,
+    BaseMidHeadline,
+    BaseLowHeadline,
+    SVGStandardBoardIcon,
+    SVGClassicBoardIcon,
+    SVGModernBoardIcon,
+    ProfileBoardButton,
   },
   data(): {
     koinHintToggled: boolean;
@@ -39,7 +51,10 @@ export default defineComponent({
       userID: number;
       elo: number;
       balance: number;
-      settings: { gameStoneColor: { me: string; enemy: string } };
+      settings: {
+        gameStoneColor: { me: string; enemy: string };
+        boardType: GameBoard;
+      };
     };
     matches: FilledGame[];
     currPage: number;
@@ -56,6 +71,7 @@ export default defineComponent({
             me: "#00b3fe",
             enemy: "#ff2079",
           },
+          boardType: GameBoard.Standard,
         },
       },
       matches: [],
@@ -63,6 +79,18 @@ export default defineComponent({
     };
   },
   methods: {
+    setBoard(variant: number) {
+      if (variant == 0) {
+        this.setGameBoard(GameBoard.Standard);
+      } else if (variant == 1) {
+        this.setGameBoard(GameBoard.Classic);
+      } else {
+        this.setGameBoard(GameBoard.Modern);
+      }
+    },
+    async setGameBoard(gameBoard: GameBoard) {
+      this.user.settings.boardType = gameBoard;
+    },
     async fetchUserData() {
       return UsersRepository.getOwnUserProfile()
         .then((res) => {
@@ -120,7 +148,7 @@ export default defineComponent({
       const exampleGame4: FilledGame = {
         id: 4,
         turnHistory: [],
-        typeOfWin: EndingType.Combination,
+        typeOfWin: EndingType.Tie,
         type: GameType.Ranked,
         winnerGameProfileID: 0,
         finalState: [[]],
@@ -135,7 +163,7 @@ export default defineComponent({
         enemyRemainingTime: 112,
         enemyUsername: "Vojtesla",
         enemyLogged: true,
-        win: true,
+        win: false,
         dateString: "2022-07-05 21:09:38.452",
       };
       const exampleGame3: FilledGame = {
@@ -176,6 +204,8 @@ export default defineComponent({
       return typeOfWin === EndingType.Tie;
     },
   },
+  computed: {},
+
   mounted() {
     this.fetchMatches();
   },
@@ -188,7 +218,7 @@ export default defineComponent({
       <div class="flex-1 flex flex-wrap flex-col md:flex-row gap-4 mb-4">
         <!-- General info -->
         <profile-section>
-          <div class="flex-1 p-2 flex flex-col  ">
+          <div class="self-start px-2 flex flex-col  ">
             <!-- Profile name -->
             <div
               class="flex flex-row place-content-center lg:place-content-start"
@@ -312,7 +342,8 @@ export default defineComponent({
         <profile-section>
           <base-bold-headline>Match history</base-bold-headline>
           <profile-matches-container>
-            <!-- Programatically load matches  -->
+            <!-- Displaying few loaded matches -->
+            <!-- FIXME pass whole match instead of single props -->
             <profile-match-blade
               v-for="match in matches"
               :key="match.id"
@@ -329,6 +360,7 @@ export default defineComponent({
               :tie="isTie(match.typeOfWin)"
               :win="match.win"
             ></profile-match-blade>
+            <!-- All matches link -->
             <router-link
               :to="'/profile/' + this.user.userID + '/match-history'"
             >
@@ -350,10 +382,45 @@ export default defineComponent({
         <!-- Customizations -->
         <profile-section>
           <base-bold-headline>Customizations</base-bold-headline>
-          <div>
-            <div>Change Email</div>
-            <div>Change password</div>
-            <div>Change username</div>
+          <div class="flex-1  grid grid-cols-1 md:grid-cols-2  justify-around ">
+            <div class="flex-1 flex flex-col ">
+              <base-mid-headline>Gameboard</base-mid-headline>
+              <div class="flex flex-row justify-around pt-3 px-3 gap-2  flex-1">
+                <div class="flex flex-col  ">
+                  <profile-board-button
+                    @setBoard="setBoard"
+                    :currentBoard="this.user.settings.boardType"
+                    :type="'standard'"
+                  />
+                </div>
+                <div class=" flex flex-col">
+                  <profile-board-button
+                    @setBoard="setBoard"
+                    :currentBoard="this.user.settings.boardType"
+                    :type="'classic'"
+                  />
+                </div>
+                <div class="flex flex-col">
+                  <profile-board-button
+                    @setBoard="setBoard"
+                    :currentBoard="this.user.settings.boardType"
+                    :type="'modern'"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="flex-1 flex flex-col ">
+              <base-mid-headline>Game colors</base-mid-headline>
+              <div class="flex flex-row">
+                <div>My color</div>
+                <div>enemy color</div>
+              </div>
+            </div>
+          </div>
+          <div class="flex flex-col md:flex-row justify-around gap-5 p-5">
+            <base-button>Change Username</base-button>
+            <base-button>Change Email</base-button>
+            <base-button>Change Password</base-button>
           </div>
         </profile-section>
       </div>

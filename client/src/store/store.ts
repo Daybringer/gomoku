@@ -18,7 +18,7 @@ export interface UserProfile {
 function userProfileBase(): UserProfile {
   return {
     username: "",
-    gameBoard: GameBoard.Normal,
+    gameBoard: GameBoard.Standard,
     myColor: "#00b3fe",
     enemyColor: "#ff2079",
     nameChangeTokens: 0,
@@ -168,7 +168,7 @@ export const useStore = defineStore("store", {
       const user = authPayload.user;
 
       userProfile.username = user.username;
-      userProfile.gameBoard = user.userConfig?.gameBoard || GameBoard.Normal;
+      userProfile.gameBoard = user.userConfig?.gameBoard || GameBoard.Standard;
       userProfile.nameChangeTokens = user.nameChangeTokens!;
 
       this.saveUserProfile(userProfile);
