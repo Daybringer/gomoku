@@ -21,7 +21,8 @@ import BaseLowHeadline from "@/components/BaseLowHeadline.vue";
 import SVGStandardBoardIcon from "@/components/SVGStandardBoardIcon.vue";
 import SVGClassicBoardIcon from "@/components/SVGClassicBoardIcon.vue";
 import SVGModernBoardIcon from "@/components/SVGModernBoardIcon.vue";
-import ProfileBoardButton from "@/components/ProfileBoardButton.vue";
+import ProfilePickBoardButton from "@/components/ProfilePickBoardButton.vue";
+import ProfilePickColorButton from "@/components/ProfilePickColorButton.vue";
 
 export default defineComponent({
   name: "UserProfileDemo",
@@ -42,7 +43,8 @@ export default defineComponent({
     SVGStandardBoardIcon,
     SVGClassicBoardIcon,
     SVGModernBoardIcon,
-    ProfileBoardButton,
+    ProfilePickBoardButton,
+    ProfilePickColorButton,
   },
   data(): {
     koinHintToggled: boolean;
@@ -79,6 +81,13 @@ export default defineComponent({
     };
   },
   methods: {
+    setColor(isMyColor: boolean, color: string) {
+      if (isMyColor) {
+        this.user.settings.gameStoneColor.me = color;
+      } else {
+        this.user.settings.gameStoneColor.enemy = color;
+      }
+    },
     setBoard(variant: number) {
       if (variant == 0) {
         this.setGameBoard(GameBoard.Standard);
@@ -340,7 +349,7 @@ export default defineComponent({
 
         <!-- Match history -->
         <profile-section>
-          <base-bold-headline>Match history</base-bold-headline>
+          <base-bold-headline class="pt-2">Match history</base-bold-headline>
           <profile-matches-container>
             <!-- Displaying few loaded matches -->
             <!-- FIXME pass whole match instead of single props -->
@@ -375,33 +384,35 @@ export default defineComponent({
       <div class="flex-1 flex  flex-col md:flex-row gap-4">
         <!-- Elo chart -->
         <profile-section>
-          <base-bold-headline>Elo history</base-bold-headline>
+          <base-bold-headline class="pt-2">Elo history</base-bold-headline>
           <elo-chart></elo-chart>
         </profile-section>
 
         <!-- Customizations -->
         <profile-section>
-          <base-bold-headline>Customizations</base-bold-headline>
+          <base-bold-headline class="pt-2 pb-4"
+            >Customizations</base-bold-headline
+          >
           <div class="flex-1  grid grid-cols-1 md:grid-cols-2  justify-around ">
             <div class="flex-1 flex flex-col ">
               <base-mid-headline>Gameboard</base-mid-headline>
               <div class="flex flex-row justify-around pt-3 px-3 gap-2  flex-1">
                 <div class="flex flex-col  ">
-                  <profile-board-button
+                  <profile-pick-board-button
                     @setBoard="setBoard"
                     :currentBoard="this.user.settings.boardType"
                     :type="'standard'"
                   />
                 </div>
                 <div class=" flex flex-col">
-                  <profile-board-button
+                  <profile-pick-board-button
                     @setBoard="setBoard"
                     :currentBoard="this.user.settings.boardType"
                     :type="'classic'"
                   />
                 </div>
                 <div class="flex flex-col">
-                  <profile-board-button
+                  <profile-pick-board-button
                     @setBoard="setBoard"
                     :currentBoard="this.user.settings.boardType"
                     :type="'modern'"
@@ -409,11 +420,26 @@ export default defineComponent({
                 </div>
               </div>
             </div>
+            <!-- Game color pickers-->
             <div class="flex-1 flex flex-col ">
               <base-mid-headline>Game colors</base-mid-headline>
-              <div class="flex flex-row">
-                <div>My color</div>
-                <div>enemy color</div>
+              <div class="flex flex-row justify-around pt-4 px-3 gap-2 flex-1">
+                <div class="flex flex-col items-center">
+                  <base-low-headline>Your color</base-low-headline>
+                  <profile-pick-color-button
+                    :currentColor="user.settings.gameStoneColor.me"
+                    :isMyColor="true"
+                    @setColor="setColor"
+                  />
+                </div>
+                <div class="flex flex-col items-center">
+                  <base-low-headline>Enemy's color</base-low-headline>
+                  <profile-pick-color-button
+                    :currentColor="user.settings.gameStoneColor.enemy"
+                    :isMyColor="false"
+                    @setColor="setColor"
+                  />
+                </div>
               </div>
             </div>
           </div>

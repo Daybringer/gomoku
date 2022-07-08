@@ -4,7 +4,7 @@
     :class="
       isActive ? 'border-gray-800 dark:border-gray-300 ' : 'border-transparent'
     "
-    class="border-4 rounded-md"
+    class="border-4 rounded-md hover:opacity-80"
   >
     <base-low-headline>{{ headlineText }}</base-low-headline>
     <div class="p-1 ">
@@ -18,11 +18,17 @@
 import SVGClassicBoardIcon from "@/components/SVGClassicBoardIcon.vue";
 import SVGModernBoardIcon from "@/components/SVGModernBoardIcon.vue";
 import SVGStandardBoardIcon from "@/components/SVGStandardBoardIcon.vue";
+import BaseLowHeadline from "@/components/BaseLowHeadline.vue";
 import { defineComponent } from "vue";
 export default defineComponent({
   name: "",
   props: { type: String, currentBoard: String },
-  components: { SVGClassicBoardIcon, SVGModernBoardIcon, SVGStandardBoardIcon },
+  components: {
+    SVGClassicBoardIcon,
+    SVGModernBoardIcon,
+    SVGStandardBoardIcon,
+    BaseLowHeadline,
+  },
   data(): {} {
     return {};
   },
