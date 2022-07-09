@@ -8,9 +8,9 @@
   >
     <base-low-headline>{{ headlineText }}</base-low-headline>
     <div class="p-1 ">
-      <SVGClassicBoardIcon v-if="type == 'classic'" />
-      <SVGModernBoardIcon v-if="type == 'modern'" />
-      <SVGStandardBoardIcon v-if="type == 'standard'" />
+      <SVGClassicBoardIcon class="h-16" v-if="type == 'classic'" />
+      <SVGModernBoardIcon class="h-16" v-if="type == 'modern'" />
+      <SVGStandardBoardIcon class="h-16" v-if="type == 'standard'" />
     </div>
   </button>
 </template>
