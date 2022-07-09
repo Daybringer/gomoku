@@ -224,7 +224,7 @@ export default defineComponent({
   <view-base-responsive :backgroundTint="'light'">
     <dark-container>
       <!-- First row -->
-      <div class="flex-1 flex flex-wrap flex-col xl:flex-row gap-4 mb-4">
+      <div class="flex-1 grid grid-cols-1 xl:grid-cols-2 gap-4 mb-4">
         <!-- General info -->
         <profile-section>
           <div class="self-start px-2 flex flex-col  ">
@@ -381,13 +381,7 @@ export default defineComponent({
         </profile-section>
       </div>
       <!-- Second row -->
-      <div class="flex-1 flex  flex-col xl:flex-row gap-4">
-        <!-- Elo chart -->
-        <profile-section>
-          <base-bold-headline class="pt-2">Elo history</base-bold-headline>
-          <elo-chart></elo-chart>
-        </profile-section>
-
+      <div class="flex-1 grid grid-cols-1 xl:grid-cols-2 gap-4">
         <!-- Customizations -->
         <profile-section>
           <base-bold-headline class="pt-2 pb-4"
@@ -452,6 +446,12 @@ export default defineComponent({
             <base-button>Change Email</base-button>
             <base-button>Change Password</base-button>
           </div>
+        </profile-section>
+
+        <!-- Elo chart -->
+        <profile-section>
+          <base-bold-headline class="pt-2">Elo history</base-bold-headline>
+          <elo-chart></elo-chart>
         </profile-section>
       </div>
     </dark-container>
