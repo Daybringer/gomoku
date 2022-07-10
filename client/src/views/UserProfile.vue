@@ -107,11 +107,7 @@ export default defineComponent({
         })
         .catch((err) => console.log(err));
     },
-    /**
-     * Fetches first twenty matches
-     */
     async fetchMatches() {
-      this.fetchMoreMatches(0);
       const exampleGame1: FilledGame = {
         id: 0,
         turnHistory: [],
@@ -201,13 +197,6 @@ export default defineComponent({
       this.matches.push(exampleGame2);
       this.matches.push(exampleGame4);
       this.matches.push(exampleGame3);
-    },
-    /**
-     * Fetches a page of matches. One page are twenty
-     * @param page - number
-     */
-    async fetchMoreMatches(page: number) {
-      this.currPage += 1;
     },
     isTie(typeOfWin: any): boolean {
       return typeOfWin === EndingType.Tie;
@@ -419,7 +408,9 @@ export default defineComponent({
             <!-- Game color pickers-->
             <div class="flex-1 flex flex-col ">
               <base-mid-headline>Game colors</base-mid-headline>
-              <div class="flex flex-row justify-around p-3 gap-2 flex-1">
+              <div
+                class="flex flex-row justify-around md:mt-2 p-3 gap-2 flex-1"
+              >
                 <div class="flex flex-col items-center">
                   <base-low-headline>Your color</base-low-headline>
                   <profile-pick-color-button

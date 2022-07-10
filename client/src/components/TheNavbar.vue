@@ -110,16 +110,16 @@
             <div>
               <button
                 v-show="logged"
-                class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-white transition duration-150 ease-in-out"
+                class="flex text-sm border-2 border-transparent rounded-full p-px bg-gray-100 focus:outline-none focus:border-gomoku-blue transition duration-150 ease-in-out"
                 id="user-menu"
                 aria-label="User menu"
                 aria-haspopup="true"
                 @click="profileToggle"
               >
                 <img
-                  class="h-8 w-8 rounded-full"
-                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                  alt=""
+                  class=" h-8"
+                  alt="user_icon"
+                  src="../assets/samurai_blue.svg"
                 />
               </button>
               <button
@@ -155,21 +155,14 @@
                   <a
                     href="#"
                     @click.prevent="pushAndCloseDropdown('/profile')"
-                    class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
+                    class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-300 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
                     role="menuitem"
                     >Your Profile</a
                   >
                   <a
                     href="#"
-                    @click.prevent="pushAndCloseDropdown('/settings')"
-                    class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
-                    role="menuitem"
-                    >Settings</a
-                  >
-                  <a
-                    href="#"
                     @click.prevent="logout"
-                    class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
+                    class="block px-4 py-2 text-sm leading-5  text-gray-700 hover:bg-gray-300 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
                     role="menuitem"
                     >Sign out</a
                   >
@@ -268,6 +261,7 @@
 import HamburgerButton from "@/components/HamburgerButton.vue";
 import NavbarNavigationLink from "./NavbarNavigationLink.vue";
 import MobileNavbarLink from "./MobileNavbarLink.vue";
+import RoundedSmallUserIcon from "@/components/RoundedSmallUserIcon.vue";
 
 // Pinia
 import { useStore } from "@/store/store";
@@ -278,7 +272,12 @@ import { defineComponent, ref, reactive } from "vue";
 export default defineComponent({
   name: "Navbar",
   props: { activeIntersection: String },
-  components: { HamburgerButton, NavbarNavigationLink, MobileNavbarLink },
+  components: {
+    HamburgerButton,
+    NavbarNavigationLink,
+    MobileNavbarLink,
+    RoundedSmallUserIcon,
+  },
   data() {
     return {
       burgerDropdownIsToggled: false,
