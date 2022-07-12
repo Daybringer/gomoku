@@ -9,8 +9,18 @@
     <base-low-headline>{{ headlineText }}</base-low-headline>
     <div class="p-1 ">
       <SVGClassicBoardIcon class="h-16 md:h-20" v-if="type == 'classic'" />
-      <SVGModernBoardIcon class="h-16 md:h-20" v-if="type == 'modern'" />
-      <SVGStandardBoardIcon class="h-16 md:h-20" v-if="type == 'standard'" />
+      <SVGModernBoardIcon
+        :myColor="myColor"
+        :enemyColor="enemyColor"
+        class="h-16 md:h-20"
+        v-if="type == 'modern'"
+      />
+      <SVGStandardBoardIcon
+        :myColor="myColor"
+        :enemyColor="enemyColor"
+        class="h-16 md:h-20"
+        v-if="type == 'standard'"
+      />
     </div>
   </button>
 </template>
@@ -22,7 +32,12 @@ import BaseLowHeadline from "@/components/BaseLowHeadline.vue";
 import { defineComponent } from "vue";
 export default defineComponent({
   name: "",
-  props: { type: String, currentBoard: String },
+  props: {
+    type: String,
+    currentBoard: String,
+    myColor: String,
+    enemyColor: String,
+  },
   components: {
     SVGClassicBoardIcon,
     SVGModernBoardIcon,

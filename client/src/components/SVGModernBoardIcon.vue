@@ -4,6 +4,7 @@
     viewBox="0 0 42.944 42.945"
     xml:space="preserve"
     xmlns="http://www.w3.org/2000/svg"
+    class="fill-current dark:text-gray-600 text-gray-800"
   >
     <g>
       <rect
@@ -11,31 +12,31 @@
         y="14.25"
         width="13.946"
         height="13.946"
-        fill="#00b3fe"
+        :fill="enemyColor"
       />
       <rect
         x=".70069"
         y=".94171"
         width="13.946"
         height="13.946"
-        fill="#ff2079"
+        :fill="myColor"
       />
       <rect
         x="14.411"
         y="14.794"
         width="13.946"
         height="13.946"
-        fill="#ff2079"
+        :fill="myColor"
       />
       <rect
         x="14.388"
         y="28.736"
         width="13.946"
         height="13.946"
-        fill="#00b3fe"
+        :fill="enemyColor"
       />
     </g>
-    <g transform="translate(-82.181 -114.54)" fill="#141b28">
+    <g transform="translate(-82.181 -114.54)" fill="currentColor">
       <rect
         x="82.186"
         y="114.54"
@@ -107,3 +108,14 @@
     </g>
   </svg>
 </template>
+<script lang="ts">
+import { defineComponent } from "vue";
+
+export default defineComponent({
+  props: {
+    myColor: String,
+    enemyColor: String,
+  },
+  setup() {},
+});
+</script>

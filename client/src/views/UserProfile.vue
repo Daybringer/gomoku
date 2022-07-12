@@ -386,6 +386,8 @@ export default defineComponent({
                   <profile-pick-board-button
                     @setBoard="setBoard"
                     :currentBoard="this.user.settings.boardType"
+                    :myColor="user.settings.gameStoneColor.me"
+                    :enemyColor="user.settings.gameStoneColor.enemy"
                     :type="'standard'"
                   />
                 </div>
@@ -400,6 +402,8 @@ export default defineComponent({
                   <profile-pick-board-button
                     @setBoard="setBoard"
                     :currentBoard="this.user.settings.boardType"
+                    :myColor="user.settings.gameStoneColor.me"
+                    :enemyColor="user.settings.gameStoneColor.enemy"
                     :type="'modern'"
                   />
                 </div>

@@ -1,12 +1,13 @@
 <template>
   <svg
+    class="fill-current dark:text-gray-600 text-gray-800"
     version="1.1"
     viewBox="0 0 42.939 42.939"
     xml:space="preserve"
     xmlns="http://www.w3.org/2000/svg"
   >
     <g transform="translate(-82.186 -114.54)">
-      <g fill="#141b28">
+      <g fill="currentColor">
         <rect
           x="82.186"
           y="114.54"
@@ -82,7 +83,7 @@
         rx="4.6244"
         ry="4.8213"
         fill="none"
-        stroke="#00b3fe"
+        :stroke="myColor"
         stroke-linejoin="round"
         stroke-width="1.3747"
         data-v-69bfb0ac=""
@@ -90,7 +91,7 @@
       />
       <g
         transform="matrix(1.2029 .78722 -.78722 1.2029 -149.95 469.76)"
-        fill="#ff2079"
+        :fill="enemyColor"
         paint-order="markers fill stroke"
       >
         <rect
@@ -113,7 +114,7 @@
       </g>
       <g
         transform="matrix(1.2029 .78722 -.78722 1.2029 -136.21 456)"
-        fill="#ff2079"
+        :fill="enemyColor"
         paint-order="markers fill stroke"
       >
         <rect
@@ -140,7 +141,7 @@
         rx="4.6244"
         ry="4.8213"
         fill="none"
-        stroke="#00b3fe"
+        :stroke="myColor"
         stroke-linejoin="round"
         stroke-width="1.3747"
         data-v-69bfb0ac=""
@@ -149,3 +150,14 @@
     </g>
   </svg>
 </template>
+<script lang="ts">
+import { defineComponent } from "vue";
+
+export default defineComponent({
+  props: {
+    myColor: String,
+    enemyColor: String,
+  },
+  setup() {},
+});
+</script>

@@ -1,12 +1,13 @@
 <template>
   <svg
+    class="fill-current text-gray-800 dark:text-gray-700"
     version="1.1"
     viewBox="0 0 42.944 42.945"
     xml:space="preserve"
     xmlns="http://www.w3.org/2000/svg"
   >
     <rect x=".42454" y=".42504" width="42.095" height="42.095" fill="#dec26b" />
-    <g transform="translate(-82.181 -114.54)" fill="#141b28">
+    <g transform="translate(-82.181 -114.54)" fill="currentColor">
       <rect
         x="82.186"
         y="114.54"

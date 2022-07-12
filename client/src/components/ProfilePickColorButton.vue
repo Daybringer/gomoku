@@ -23,7 +23,9 @@
     >
       <div class="flex-1 flex flex-col ">
         <base-bold-headline class="md:mt-4">Pick a color</base-bold-headline>
-        <div class="flex-1 flex flex-row gap-4 flex-wrap place-content-around">
+        <div
+          class="flex-1 flex flex-row gap-4 flex-wrap place-content-around justify-center"
+        >
           <button
             v-for="color in colorList"
             :key="color"
