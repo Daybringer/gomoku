@@ -23,6 +23,10 @@ import SVGClassicBoardIcon from "@/components/SVGClassicBoardIcon.vue";
 import SVGModernBoardIcon from "@/components/SVGModernBoardIcon.vue";
 import ProfilePickBoardButton from "@/components/ProfilePickBoardButton.vue";
 import ProfilePickColorButton from "@/components/ProfilePickColorButton.vue";
+import ProfileUserIconPicker from "@/components/ProfileUserIconPicker.vue";
+import BaseTooltipWithIcon from "@/components/BaseTooltipWithIcon.vue";
+import RankPlaceholderSvg from "@/assets/svg/RankPlaceholderSvg.vue";
+import QuestionMarkSvg from "@/assets/svg/QuestionMarkSvg.vue";
 
 export default defineComponent({
   name: "UserProfileDemo",
@@ -45,6 +49,10 @@ export default defineComponent({
     SVGModernBoardIcon,
     ProfilePickBoardButton,
     ProfilePickColorButton,
+    ProfileUserIconPicker,
+    BaseTooltipWithIcon,
+    RankPlaceholderSvg,
+    QuestionMarkSvg,
   },
   data(): {
     koinHintToggled: boolean;
@@ -216,122 +224,113 @@ export default defineComponent({
       <div class="flex-1 grid grid-cols-1 xl:grid-cols-2 gap-4 mb-4">
         <!-- General info -->
         <profile-section>
-          <div class="self-start px-2 flex flex-col  ">
-            <!-- Profile name -->
+          <div
+            class="flex-1 flex flex-col xl:grid gap-5 xl:gap-0 grid-cols-7 grid-rows-3"
+          >
+            <!-- Name, icon, koins -->
             <div
-              class="flex flex-row place-content-center lg:place-content-start"
+              class="col-span-3 row-span-2 flex items-center flex-col gap-2  "
             >
-              <div class="flex flex-row items-baseline">
-                <h1 class="text-4xl font-medium p-2">{{ user.username }}</h1>
-                <router-link
-                  class=" text-gomoku-blue hover:text-gray-800 fill-current"
-                  to=""
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-7 stroke-current"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    fill="none"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                    <path
-                      d="M9 7h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3"
-                    />
-                    <path d="M9 15h3l8.5 -8.5a1.5 1.5 0 0 0 -3 -3l-8.5 8.5v3" />
-                    <line x1="16" y1="5" x2="19" y2="8" />
-                  </svg>
-                </router-link>
-              </div>
-            </div>
-            <!-- Appearance wrapper -->
-            <div
-              class="flex flex-col lg:flex-row items-center  place-items-center lg:gap-8 gap-4"
-            >
-              <!-- Profile icon -->
-              <router-link to="">
+              <!-- name -->
+              <h1
+                class="text-4xl text-center font-medium py-2 underline text-gray-900 dark:text-gray-200"
+              >
+                {{ user.username }}
+              </h1>
+              <!-- icon -->
+              <profile-user-icon-picker></profile-user-icon-picker>
+              <!-- koins -->
+              <div class="flex flex-row place-items-center gap-2 py-2">
+                <span class="text-3xl font-bold">
+                  {{ user.balance }}
+                </span>
                 <img
-                  class=" border-gray-500 dark:border-gray-300 rounded-xl lg:h-24 h-24 bg-gray-300 cursor-pointer"
-                  src="../assets/samurai_blue.svg"
-                  alt=""
+                  class="h-10"
+                  src="@/assets/svg/koin.svg"
+                  alt="Koin (Gomoku coin)"
                 />
-              </router-link>
-              <div class="flex-1 flex flex-col ">
-                <div class="flex flex-col text-center md:flex-row md:gap-4">
-                  <p>
-                    <span class="text-xl font-medium">ELO: </span
-                    ><span class="text-lg">{{ user.elo }}</span>
-                  </p>
-                  <p>
-                    <span class="text-xl font-medium">Rank: </span
-                    ><span class="text-lg">1</span>
-                  </p>
-                </div>
-                <div class="flex flex-col text-center md:flex-row gap-4">
-                  <p class="whitespace-nowrap">
-                    <span class="text-lg font-medium">Total matches: </span>
-                    <span>1000</span>
-                  </p>
-                  <p class="whitespace-nowrap">
-                    <span class="text-lg font-medium">Won: </span>
-                    <span>669</span>
-                  </p>
-                  <p class="whitespace-nowrap">
-                    <span class="text-lg font-medium">Lost: </span>
-                    <span>321</span>
-                  </p>
-                  <p class="whitespace-nowrap">
-                    <span class="text-lg font-medium">Tied: </span>
-                    <span>10</span>
-                  </p>
-                </div>
+                <base-tooltip-with-icon
+                  class="place-self-end"
+                  :content="
+                    ` Koin is a currency that is used for buying profile icons, backgrounds...
+                     <br> It can be obtained by sheer playing. `
+                  "
+                />
               </div>
             </div>
+            <!-- User match statistics -->
+            <div
+              class="col-span-2 row-span-2 flex flex-col justify-center items-center gap-2"
+            >
+              <p class="whitespace-nowrap">
+                <span class="text-lg font-medium">Total matches: </span>
+                <span>1000</span>
+              </p>
+              <p class="whitespace-nowrap">
+                <span class="text-lg font-medium">Won: </span>
+                <span>669</span>
+              </p>
+              <p class="whitespace-nowrap">
+                <span class="text-lg font-medium">Lost: </span>
+                <span>321</span>
+              </p>
+              <p class="whitespace-nowrap">
+                <span class="text-lg font-medium">Tied: </span>
+                <span>10</span>
+              </p>
+            </div>
+            <!-- Trophy -->
+            <!-- TODO implement multiple icons for rank representation -> to separate component -->
+            <div
+              class="col-span-2 row-span-2 flex flex-col  justify-start items-center  "
+            >
+              <rank-placeholder-svg
+                class="w-1/3 xl:w-80 text-gray-800"
+                style="fill:#FACC15;"
+              />
 
-            <!-- Current balance -->
-            <div class="flex flex-row place-items-center gap-2 py-2">
-              <span class="text-3xl font-bold">
-                {{ user.balance }}
-              </span>
-              <img class="h-10" src="../assets/svg/koin.svg" alt="" />
-              <div class="place-self-end relative block">
-                <div
-                  @mouseenter="koinHintToggled = true"
-                  @mouseleave="koinHintToggled = false"
-                  @click="koinHintToggled = !koinHintToggled"
-                  class="bg-gray-600 hover:bg-gray-400 cursor-pointer rounded-full text-gray-200 "
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-5 stroke-current"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    fill="none"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                    <path
-                      d="M8 8a3.5 3 0 0 1 3.5 -3h1a3.5 3 0 0 1 3.5 3a3 3 0 0 1 -2 3a3 4 0 0 0 -2 4"
-                    />
-                    <line x1="12" y1="19" x2="12" y2="19.01" />
-                  </svg>
+              <p>
+                <span class="text-xl font-medium">ELO: </span
+                ><span class="text-lg">{{ user.elo }}</span>
+              </p>
+              <p>
+                <span class="text-xl font-medium">Rank: </span
+                ><span class="text-lg">12</span>
+              </p>
+            </div>
+            <!-- Achievements -->
+            <div
+              class="col-span-full row-span-1 flex flex-col gap-3 items-center "
+            >
+              <div
+                class="flex flex-row justify-around items-center flex-wrap gap-2"
+              >
+                <div class="bg-gray-400 p-1 rounded-lg">
+                  <question-mark-svg class="h-20 text-gray-100">
+                  </question-mark-svg>
                 </div>
-                <transition name="slide">
-                  <div
-                    v-show="koinHintToggled"
-                    class="bg-gray-200 rounded-lg absolute block mt-2 py-2 px-6 w-64  text-gray-900"
-                  >
-                    <span>
-                      Koin is a currency that is used for buying profile icons,
-                      backgrounds... <br />
-                      It can be obtained by sheer playing.
-                    </span>
-                  </div>
-                </transition>
+                <div class="bg-gray-400 p-1 rounded-lg">
+                  <question-mark-svg class="h-20 text-gray-100">
+                  </question-mark-svg>
+                </div>
+                <div class="bg-gray-400 p-1 rounded-lg">
+                  <question-mark-svg class="h-20 text-gray-100">
+                  </question-mark-svg>
+                </div>
+                <div class="bg-gray-400 p-1 rounded-lg">
+                  <question-mark-svg class="h-20 text-gray-100">
+                  </question-mark-svg>
+                </div>
+                <div class="bg-gray-400 p-1 rounded-lg">
+                  <question-mark-svg class="h-20 text-gray-100">
+                  </question-mark-svg>
+                </div>
+                <div class="bg-gray-400 p-1 rounded-lg">
+                  <question-mark-svg class="h-20 text-gray-100">
+                  </question-mark-svg>
+                </div>
               </div>
+              <base-button class="mb-2">See all achievements</base-button>
             </div>
           </div>
         </profile-section>
