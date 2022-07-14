@@ -27,6 +27,13 @@ import ProfileUserIconPicker from "@/components/ProfileUserIconPicker.vue";
 import BaseTooltipWithIcon from "@/components/BaseTooltipWithIcon.vue";
 import RankPlaceholderSvg from "@/assets/svg/RankPlaceholderSvg.vue";
 import QuestionMarkSvg from "@/assets/svg/QuestionMarkSvg.vue";
+import ProfileAchievement from "@/components/ProfileAchievement.vue";
+import {
+  exampleGame1,
+  exampleGame2,
+  exampleGame3,
+  exampleGame4,
+} from "./matches";
 
 export default defineComponent({
   name: "UserProfileDemo",
@@ -53,6 +60,7 @@ export default defineComponent({
     BaseTooltipWithIcon,
     RankPlaceholderSvg,
     QuestionMarkSvg,
+    ProfileAchievement,
   },
   data(): {
     koinHintToggled: boolean;
@@ -67,6 +75,8 @@ export default defineComponent({
       };
     };
     matches: FilledGame[];
+    // TODO implement achievement object
+    achievements: any[];
     currPage: number;
   } {
     return {
@@ -74,7 +84,7 @@ export default defineComponent({
       user: {
         username: "Daybringer",
         userID: 0,
-        elo: 0,
+        elo: 1000,
         balance: 0,
         settings: {
           gameStoneColor: {
@@ -84,6 +94,7 @@ export default defineComponent({
           boardType: GameBoard.Standard,
         },
       },
+      achievements: [],
       matches: [],
       currPage: 0,
     };
@@ -116,91 +127,6 @@ export default defineComponent({
         .catch((err) => console.log(err));
     },
     async fetchMatches() {
-      const exampleGame1: FilledGame = {
-        id: 0,
-        turnHistory: [],
-        typeOfWin: EndingType.Surrender,
-        type: GameType.Quick,
-        winnerGameProfileID: 0,
-        finalState: [[]],
-        playerProfilesIDs: [0, 1],
-        startingPlayerGameProfileID: 0,
-        // extra
-        myDelta: 0,
-        myUsername: "Daybringer",
-        myID: 1,
-        myRemainingTime: 119,
-        enemyID: 2,
-        enemyRemainingTime: 112,
-        enemyUsername: "",
-        enemyLogged: false,
-        win: true,
-        dateString: "2022-07-04 21:09:38.452",
-      };
-      const exampleGame2: FilledGame = {
-        id: 1,
-        turnHistory: [],
-        typeOfWin: EndingType.Combination,
-        type: GameType.Ranked,
-        winnerGameProfileID: 0,
-        finalState: [[]],
-        playerProfilesIDs: [0, 1],
-        startingPlayerGameProfileID: 0,
-        // extra
-        myDelta: -12,
-        myUsername: "Daybringer",
-        myID: 1,
-        myRemainingTime: 119,
-        enemyID: 2,
-        enemyRemainingTime: 112,
-        enemyUsername: "Vojtesla",
-        enemyLogged: true,
-        win: false,
-        dateString: "2022-07-04 21:09:38.452",
-      };
-      const exampleGame4: FilledGame = {
-        id: 4,
-        turnHistory: [],
-        typeOfWin: EndingType.Tie,
-        type: GameType.Ranked,
-        winnerGameProfileID: 0,
-        finalState: [[]],
-        playerProfilesIDs: [0, 1],
-        startingPlayerGameProfileID: 0,
-        // extra
-        myDelta: 8,
-        myUsername: "Daybringer",
-        myID: 1,
-        myRemainingTime: 119,
-        enemyID: 2,
-        enemyRemainingTime: 112,
-        enemyUsername: "Vojtesla",
-        enemyLogged: true,
-        win: false,
-        dateString: "2022-07-05 21:09:38.452",
-      };
-      const exampleGame3: FilledGame = {
-        id: 3,
-        turnHistory: [],
-        typeOfWin: EndingType.Surrender,
-        type: GameType.Custom,
-        winnerGameProfileID: 0,
-        finalState: [[]],
-        playerProfilesIDs: [0, 1],
-        startingPlayerGameProfileID: 0,
-        // extra
-        myDelta: 0,
-        myID: 1,
-        myUsername: "Daybringer",
-        myRemainingTime: 119,
-        enemyID: 0,
-        enemyRemainingTime: 112,
-        enemyUsername: "Hecubah",
-        enemyLogged: true,
-        win: true,
-        dateString: "2022-07-04 21:09:38.452",
-      };
-
       this.matches.push(exampleGame1);
       this.matches.push(exampleGame2);
       this.matches.push(exampleGame4);
@@ -237,7 +163,7 @@ export default defineComponent({
               >
                 {{ user.username }}
               </h1>
-              <!-- icon -->
+              <!-- user profile icon -->
               <profile-user-icon-picker></profile-user-icon-picker>
               <!-- koins -->
               <div class="flex flex-row place-items-center gap-2 py-2">
@@ -305,30 +231,12 @@ export default defineComponent({
               <div
                 class="flex flex-row justify-around items-center flex-wrap gap-2"
               >
-                <div class="bg-gray-400 p-1 rounded-lg">
-                  <question-mark-svg class="h-20 text-gray-100">
-                  </question-mark-svg>
-                </div>
-                <div class="bg-gray-400 p-1 rounded-lg">
-                  <question-mark-svg class="h-20 text-gray-100">
-                  </question-mark-svg>
-                </div>
-                <div class="bg-gray-400 p-1 rounded-lg">
-                  <question-mark-svg class="h-20 text-gray-100">
-                  </question-mark-svg>
-                </div>
-                <div class="bg-gray-400 p-1 rounded-lg">
-                  <question-mark-svg class="h-20 text-gray-100">
-                  </question-mark-svg>
-                </div>
-                <div class="bg-gray-400 p-1 rounded-lg">
-                  <question-mark-svg class="h-20 text-gray-100">
-                  </question-mark-svg>
-                </div>
-                <div class="bg-gray-400 p-1 rounded-lg">
-                  <question-mark-svg class="h-20 text-gray-100">
-                  </question-mark-svg>
-                </div>
+                <profile-achievement />
+                <profile-achievement />
+                <profile-achievement />
+                <profile-achievement />
+                <profile-achievement />
+                <profile-achievement />
               </div>
               <base-button class="mb-2">See all achievements</base-button>
             </div>
@@ -378,6 +286,7 @@ export default defineComponent({
           <div
             class="flex-1  grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-0 justify-around "
           >
+            <!-- Gameboard pickers -->
             <div class="flex-1 flex flex-col ">
               <base-mid-headline>Gameboard</base-mid-headline>
               <div class="flex flex-row justify-around pt-3 px-3 gap-2  flex-1">
@@ -436,13 +345,37 @@ export default defineComponent({
           <div
             class="flex flex-1 flex-col md:flex-row justify-around  md:items-center mt-4 lg:mt-0 gap-5 p-5"
           >
-            <base-button>Change Username</base-button>
-            <base-button>Change Email</base-button>
-            <base-button>Change Password</base-button>
+            <base-button
+              @click="
+                () => {
+                  this.$router.push('/set-username');
+                }
+              "
+              >Change Username</base-button
+            >
+
+            <base-button
+              @click="
+                () => {
+                  this.$router.push('/set-email');
+                }
+              "
+              >Change Email</base-button
+            >
+
+            <base-button
+              @click="
+                () => {
+                  this.$router.push('/set-password');
+                }
+              "
+              >Change Password</base-button
+            >
           </div>
         </profile-section>
 
         <!-- Elo chart -->
+        <!-- TODO replace the dummy graph with one with real data; add switches and so on -->
         <profile-section>
           <base-bold-headline class="pt-2">Elo history</base-bold-headline>
           <elo-chart></elo-chart>
