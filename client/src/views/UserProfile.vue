@@ -238,7 +238,15 @@ export default defineComponent({
                 <profile-achievement />
                 <profile-achievement />
               </div>
-              <base-button class="mb-2">See all achievements</base-button>
+              <base-button
+                class="mb-2"
+                @click="
+                  () => {
+                    this.$router.push(`/profile/${user.userID}/achievements`);
+                  }
+                "
+                >See all achievements</base-button
+              >
             </div>
           </div>
         </profile-section>

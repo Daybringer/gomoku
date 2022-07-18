@@ -1,5 +1,5 @@
 <template>
-  <img
+  <button
     @click="
       () => {
         modalActive = true;
@@ -9,9 +9,9 @@
     bg-gray-300 hover:bg-gray-400
     dark:hover:bg-gray-500 dark:bg-gray-600
     rounded-xl w-1/3 sm:w-1/4 xl:w-50 cursor-pointer"
-    src="../assets/samurai_blue.svg"
-    alt=""
-  />
+  >
+    <img src="../assets/samurai_blue.svg" alt="" />
+  </button>
   <base-modal
     @closeModal="
       () => {
