@@ -34,6 +34,7 @@ import {
   exampleGame3,
   exampleGame4,
 } from "./matches";
+import { ProfileIcon } from "@/shared/icons";
 
 export default defineComponent({
   name: "UserProfileDemo",
@@ -72,6 +73,7 @@ export default defineComponent({
       settings: {
         gameStoneColor: { me: string; enemy: string };
         boardType: GameBoard;
+        profileIcon: ProfileIcon;
       };
     };
     matches: FilledGame[];
@@ -92,6 +94,7 @@ export default defineComponent({
             enemy: "#ff2079",
           },
           boardType: GameBoard.Standard,
+          profileIcon: ProfileIcon.defaultBoy,
         },
       },
       achievements: [],
@@ -106,6 +109,9 @@ export default defineComponent({
       } else {
         this.user.settings.gameStoneColor.enemy = color;
       }
+    },
+    setIcon(icon: ProfileIcon) {
+      this.user.settings.profileIcon = icon;
     },
     setBoard(variant: number) {
       if (variant == 0) {
@@ -164,9 +170,12 @@ export default defineComponent({
                 {{ user.username }}
               </h1>
               <!-- user profile icon -->
-              <profile-user-icon-picker></profile-user-icon-picker>
+              <profile-user-icon-picker
+                :currentIcon="user.settings.profileIcon"
+                @setIcon="setIcon"
+              ></profile-user-icon-picker>
               <!-- koins -->
-              <div class="flex flex-row place-items-center gap-2 py-2">
+              <div class="flex flex-row place-items-center gap-2 py-4">
                 <span class="text-3xl font-bold">
                   {{ user.balance }}
                 </span>
@@ -226,7 +235,7 @@ export default defineComponent({
             </div>
             <!-- Achievements -->
             <div
-              class="col-span-full row-span-1 flex flex-col gap-3 items-center "
+              class="2xl:mt-4 mt-1 col-span-full row-span-1 flex flex-col gap-3 items-center "
             >
               <div
                 class="flex flex-row justify-around items-center flex-wrap gap-2"

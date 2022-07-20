@@ -2,15 +2,15 @@
   <div
     @click.self="closeModal"
     v-show="isActive"
-    class="fixed z-10 top-0 left-0 flex justify-center items-center h-full  w-full bg-opacity-60 bg-gray-800"
+    class="fixed z-10  top-0 left-0 flex justify-center items-center h-full overflow-y-auto   w-full bg-opacity-60 bg-gray-800"
   >
     <transition name="zoom">
       <div
         v-show="isActive"
-        class="flex flex-col bg-gray-50 dark:bg-gray-400 text-current relative w-90 md:w-50 min-h-50vh p-6 rounded-lg overflow-auto"
+        class="flex flex-col bg-gray-50 dark:bg-gray-400 text-current relative w-90 md:w-50 min-h-50vh h-0 p-6 rounded-lg overflow-auto"
       >
         <button
-          class="absolute top-3 right-3 p-1 rounded-full bg-gray-300 dark:bg-gray-300 text-gray-900 focus:outline-none"
+          class="absolute top-3 right-3 p-1 rounded-full bg-gray-300 hover:bg-gray-400 dark:bg-gray-300 text-gray-900 focus:outline-none"
           @click="closeModal"
         >
           <SVGCloseIcon class="h-6 stroke-current" />

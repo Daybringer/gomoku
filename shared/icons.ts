@@ -1,5 +1,5 @@
-enum ProfileIcons {
-  samurai = "samuraiDefault",
+enum ProfileIcon {
+  defaultBoy = "defaultBoy",
   ninja = "ninja",
   origamiSwan = "origamiSwan",
   penguin = "penguin",
@@ -20,3 +20,5 @@ enum ProfileIcons {
   lotus = "lotus",
   turtle = "turtle",
 }
+
+export { ProfileIcon };
