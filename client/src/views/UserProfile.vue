@@ -28,6 +28,7 @@ import BaseTooltipWithIcon from "@/components/BaseTooltipWithIcon.vue";
 import RankPlaceholderSvg from "@/assets/svg/RankPlaceholderSvg.vue";
 import QuestionMarkSvg from "@/assets/svg/QuestionMarkSvg.vue";
 import ProfileAchievement from "@/components/ProfileAchievement.vue";
+import ProfileRankRepresentation from "@/components/ProfileRankRepresentation.vue";
 import {
   exampleGame1,
   exampleGame2,
@@ -62,6 +63,7 @@ export default defineComponent({
     RankPlaceholderSvg,
     QuestionMarkSvg,
     ProfileAchievement,
+    ProfileRankRepresentation,
   },
   data(): {
     koinHintToggled: boolean;
@@ -161,7 +163,7 @@ export default defineComponent({
           >
             <!-- Name, icon, koins -->
             <div
-              class="col-span-3 row-span-2 flex items-center flex-col gap-2  "
+              class="col-span-3 row-span-2 flex items-center flex-col gap-2 p-1 "
             >
               <!-- name -->
               <h1
@@ -193,10 +195,35 @@ export default defineComponent({
                 />
               </div>
             </div>
+            <!-- Trophy -->
+            <div
+              class="col-span-2 row-span-2 flex flex-col  justify-start  items-center gap-2 p-2 "
+            >
+              <h2
+                class="text-4xl text-center font-medium py-2 text-gray-900 dark:text-gray-200"
+              >
+                Rank
+              </h2>
+              <profile-rank-representation :currElo="user.elo" />
+              <p>
+                <span class="text-xl font-medium">ELO: </span
+                ><span class="text-lg">{{ user.elo }}</span>
+              </p>
+              <p>
+                <!-- TODO implement ranks -->
+                <span class="text-xl font-medium">Leaderboard: </span
+                ><span class="text-lg">12</span>
+              </p>
+            </div>
             <!-- User match statistics -->
             <div
-              class="col-span-2 row-span-2 flex flex-col justify-center items-center gap-2"
+              class="col-span-2 row-span-2 flex flex-col justify-start items-center gap-2 p-2"
             >
+              <h2
+                class="text-4xl text-center font-medium py-2 text-gray-900 dark:text-gray-200"
+              >
+                Statistics
+              </h2>
               <p class="whitespace-nowrap">
                 <span class="text-lg font-medium">Total matches: </span>
                 <span>1000</span>
@@ -214,28 +241,9 @@ export default defineComponent({
                 <span>10</span>
               </p>
             </div>
-            <!-- Trophy -->
-            <!-- TODO implement multiple icons for rank representation -> to separate component -->
-            <div
-              class="col-span-2 row-span-2 flex flex-col  justify-start items-center  "
-            >
-              <rank-placeholder-svg
-                class="w-1/3 xl:w-80 text-gray-800"
-                style="fill:#FACC15;"
-              />
-
-              <p>
-                <span class="text-xl font-medium">ELO: </span
-                ><span class="text-lg">{{ user.elo }}</span>
-              </p>
-              <p>
-                <span class="text-xl font-medium">Rank: </span
-                ><span class="text-lg">12</span>
-              </p>
-            </div>
             <!-- Achievements -->
             <div
-              class="2xl:mt-4 mt-1 col-span-full row-span-1 flex flex-col gap-3 items-center "
+              class="2xl:mt-4 mt- col-span-full row-span-1 flex flex-col gap-3 items-center "
             >
               <div
                 class="flex flex-row justify-around items-center flex-wrap gap-2"

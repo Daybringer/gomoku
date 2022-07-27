@@ -8,7 +8,7 @@
     class=" border-gray-700 dark:border-gray-400 border-4 p-1 md:p-3
     bg-gray-300 hover:bg-gray-400
     dark:hover:bg-gray-500 dark:bg-gray-600
-    rounded-xl w-1/3 sm:w-1/4 xl:w-50 cursor-pointer"
+    rounded-xl w-2/5 sm:w-1/4 xl:w-50 cursor-pointer"
   >
     <img :src="getSvgURL(currentIcon || '')" alt="" />
   </button>
