@@ -44,7 +44,7 @@
           class="font-medium
          text-3xl text-center"
         >
-          Potato's <br />
+          Potato <br />
           league
         </h3>
         <img
@@ -59,8 +59,8 @@
           class="font-medium
          text-3xl text-center"
         >
-          Warrior's <br />
-          league
+          Warrior <br />
+          <span class="font-normal">league</span>
         </h3>
         <img
           class="h-36 md:h-52"
@@ -74,7 +74,7 @@
           class="font-medium
          text-3xl text-center"
         >
-          Samurai's <br />
+          Samurai <br />
           league
         </h3>
         <img
@@ -89,7 +89,7 @@
           class="font-medium
          text-3xl text-center"
         >
-          Champion's <br />
+          Champion <br />
           league
         </h3>
         <img

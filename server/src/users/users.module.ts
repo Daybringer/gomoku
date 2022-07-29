@@ -5,17 +5,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from '../models/user.entity';
 import { AuthModule } from 'src/auth/auth.module';
 import { PlayerGameProfile } from 'src/models/playerGameProfile.entity';
-import { UserConfigEntity } from 'src/models/userConfig.entity';
 import { GameEntity } from 'src/models/game.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([
-      UserEntity,
-      PlayerGameProfile,
-      UserConfigEntity,
-      GameEntity,
-    ]),
+    TypeOrmModule.forFeature([UserEntity, PlayerGameProfile, GameEntity]),
     forwardRef(() => AuthModule),
   ],
   controllers: [UsersController],

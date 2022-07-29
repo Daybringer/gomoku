@@ -121,4 +121,7 @@ export class UsersService {
       return this.userRepository.findOne({ username: usernameOrEmail });
     }
   }
+
+  // TODO might isolate achievement logic to achievements themselves or at least separate this function to a single file
+  async checkAchievements(user: UserEntity) {}
 }
