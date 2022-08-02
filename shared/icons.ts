@@ -22,16 +22,14 @@ enum ProfileIcon {
 }
 // TODO complete all names and descriptions
 type ProfileIconKeys = keyof typeof ProfileIcon;
-const profileIconRecords: Record<
-  ProfileIconKeys,
-  {
-    iconFullName: string;
-    description: string;
-    purchasable: boolean;
-    price: number;
-    boundAchievementID: null | number;
-  }
-> = {
+type ProfileIconRecordContent = {
+  iconFullName: string;
+  description: string;
+  purchasable: boolean;
+  price: number;
+  boundAchievementID: null | number;
+};
+const profileIconRecords: Record<ProfileIconKeys, ProfileIconRecordContent> = {
   defaultBoy: {
     description:
       "Labore laboris nulla est minim minim sit aute velit. Lorem velit et sint sint qui ullamco eu.",
@@ -48,11 +46,11 @@ const profileIconRecords: Record<
     boundAchievementID: null,
   },
   angel: {
-    description: "",
+    description: "Some text asdfasdfjkla asdf we lorem dolorem ipsum.",
     iconFullName: "Angel ",
-    purchasable: true,
-    price: 100,
-    boundAchievementID: null,
+    purchasable: false,
+    price: 0,
+    boundAchievementID: 1,
   },
   chineseMan: {
     description: "",
@@ -175,4 +173,4 @@ const profileIconRecords: Record<
   },
 };
 
-export { ProfileIcon, profileIconRecords };
+export { ProfileIcon, profileIconRecords, ProfileIconRecordContent };

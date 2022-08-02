@@ -168,7 +168,7 @@ export const useStore = defineStore("store", {
       const user = authPayload.user;
 
       userProfile.username = user.username;
-      userProfile.gameBoard = user.userConfig?.gameBoard || GameBoard.Standard;
+      userProfile.gameBoard = user.gameBoard;
       userProfile.nameChangeTokens = user.nameChangeTokens!;
 
       this.saveUserProfile(userProfile);

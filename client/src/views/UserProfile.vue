@@ -15,7 +15,7 @@ import UsersRepository from "@/repositories/usersRepository";
 import DarkContainer from "@/components/DarkContainer.vue";
 import ProfileSection from "@/components/ProfileSection.vue";
 import { Game, FilledGame } from "@/shared/interfaces/game.interface";
-import { EndingType, GameBoard, GameType } from "@/shared/types";
+import { EndingType, GameBoard, GameType, LoginStrategy } from "@/shared/types";
 import BaseMidHeadline from "@/components/BaseMidHeadline.vue";
 import BaseLowHeadline from "@/components/BaseLowHeadline.vue";
 import SVGStandardBoardIcon from "@/components/SVGStandardBoardIcon.vue";
@@ -29,13 +29,9 @@ import RankPlaceholderSvg from "@/assets/svg/RankPlaceholderSvg.vue";
 import QuestionMarkSvg from "@/assets/svg/QuestionMarkSvg.vue";
 import ProfileAchievement from "@/components/ProfileAchievement.vue";
 import ProfileRankRepresentation from "@/components/ProfileRankRepresentation.vue";
-import {
-  exampleGame1,
-  exampleGame2,
-  exampleGame3,
-  exampleGame4,
-} from "./matches";
+import { exampleGame1 } from "./matches";
 import { ProfileIcon } from "@/shared/icons";
+import { User } from "@/shared/interfaces/user.interface";
 
 export default defineComponent({
   name: "UserProfileDemo",
@@ -67,53 +63,38 @@ export default defineComponent({
   },
   data(): {
     koinHintToggled: boolean;
-    user: {
-      username: string;
-      userID: number;
-      elo: number;
-      balance: number;
-      settings: {
-        gameStoneColor: { me: string; enemy: string };
-        boardType: GameBoard;
-        profileIcon: ProfileIcon;
-      };
-    };
-    matches: FilledGame[];
-    // TODO implement achievement object
-    achievements: any[];
-    currPage: number;
+    user: User;
+    lastMatches: FilledGame[];
   } {
     return {
       koinHintToggled: false,
       user: {
-        username: "Daybringer",
-        userID: 0,
+        id: 0,
         elo: 1000,
-        balance: 0,
-        settings: {
-          gameStoneColor: {
-            me: "#00b3fe",
-            enemy: "#ff2079",
-          },
-          boardType: GameBoard.Standard,
-          profileIcon: ProfileIcon.defaultBoy,
-        },
+        credit: 0,
+        username: "",
+        email: "",
+        strategy: LoginStrategy.Local,
+        achievements: [],
+        gameBoard: GameBoard.Standard,
+        playerColor: "",
+        enemyColor: "",
+        selectedIcon: ProfileIcon.defaultBoy,
+        availableIcons: [ProfileIcon.defaultBoy],
       },
-      achievements: [],
-      matches: [],
-      currPage: 0,
+      lastMatches: [],
     };
   },
   methods: {
     setColor(isMyColor: boolean, color: string) {
       if (isMyColor) {
-        this.user.settings.gameStoneColor.me = color;
+        this.user.playerColor = color;
       } else {
-        this.user.settings.gameStoneColor.enemy = color;
+        this.user.enemyColor = color;
       }
     },
     setIcon(icon: ProfileIcon) {
-      this.user.settings.profileIcon = icon;
+      this.user.selectedIcon = icon;
     },
     setBoard(variant: number) {
       if (variant == 0) {
@@ -125,7 +106,7 @@ export default defineComponent({
       }
     },
     async setGameBoard(gameBoard: GameBoard) {
-      this.user.settings.boardType = gameBoard;
+      this.user.gameBoard = gameBoard;
     },
     async fetchUserData() {
       return UsersRepository.getOwnUserProfile()
@@ -135,10 +116,10 @@ export default defineComponent({
         .catch((err) => console.log(err));
     },
     async fetchMatches() {
-      this.matches.push(exampleGame1);
-      this.matches.push(exampleGame2);
-      this.matches.push(exampleGame4);
-      this.matches.push(exampleGame3);
+      this.lastMatches.push(exampleGame1);
+      this.lastMatches.push(exampleGame1);
+      this.lastMatches.push(exampleGame1);
+      this.lastMatches.push(exampleGame1);
     },
     isTie(typeOfWin: any): boolean {
       return typeOfWin === EndingType.Tie;
@@ -173,13 +154,14 @@ export default defineComponent({
               </h1>
               <!-- user profile icon -->
               <profile-user-icon-picker
-                :currentIcon="user.settings.profileIcon"
+                :currentIcon="user.selectedIcon"
+                :availableIcons="user.availableIcons"
                 @setIcon="setIcon"
               ></profile-user-icon-picker>
               <!-- koins -->
               <div class="flex flex-row place-items-center gap-2 py-4">
                 <span class="text-3xl font-bold">
-                  {{ user.balance }}
+                  {{ user.credit }}
                 </span>
                 <img
                   class="h-10"
@@ -259,7 +241,7 @@ export default defineComponent({
                 class="mb-2"
                 @click="
                   () => {
-                    this.$router.push(`/profile/${user.userID}/achievements`);
+                    this.$router.push(`/profile/${user.id}/achievements`);
                   }
                 "
                 >See all achievements</base-button
@@ -275,25 +257,23 @@ export default defineComponent({
             <!-- Displaying few loaded matches -->
             <!-- FIXME pass whole match instead of single props -->
             <profile-match-blade
-              v-for="match in matches"
+              v-for="match in lastMatches"
               :key="match.id"
               :gameID="match.id"
-              :myID="match.myID"
-              :elo="match.myDelta"
+              :myID="match.me.id"
+              :elo="match.me.delta"
               :dateString="match.dateString"
-              :enemyID="match.enemyID"
-              :enemyLogged="match.enemyLogged"
-              :enemyUsername="match.enemyUsername"
+              :enemyID="match.opponent.id"
+              :enemyLogged="match.opponent.logged"
+              :enemyUsername="match.opponent.username"
               :gameType="match.type"
               :logged="true"
-              :username="match.myUsername"
+              :username="match.me.username"
               :tie="isTie(match.typeOfWin)"
               :win="match.win"
             ></profile-match-blade>
             <!-- All matches link -->
-            <router-link
-              :to="'/profile/' + this.user.userID + '/match-history'"
-            >
+            <router-link :to="'/profile/' + this.user.id + '/match-history'">
               <base-button>
                 All matches
               </base-button>
@@ -318,25 +298,25 @@ export default defineComponent({
                 <div class="flex flex-col  ">
                   <profile-pick-board-button
                     @setBoard="setBoard"
-                    :currentBoard="this.user.settings.boardType"
-                    :myColor="user.settings.gameStoneColor.me"
-                    :enemyColor="user.settings.gameStoneColor.enemy"
+                    :currentBoard="this.user.gameBoard"
+                    :myColor="user.playerColor"
+                    :enemyColor="user.enemyColor"
                     :type="'standard'"
                   />
                 </div>
                 <div class=" flex flex-col">
                   <profile-pick-board-button
                     @setBoard="setBoard"
-                    :currentBoard="this.user.settings.boardType"
+                    :currentBoard="this.user.gameBoard"
                     :type="'classic'"
                   />
                 </div>
                 <div class="flex flex-col">
                   <profile-pick-board-button
                     @setBoard="setBoard"
-                    :currentBoard="this.user.settings.boardType"
-                    :myColor="user.settings.gameStoneColor.me"
-                    :enemyColor="user.settings.gameStoneColor.enemy"
+                    :currentBoard="this.user.gameBoard"
+                    :myColor="user.playerColor"
+                    :enemyColor="user.enemyColor"
                     :type="'modern'"
                   />
                 </div>
@@ -351,7 +331,7 @@ export default defineComponent({
                 <div class="flex flex-col items-center">
                   <base-low-headline>Your color</base-low-headline>
                   <profile-pick-color-button
-                    :currentColor="user.settings.gameStoneColor.me"
+                    :currentColor="user.playerColor"
                     :isMyColor="true"
                     @setColor="setColor"
                   />
@@ -359,7 +339,7 @@ export default defineComponent({
                 <div class="flex flex-col items-center">
                   <base-low-headline>Enemy's color</base-low-headline>
                   <profile-pick-color-button
-                    :currentColor="user.settings.gameStoneColor.enemy"
+                    :currentColor="user.enemyColor"
                     :isMyColor="false"
                     @setColor="setColor"
                   />

@@ -66,10 +66,10 @@ export class UserEntity {
   enemyColor?: string;
 
   @Column({ type: 'enum', enum: GameBoard, default: GameBoard.Standard })
-  gameBoard?: GameBoard;
+  gameBoard: GameBoard;
 
   @Column({ type: 'enum', enum: ProfileIcon, default: ProfileIcon.defaultBoy })
-  selectedIcon?: ProfileIcon;
+  selectedIcon: ProfileIcon;
 
   @Column({
     type: 'enum',

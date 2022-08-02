@@ -3,7 +3,7 @@ import { GameType, EndingType, Turn } from "../types";
 // Propagate
 export interface Game {
   id?: number;
-  playerProfilesIDs?: number[];
+  playerGameProfilesIDs?: number[];
   createdAt?: Date;
   type?: GameType;
   winnerGameProfileID?: number;
@@ -17,13 +17,13 @@ export interface Game {
 
 export interface FilledGame extends Game {
   dateString: string;
-  myDelta: number;
-  myUsername: string;
-  myID: number;
-  myRemainingTime: number;
-  enemyRemainingTime: number;
-  enemyID?: number;
-  enemyUsername: string;
-  enemyLogged: boolean;
+  me: { id: number; username: string; remainingTime: number; delta: number };
+  opponent: {
+    logged: boolean;
+    id: number;
+    username: string;
+    remainingTime: number;
+    delta: number;
+  };
   win: boolean;
 }

@@ -60,7 +60,7 @@
          text-3xl text-center"
         >
           Warrior <br />
-          <span class="font-normal">league</span>
+          league
         </h3>
         <img
           class="h-36 md:h-52"
