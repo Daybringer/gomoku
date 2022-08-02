@@ -1,4 +1,5 @@
 enum ProfileIcon {
+  transparent = "transparent",
   defaultBoy = "defaultBoy",
   ninja = "ninja",
   origamiSwan = "origamiSwan",
@@ -30,6 +31,13 @@ type ProfileIconRecordContent = {
   boundAchievementID: null | number;
 };
 const profileIconRecords: Record<ProfileIconKeys, ProfileIconRecordContent> = {
+  transparent: {
+    iconFullName: "",
+    description: "",
+    purchasable: false,
+    price: 0,
+    boundAchievementID: 9292,
+  },
   defaultBoy: {
     description:
       "Labore laboris nulla est minim minim sit aute velit. Lorem velit et sint sint qui ullamco eu.",
@@ -42,7 +50,7 @@ const profileIconRecords: Record<ProfileIconKeys, ProfileIconRecordContent> = {
     description: "",
     iconFullName: "Sneaky ninja",
     purchasable: true,
-    price: 100,
+    price: 0,
     boundAchievementID: null,
   },
   angel: {

@@ -18,6 +18,8 @@ import { CheckEmailDTO } from './dto/check-email.dto';
 import { PasswordChangeDTO } from './dto/password-change.dto';
 import { UsernameChangeDTO } from './dto/username-change.dto';
 import { User } from 'src/shared/interfaces/user.interface';
+import { BuyIconDTO } from 'src/shared/DTO/buy-icon.dto';
+import { SelectIconDTO } from 'src/shared/DTO/select-icon.dto';
 
 @Controller('/users')
 export class UsersController {
@@ -86,5 +88,21 @@ export class UsersController {
   async fetchUser(@Req() req): Promise<User> {
     const { password, ...rest } = req.user;
     return rest;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @UsePipes(new ValidationPipe())
+  @Post('buy-icon')
+  async buyIcon(@Req() req, @Body() buyIconDTO: BuyIconDTO) {
+    const user: UserEntity = req.user;
+    return this.usersService.buyIcon(user, buyIconDTO.icon);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @UsePipes(new ValidationPipe())
+  @Post('select-icon')
+  async selectIcon(@Req() req, @Body() selectIconDTO: SelectIconDTO) {
+    const user: UserEntity = req.user;
+    return this.usersService.selectIcon(user, selectIconDTO.icon);
   }
 }

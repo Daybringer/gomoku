@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SignUpDTO } from 'src/auth/dto/sign-up.dto';
 import { TokensService } from 'src/auth/token.service';
+import { ProfileIcon, profileIconRecords } from 'src/shared/icons';
 import { Repository } from 'typeorm';
 
 import { UserEntity } from '../models/user.entity';
@@ -124,4 +125,26 @@ export class UsersService {
 
   // TODO might isolate achievement logic to achievements themselves or at least separate this function to a single file
   async checkAchievements(user: UserEntity) {}
+
+  async buyIcon(user: UserEntity, icon: ProfileIcon) {
+    const profileIconRecord = profileIconRecords[icon];
+    if (!profileIconRecord.purchasable)
+      throw new BadRequestException('Icon is not purchasable');
+    if (user.credit >= profileIconRecord.price) {
+      user.credit -= profileIconRecord.price;
+      user.availableIcons.push(icon);
+      return this.userRepository.save(user);
+    } else {
+      throw new BadRequestException('Not enough credit');
+    }
+  }
+
+  async selectIcon(user: UserEntity, icon: ProfileIcon) {
+    if (user.availableIcons.includes(icon)) {
+      user.selectedIcon = icon;
+      return this.userRepository.save(user);
+    } else {
+      throw new BadRequestException('Icon is not available');
+    }
+  }
 }

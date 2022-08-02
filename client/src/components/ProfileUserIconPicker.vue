@@ -25,6 +25,7 @@
     >
       <button
         v-for="iconName in Object.values(profileIconList)"
+        v-show="iconName !== 'transparent'"
         :key="iconName"
         class=" bg-gray-300 p-2 rounded-lg hover:bg-gray-400 relative"
         :class="
@@ -114,6 +115,12 @@
       <div class="flex flex-row">
         <base-button
           class=" font-medium"
+          @click="
+            () => {
+              this.$emit('buyIcon', currentBuyIconName);
+              this.buyModalActive = false;
+            }
+          "
           :class="
             currentBuyIconRecord.purchasable
               ? 'bg-green-300 hover:bg-green-200 dark:bg-green-500 dark:hover:bg-green-600'
@@ -177,6 +184,7 @@ export default defineComponent({
     getIconRecord(iconName: string): ProfileIconRecordContent {
       return profileIconRecords[iconName];
     },
+    buyIcon(iconName: string): void {},
   },
   mounted() {},
 });

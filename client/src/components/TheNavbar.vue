@@ -117,10 +117,12 @@
                 @click="profileToggle"
               >
                 <img
+                  v-show="store.userLoaded"
                   class=" h-8"
                   alt="user_icon"
-                  src="../assets/samurai_blue.svg"
+                  :src="getSvgURL(store.user.selectedIcon)"
                 />
+                <div class="h-8 w-8" v-show="!store.userLoaded"></div>
               </button>
               <button
                 v-show="!logged"
@@ -261,7 +263,6 @@
 import HamburgerButton from "@/components/HamburgerButton.vue";
 import NavbarNavigationLink from "./NavbarNavigationLink.vue";
 import MobileNavbarLink from "./MobileNavbarLink.vue";
-import RoundedSmallUserIcon from "@/components/RoundedSmallUserIcon.vue";
 
 // Pinia
 import { useStore } from "@/store/store";
@@ -276,7 +277,6 @@ export default defineComponent({
     HamburgerButton,
     NavbarNavigationLink,
     MobileNavbarLink,
-    RoundedSmallUserIcon,
   },
   data() {
     return {
@@ -297,7 +297,14 @@ export default defineComponent({
       }
     },
   },
+  setup() {
+    const store = useStore();
+    return { store };
+  },
   methods: {
+    getSvgURL(svgName: string) {
+      return require(`../assets/svg/profile_icons/${svgName}.svg`);
+    },
     logout() {
       //@ts-ignore
       this.$gAuth.signOut();

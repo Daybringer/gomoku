@@ -3,9 +3,12 @@ import Repository from "../repositories/Repository";
 import { RepositoryFactory } from "@/repositories/RepositoryFactory";
 const UsersRepository = RepositoryFactory.getUserRepository;
 const AuthRepository = RepositoryFactory.getAuthRepository;
+import { LoginStrategy } from "../shared/types";
+import { ProfileIcon } from "@/shared/icons";
 
 // @Types
 import { AuthenticationPayload, GameBoard } from "../shared/types";
+import { User } from "@/shared/interfaces/user.interface";
 
 export interface UserProfile {
   username: string;
@@ -25,11 +28,30 @@ function userProfileBase(): UserProfile {
   };
 }
 
+function userBase(): User {
+  return {
+    id: 0,
+    elo: 1000,
+    credit: 0,
+    username: "",
+    email: "",
+    strategy: LoginStrategy.Local,
+    achievements: [],
+    gameBoard: GameBoard.Standard,
+    playerColor: "",
+    enemyColor: "",
+    selectedIcon: ProfileIcon.transparent,
+    availableIcons: [ProfileIcon.transparent],
+  };
+}
+
 // FIXME userProfile vs User type << unnecessary type,
 // but there might have been problems with inner interfaces
 export const useStore = defineStore("store", {
   state: () => ({
     userProfile: userProfileBase(),
+    user: userBase(),
+    userLoaded: false,
     token: localStorage.getItem("access-token") || "",
     googleIDToken: "",
     refreshToken: "",
@@ -154,11 +176,12 @@ export const useStore = defineStore("store", {
       });
     },
     async fetchOwnProfile() {
-      // TODO complete user info + user config
-      UsersRepository.getOwnUserProfile()
+      return UsersRepository.getOwnUserProfile()
         .then((res) => {
           const user = res.data;
-          this.userProfile.username = user.username;
+          this.user = user;
+          this.userLoaded = true;
+          return user;
         })
         .catch((err) => console.log(err));
     },
@@ -166,6 +189,8 @@ export const useStore = defineStore("store", {
       const token = authPayload.payload.token;
       const userProfile = userProfileBase();
       const user = authPayload.user;
+      this.user = user;
+      this.userLoaded = true;
 
       userProfile.username = user.username;
       userProfile.gameBoard = user.gameBoard;

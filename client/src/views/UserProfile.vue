@@ -1,4 +1,14 @@
 <script lang="ts">
+import { defineComponent } from "vue";
+// Types
+import { exampleGame1 } from "./matches";
+import { ProfileIcon } from "@/shared/icons";
+import { User } from "@/shared/interfaces/user.interface";
+import { Game, FilledGame } from "@/shared/interfaces/game.interface";
+import { EndingType, GameBoard, GameType, LoginStrategy } from "@/shared/types";
+import UsersRepository from "@/repositories/usersRepository";
+import { useStore } from "@/store/store";
+
 // Components
 import ViewBaseResponsive from "@/components/ViewBaseResponsive.vue";
 import RowToMobileStackedLayout from "@/layouts/RowToMobileStackedLayout.vue";
@@ -9,13 +19,8 @@ import ProfileGeneralContainer from "@/components/ProfileGeneralContainer.vue";
 import ProfileMatchesContainer from "@/components/ProfileMatchesContainer.vue";
 import ProfileMatchBlade from "@/components/ProfileMatchBlade.vue";
 import EloChart from "@/components/ProfileEloChart.vue";
-
-import { defineComponent } from "vue";
-import UsersRepository from "@/repositories/usersRepository";
 import DarkContainer from "@/components/DarkContainer.vue";
 import ProfileSection from "@/components/ProfileSection.vue";
-import { Game, FilledGame } from "@/shared/interfaces/game.interface";
-import { EndingType, GameBoard, GameType, LoginStrategy } from "@/shared/types";
 import BaseMidHeadline from "@/components/BaseMidHeadline.vue";
 import BaseLowHeadline from "@/components/BaseLowHeadline.vue";
 import SVGStandardBoardIcon from "@/components/SVGStandardBoardIcon.vue";
@@ -29,9 +34,6 @@ import RankPlaceholderSvg from "@/assets/svg/RankPlaceholderSvg.vue";
 import QuestionMarkSvg from "@/assets/svg/QuestionMarkSvg.vue";
 import ProfileAchievement from "@/components/ProfileAchievement.vue";
 import ProfileRankRepresentation from "@/components/ProfileRankRepresentation.vue";
-import { exampleGame1 } from "./matches";
-import { ProfileIcon } from "@/shared/icons";
-import { User } from "@/shared/interfaces/user.interface";
 
 export default defineComponent({
   name: "UserProfileDemo",
@@ -63,38 +65,36 @@ export default defineComponent({
   },
   data(): {
     koinHintToggled: boolean;
-    user: User;
     lastMatches: FilledGame[];
   } {
     return {
       koinHintToggled: false,
-      user: {
-        id: 0,
-        elo: 1000,
-        credit: 0,
-        username: "",
-        email: "",
-        strategy: LoginStrategy.Local,
-        achievements: [],
-        gameBoard: GameBoard.Standard,
-        playerColor: "",
-        enemyColor: "",
-        selectedIcon: ProfileIcon.defaultBoy,
-        availableIcons: [ProfileIcon.defaultBoy],
-      },
       lastMatches: [],
     };
+  },
+  setup() {
+    const store = useStore();
+    return { store };
   },
   methods: {
     setColor(isMyColor: boolean, color: string) {
       if (isMyColor) {
-        this.user.playerColor = color;
+        this.store.user.playerColor = color;
       } else {
-        this.user.enemyColor = color;
+        this.store.user.enemyColor = color;
       }
     },
-    setIcon(icon: ProfileIcon) {
-      this.user.selectedIcon = icon;
+    async setIcon(iconName: string) {
+      UsersRepository.selectIcon(iconName).then(() => {
+        this.store.user.selectedIcon = ProfileIcon[iconName];
+        this.store.user.selectedIcon = ProfileIcon[iconName];
+      });
+    },
+    buyIcon(iconName: string) {
+      UsersRepository.buyIcon(iconName).then(() => {
+        this.store.user.availableIcons!.push(ProfileIcon[iconName]);
+        this.store.user.availableIcons!.push(ProfileIcon[iconName]);
+      });
     },
     setBoard(variant: number) {
       if (variant == 0) {
@@ -106,14 +106,7 @@ export default defineComponent({
       }
     },
     async setGameBoard(gameBoard: GameBoard) {
-      this.user.gameBoard = gameBoard;
-    },
-    async fetchUserData() {
-      return UsersRepository.getOwnUserProfile()
-        .then((res) => {
-          return res.data;
-        })
-        .catch((err) => console.log(err));
+      this.store.user.gameBoard = gameBoard;
     },
     async fetchMatches() {
       this.lastMatches.push(exampleGame1);
@@ -126,8 +119,7 @@ export default defineComponent({
     },
   },
   computed: {},
-
-  mounted() {
+  async beforeMount() {
     this.fetchMatches();
   },
 });
@@ -150,18 +142,19 @@ export default defineComponent({
               <h1
                 class="text-4xl text-center font-medium py-2 underline text-gray-900 dark:text-gray-200"
               >
-                {{ user.username }}
+                {{ store.user.username }}
               </h1>
               <!-- user profile icon -->
               <profile-user-icon-picker
-                :currentIcon="user.selectedIcon"
-                :availableIcons="user.availableIcons"
+                :currentIcon="store.user.selectedIcon"
+                :availableIcons="store.user.availableIcons"
                 @setIcon="setIcon"
+                @buyIcon="buyIcon"
               ></profile-user-icon-picker>
               <!-- koins -->
               <div class="flex flex-row place-items-center gap-2 py-4">
                 <span class="text-3xl font-bold">
-                  {{ user.credit }}
+                  {{ store.user.credit }}
                 </span>
                 <img
                   class="h-10"
@@ -186,15 +179,15 @@ export default defineComponent({
               >
                 Rank
               </h2>
-              <profile-rank-representation :currElo="user.elo" />
+              <profile-rank-representation :currElo="store.user.elo" />
               <p>
                 <span class="text-xl font-medium">ELO: </span
-                ><span class="text-lg">{{ user.elo }}</span>
+                ><span class="text-lg">{{ store.user.elo }}</span>
               </p>
               <p>
                 <!-- TODO implement ranks -->
                 <span class="text-xl font-medium">Leaderboard: </span
-                ><span class="text-lg">12</span>
+                ><span class="text-lg">FIXME</span>
               </p>
             </div>
             <!-- User match statistics -->
@@ -241,7 +234,7 @@ export default defineComponent({
                 class="mb-2"
                 @click="
                   () => {
-                    this.$router.push(`/profile/${user.id}/achievements`);
+                    this.$router.push(`/profile/${store.user.id}/achievements`);
                   }
                 "
                 >See all achievements</base-button
@@ -273,7 +266,7 @@ export default defineComponent({
               :win="match.win"
             ></profile-match-blade>
             <!-- All matches link -->
-            <router-link :to="'/profile/' + this.user.id + '/match-history'">
+            <router-link :to="'/profile/' + store.user.id + '/match-history'">
               <base-button>
                 All matches
               </base-button>
@@ -298,25 +291,25 @@ export default defineComponent({
                 <div class="flex flex-col  ">
                   <profile-pick-board-button
                     @setBoard="setBoard"
-                    :currentBoard="this.user.gameBoard"
-                    :myColor="user.playerColor"
-                    :enemyColor="user.enemyColor"
+                    :currentBoard="store.user.gameBoard"
+                    :myColor="store.user.playerColor"
+                    :enemyColor="store.user.enemyColor"
                     :type="'standard'"
                   />
                 </div>
                 <div class=" flex flex-col">
                   <profile-pick-board-button
                     @setBoard="setBoard"
-                    :currentBoard="this.user.gameBoard"
+                    :currentBoard="store.user.gameBoard"
                     :type="'classic'"
                   />
                 </div>
                 <div class="flex flex-col">
                   <profile-pick-board-button
                     @setBoard="setBoard"
-                    :currentBoard="this.user.gameBoard"
-                    :myColor="user.playerColor"
-                    :enemyColor="user.enemyColor"
+                    :currentBoard="store.user.gameBoard"
+                    :myColor="store.user.playerColor"
+                    :enemyColor="store.user.enemyColor"
                     :type="'modern'"
                   />
                 </div>
@@ -331,7 +324,7 @@ export default defineComponent({
                 <div class="flex flex-col items-center">
                   <base-low-headline>Your color</base-low-headline>
                   <profile-pick-color-button
-                    :currentColor="user.playerColor"
+                    :currentColor="store.user.playerColor"
                     :isMyColor="true"
                     @setColor="setColor"
                   />
@@ -339,7 +332,7 @@ export default defineComponent({
                 <div class="flex flex-col items-center">
                   <base-low-headline>Enemy's color</base-low-headline>
                   <profile-pick-color-button
-                    :currentColor="user.enemyColor"
+                    :currentColor="store.user.enemyColor"
                     :isMyColor="false"
                     @setColor="setColor"
                   />
