@@ -110,7 +110,7 @@
             <div>
               <button
                 v-show="logged"
-                class="flex text-sm border-2 border-transparent rounded-full p-px bg-gray-100 focus:outline-none focus:border-gomoku-blue transition duration-150 ease-in-out"
+                class="flex text-sm border-2  border-transparent rounded-full p-0.5 bg-gray-100 focus:outline-none focus:border-gomoku-blue transition duration-150 ease-in-out"
                 id="user-menu"
                 aria-label="User menu"
                 aria-haspopup="true"
@@ -122,6 +122,7 @@
                   alt="user_icon"
                   :src="getSvgURL(store.user.selectedIcon)"
                 />
+                <!--Placeholder to prevent box jumping-->
                 <div class="h-8 w-8" v-show="!store.userLoaded"></div>
               </button>
               <button

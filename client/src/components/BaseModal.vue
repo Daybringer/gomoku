@@ -10,7 +10,7 @@
         class="flex flex-col bg-gray-50 dark:bg-gray-700 text-current relative w-90 md:w-50 min-h-50vh h-0 p-6 rounded-lg overflow-auto"
       >
         <button
-          class="sticky z-50 top-0 self-end  w-7 md:w-8 flex items-center justify-center h-8 rounded-full border-2  border-gray-400 bg-gray-300 hover:bg-gray-400 dark:bg-gray-300 text-gray-900 focus:outline-none"
+          class="sticky z-50 top-0 self-end  w-7 md:w-8 flex items-center justify-center h-8 rounded-full border-2  border-gray-400 dark:border-gray-800 bg-gray-300 hover:bg-gray-400 dark:bg-gray-300 text-gray-900 focus:outline-none"
           @click="closeModal"
         >
           <SVGCloseIcon class="h-6 stroke-current" />

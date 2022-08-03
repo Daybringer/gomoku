@@ -12,6 +12,8 @@
   >
     <img :src="getSvgURL(currentIcon || '')" alt="" />
   </button>
+
+  <!-- Select icon modal -->
   <base-modal
     @closeModal="
       () => {
@@ -27,9 +29,11 @@
         v-for="iconName in Object.values(profileIconList)"
         v-show="iconName !== 'transparent'"
         :key="iconName"
-        class=" bg-gray-300 p-2 rounded-lg hover:bg-gray-400 relative"
+        class=" bg-gray-300 dark:bg-gray-500 dark:hover:bg-gray-400  p-2 rounded-lg hover:bg-gray-400 relative"
         :class="
-          currentIcon == iconName ? 'border-4 border-gray-800' : 'border-4'
+          currentIcon == iconName
+            ? 'border-4 border-gray-800 dark:border-gray-200'
+            : 'border-4 border-gray-200 dark:border-gray-800'
         "
         @click="
           () => {
@@ -47,7 +51,7 @@
         <base-tooltip :content="getIconRecord(iconName).iconFullName">
           <img
             class="h-16 md:h-20"
-            :class="!this.isAvailable(iconName) ? 'opacity-60' : ''"
+            :class="!this.isAvailable(iconName) ? 'opacity-50' : ''"
             :src="getSvgURL(iconName)"
             alt=""
           />
