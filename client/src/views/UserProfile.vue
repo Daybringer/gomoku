@@ -2,7 +2,11 @@
 import { defineComponent } from "vue";
 // Types
 import { exampleGame1 } from "./matches";
-import { ProfileIcon } from "@/shared/icons";
+import {
+  ProfileIcon,
+  ProfileIconRecordContent,
+  profileIconRecords,
+} from "@/shared/icons";
 import { User } from "@/shared/interfaces/user.interface";
 import { Game, FilledGame } from "@/shared/interfaces/game.interface";
 import { EndingType, GameBoard, GameType, LoginStrategy } from "@/shared/types";
@@ -84,10 +88,18 @@ export default defineComponent({
       });
     },
     buyIcon(iconName: string) {
-      UsersRepository.buyIcon(iconName).then(() => {
-        this.store.user.availableIcons!.push(ProfileIcon[iconName]);
-        this.store.user.availableIcons!.push(ProfileIcon[iconName]);
-      });
+      const iconRecord: ProfileIconRecordContent =
+        profileIconRecords[ProfileIcon[iconName]];
+      const iconPrice = iconRecord.price;
+      if (this.store.user.credit! >= iconRecord.price) {
+        UsersRepository.buyIcon(iconName).then(() => {
+          this.store.user.credit! -= iconRecord.price;
+          this.store.user.availableIcons!.push(ProfileIcon[iconName]);
+        });
+      } else {
+        // TODO show error
+        console.log("You can't afford this icon");
+      }
     },
     setBoard(variant: number) {
       if (variant == 0) {
