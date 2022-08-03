@@ -6,7 +6,7 @@ import { ProfileIcon, profileIconRecords } from 'src/shared/icons';
 import { Repository } from 'typeorm';
 
 import { UserEntity } from '../models/user.entity';
-import { LoginStrategy } from '../shared/types';
+import { GameBoard, LoginStrategy } from '../shared/types';
 
 import { adjectives, nouns } from './randomNameDict';
 @Injectable()
@@ -146,5 +146,16 @@ export class UsersService {
     } else {
       throw new BadRequestException('Icon is not available');
     }
+  }
+
+  async setGameboard(user: UserEntity, gameboard: GameBoard) {
+    user.gameBoard = gameboard;
+    return this.userRepository.save(user);
+  }
+
+  async setColors(user: UserEntity, myColor: string, enemyColor: string) {
+    user.playerColor = myColor;
+    user.enemyColor = enemyColor;
+    return this.userRepository.save(user);
   }
 }

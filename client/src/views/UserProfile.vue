@@ -77,13 +77,6 @@ export default defineComponent({
     return { store };
   },
   methods: {
-    setColor(isMyColor: boolean, color: string) {
-      if (isMyColor) {
-        this.store.user.playerColor = color;
-      } else {
-        this.store.user.enemyColor = color;
-      }
-    },
     async setIcon(iconName: string) {
       UsersRepository.selectIcon(iconName).then(() => {
         this.store.user.selectedIcon = ProfileIcon[iconName];
@@ -106,7 +99,20 @@ export default defineComponent({
       }
     },
     async setGameBoard(gameBoard: GameBoard) {
-      this.store.user.gameBoard = gameBoard;
+      UsersRepository.setGameboard(gameBoard).then(() => {
+        this.store.user.gameBoard = gameBoard;
+      });
+    },
+    setColor(isMyColor: boolean, color: string) {
+      if (isMyColor) {
+        this.store.user.playerColor = color;
+      } else {
+        this.store.user.enemyColor = color;
+      }
+      UsersRepository.setColors(
+        this.store.user.playerColor!,
+        this.store.user.enemyColor!
+      );
     },
     async fetchMatches() {
       this.lastMatches.push(exampleGame1);

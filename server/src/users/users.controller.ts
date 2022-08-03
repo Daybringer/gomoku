@@ -20,6 +20,8 @@ import { UsernameChangeDTO } from './dto/username-change.dto';
 import { User } from 'src/shared/interfaces/user.interface';
 import { BuyIconDTO } from 'src/shared/DTO/buy-icon.dto';
 import { SelectIconDTO } from 'src/shared/DTO/select-icon.dto';
+import { SetGameboardDTO } from 'src/shared/DTO/set-gameboard.dto';
+import { SetColorsDTO } from 'src/shared/DTO/set-colors.dto';
 
 @Controller('/users')
 export class UsersController {
@@ -104,5 +106,24 @@ export class UsersController {
   async selectIcon(@Req() req, @Body() selectIconDTO: SelectIconDTO) {
     const user: UserEntity = req.user;
     return this.usersService.selectIcon(user, selectIconDTO.icon);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @UsePipes(new ValidationPipe())
+  @Post('set-gameboard')
+  async setGameboard(@Req() req, @Body() setGameboardDTO: SetGameboardDTO) {
+    const user: UserEntity = req.user;
+    return this.usersService.setGameboard(user, setGameboardDTO.gameboard);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('set-colors')
+  async setColors(@Req() req, @Body() setColorsDTO: SetColorsDTO) {
+    const user: UserEntity = req.user;
+    return this.usersService.setColors(
+      user,
+      setColorsDTO.myColor,
+      setColorsDTO.enemyColor,
+    );
   }
 }
