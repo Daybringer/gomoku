@@ -9,6 +9,7 @@ import { ProfileIcon } from "@/shared/icons";
 // @Types
 import { AuthenticationPayload, GameBoard } from "../shared/types";
 import { User } from "@/shared/interfaces/user.interface";
+import { getTransitionRawChildren } from "vue";
 
 export interface UserProfile {
   username: string;
@@ -18,16 +19,7 @@ export interface UserProfile {
   nameChangeTokens: number;
 }
 
-function userProfileBase(): UserProfile {
-  return {
-    username: "",
-    gameBoard: GameBoard.Standard,
-    myColor: "#00b3fe",
-    enemyColor: "#ff2079",
-    nameChangeTokens: 0,
-  };
-}
-
+// This serves as a placeholder and a default's for unlogged users
 function userBase(): User {
   return {
     id: 0,
@@ -38,10 +30,16 @@ function userBase(): User {
     strategy: LoginStrategy.Local,
     achievements: [],
     gameBoard: GameBoard.Standard,
-    playerColor: "",
-    enemyColor: "",
+    playerColor: "#00b3fe",
+    enemyColor: "#ff2079",
     selectedIcon: ProfileIcon.transparent,
     availableIcons: [ProfileIcon.transparent],
+    quickLost: 0,
+    quickTied: 0,
+    quickWon: 0,
+    rankedLost: 0,
+    rankedTied: 0,
+    rankedWon: 0,
   };
 }
 
@@ -49,7 +47,6 @@ function userBase(): User {
 // but there might have been problems with inner interfaces
 export const useStore = defineStore("store", {
   state: () => ({
-    userProfile: userProfileBase(),
     user: userBase(),
     userLoaded: false,
     token: localStorage.getItem("access-token") || "",
@@ -60,11 +57,27 @@ export const useStore = defineStore("store", {
     isAuthenticated(): boolean {
       return !!this.token;
     },
-    getUserProfile(): UserProfile {
-      return this.userProfile;
-    },
     getUsername(): string {
-      return this.userProfile.username;
+      return this.user.username;
+    },
+    // Matches
+    getTotalQuick(): number {
+      return this.user.quickLost + this.user.quickTied + this.user.quickWon;
+    },
+    getTotalRanked(): number {
+      return this.user.rankedLost + this.user.rankedTied + this.user.rankedWon;
+    },
+    getTotalMatches(): number {
+      return this.getTotalQuick + this.getTotalRanked;
+    },
+    getTotalWon(): number {
+      return this.user.rankedWon + this.user.quickWon;
+    },
+    getTotalLost(): number {
+      return this.user.rankedLost + this.user.quickLost;
+    },
+    getTotalTie(): number {
+      return this.user.rankedTied + this.user.quickTied;
     },
   },
   actions: {
@@ -159,7 +172,7 @@ export const useStore = defineStore("store", {
           .then((res) => {
             this.consumeAuthPayload(res.data);
 
-            if (this.userProfile.nameChangeTokens > 0) {
+            if (this.user.nameChangeTokens! > 0) {
               console.log("Store true");
               resolve(true);
             } else {
@@ -187,16 +200,10 @@ export const useStore = defineStore("store", {
     },
     consumeAuthPayload(authPayload: AuthenticationPayload): void {
       const token = authPayload.payload.token;
-      const userProfile = userProfileBase();
       const user = authPayload.user;
       this.user = user;
       this.userLoaded = true;
 
-      userProfile.username = user.username;
-      userProfile.gameBoard = user.gameBoard;
-      userProfile.nameChangeTokens = user.nameChangeTokens!;
-
-      this.saveUserProfile(userProfile);
       this.saveToken(token);
     },
     saveToken(token: string): void {
@@ -209,14 +216,11 @@ export const useStore = defineStore("store", {
         headers: { Authorization: "Bearer " + token },
       });
     },
-    saveUserProfile(userProfile: UserProfile) {
-      this.userProfile = userProfile;
-    },
-    flushUserProfile() {
-      this.userProfile = userProfileBase();
+    flushUser(): void {
+      this.user = userBase();
     },
     logout(): void {
-      this.flushUserProfile();
+      this.flushUser();
       localStorage.removeItem("access-token");
       this.token = "";
     },

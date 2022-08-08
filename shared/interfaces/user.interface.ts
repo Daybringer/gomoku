@@ -18,9 +18,15 @@ export interface User {
   credit?: number;
   nameChangeTokens?: number;
   achievements?: Achievement[];
-  playerColor?: string;
-  enemyColor?: string;
+  playerColor: string;
+  enemyColor: string;
   gameBoard: GameBoard;
   selectedIcon: ProfileIcon;
   availableIcons?: ProfileIcon[];
+  rankedWon: number;
+  rankedLost: number;
+  rankedTied: number;
+  quickWon: number;
+  quickLost: number;
+  quickTied: number;
 }

@@ -1,12 +1,19 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { identity } from 'rxjs';
 import { SignUpDTO } from 'src/auth/dto/sign-up.dto';
 import { TokensService } from 'src/auth/token.service';
+import { AnyGame } from 'src/game/game.class';
 import { ProfileIcon, profileIconRecords } from 'src/shared/icons';
 import { Repository } from 'typeorm';
 
 import { UserEntity } from '../models/user.entity';
-import { GameBoard, LoginStrategy } from '../shared/types';
+import {
+  EndingType,
+  GameBoard,
+  GameType,
+  LoginStrategy,
+} from '../shared/types';
 
 import { adjectives, nouns } from './randomNameDict';
 @Injectable()
@@ -124,7 +131,9 @@ export class UsersService {
   }
 
   // TODO might isolate achievement logic to achievements themselves or at least separate this function to a single file
-  async checkAchievements(user: UserEntity) {}
+  async checkAchievements(user: UserEntity, game: AnyGame) {
+    console.log('Checking and updating achievements');
+  }
 
   async buyIcon(user: UserEntity, icon: ProfileIcon) {
     const profileIconRecord = profileIconRecords[icon];
@@ -156,6 +165,33 @@ export class UsersService {
   async setColors(user: UserEntity, myColor: string, enemyColor: string) {
     user.playerColor = myColor;
     user.enemyColor = enemyColor;
+    return this.userRepository.save(user);
+  }
+
+  async addNewGameToStats(
+    user: UserEntity,
+    gameType: GameType,
+    won: boolean,
+    tie: boolean,
+  ) {
+    if (gameType === GameType.Quick) {
+      if (won) {
+        user.quickWon += 1;
+      } else if (tie) {
+        user.quickTied += 1;
+      } else {
+        user.quickLost += 1;
+      }
+    } else if (gameType === GameType.Ranked) {
+      if (won) {
+        user.quickLost += 1;
+      } else if (tie) {
+        user.quickTied += 1;
+      } else {
+        user.quickLost += 1;
+      }
+    }
+
     return this.userRepository.save(user);
   }
 }

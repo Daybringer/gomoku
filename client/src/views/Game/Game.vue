@@ -84,29 +84,21 @@ export default defineComponent({
     // initalizing Pinia store
     const store = useStore();
 
-    const userProfile = store.getUserProfile;
-
     const logged = store.isAuthenticated;
     // TODO not logged in, temporary solution for nicknames
     if (!logged) {
       await store
         .getRandomName()
         .then((res) => {
-          console.log("My temp nickname:", res);
-          // FIXME after store getting types :)
-          this.me.nickname = String(res);
+          this.me.nickname = res;
         })
         .catch();
     } else {
-      this.me.nickname = userProfile.username;
+      this.me.nickname = store.user.username;
     }
 
-    this.me.color = userProfile.myColor;
-    this.opponent.color = userProfile.enemyColor;
-
-    console.log(this.me);
-    console.log("UserProfile:>>");
-    console.log(userProfile.username, userProfile);
+    this.me.color = store.user.playerColor;
+    this.opponent.color = store.user.enemyColor;
 
     if (this.getGameTypeFromURL === GameType.Quick) {
       socket.emit(GameEvents.JoinGame, {

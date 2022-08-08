@@ -110,7 +110,7 @@
             <div>
               <button
                 v-show="logged"
-                class="flex text-sm border-2  border-transparent rounded-full p-0.5 bg-gray-100 focus:outline-none focus:border-gomoku-blue transition duration-150 ease-in-out"
+                class="flex text-sm border-2  border-transparent rounded-full p-1 bg-gray-100 focus:outline-none focus:border-gomoku-blue transition duration-150 ease-in-out"
                 id="user-menu"
                 aria-label="User menu"
                 aria-haspopup="true"
@@ -118,7 +118,7 @@
               >
                 <img
                   v-show="store.userLoaded"
-                  class=" h-8"
+                  class=" h-7"
                   alt="user_icon"
                   :src="getSvgURL(store.user.selectedIcon)"
                 />
@@ -157,7 +157,7 @@
                 >
                   <a
                     href="#"
-                    @click.prevent="pushAndCloseDropdown('/profile')"
+                    @click.prevent="pushAndCloseDropdown('/profile#Start')"
                     class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-300 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
                     role="menuitem"
                     >Your Profile</a

@@ -143,12 +143,12 @@ export default defineComponent({
 });
 </script>
 <template>
-  <view-base-responsive :backgroundTint="'light'">
+  <view-base-responsive id="Start" :backgroundTint="'light'">
     <dark-container>
       <!-- First row -->
       <div class="flex-1 grid grid-cols-1 xl:grid-cols-2 gap-4 mb-4">
         <!-- General info -->
-        <profile-section>
+        <profile-section id="General">
           <div
             class="flex-1 flex flex-col xl:grid gap-5 xl:gap-0 grid-cols-7 grid-rows-3"
           >
@@ -219,19 +219,19 @@ export default defineComponent({
               </h2>
               <p class="whitespace-nowrap">
                 <span class="text-lg font-medium">Total matches: </span>
-                <span>1000</span>
+                <span>{{ store.getTotalMatches }}</span>
               </p>
               <p class="whitespace-nowrap">
                 <span class="text-lg font-medium">Won: </span>
-                <span>669</span>
+                <span>{{ store.getTotalWon }}</span>
               </p>
               <p class="whitespace-nowrap">
                 <span class="text-lg font-medium">Lost: </span>
-                <span>321</span>
+                <span>{{ store.getTotalLost }}</span>
               </p>
               <p class="whitespace-nowrap">
                 <span class="text-lg font-medium">Tied: </span>
-                <span>10</span>
+                <span>{{ store.getTotalTie }}</span>
               </p>
             </div>
             <!-- Achievements -->
@@ -262,7 +262,7 @@ export default defineComponent({
         </profile-section>
 
         <!-- Match history -->
-        <profile-section>
+        <profile-section id="MatchHistory">
           <base-bold-headline class="pt-2">Match history</base-bold-headline>
           <profile-matches-container>
             <!-- Displaying few loaded matches -->
@@ -295,7 +295,7 @@ export default defineComponent({
       <!-- Second row -->
       <div class="flex-1 grid grid-cols-1 xl:grid-cols-2 gap-4">
         <!-- Customizations -->
-        <profile-section>
+        <profile-section id="Customizations">
           <base-bold-headline class="pt-2 pb-4"
             >Customizations</base-bold-headline
           >
@@ -392,7 +392,7 @@ export default defineComponent({
 
         <!-- Elo chart -->
         <!-- TODO replace the dummy graph with one with real data; add switches and so on -->
-        <profile-section>
+        <profile-section id="Graphs">
           <base-bold-headline class="pt-2">Elo history</base-bold-headline>
           <elo-chart></elo-chart>
         </profile-section>

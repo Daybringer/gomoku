@@ -60,10 +60,10 @@ export class UserEntity {
   achievements?: Achievement[];
 
   @Column({ default: '#00b3fe' })
-  playerColor?: string;
+  playerColor: string;
 
   @Column({ default: '#ff2079' })
-  enemyColor?: string;
+  enemyColor: string;
 
   @Column({ type: 'enum', enum: GameBoard, default: GameBoard.Standard })
   gameBoard: GameBoard;
@@ -78,4 +78,22 @@ export class UserEntity {
     default: [ProfileIcon.defaultBoy],
   })
   availableIcons?: ProfileIcon[];
+
+  @Column({ default: 0 })
+  rankedWon: number;
+
+  @Column({ default: 0 })
+  rankedLost: number;
+
+  @Column({ default: 0 })
+  rankedTied: number;
+
+  @Column({ default: 0 })
+  quickWon: number;
+
+  @Column({ default: 0 })
+  quickLost: number;
+
+  @Column({ default: 0 })
+  quickTied: number;
 }

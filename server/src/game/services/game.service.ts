@@ -115,7 +115,7 @@ export class GameService {
     } else {
       // Adds a players and starts game if the room is full
       this.addPlayer(roomID, client.id, logged, username);
-      console.log(username, client.id);
+      console.log(logged, username, client.id);
 
       // FIXME might separate logic from addPlayer into
       // something like addPlayer, checkStartConditions, startGame
@@ -295,7 +295,6 @@ export class GameService {
       );
 
       game.lastCalibrationTimestamp = timeNow;
-      console.log(game.getNextPlayerOnTurn().secondsLeft);
       return game.getNextPlayerOnTurn().secondsLeft;
     }
   }
@@ -403,17 +402,14 @@ export class GameService {
   async saveGame(game: AnyGame) {
     const gameEntity: GameEntity = this.gameRepository.create();
     // Profiles
-    const socketIDtoPlayerGameProfileIDPairs: { [socketID: string]: number } =
-      {};
+    const socketIDtoPlayerGameProfileID: { [socketID: string]: number } = {};
 
     const [playerOne, playerTwo] = game.players;
 
     const playerOneProfile = await this.savePlayerGameProfile(playerOne);
     const playerTwoProfile = await this.savePlayerGameProfile(playerTwo);
-    socketIDtoPlayerGameProfileIDPairs[playerOne.socketID] =
-      playerOneProfile.id;
-    socketIDtoPlayerGameProfileIDPairs[playerTwo.socketID] =
-      playerTwoProfile.id;
+    socketIDtoPlayerGameProfileID[playerOne.socketID] = playerOneProfile.id;
+    socketIDtoPlayerGameProfileID[playerTwo.socketID] = playerTwoProfile.id;
 
     // TODO
     // ranked game -> calculate Elo delta save it to profiles and update elos of users
@@ -428,13 +424,36 @@ export class GameService {
     // there has to be a winner
     if (game.gameEnding !== EndingType.Tie) {
       gameEntity.winnerGameProfileID =
-        socketIDtoPlayerGameProfileIDPairs[game.winner.socketID];
+        socketIDtoPlayerGameProfileID[game.winner.socketID];
     }
 
     gameEntity.playerGameProfileIDs = [
       playerOneProfile.id,
       playerTwoProfile.id,
     ];
+
+    [playerOneProfile, playerTwoProfile].forEach(async (profile) => {
+      // if a player is logged in, update their game stats and update achievements
+      if (profile.userID) {
+        const user = await this.usersService.findOneByID(profile.userID);
+
+        this.usersService.checkAchievements(user, game);
+
+        const isTie = game.gameEnding === EndingType.Tie;
+        const isThisUserTheWinner = isTie
+          ? false
+          : profile.id == socketIDtoPlayerGameProfileID[game.winner.socketID]
+          ? true
+          : false;
+
+        this.usersService.addNewGameToStats(
+          user,
+          game.gameType,
+          isThisUserTheWinner,
+          isTie,
+        );
+      }
+    });
 
     return this.gameRepository.save(gameEntity);
   }
@@ -477,7 +496,6 @@ export class GameService {
     if (game) {
       if (!game.isFull()) game.addPlayer(player);
       if (game.isFull() && !game.isRunning()) this.startGame(roomID);
-      console.log(game.isRunning());
     }
   }
 }
