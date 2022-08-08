@@ -118,6 +118,9 @@
             :symbolColor="myColor"
             :time="myTime"
             :nickname="myNickname"
+            :logged="myLogged"
+            :iconName="myIconName"
+            :userID="myUserID"
           ></social-blade>
           <div class="m-auto my-3 text-3xl text-white font-semibold">VS</div>
           <social-blade
@@ -125,6 +128,9 @@
             :symbolColor="enemyColor"
             :time="enemyTime"
             :nickname="enemyNickname"
+            :logged="enemyLogged"
+            :iconName="enemyIconName"
+            :userID="enemyUserID"
           ></social-blade>
         </div>
         <!-- Chat container -->
@@ -253,7 +259,13 @@ export default defineComponent({
     myTime: Number,
     enemyTime: String,
     amIStartingPlayer: Boolean,
+    myLogged: Boolean,
+    enemyLogged: Boolean,
+    myIconName: String,
+    enemyIconName: String,
     myNickname: String,
+    myUserID: Number,
+    enemyUserID: Number,
     enemyNickname: String,
     myColor: String,
     enemyColor: String,

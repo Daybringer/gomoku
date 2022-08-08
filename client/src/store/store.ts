@@ -9,7 +9,6 @@ import { ProfileIcon } from "@/shared/icons";
 // @Types
 import { AuthenticationPayload, GameBoard } from "../shared/types";
 import { User } from "@/shared/interfaces/user.interface";
-import { getTransitionRawChildren } from "vue";
 
 export interface UserProfile {
   username: string;

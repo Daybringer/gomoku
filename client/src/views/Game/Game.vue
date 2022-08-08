@@ -4,10 +4,16 @@
     :gameState="gameState"
     :gameEnding="gameEnding"
     :lastPositionID="lastPositionID"
+    :myUserID="me.userID"
+    :myIconName="me.iconName"
+    :myLogged="me.logged"
     :myTime="me.time"
     :myNickname="me.nickname"
     :myColor="me.color"
     :amIStartingPlayer="amIStartingPlayer"
+    :enemyLogged="opponent.logged"
+    :enemyIconName="opponent.iconName"
+    :enemyUserID="opponent.userID"
     :enemyTime="opponent.time"
     :enemyColor="opponent.color"
     :enemyNickname="opponent.nickname"
@@ -42,11 +48,17 @@ export default defineComponent({
       amIStartingPlayer: true,
       me: {
         nickname: "-",
+        userID: 0,
+        iconName: "",
+        logged: false,
         time: 0,
         color: "",
       },
       opponent: {
         nickname: "-",
+        iconName: "",
+        userID: 0,
+        logged: false,
         time: 0,
         color: "",
       },
@@ -127,7 +139,7 @@ export default defineComponent({
       }, COIN_SPIN_DURATION - 200);
 
       this.amIStartingPlayer = socket.id === gameInfo.startingPlayer.socketID;
-      console.log(gameInfo);
+
       this.me.nickname =
         (socket.id === gameInfo.players[0].socketID
           ? gameInfo.players[0].username

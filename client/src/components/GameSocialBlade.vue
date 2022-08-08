@@ -76,20 +76,30 @@
     <div class="flex-1 text-center text-xl text-gray-900 dark:text-gray-100">
       <p>{{ nickname }}</p>
     </div>
-    <div
-      class=" hover:bg-gray-300 dark:hover:bg-gray-400 cursor-pointer w-16 rounded-full h-full flex justify-between"
-    >
-      <img
-        class="m-auto h-12 w-auto align-middle"
-        alt="user_icon"
-        src="../assets/samurai_blue.svg"
-      />
-    </div>
+    <router-link target="_blank" :to="logged ? '/profile/' + userID : ''">
+      <div
+        class=" hover:bg-gray-300 dark:hover:bg-gray-400 cursor-pointer w-16 rounded-full h-full flex justify-between"
+      >
+        <img
+          class="m-auto h-12 w-auto align-middle"
+          alt="logged_user_icon"
+          v-show="logged"
+          :src="getSvgURL(iconName || '')"
+        />
+        <anonym-icon-svg
+          v-show="!logged"
+          alt="unlogged_user_icon"
+          class="m-auto h-12 w-auto align-middle"
+        />
+      </div>
+    </router-link>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
+
+import AnonymIconSvg from "@/assets/svg/AnonymIconSvg.vue";
 
 export default defineComponent({
   name: "SocialBlade",
@@ -98,6 +108,9 @@ export default defineComponent({
     symbolColor: String,
     time: Number,
     nickname: String,
+    iconName: String,
+    logged: Boolean,
+    userID: Number,
   },
   computed: {
     humanReadableTime(this: any) {
@@ -109,11 +122,17 @@ export default defineComponent({
       }`;
     },
   },
-  components: {},
+  components: {
+    AnonymIconSvg,
+  },
   data() {
     return {};
   },
-  methods: {},
+  methods: {
+    getSvgURL(svgName: string) {
+      return require(`../assets/svg/profile_icons/${svgName}.svg`);
+    },
+  },
 });
 </script>
 <style scoped></style>
