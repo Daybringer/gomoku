@@ -76,12 +76,17 @@
     <div class="flex-1 text-center text-xl text-gray-900 dark:text-gray-100">
       <p>{{ nickname }}</p>
     </div>
-    <router-link target="_blank" :to="logged ? '/profile/' + userID : ''">
+    <router-link target="_blank" :to="logged ? '/profile/' + userID : '/'">
       <div
-        class=" hover:bg-gray-300 dark:hover:bg-gray-400 cursor-pointer w-16 rounded-full h-full flex justify-between"
+        class="w-16 rounded-full h-full flex justify-between"
+        :class="
+          logged
+            ? 'hover:bg-gray-300 cursor-pointer dark:hover:bg-gray-400'
+            : 'cursor-default'
+        "
       >
         <img
-          class="m-auto h-12 w-auto align-middle"
+          class="m-auto h-12 p-1 w-auto align-middle"
           alt="logged_user_icon"
           v-show="logged"
           :src="getSvgURL(iconName || 'defaultBoy')"
