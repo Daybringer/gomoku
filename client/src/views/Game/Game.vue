@@ -9,13 +9,13 @@
     :myLogged="me.logged"
     :myTime="me.time"
     :myNickname="me.nickname"
-    :myColor="me.color"
+    :myColor="store.user.playerColor"
     :amIStartingPlayer="amIStartingPlayer"
     :enemyLogged="opponent.logged"
     :enemyIconName="opponent.iconName"
     :enemyUserID="opponent.userID"
     :enemyTime="opponent.time"
-    :enemyColor="opponent.color"
+    :enemyColor="store.user.enemyColor"
     :enemyNickname="opponent.nickname"
     :messages="messages"
     @gameClick="gameClick"
@@ -28,17 +28,20 @@ import { GameState, Ending } from "@/types";
 import { COIN_SPIN_DURATION } from "@/shared/constants";
 // Backend-frontend shared types
 import { position, GameClickDTO, GameEvents, GameType } from "@/shared/types";
+import {
+  GameStartedEventDTO,
+  GameStartedEventPlayerInfo,
+} from "@/shared/socketioEvents.dto";
 
 // SocketIO
-import io from "socket.io-client";
 let socket: any;
 // Components
 import GameBase from "@/components/TheGameBase.vue";
 // Pinia
 import { useStore } from "@/store/store";
-import { pinia } from "@/store/index";
 // Utils
 import { defineComponent } from "vue";
+import { io } from "socket.io-client";
 
 export default defineComponent({
   name: "Game",
@@ -52,7 +55,6 @@ export default defineComponent({
         iconName: "",
         logged: false,
         time: 0,
-        color: "",
       },
       opponent: {
         nickname: "-",
@@ -60,7 +62,6 @@ export default defineComponent({
         userID: 0,
         logged: false,
         time: 0,
-        color: "",
       },
       chatInput: "",
       lastPositionID: 0,
@@ -70,6 +71,11 @@ export default defineComponent({
       messages: [] as Array<Record<string, string>>,
       boardSize: 15,
     };
+  },
+  setup() {
+    const store = useStore();
+
+    return { store };
   },
   methods: {
     /**
@@ -93,24 +99,19 @@ export default defineComponent({
   },
   async mounted() {
     socket = io("/game/quick", { port: "3001" });
-    // initalizing Pinia store
-    const store = useStore();
 
-    const logged = store.isAuthenticated;
+    const logged = this.store.isAuthenticated;
     // TODO not logged in, temporary solution for nicknames
     if (!logged) {
-      await store
+      await this.store
         .getRandomName()
         .then((res) => {
           this.me.nickname = res;
         })
         .catch();
     } else {
-      this.me.nickname = store.user.username;
+      this.me.nickname = this.store.user.username;
     }
-
-    this.me.color = store.user.playerColor;
-    this.opponent.color = store.user.enemyColor;
 
     if (this.getGameTypeFromURL === GameType.Quick) {
       socket.emit(GameEvents.JoinGame, {
@@ -129,26 +130,48 @@ export default defineComponent({
     });
 
     // Game has begun
-    socket.on(GameEvents.GameStarted, (gameInfo) => {
-      this.gameState = GameState.Coinflip;
-      this.me.time = this.opponent.time = gameInfo.timeLimitInSeconds;
-      setTimeout(() => {
-        if (this.gameState === GameState.Coinflip) {
-          this.gameState = GameState.Running;
-        }
-      }, COIN_SPIN_DURATION - 200);
+    socket.on(
+      GameEvents.GameStarted,
+      (gameStartedEventDTO: GameStartedEventDTO) => {
+        this.amIStartingPlayer =
+          socket.id === gameStartedEventDTO.startingPlayerSocketID;
 
-      this.amIStartingPlayer = socket.id === gameInfo.startingPlayer.socketID;
+        let me: GameStartedEventPlayerInfo,
+          opponent: GameStartedEventPlayerInfo;
+        const socketIDs = Object.keys(gameStartedEventDTO.players);
+        socketIDs.forEach((key) => {
+          console.log(key, gameStartedEventDTO.players);
+          if (key === socket.id) {
+            me = gameStartedEventDTO.players[key];
+          } else {
+            opponent = gameStartedEventDTO.players[key];
+          }
+        });
+        console.log(me!, opponent!, socketIDs);
 
-      this.me.nickname =
-        (socket.id === gameInfo.players[0].socketID
-          ? gameInfo.players[0].username
-          : gameInfo.players[1].username) + " (You)";
-      this.opponent.nickname =
-        socket.id !== gameInfo.players[0].socketID
-          ? gameInfo.players[0].username
-          : gameInfo.players[1].username;
-    });
+        this.me.nickname = me!.username;
+        this.opponent.nickname = opponent!.username;
+        this.me.userID = me!.userID;
+        this.opponent.userID = opponent!.userID;
+        this.me.iconName = String(me!.profileIcon);
+        this.opponent.iconName = String(opponent!.profileIcon);
+        this.me.logged = me!.logged;
+        this.opponent.logged = opponent!.logged;
+        this.me.time = this.opponent.time =
+          gameStartedEventDTO.timeLimitInSeconds;
+
+        console.log(this.me, this.opponent);
+
+        this.gameState = GameState.Coinflip;
+
+        // FIXME magic numbers (200)
+        setTimeout(() => {
+          if (this.gameState === GameState.Coinflip) {
+            this.gameState = GameState.Running;
+          }
+        }, COIN_SPIN_DURATION - 200);
+      }
+    );
 
     socket.on(
       GameEvents.TimeCalibration,

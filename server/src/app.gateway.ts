@@ -6,7 +6,6 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { GameState } from './game/game.class';
 import { GameService } from './game/services/game.service';
 import { SearchService } from './game/services/search.service';
 

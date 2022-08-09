@@ -3,24 +3,21 @@ import { InjectRepository } from '@nestjs/typeorm';
 import {
   JoinGameDTO,
   GameEvents,
-  SearchEvents,
   GameClickDTO,
   EndingType,
+  Player,
+  GameState,
+  GameType,
 } from 'gomoku-shared-types/';
+import { GameStartedEventDTO } from 'src/shared/socketioEvents.dto';
 import { Server, Socket } from 'socket.io';
 import { GameEntity } from 'src/models/game.entity';
 import { PlayerGameProfile } from 'src/models/playerGameProfile.entity';
+import { COIN_SPIN_DURATION } from 'src/shared/constants';
 import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
-import {
-  AnyGame,
-  GameState,
-  GameType,
-  Player,
-  QuickGame,
-  RankedGame,
-} from '../game.class';
-import { SearchService } from './search.service';
+import { AnyGame, QuickGame, RankedGame } from '../game.class';
+import { ProfileIcon } from 'src/shared/icons';
 
 @Injectable()
 export class GameService {
@@ -106,7 +103,11 @@ export class GameService {
     return socketTimeDict;
   }
 
-  handleJoinGame(socketServer: Server, client: Socket, joinGame: JoinGameDTO) {
+  async handleJoinGame(
+    socketServer: Server,
+    client: Socket,
+    joinGame: JoinGameDTO,
+  ) {
     const { roomID, logged, username } = joinGame;
     const game = this.findGame(roomID);
 
@@ -115,7 +116,6 @@ export class GameService {
     } else {
       // Adds a players and starts game if the room is full
       this.addPlayer(roomID, client.id, logged, username);
-      console.log(logged, username, client.id);
 
       // FIXME might separate logic from addPlayer into
       // something like addPlayer, checkStartConditions, startGame
@@ -124,8 +124,8 @@ export class GameService {
       client.join(roomID);
 
       if (this.isRunning(roomID)) {
-        const gameInfo = this.getGameInfo(roomID);
-        socketServer.to(roomID).emit(GameEvents.GameStarted, gameInfo);
+        const gameStartedDTO = await this.constructGameStartedDTO(roomID);
+        socketServer.to(roomID).emit(GameEvents.GameStarted, gameStartedDTO);
 
         // Delaying the 1s interval for calibration by the time the coin
         // is spinning on client
@@ -136,7 +136,7 @@ export class GameService {
               this.calibrateTime(socketServer, roomID, game);
             }, 1000);
           }
-        }, 4200);
+        }, COIN_SPIN_DURATION);
       }
     }
   }
@@ -305,10 +305,51 @@ export class GameService {
     this.findGame(roomID).iterateRound();
   }
 
-  getGameInfo(roomID: string) {
+  async constructGameStartedDTO(roomID: string): Promise<GameStartedEventDTO> {
     const { players, startingPlayer, timeLimitInSeconds } =
       this.findGame(roomID);
-    return { players, startingPlayer, timeLimitInSeconds };
+    const gameStartedEventDTO: GameStartedEventDTO = {
+      timeLimitInSeconds,
+      startingPlayerSocketID: startingPlayer.socketID,
+      players: {},
+    };
+
+    console.log('PLAYERS', players);
+
+    // FIXME remove this demon code -> rewrite whole logic
+    const player = players[0];
+    const playerWithConfig = {
+      logged: player.logged,
+      secondsLeft: player.secondsLeft,
+      username: player.username,
+      userID: 0,
+      profileIcon: ProfileIcon.defaultBoy,
+    };
+    if (player.logged) {
+      const user = await this.usersService.findOneByUsername(player.username);
+      playerWithConfig.profileIcon = user.selectedIcon;
+      playerWithConfig.userID = user.id;
+    }
+
+    gameStartedEventDTO.players[player.socketID] = playerWithConfig;
+
+    const player1 = players[1];
+    const playerWithConfig1 = {
+      logged: player1.logged,
+      secondsLeft: player1.secondsLeft,
+      username: player1.username,
+      userID: 0,
+      profileIcon: ProfileIcon.defaultBoy,
+    };
+    if (player1.logged) {
+      const user = await this.usersService.findOneByUsername(player1.username);
+      playerWithConfig1.profileIcon = user.selectedIcon;
+      playerWithConfig1.userID = user.id;
+    }
+
+    gameStartedEventDTO.players[player1.socketID] = playerWithConfig1;
+
+    return gameStartedEventDTO;
   }
 
   isRunning(roomID: string): boolean {

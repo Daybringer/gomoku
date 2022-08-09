@@ -84,7 +84,7 @@
           class="m-auto h-12 w-auto align-middle"
           alt="logged_user_icon"
           v-show="logged"
-          :src="getSvgURL(iconName || '')"
+          :src="getSvgURL(iconName || 'defaultBoy')"
         />
         <anonym-icon-svg
           v-show="!logged"

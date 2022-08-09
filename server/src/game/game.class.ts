@@ -1,26 +1,5 @@
-import { EndingType } from '../shared/types';
+import { EndingType, GameState, Opening, Player } from '../shared/types';
 import { GameType } from '../shared/types';
-
-enum GameState {
-  Waiting = 'WAITING',
-  Running = 'RUNNING',
-  Ended = 'ENDED',
-}
-
-enum Opening {
-  Standart = 'STANDARD',
-  Swap1 = 'SWAP1',
-  Swap2 = 'SWAP2',
-}
-
-interface Player {
-  socketID: string;
-  username: string;
-  logged: boolean;
-  secondsLeft?: number;
-  // in ms
-  timeLeft?: number;
-}
 
 abstract class Game {
   players: Player[] = [];
@@ -150,4 +129,4 @@ class CustomGame extends Game {
 
 type AnyGame = QuickGame | RankedGame | CustomGame;
 
-export { QuickGame, RankedGame, GameType, GameState, Opening, Player, AnyGame };
+export { QuickGame, RankedGame, AnyGame };
