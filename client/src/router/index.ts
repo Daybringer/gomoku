@@ -13,6 +13,8 @@ import NotFound from "../views/NotFound.vue";
 import Game from "../views/Game/Game.vue";
 import Search from "../views/Game/Search.vue";
 import VerifyMailLanding from "../views/VerifyMailLanding.vue";
+import CreateCustom from "../views/CreateCustom.vue";
+import CustomWaitingRoom from "../views/CustomWaitingRoom.vue";
 // Pinia
 import { useStore } from "@/store/store";
 
@@ -47,19 +49,25 @@ const routes: Array<RouteRecordRaw> = [
     meta: { requiresAuth: true },
   },
   {
-    path: "/profile-old",
-    component: () => import("../views/UserProfileDemo.vue"),
-    meta: { requiresAuth: true },
-  },
-  // FIXME remove dummies
-  {
     path: "/profile",
     component: () => import("../views/UserProfile.vue"),
     meta: { requiresAuth: true },
   },
   {
+    path: "/profile/:id/match-history",
+    component: () => import("../views/MatchHistoryOverview.vue"),
+  },
+  {
     path: "/test",
     component: () => import("../views/Test.vue"),
+  },
+  {
+    path: "/custom",
+    component: CreateCustom,
+  },
+  {
+    path: "/custom/waiting",
+    component: CustomWaitingRoom,
   },
   // END
   {

@@ -1,7 +1,9 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
+  Param,
   Post,
   Req,
   UnauthorizedException,
@@ -125,5 +127,14 @@ export class UsersController {
       setColorsDTO.myColor,
       setColorsDTO.enemyColor,
     );
+  }
+
+  @Get('leaderboard-position/:userID')
+  async getUsersLeaderboardPosition(
+    @Param('userID') userID: string,
+  ): Promise<number> {
+    const user = await this.usersService.findOneByID(Number(userID));
+    if (!user) throw new BadRequestException('User not found');
+    return this.usersService.getLeaderboardPosition(user);
   }
 }

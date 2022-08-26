@@ -271,7 +271,7 @@ export default defineComponent({
               v-for="match in lastMatches"
               :key="match.id"
               :gameID="match.id"
-              :myID="match.me.id"
+              :myID="store.user.id"
               :elo="match.me.delta"
               :dateString="match.dateString"
               :enemyID="match.opponent.id"

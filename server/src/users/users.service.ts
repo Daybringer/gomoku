@@ -1,11 +1,9 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { identity } from 'rxjs';
-import { SignUpDTO } from 'src/auth/dto/sign-up.dto';
 import { TokensService } from 'src/auth/token.service';
 import { AnyGame } from 'src/game/game.class';
 import { ProfileIcon, profileIconRecords } from 'src/shared/icons';
-import { Repository } from 'typeorm';
+import { MoreThan, Repository } from 'typeorm';
 
 import { UserEntity } from '../models/user.entity';
 import {
@@ -166,6 +164,13 @@ export class UsersService {
     user.playerColor = myColor;
     user.enemyColor = enemyColor;
     return this.userRepository.save(user);
+  }
+
+  async getLeaderboardPosition(user: UserEntity): Promise<number> {
+    const numberOfUsersWithHigherElo = await this.userRepository.count({
+      where: { id: MoreThan(user.elo) },
+    });
+    return 1 + numberOfUsersWithHigherElo;
   }
 
   async addNewGameToStats(

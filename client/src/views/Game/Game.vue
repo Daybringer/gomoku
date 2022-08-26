@@ -140,14 +140,12 @@ export default defineComponent({
           opponent: GameStartedEventPlayerInfo;
         const socketIDs = Object.keys(gameStartedEventDTO.players);
         socketIDs.forEach((key) => {
-          console.log(key, gameStartedEventDTO.players);
           if (key === socket.id) {
             me = gameStartedEventDTO.players[key];
           } else {
             opponent = gameStartedEventDTO.players[key];
           }
         });
-        console.log(me!, opponent!, socketIDs);
 
         this.me.nickname = me!.username;
         this.opponent.nickname = opponent!.username;
