@@ -67,7 +67,10 @@
         </div>
       </div>
       <hr class="m-3 border-2 rounded border-gray-500" />
-      <base-button class="w-60 self-center text-xl">Create game</base-button>
+      <base-button
+        class="text-xl w-60 self-center bg-gomoku-blue hover:bg-gomoku-blue-dark dark:hover:bg-gomoku-blue-dark dark:bg-gomoku-blue text-gray-50 font-medium mt-5"
+        >Create game</base-button
+      >
     </div>
   </view-base-fixed-height>
 </template>

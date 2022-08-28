@@ -66,7 +66,7 @@ const routes: Array<RouteRecordRaw> = [
     component: CreateCustom,
   },
   {
-    path: "/custom/waiting",
+    path: "/custom/:roomID",
     component: CustomWaitingRoom,
   },
   // END
