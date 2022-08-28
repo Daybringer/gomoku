@@ -24,11 +24,15 @@
           </div>
           <base-button
             class="text-xl w-full bg-gomoku-blue dark:bg-gomoku-blue text-gray-50 font-medium mt-5"
+            @click="copyToClipboard()"
             >Copy link<clipboard-icon-svg class="pl-2 h-6"
           /></base-button>
         </div>
       </div>
     </div>
+    <base-notification v-show="notificationShown">{{
+      notificationText
+    }}</base-notification>
   </view-base-fixed-height>
 </template>
 <script lang="ts">
@@ -37,7 +41,7 @@ import SwingAnimationSvg from "@/assets/svg/SwingAnimationSvg.vue";
 import BaseButton from "@/components/BaseButton.vue";
 import BaseMidHeadline from "@/components/BaseMidHeadline.vue";
 import ClipboardIconSvg from "@/assets/svg/ClipboardIconSvg.vue";
-
+import BaseNotification from "@/components/BaseNotification.vue";
 import { defineComponent } from "vue";
 export default defineComponent({
   name: "CustomWaitingRoom",
@@ -48,12 +52,23 @@ export default defineComponent({
     SwingAnimationSvg,
     ClipboardIconSvg,
     BaseMidHeadline,
+    BaseNotification,
   },
-  data(): {} {
-    return {};
+  data(): { notificationText: string; notificationShown: boolean } {
+    return {
+      notificationText: "Successfully copied to clipboard",
+      notificationShown: false,
+    };
   },
   computed: {},
-  methods: {},
+  methods: {
+    copyToClipboard(): void {
+      this.notificationShown = true;
+      setTimeout(() => {
+        this.notificationShown = false;
+      }, 3000);
+    },
+  },
   mounted() {},
 });
 </script>
