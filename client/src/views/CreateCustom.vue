@@ -2,7 +2,14 @@
   <view-base-fixed-height :placeItems="'start'">
     <div class="flex-1 py-8 px-4 gap-4 flex flex-col">
       <base-bold-headline class="mb-4">Custom game</base-bold-headline>
-      <hr class="m3 border-2 rounded border-gray-500" />
+      <img
+        src="@/assets/svg/puzzle.svg"
+        class="h-20 md:h-32 absolute left-2 md:left-10 top-20"
+        alt=""
+      />
+      <hr
+        class="m3 border-2 w-full md:w-80 self-center rounded border-gray-500"
+      />
       <div
         class="w-full md:w-80 gap-4 self-center justify-around flex-1 flex flex-col md:flex-row"
       >
