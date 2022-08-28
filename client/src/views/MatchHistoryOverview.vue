@@ -157,11 +157,11 @@
             :win="match.win"
           ></profile-match-blade>
           <base-loading-spinner
-            class="h-14 w-14 border-gray-700"
+            class="h-14 w-14 border-gray-700 dark:border-gray-300"
             v-show="loading"
           />
           <p
-            class="italic text-2xl text-gray-600"
+            class="italic text-2xl text-gray-600 dark:text-gray-300"
             v-show="!loading && matches.length == 0"
           >
             None found. Go and find some
