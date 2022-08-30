@@ -16,10 +16,10 @@
             style="letter-spacing: 0.5rem;"
           >
             <!--SHADOW -->
-            <span>{{ this.$route.params.roomID }}</span>
+            <span>{{ roomID }}</span>
             <!-- Real text -->
             <span class="absolute -left-1 -top-1 text-gomoku-pink z-0">
-              {{ this.$route.params.roomID }}
+              {{ roomID }}
             </span>
           </div>
           <base-button
@@ -31,7 +31,7 @@
       </div>
     </div>
     <base-notification v-show="notificationShown">{{
-      notificationText
+      "Successfully copied to clipboard"
     }}</base-notification>
   </view-base-fixed-height>
 </template>
@@ -54,16 +54,20 @@ export default defineComponent({
     BaseMidHeadline,
     BaseNotification,
   },
-  data(): { notificationText: string; notificationShown: boolean } {
+  data(): { notificationShown: boolean } {
     return {
-      notificationText: "Successfully copied to clipboard",
       notificationShown: false,
     };
   },
-  computed: {},
+  computed: {
+    roomID(): string {
+      return this.$route.params.roomID as string;
+    },
+  },
   methods: {
     copyToClipboard(): void {
       this.notificationShown = true;
+      navigator.clipboard.writeText(window.location.href);
       setTimeout(() => {
         this.notificationShown = false;
       }, 3000);
