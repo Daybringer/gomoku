@@ -58,6 +58,10 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("../views/MatchHistoryOverview.vue"),
   },
   {
+    path: "/profile/:id/achievements",
+    component: () => import("../views/Achievements.vue"),
+  },
+  {
     path: "/test",
     component: () => import("../views/Test.vue"),
   },

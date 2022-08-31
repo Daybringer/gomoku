@@ -241,12 +241,11 @@ export default defineComponent({
               <div
                 class="flex flex-row justify-around items-center flex-wrap gap-2"
               >
-                <profile-achievement />
-                <profile-achievement />
-                <profile-achievement />
-                <profile-achievement />
-                <profile-achievement />
-                <profile-achievement />
+                <profile-achievement class="h-20 w-20" />
+                <profile-achievement class="h-20 w-20" />
+                <profile-achievement class="h-20 w-20" />
+                <profile-achievement class="h-20 w-20" />
+                <profile-achievement class="h-20 w-20" />
               </div>
               <base-button
                 class="mb-2"

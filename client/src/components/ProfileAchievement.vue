@@ -2,7 +2,7 @@
   <!-- TODO add real achivements, not just question mark -->
   <base-tooltip :content="tooltipText">
     <div class="bg-gray-400 p-1 rounded-lg">
-      <question-mark-svg class="h-20 text-gray-100" />
+      <question-mark-svg class=" text-gray-100" />
     </div>
   </base-tooltip>
 </template>
