@@ -16,6 +16,73 @@ import {
   JoinGameDTO,
   SearchEvents,
 } from 'gomoku-shared-types/';
+import {
+  SocketIOEvents,
+  CreateCustomDTO,
+  CustomCreatedDTO,
+  CustomRoomJoinedDTO,
+  CustomRoomRedirectToGameDTO,
+} from './shared/socketIO';
+import { CustomRoomService } from './game/services/customRoom.service';
+
+// Create custom gateway
+@WebSocketGateway({ namespace: '/custom' })
+export class CreateCustomGateway {
+  constructor(private customRoomService: CustomRoomService) {}
+  @WebSocketServer() server: Server;
+
+  @SubscribeMessage(SocketIOEvents.CreateCustomWaiting)
+  handleCreateCustom(client: Socket, createCustomDTO: CreateCustomDTO) {
+    const waitingRoomID =
+      this.customRoomService.createCustomWaitingRoom(createCustomDTO);
+    const customCreatedDTO: CustomCreatedDTO = { roomID: waitingRoomID };
+    client.emit(SocketIOEvents.CustomWaitingCreated, customCreatedDTO);
+  }
+}
+
+// Custom waiting room gateway
+@WebSocketGateway({ namespace: '/custom/waiting' })
+export class CustomWaitingGateway implements OnGatewayDisconnect {
+  constructor(
+    private gameService: GameService,
+    private customRoomService: CustomRoomService,
+  ) {}
+  @WebSocketServer() server: Server;
+
+  @SubscribeMessage(SocketIOEvents.CustomRoomJoined)
+  handleCustomRoomJoined(
+    client: Socket,
+    customRoomJoined: CustomRoomJoinedDTO,
+  ) {
+    const { waitingRoomID } = customRoomJoined;
+    this.customRoomService.joinCustomWaitingRoom(client, waitingRoomID);
+
+    if (this.customRoomService.isCustomWaitingRoomFull(waitingRoomID)) {
+      const { roomID } = this.gameService.createCustomGame(
+        this.customRoomService.getGameSettings(waitingRoomID),
+      );
+      const sockets =
+        this.customRoomService.getAllWaitingPlayersIDs(waitingRoomID);
+
+      const customRoomRedirectToGame: CustomRoomRedirectToGameDTO = { roomID };
+      sockets.forEach((socket) => {
+        socket.emit(
+          SocketIOEvents.CustomRoomRedirectToGame,
+          customRoomRedirectToGame,
+        );
+      });
+      this.customRoomService.deleteCustomWaitingRoom(waitingRoomID);
+    }
+  }
+
+  handleDisconnect(client: Socket) {
+    const roomID =
+      this.customRoomService.findCustomWaitingRoomIDBySocket(client);
+    if (roomID) {
+      this.customRoomService.deleteCustomWaitingRoom(roomID);
+    }
+  }
+}
 
 // SEARCH
 @WebSocketGateway({ namespace: '/search/quick' })

@@ -4,6 +4,7 @@ import { GameEntity } from 'src/models/game.entity';
 import { PlayerGameProfile } from 'src/models/playerGameProfile.entity';
 import { UsersModule } from 'src/users/users.module';
 import { GameController } from './game.controller';
+import { CustomRoomService } from './services/customRoom.service';
 import { GameService } from './services/game.service';
 import { SearchService } from './services/search.service';
 
@@ -13,7 +14,7 @@ import { SearchService } from './services/search.service';
     UsersModule,
   ],
   controllers: [GameController],
-  providers: [GameService, SearchService],
-  exports: [GameService, SearchService],
+  providers: [GameService, SearchService, CustomRoomService],
+  exports: [GameService, SearchService, CustomRoomService],
 })
 export class GameModule {}

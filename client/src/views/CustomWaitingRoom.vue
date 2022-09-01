@@ -36,6 +36,9 @@
   </view-base-fixed-height>
 </template>
 <script lang="ts">
+import io, { Socket } from "socket.io-client";
+let socket: Socket;
+
 import ViewBaseFixedHeight from "@/components/ViewBaseFixedHeight.vue";
 import SwingAnimationSvg from "@/assets/svg/SwingAnimationSvg.vue";
 import BaseButton from "@/components/BaseButton.vue";
@@ -43,6 +46,11 @@ import BaseMidHeadline from "@/components/BaseMidHeadline.vue";
 import ClipboardIconSvg from "@/assets/svg/ClipboardIconSvg.vue";
 import BaseNotification from "@/components/BaseNotification.vue";
 import { defineComponent } from "vue";
+import {
+  CustomRoomJoinedDTO,
+  CustomRoomRedirectToGameDTO,
+  SocketIOEvents,
+} from "@/shared/socketIO";
 export default defineComponent({
   name: "CustomWaitingRoom",
   props: {},
@@ -73,7 +81,22 @@ export default defineComponent({
       }, 3000);
     },
   },
-  mounted() {},
+  mounted() {
+    socket = io("/custom/waiting", { port: 3001 });
+    const customRoomJoinedDTO: CustomRoomJoinedDTO = {
+      waitingRoomID: this.roomID,
+    };
+    socket.emit(SocketIOEvents.CustomRoomJoined, customRoomJoinedDTO);
+
+    socket.on(
+      SocketIOEvents.CustomRoomRedirectToGame,
+      (customRoomRedirectToGameDTO: CustomRoomRedirectToGameDTO) => {
+        this.$router.push(
+          `/game?type=custom&roomID=${customRoomRedirectToGameDTO.roomID}`
+        );
+      }
+    );
+  },
 });
 </script>
 <style scoped></style>

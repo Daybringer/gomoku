@@ -9,14 +9,14 @@ import {
   GameState,
   GameType,
 } from 'gomoku-shared-types/';
-import { GameStartedEventDTO } from 'src/shared/socketioEvents.dto';
+import { CreateCustomDTO, GameStartedEventDTO } from 'src/shared/socketIO';
 import { Server, Socket } from 'socket.io';
 import { GameEntity } from 'src/models/game.entity';
 import { PlayerGameProfile } from 'src/models/playerGameProfile.entity';
 import { COIN_SPIN_DURATION } from 'src/shared/constants';
 import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
-import { AnyGame, QuickGame, RankedGame } from '../game.class';
+import { AnyGame, CustomGame, QuickGame, RankedGame } from '../game.class';
 import { ProfileIcon } from 'src/shared/icons';
 
 @Injectable()
@@ -29,10 +29,25 @@ export class GameService {
     private readonly usersService: UsersService,
   ) {}
   quickGameRooms: { [id: string]: QuickGame } = {};
-  // test object
   rankedGameRooms: { [id: string]: RankedGame } = {};
+  customGameRooms: { [id: string]: CustomGame } = {};
 
-  gameRooms = [this.quickGameRooms, this.rankedGameRooms];
+  gameRooms = [this.quickGameRooms, this.rankedGameRooms, this.customGameRooms];
+
+  createCustomGame(createCustomDTO: CreateCustomDTO): {
+    game: CustomGame;
+    roomID: string;
+  } {
+    const { hasTimeLimit, opening, timeLimitInSeconds } = createCustomDTO;
+    const roomID = this.generateRoomID(...this.gameRooms);
+    const customGame = new CustomGame(
+      hasTimeLimit,
+      timeLimitInSeconds,
+      opening,
+    );
+    this.customGameRooms[roomID] = customGame;
+    return { game: customGame, roomID };
+  }
 
   private generateRoomID(...rooms: Record<string, unknown>[]) {
     const IDLength = 6;
@@ -203,6 +218,7 @@ export class GameService {
     return { game: newQuickGameRoom, roomID };
   }
 
+  // FIXME optimize so it returns straightaway if it finds the room with given ID
   roomExists(roomID: string): boolean {
     let roomExists = false;
 

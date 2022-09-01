@@ -12,6 +12,7 @@ abstract class Game {
   gameType: GameType;
   opening: Opening;
   timeLimitInSeconds: number;
+  hasTimeLimit: boolean = true;
   gameState: GameState = GameState.Waiting;
   gameEnding: EndingType;
   lastCalibrationTimestamp: number;
@@ -121,12 +122,23 @@ class RankedGame extends Game {
   timeLimitInSeconds = 3 * 60;
   eloDiff: number = 0;
   gameType = GameType.Ranked;
+  opening = Opening.Swap1;
 }
 
 class CustomGame extends Game {
+  constructor(
+    hasTimeLimit: boolean,
+    timeLimitInSeconds: number,
+    opening: Opening,
+  ) {
+    super();
+    this.timeLimitInSeconds = timeLimitInSeconds;
+    this.opening = opening;
+    this.hasTimeLimit = hasTimeLimit;
+  }
   gameType = GameType.Custom;
 }
 
 type AnyGame = QuickGame | RankedGame | CustomGame;
 
-export { QuickGame, RankedGame, AnyGame };
+export { QuickGame, RankedGame, CustomGame, AnyGame };

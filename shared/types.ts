@@ -1,4 +1,4 @@
-import { User } from './interfaces/user.interface';
+import { User } from "./interfaces/user.interface";
 
 /* eslint-disable */
 type position = [number, number];
@@ -14,27 +14,27 @@ interface JoinGameDTO {
 }
 
 enum GameEvents {
-  JoinGame = 'joinGame',
-  InvalidRoomID = 'invalidRoomID',
-  GameStarted = 'gameStarted',
-  StonePlaced = 'stonePlaced',
-  GameClick = 'gameClick',
-  GameEndedByDisconnect = 'gameEndedByDisconnect',
-  GameEndedByCombination = 'gameEndedByCombination',
-  GameEndedByTimeout = 'gameEndedByTimout',
-  GameEndedByTie = 'gameEndedByTie',
-  TimeCalibration = 'timeCalibration',
-  SendMessage = 'sendMessage',
-  RecieveMessage = 'recieveMessage',
+  JoinGame = "joinGame",
+  InvalidRoomID = "invalidRoomID",
+  GameStarted = "gameStarted",
+  StonePlaced = "stonePlaced",
+  GameClick = "gameClick",
+  GameEndedByDisconnect = "gameEndedByDisconnect",
+  GameEndedByCombination = "gameEndedByCombination",
+  GameEndedByTimeout = "gameEndedByTimout",
+  GameEndedByTie = "gameEndedByTie",
+  TimeCalibration = "timeCalibration",
+  SendMessage = "sendMessage",
+  RecieveMessage = "recieveMessage",
 }
 
 /**
  * Has to have string literals, because enum values are compared with URL params
  */
 enum GameType {
-  Quick = 'quick',
-  Ranked = 'ranked',
-  Custom = 'custom',
+  Quick = "quick",
+  Ranked = "ranked",
+  Custom = "custom",
 }
 
 enum EndingType {
@@ -45,16 +45,18 @@ enum EndingType {
 }
 
 enum GameState {
-  Waiting = 'WAITING',
-  Running = 'RUNNING',
-  Ended = 'ENDED',
+  Waiting = "WAITING",
+  Running = "RUNNING",
+  Ended = "ENDED",
 }
 
 enum Opening {
-  Standart = 'STANDARD',
-  Swap1 = 'SWAP1',
-  Swap2 = 'SWAP2',
+  Standard = "STANDARD",
+  Swap1 = "SWAP1",
+  Swap2 = "SWAP2",
 }
+
+type Time = 3 | 5 | 10 | "infinite";
 
 interface Player {
   socketID: string;
@@ -66,9 +68,9 @@ interface Player {
 }
 
 enum GameBoard {
-  Standard = 'standard',
-  Classic = 'classic',
-  Modern = 'modern',
+  Standard = "standard",
+  Classic = "classic",
+  Modern = "modern",
 }
 
 interface Colors {
@@ -83,7 +85,7 @@ enum LoginStrategy {
 }
 
 enum SearchEvents {
-  GameCreated = 'gameCreated',
+  GameCreated = "gameCreated",
 }
 
 interface AuthenticationPayload {
@@ -118,4 +120,5 @@ export {
   GameState,
   Opening,
   Player,
+  Time,
 };

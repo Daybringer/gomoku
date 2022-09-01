@@ -3,9 +3,9 @@
 </template>
 <script lang="ts">
 // SocketIO
-import io from "socket.io-client";
+import io, { Socket } from "socket.io-client";
 
-let socket: any;
+let socket: Socket;
 // Components
 import SearchBase from "@/components/TheSearchBase.vue";
 // Utils

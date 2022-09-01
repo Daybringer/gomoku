@@ -31,7 +31,7 @@ import { position, GameClickDTO, GameEvents, GameType } from "@/shared/types";
 import {
   GameStartedEventDTO,
   GameStartedEventPlayerInfo,
-} from "@/shared/socketioEvents.dto";
+} from "@/shared/socketIO";
 
 // SocketIO
 let socket: any;
