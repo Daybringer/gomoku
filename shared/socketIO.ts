@@ -2,6 +2,7 @@ import { ProfileIcon } from "./icons";
 import { Opening } from "./types";
 
 export enum SocketIOEvents {
+  UpdateActiveUsers = "updateActiveUsers",
   JoinGame = "joinGame",
   InvalidRoomID = "invalidRoomID",
   GameStarted = "gameStarted",
@@ -28,7 +29,9 @@ export type GameStartedEventPlayerInfo = {
   userID: number;
   profileIcon?: ProfileIcon;
 };
-
+export class UpdateActiveUsersDTO {
+  readonly activeUsers: number;
+}
 export class GameStartedEventDTO {
   readonly timeLimitInSeconds: number;
   readonly startingPlayerSocketID: string;

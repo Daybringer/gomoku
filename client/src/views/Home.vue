@@ -19,6 +19,10 @@
       </div>
     </div>
 
+    <!-- Current online users -->
+    <div class="text-center bg-gray-800 text-gray-400  font-medium text-lg">
+      <p>{{ Number(this.activeUsers) + 1 }} people playing</p>
+    </div>
     <div class=" bg-gray-800 h-20 z-30 w-full m-auto"></div>
     <div
       id="mainCard"
@@ -467,6 +471,7 @@ export default defineComponent({
   components: { RuleSection, IntersectionObserver, GameSimulation },
   props: {
     logged: Boolean,
+    activeUsers: Number,
   },
   setup(props, context) {
     const state = reactive({

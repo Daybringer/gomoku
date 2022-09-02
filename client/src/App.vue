@@ -1,13 +1,17 @@
 <template>
   <navbar id="navbar" :activeIntersection="activeIntersection"></navbar>
   <router-view
+    :activeUsers="this.onlineUsers"
     class="min-height-screen-calc "
     @intersectionCrossed="setIntersection"
   />
 </template>
 <script lang="ts">
+import { io, Socket } from "socket.io-client";
+let socket: Socket;
+import { SocketIOEvents, UpdateActiveUsersDTO } from "@/shared/socketIO";
 import { useStore } from "@/store/store";
-import { defineComponent, ref, reactive, toRefs } from "vue";
+import { defineComponent, ref, reactive, toRefs, onMounted } from "vue";
 import Navbar from "@/components/TheNavbar.vue";
 export default defineComponent({
   name: "App",
@@ -19,17 +23,34 @@ export default defineComponent({
       store.setBearer(store.token);
       store.fetchOwnProfile();
     }
-
+    let onlineUsers = reactive(ref(0));
     const state = reactive({ activeIntersection: "" });
 
     const setIntersection = (intersectionName: string) => {
       state.activeIntersection = intersectionName;
     };
 
+    onMounted(() => {
+      socket = io("/app", { port: 3001 });
+      socket.on(
+        SocketIOEvents.UpdateActiveUsers,
+        (updateActiveUsersDTO: UpdateActiveUsersDTO) => {
+          console.log("updated", updateActiveUsersDTO.activeUsers);
+
+          onlineUsers.value = updateActiveUsersDTO.activeUsers;
+        }
+      );
+    });
+
     return {
       ...toRefs(state),
       setIntersection,
+      onlineUsers,
     };
+  },
+  mounted() {},
+  beforeUnmount() {
+    socket.close();
   },
 });
 </script>

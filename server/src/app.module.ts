@@ -6,9 +6,10 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import {
   QuickSearchGateway,
-  GameGateway,
   CreateCustomGateway,
   CustomWaitingGateway,
+  GameGateway,
+  GeneralGateway,
 } from './app.gateway';
 import { ConfigModule } from '@nestjs/config';
 import { GameModule } from './game/game.module';
@@ -34,6 +35,7 @@ require('dotenv').config();
     }),
   ],
   providers: [
+    GeneralGateway,
     QuickSearchGateway,
     GameGateway,
     CreateCustomGateway,

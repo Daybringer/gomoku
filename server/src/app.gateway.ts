@@ -22,8 +22,35 @@ import {
   CustomCreatedDTO,
   CustomRoomJoinedDTO,
   CustomRoomRedirectToGameDTO,
+  UpdateActiveUsersDTO,
 } from './shared/socketIO';
 import { CustomRoomService } from './game/services/customRoom.service';
+
+// Whole site things - current people online...
+@WebSocketGateway({ namespace: '/app' })
+export class GeneralGateway
+  implements OnGatewayConnection, OnGatewayDisconnect
+{
+  constructor() {}
+  @WebSocketServer() server: Server;
+  currentlyOnline = 0;
+
+  handleConnection() {
+    this.currentlyOnline += 1;
+    const updateActiveUsersDTO: UpdateActiveUsersDTO = {
+      activeUsers: this.currentlyOnline,
+    };
+    this.server.emit(SocketIOEvents.UpdateActiveUsers, updateActiveUsersDTO);
+  }
+
+  handleDisconnect() {
+    this.currentlyOnline -= 1;
+    const updateActiveUsersDTO: UpdateActiveUsersDTO = {
+      activeUsers: this.currentlyOnline,
+    };
+    this.server.emit(SocketIOEvents.UpdateActiveUsers, updateActiveUsersDTO);
+  }
+}
 
 // Create custom gateway
 @WebSocketGateway({ namespace: '/custom' })
@@ -117,7 +144,7 @@ export class QuickSearchGateway
 }
 
 // GAME
-@WebSocketGateway({ namespace: '/game/quick' })
+@WebSocketGateway({ namespace: '/game' })
 export class GameGateway implements OnGatewayDisconnect {
   constructor(private gameService: GameService) {}
 

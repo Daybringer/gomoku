@@ -34,14 +34,14 @@ import {
 } from "@/shared/socketIO";
 
 // SocketIO
-let socket: any;
+let socket: Socket;
 // Components
 import GameBase from "@/components/TheGameBase.vue";
 // Pinia
 import { useStore } from "@/store/store";
 // Utils
 import { defineComponent } from "vue";
-import { io } from "socket.io-client";
+import { io, Socket } from "socket.io-client";
 
 export default defineComponent({
   name: "Game",
@@ -98,8 +98,6 @@ export default defineComponent({
     },
   },
   async mounted() {
-    socket = io("/game/quick", { port: "3001" });
-
     const logged = this.store.isAuthenticated;
     // TODO not logged in, temporary solution for nicknames
     if (!logged) {
@@ -114,11 +112,14 @@ export default defineComponent({
     }
 
     if (this.getGameTypeFromURL === GameType.Quick) {
+      socket = io("/game/quick", { port: "3001" });
       socket.emit(GameEvents.JoinGame, {
         roomID: this.getRoomIDFromURL,
         logged: logged,
         username: this.me.nickname,
       });
+    } else if (this.getGameTypeFromURL === GameType.Custom) {
+      socket = io("/game/custom", { port: "3001" });
     } else {
       // TODO implement ranked,customs, etc.
       this.$router.push("/");
