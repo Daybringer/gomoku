@@ -49,6 +49,11 @@ export class GameService {
     return { game: customGame, roomID };
   }
 
+  /**
+   *
+   * @param rooms
+   * @returns
+   */
   private generateRoomID(...rooms: Record<string, unknown>[]) {
     const IDLength = 6;
 
@@ -124,18 +129,18 @@ export class GameService {
     joinGame: JoinGameDTO,
   ) {
     const { roomID, logged, username } = joinGame;
+
     const game = this.findGame(roomID);
 
     if (!game) {
       client.emit(GameEvents.InvalidRoomID);
     } else {
-      // Adds a players and starts game if the room is full
       this.addPlayer(roomID, client.id, logged, username);
 
       // FIXME might separate logic from addPlayer into
       // something like addPlayer, checkStartConditions, startGame
 
-      // Subscribing socket to socketIO room
+      // Subscribing socket to SocketIO room
       client.join(roomID);
 
       if (this.isRunning(roomID)) {

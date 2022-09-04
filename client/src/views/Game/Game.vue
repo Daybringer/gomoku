@@ -98,8 +98,9 @@ export default defineComponent({
     },
   },
   async mounted() {
+    socket = io("/game", { port: "3001" });
     const logged = this.store.isAuthenticated;
-    // TODO not logged in, temporary solution for nicknames
+    // TODO not logged in, temporary solution for nicknames ==> Move the logic to server
     if (!logged) {
       await this.store
         .getRandomName()
@@ -111,17 +112,17 @@ export default defineComponent({
       this.me.nickname = this.store.user.username;
     }
 
-    if (this.getGameTypeFromURL === GameType.Quick) {
-      socket = io("/game/quick", { port: "3001" });
+    if (
+      this.getGameTypeFromURL === GameType.Quick ||
+      this.getGameTypeFromURL === GameType.Ranked ||
+      this.getGameTypeFromURL === GameType.Custom
+    ) {
       socket.emit(GameEvents.JoinGame, {
         roomID: this.getRoomIDFromURL,
         logged: logged,
         username: this.me.nickname,
       });
-    } else if (this.getGameTypeFromURL === GameType.Custom) {
-      socket = io("/game/custom", { port: "3001" });
     } else {
-      // TODO implement ranked,customs, etc.
       this.$router.push("/");
     }
 
