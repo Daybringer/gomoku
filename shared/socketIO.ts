@@ -1,41 +1,54 @@
-import { ProfileIcon } from "./icons";
-import { Opening } from "./types";
+import { Socket } from 'socket.io';
+import { PlayerGameProfile } from 'src/models/playerGameProfile.entity';
+import { ProfileIcon } from './icons';
+import { Opening, Player, Position } from './types';
 
 export enum SocketIOEvents {
-  UpdateActiveUsers = "updateActiveUsers",
-  JoinGame = "joinGame",
-  InvalidRoomID = "invalidRoomID",
-  GameStarted = "gameStarted",
-  StonePlaced = "stonePlaced",
-  GameClick = "gameClick",
-  GameEndedByDisconnect = "gameEndedByDisconnect",
-  GameEndedByCombination = "gameEndedByCombination",
-  GameEndedByTimeout = "gameEndedByTimout",
-  GameEndedByTie = "gameEndedByTie",
-  TimeCalibration = "timeCalibration",
-  SendMessage = "sendMessage",
-  RecieveMessage = "recieveMessage",
+  UpdateActiveUsers = 'updateActiveUsers',
+  JoinGame = 'joinGame',
+  InvalidRoomID = 'invalidRoomID',
+  GameStarted = 'gameStarted',
+  StonePlaced = 'stonePlaced',
+  GameClick = 'gameClick',
+  GameEndedByDisconnect = 'gameEndedByDisconnect',
+  GameEndedByCombination = 'gameEndedByCombination',
+  GameEndedByTimeout = 'gameEndedByTimout',
+  GameEndedByTie = 'gameEndedByTie',
+  TimeCalibration = 'timeCalibration',
+  SendMessage = 'sendMessage',
+  RecieveMessage = 'recieveMessage',
   //Custom specials
-  CreateCustomWaiting = "createCustomWaiting",
-  CustomWaitingCreated = "customWaitingCreated",
-  CustomRoomJoined = "customRoomJoined",
-  CustomRoomRedirectToGame = "customRoomRedirectToGame",
+  CreateCustomWaiting = 'createCustomWaiting',
+  CustomWaitingCreated = 'customWaitingCreated',
+  CustomRoomJoined = 'customRoomJoined',
+  CustomRoomRedirectToGame = 'customRoomRedirectToGame',
 }
 
-export type GameStartedEventPlayerInfo = {
-  logged: boolean;
-  secondsLeft: number;
-  username: string;
-  userID: number;
-  profileIcon?: ProfileIcon;
-};
+abstract class GameEndedDTO {
+  readonly winner: Player;
+}
+
+export class GameEndedByDisconnectDTO extends GameEndedDTO {}
+
+export class GameEndedByTimeoutDTO extends GameEndedDTO {}
+
+export class TimeCalibrationDTO {
+  readonly players: Player[] = [];
+}
+
 export class UpdateActiveUsersDTO {
   readonly activeUsers: number;
 }
 export class GameStartedEventDTO {
   readonly timeLimitInSeconds: number;
-  readonly startingPlayerSocketID: string;
-  readonly players: Record<string, GameStartedEventPlayerInfo>;
+  readonly startingPlayerSocket: Socket;
+  /** socketID: playerInfo */
+  readonly players: Player[];
+}
+
+export class StonePlacedDTO {
+  readonly position: Position;
+  readonly players: Player[];
 }
 
 export class CreateCustomDTO {

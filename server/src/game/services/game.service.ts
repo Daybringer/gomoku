@@ -2,14 +2,22 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   JoinGameDTO,
-  GameEvents,
   GameClickDTO,
   EndingType,
   Player,
   GameState,
   GameType,
+  Position,
+  GameEvents,
 } from 'gomoku-shared-types/';
-import { CreateCustomDTO, GameStartedEventDTO } from 'src/shared/socketIO';
+import {
+  CreateCustomDTO,
+  GameEndedByTimeoutDTO,
+  GameStartedEventDTO,
+  SocketIOEvents,
+  StonePlacedDTO,
+  TimeCalibrationDTO,
+} from 'src/shared/socketIO';
 import { Server, Socket } from 'socket.io';
 import { GameEntity } from 'src/models/game.entity';
 import { PlayerGameProfile } from 'src/models/playerGameProfile.entity';
@@ -49,10 +57,87 @@ export class GameService {
     return { game: customGame, roomID };
   }
 
+  // HANDLING FUNCTIONS - main functions handling client to server SocketIO events
+
+  async handleJoinGame(server: Server, client: Socket, joinGame: JoinGameDTO) {
+    const { roomID, logged, userID } = joinGame;
+
+    const game = this.findGame(roomID);
+
+    if (!game) {
+      client.emit(SocketIOEvents.InvalidRoomID);
+    } else {
+      this.addPlayer(game, client, logged, userID);
+      if (game.isFull && !game.isRunning) game.start();
+
+      // Subscribing socket to SocketIO room
+      client.join(roomID);
+
+      if (game.isRunning) {
+        const gameStartedDTO = await this.constructGameStartedDTO(game);
+        server.to(roomID).emit(SocketIOEvents.GameStarted, gameStartedDTO);
+
+        // Delaying the 1s interval for calibration by the time the coin
+        // is spinning on client
+        setTimeout(() => {
+          // Checking second time if game is still running, because of possible early disconnects
+          if (game.isRunning) {
+            game.calibrationIntervalHandle = setInterval(() => {
+              this.calibrateTime(server, roomID, game);
+            }, 1000);
+          }
+        }, COIN_SPIN_DURATION);
+      }
+    }
+  }
+
+  handleGameClick(server: Server, client: Socket, gameClickDTO: GameClickDTO) {
+    const { roomID, position } = gameClickDTO;
+    const game = this.findGame(roomID);
+
+    if (!game) throw 'Game not found';
+    if (!game.isPlayersTurn(client)) throw "It's not players turn";
+    if (!game.isRunning) throw 'Game is not running';
+    if (!game.isPositionEmpty(position)) 'Position is not empty';
+
+    this.placeStone(game, position, client);
+
+    clearInterval(game.calibrationIntervalHandle);
+
+    const stonePlacedDTO: StonePlacedDTO = {
+      position,
+      players: game.players,
+    };
+
+    server.to(roomID).emit(SocketIOEvents.StonePlaced, stonePlacedDTO);
+
+    game.iterateRound();
+
+    const currGameState = this.checkWin(game, position);
+
+    if (currGameState === EndingType.Combination) {
+      const winner = game.playerOnTurn;
+      this.endGame(game, currGameState, winner);
+      server.to(roomID).emit(SocketIOEvents.GameEndedByCombination, winner);
+    } else if (currGameState === EndingType.Tie) {
+      this.endGame(game, currGameState);
+      server.to(roomID).emit(SocketIOEvents.GameEndedByTie);
+    } else {
+      game.calibrationIntervalHandle = setInterval(() => {
+        this.calibrateTime(server, roomID, game);
+      }, 1000);
+    }
+  }
+
+  handleSendMessage(server: Server, client: Socket, message: string) {
+    const game = this.findGameBySocketID(client.id);
+    client.to(game.roomID).emit(GameEvents.RecieveMessage, message);
+  }
+
+  // HELPER FUNCTIONS
+
   /**
    *
-   * @param rooms
-   * @returns
    */
   private generateRoomID(...rooms: Record<string, unknown>[]) {
     const IDLength = 6;
@@ -60,7 +145,7 @@ export class GameService {
     for (let x = 0; x < 100; x++) {
       const randID = Math.random()
         .toString(36)
-        .substr(2, IDLength)
+        .substring(2, IDLength)
         .toUpperCase();
 
       let isTaken = false;
@@ -79,141 +164,29 @@ export class GameService {
     }
   }
 
-  printQuickGameRooms(): void {
-    console.log(this.quickGameRooms);
-  }
+  // TODO implement no time limit option
+  /**
+   * function to be called every second; deducts time from current player and emits new times to all connected players
+   */
+  calibrateTime(server: Server, roomID: string, game: AnyGame) {
+    // deducting one second from currentPlayer
+    game.playerOnTurn.timeLeft -= 1000;
 
-  calibrateTimesAcrossClients(
-    socketServer: Server,
-    socketRoomID: string,
-    socketTimeDict: Record<string, number>,
-  ) {
-    socketServer
-      .to(`${socketRoomID}`)
-      .emit(GameEvents.TimeCalibration, socketTimeDict);
-  }
+    // sending new times to clients
+    const timeCalibrationDTO: TimeCalibrationDTO = { players: game.players };
+    server.to(roomID).emit(SocketIOEvents.TimeCalibration, timeCalibrationDTO);
 
-  calibrateTime(socketServer: Server, roomID: string, game: AnyGame) {
-    // deducting one secund from currentPlayer
-    game.getPlayerOnTurn().timeLeft -= 1000;
-
-    const playerTimes = this.getPlayerTimes(game);
-
-    this.calibrateTimesAcrossClients(socketServer, roomID, playerTimes);
-
-    for (const playerSocketID in playerTimes) {
-      if (playerTimes[playerSocketID] <= 0) {
-        this.endGame(
-          game,
-          EndingType.Surrender,
-          game.getNextPlayerOnTurn().socketID,
-        );
-        socketServer
-          .to(`${roomID}`)
-          .emit(GameEvents.GameEndedByTimeout, playerSocketID);
-      }
-    }
-  }
-
-  getPlayerTimes(game: AnyGame): Record<string, number> {
-    const socketTimeDict = {};
+    // checking if time has run out and possibly ending the game and emitting according event
     game.players.forEach((player) => {
-      socketTimeDict[player.socketID] = player.timeLeft;
+      if (player.timeLeft <= 0) {
+        const winner = game.getNextPlayerOnTurn;
+        this.endGame(game, EndingType.Time, winner);
+        const gameEndedByTimoutDTO: GameEndedByTimeoutDTO = { winner };
+        server
+          .to(roomID)
+          .emit(GameEvents.GameEndedByTimeout, gameEndedByTimoutDTO);
+      }
     });
-    return socketTimeDict;
-  }
-
-  async handleJoinGame(
-    socketServer: Server,
-    client: Socket,
-    joinGame: JoinGameDTO,
-  ) {
-    const { roomID, logged, username } = joinGame;
-
-    const game = this.findGame(roomID);
-
-    if (!game) {
-      client.emit(GameEvents.InvalidRoomID);
-    } else {
-      this.addPlayer(roomID, client.id, logged, username);
-
-      // FIXME might separate logic from addPlayer into
-      // something like addPlayer, checkStartConditions, startGame
-
-      // Subscribing socket to SocketIO room
-      client.join(roomID);
-
-      if (this.isRunning(roomID)) {
-        const gameStartedDTO = await this.constructGameStartedDTO(roomID);
-        socketServer.to(roomID).emit(GameEvents.GameStarted, gameStartedDTO);
-
-        // Delaying the 1s interval for calibration by the time the coin
-        // is spinning on client
-        setTimeout(() => {
-          // set the minute timer
-          if (this.findGame(roomID).isRunning) {
-            game.calibrationIntervalHandle = setInterval(() => {
-              this.calibrateTime(socketServer, roomID, game);
-            }, 1000);
-          }
-        }, COIN_SPIN_DURATION);
-      }
-    }
-  }
-
-  handleGameClick(
-    socketServer: Server,
-    client: Socket,
-    gameClickDTO: GameClickDTO,
-  ) {
-    const { roomID, position } = gameClickDTO;
-    const game = this.findGame(roomID);
-    if (!game) return;
-
-    if (this.isPlayersTurn(game, client.id)) {
-      try {
-        this.placeStone(game, position, client.id);
-
-        clearInterval(game.calibrationIntervalHandle);
-
-        const playerOnTurn = game.getPlayerOnTurn();
-
-        const turnData = {
-          position,
-          times: this.getPlayerTimes(game),
-        };
-
-        socketServer.to(roomID).emit(GameEvents.StonePlaced, turnData);
-
-        game.iterateRound();
-
-        const currGameState = this.checkWin(game, position);
-
-        if (currGameState === EndingType.Combination) {
-          const winner = game.getPlayerOnTurn();
-          this.endGame(game, currGameState, winner.socketID);
-          socketServer
-            .to(roomID)
-            .emit(GameEvents.GameEndedByCombination, winner.socketID);
-        } else if (currGameState === EndingType.Tie) {
-          this.endGame(game, currGameState);
-          socketServer.to(roomID).emit(GameEvents.GameEndedByTie);
-        } else {
-          game.calibrationIntervalHandle = setInterval(() => {
-            this.calibrateTime(socketServer, roomID, game);
-          }, 1000);
-        }
-      } catch (error) {
-        client.emit(error);
-      }
-    } else {
-      client.emit('notPlayersTurn');
-    }
-  }
-
-  handleSendMessage(socketServer: Server, client: Socket, message: string) {
-    const game = this.findGameBySocketID(client.id);
-    client.to(game.roomID).emit(GameEvents.RecieveMessage, message);
   }
 
   generateQuickGameRoom(): { game: AnyGame; roomID: string } {
@@ -234,21 +207,18 @@ export class GameService {
     return roomExists;
   }
 
-  findGame(roomID: string): QuickGame | RankedGame {
+  // TODO Optimize foreach to some different struct
+  findGame(roomID: string): AnyGame {
     let game = undefined;
     this.gameRooms.forEach((anyGameRooms) => {
       if (anyGameRooms.hasOwnProperty(roomID)) {
         game = anyGameRooms[roomID];
-        return;
       }
     });
     return game;
   }
 
-  isPlayersTurn(game: AnyGame, socketID: string): boolean {
-    return game.getPlayerOnTurn().socketID === socketID;
-  }
-
+  // TODO Optimize foreach to some different struct
   findGameBySocketID(socketID: string): { game: AnyGame; roomID: string } {
     let game: AnyGame = undefined;
     let roomID: string = '';
@@ -256,7 +226,7 @@ export class GameService {
     this.gameRooms.forEach((anyGameRooms: { [id: string]: AnyGame }) => {
       for (const key in anyGameRooms) {
         anyGameRooms[key].players.forEach((player) => {
-          if (player.socketID === socketID) {
+          if (player.socket.id === socketID) {
             game = anyGameRooms[key];
             roomID = key;
           }
@@ -266,141 +236,40 @@ export class GameService {
     return { game, roomID };
   }
 
-  placeStone(
-    game: AnyGame,
-    position: [number, number],
-    socketID: string,
-  ): void {
-    if (game.isRunning()) {
-      if (game.gameboard[position[0]][position[1]] === 0) {
-        game.gameboard[position[0]][position[1]] =
-          game.startingPlayer.socketID === socketID ? 1 : 2;
-        game.saveTurn(position);
-      } else {
-        throw 'TakenPosition';
-      }
-    }
-  }
-
-  saveTimeoutHandle(roomID: string, saveTimeoutHandle: NodeJS.Timeout): void {
-    const game = this.findGame(roomID);
-    game.timeoutHandleID = saveTimeoutHandle;
-  }
-
-  setCalibrationHandle(roomID: string, handle: NodeJS.Timer) {
-    const game = this.findGame(roomID);
-    game.calibrationIntervalHandle = handle;
-  }
-
-  getCalibrationHandle(roomID: string, handle: NodeJS.Timer) {
-    const game = this.findGame(roomID);
-    return game.calibrationIntervalHandle;
-  }
-
-  getTimeoutHandle(roomID: string): NodeJS.Timeout {
-    return this.findGame(roomID).timeoutHandleID;
+  /**
+   *
+   */
+  placeStone(game: AnyGame, position: Position, socket: Socket): void {
+    const currPlayerSymbol = game.startingPlayer.socket === socket ? 1 : 2;
+    game.setSymbolAt(position, currPlayerSymbol);
+    game.saveTurn(position);
   }
 
   /**
-   * Saves current timestamp and returns rest seconds of next player's time
-   * @param roomID string
-   * @returns number of rest eeconds
+   * Builds DTO containing starting player and players info (if logged)
    */
-  switchTime(roomID: string): number {
-    const game = this.findGame(roomID);
-    if (game) {
-      const timeNow = Date.now();
-      const player = game.getPlayerOnTurn();
-      player.secondsLeft -= Math.floor(
-        (timeNow - game.lastCalibrationTimestamp) / 1000,
-      );
-
-      game.lastCalibrationTimestamp = timeNow;
-      return game.getNextPlayerOnTurn().secondsLeft;
-    }
-  }
-
-  // Util functions; might move gateway logic here
-
-  iterateRound(roomID: string): void {
-    this.findGame(roomID).iterateRound();
-  }
-
-  async constructGameStartedDTO(roomID: string): Promise<GameStartedEventDTO> {
-    const { players, startingPlayer, timeLimitInSeconds } =
-      this.findGame(roomID);
+  async constructGameStartedDTO(game: AnyGame): Promise<GameStartedEventDTO> {
     const gameStartedEventDTO: GameStartedEventDTO = {
-      timeLimitInSeconds,
-      startingPlayerSocketID: startingPlayer.socketID,
-      players: {},
+      timeLimitInSeconds: game.timeLimitInSeconds,
+      startingPlayerSocket: game.startingPlayer.socket,
+      players: [],
     };
 
-    console.log('PLAYERS', players);
-
-    // FIXME remove this demon code -> rewrite whole logic
-    const player = players[0];
-    const playerWithConfig = {
-      logged: player.logged,
-      secondsLeft: player.secondsLeft,
-      username: player.username,
-      userID: 0,
-      profileIcon: ProfileIcon.defaultBoy,
-    };
-    if (player.logged) {
-      const user = await this.usersService.findOneByUsername(player.username);
-      playerWithConfig.profileIcon = user.selectedIcon;
-      playerWithConfig.userID = user.id;
-    }
-
-    gameStartedEventDTO.players[player.socketID] = playerWithConfig;
-
-    const player1 = players[1];
-    const playerWithConfig1 = {
-      logged: player1.logged,
-      secondsLeft: player1.secondsLeft,
-      username: player1.username,
-      userID: 0,
-      profileIcon: ProfileIcon.defaultBoy,
-    };
-    if (player1.logged) {
-      const user = await this.usersService.findOneByUsername(player1.username);
-      playerWithConfig1.profileIcon = user.selectedIcon;
-      playerWithConfig1.userID = user.id;
-    }
-
-    gameStartedEventDTO.players[player1.socketID] = playerWithConfig1;
+    game.players.forEach((player) => {
+      gameStartedEventDTO.players[player.socket.id] = player;
+    });
 
     return gameStartedEventDTO;
   }
 
-  isRunning(roomID: string): boolean {
-    const game = this.findGame(roomID);
-    return game ? game.isRunning() : false;
-  }
-
-  playerOnTurn(roomID: string): Player {
-    const game = this.findGame(roomID);
-    if (game) {
-      return game.getPlayerOnTurn();
-    }
-  }
-
-  startGame(roomID: string): Player {
-    const game = this.findGame(roomID);
-    if (game) {
-      game.setGameState(GameState.Running);
-      game.lastCalibrationTimestamp = Date.now() + 5000;
-      return game.selectRandomStartingPlayer();
-    }
-  }
-
+  // TODO implement over 5 character => not a win con OPTION
   checkWin(game: AnyGame, position: number[]): EndingType {
     const round = game.round;
     const gamePlan = game.gameboard;
 
     const [xPos, yPos] = position;
     const tile = round % 2 ? 1 : 2;
-    let horizont = 0;
+    let horizontal = 0;
     let vertical = 0;
     let diagonalR = 0;
     let diagonalL = 0;
@@ -409,9 +278,9 @@ export class GameService {
       // * Horizontal check
       if (xPos + x >= 0 && xPos + x <= 14) {
         if (gamePlan[xPos + x][yPos] === tile) {
-          horizont++;
+          horizontal++;
         } else {
-          horizont = 0;
+          horizontal = 0;
         }
       }
       if (yPos + x >= 0 && yPos + x <= 14) {
@@ -435,13 +304,18 @@ export class GameService {
           diagonalL = 0;
         }
       }
-      if (horizont >= 5 || vertical >= 5 || diagonalL >= 5 || diagonalR >= 5) {
+      if (
+        horizontal >= 5 ||
+        vertical >= 5 ||
+        diagonalL >= 5 ||
+        diagonalR >= 5
+      ) {
         return EndingType.Combination;
       }
     }
-    if (horizont >= 5 || vertical >= 5 || diagonalL >= 5 || diagonalR >= 5) {
+    if (horizontal >= 5 || vertical >= 5 || diagonalL >= 5 || diagonalR >= 5) {
       return EndingType.Combination;
-    } else if (round === 225) {
+    } else if (round === game.gameboardSize ** 2 - 1) {
       return EndingType.Tie;
     } else {
       return;
@@ -470,8 +344,8 @@ export class GameService {
 
     const playerOneProfile = await this.savePlayerGameProfile(playerOne);
     const playerTwoProfile = await this.savePlayerGameProfile(playerTwo);
-    socketIDtoPlayerGameProfileID[playerOne.socketID] = playerOneProfile.id;
-    socketIDtoPlayerGameProfileID[playerTwo.socketID] = playerTwoProfile.id;
+    socketIDtoPlayerGameProfileID[playerOne.socket.id] = playerOneProfile.id;
+    socketIDtoPlayerGameProfileID[playerTwo.socket.id] = playerTwoProfile.id;
 
     // TODO
     // ranked game -> calculate Elo delta save it to profiles and update elos of users
@@ -486,7 +360,7 @@ export class GameService {
     // there has to be a winner
     if (game.gameEnding !== EndingType.Tie) {
       gameEntity.winnerGameProfileID =
-        socketIDtoPlayerGameProfileID[game.winner.socketID];
+        socketIDtoPlayerGameProfileID[game.winner.socket.id];
     }
 
     gameEntity.playerGameProfileIDs = [
@@ -504,7 +378,7 @@ export class GameService {
         const isTie = game.gameEnding === EndingType.Tie;
         const isThisUserTheWinner = isTie
           ? false
-          : profile.id == socketIDtoPlayerGameProfileID[game.winner.socketID]
+          : profile.id == socketIDtoPlayerGameProfileID[game.winner.socket.id]
           ? true
           : false;
 
@@ -520,17 +394,13 @@ export class GameService {
     return this.gameRepository.save(gameEntity);
   }
 
-  async endGame(
-    game: AnyGame,
-    gameEnding: EndingType,
-    winnerSocketID?: string,
-  ) {
+  async endGame(game: AnyGame, gameEnding: EndingType, winner?: Player) {
     clearInterval(game.calibrationIntervalHandle);
     game.setGameState(GameState.Ended);
     game.setGameEnding(gameEnding);
     if (gameEnding !== EndingType.Tie) {
-      if (winnerSocketID) {
-        game.setWinner(winnerSocketID);
+      if (winner.socket.id) {
+        game.winner = winner;
       } else {
         throw 'None WinnerSocketID given';
       }
@@ -539,25 +409,35 @@ export class GameService {
   }
 
   // FIXME only works on two players
-  endGameDisconnect(game: AnyGame, disconnecteeID: string) {
+  endGameDisconnect(game: AnyGame, disconecteeSocket: Socket) {
     clearInterval(game.calibrationIntervalHandle);
     game.setGameState(GameState.Ended);
     game.setGameEnding(EndingType.Surrender);
-    game.setWinner(game.getOtherPlayersIDByFirstOnes(disconnecteeID));
+    game.winner = game.getOtherPlayer(disconecteeSocket);
     this.saveGame(game);
   }
 
-  addPlayer(
-    roomID: string,
-    socketID: string,
+  /**
+   * Creates Player object from given params (with username and icon from database if logged) and adds it to game if it is not full
+   */
+  async addPlayer(
+    game: AnyGame,
+    socket: Socket,
     logged: boolean,
-    username: string,
-  ): void {
-    const player: Player = { socketID, username, logged };
-    const game = this.findGame(roomID);
-    if (game) {
-      if (!game.isFull()) game.addPlayer(player);
-      if (game.isFull() && !game.isRunning()) this.startGame(roomID);
+    userID: number,
+  ): Promise<void> {
+    const player: Player = {
+      socket,
+      userID,
+      logged,
+      profileIcon: ProfileIcon.defaultBoy,
+      username: '',
+    };
+    if (logged) {
+      const user = await this.usersService.findOneByID(userID);
+      player.profileIcon = user.selectedIcon;
+      player.username = user.username;
     }
+    if (!game.isFull) game.addPlayer(player);
   }
 }

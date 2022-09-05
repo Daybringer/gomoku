@@ -1,4 +1,12 @@
-import { EndingType, GameState, Opening, Player } from '../shared/types';
+import { Socket } from 'socket.io';
+import {
+  EndingType,
+  GameState,
+  Opening,
+  Player,
+  Position,
+  Symbol,
+} from '../shared/types';
 import { GameType } from '../shared/types';
 
 abstract class Game {
@@ -7,7 +15,7 @@ abstract class Game {
   startingPlayer: Player;
   round = 0;
   gameboardSize = 15;
-  gameboard: number[][] = this.generateGameboard(this.gameboardSize);
+  gameboard: Symbol[][] = this.generateGameboard(this.gameboardSize);
   turns: Array<[number, number]> = [];
   gameType: GameType;
   opening: Opening;
@@ -15,19 +23,53 @@ abstract class Game {
   hasTimeLimit: boolean = true;
   gameState: GameState = GameState.Waiting;
   gameEnding: EndingType;
-  lastCalibrationTimestamp: number;
-  timeoutHandleID: NodeJS.Timeout;
   calibrationIntervalHandle: NodeJS.Timer;
 
+  get isRunning(): boolean {
+    return this.gameState === GameState.Running;
+  }
+
+  get isFull(): boolean {
+    return this.players.length >= 2;
+  }
+  get isWaiting(): boolean {
+    return this.gameState === GameState.Waiting;
+  }
+
+  get isEnded(): boolean {
+    return this.gameState === GameState.Ended;
+  }
+
+  get playerOnTurn(): Player {
+    return this.round % 2 == 0
+      ? this.startingPlayer
+      : this.players[Math.abs(this.players.indexOf(this.startingPlayer) - 1)];
+  }
+
+  get getNextPlayerOnTurn(): Player {
+    return this.round % 2 == 1
+      ? this.startingPlayer
+      : this.players[Math.abs(this.players.indexOf(this.startingPlayer) - 1)];
+  }
+
+  getSymbolAt(position: Position): Symbol {
+    return this.gameboard[position[0]][position[1]];
+  }
+
+  setSymbolAt(position: Position, symbol: Symbol): void {
+    this.gameboard[position[0]][position[1]] = symbol;
+  }
+
+  isPositionEmpty(position: Position): boolean {
+    return this.getSymbolAt(position) === 0;
+  }
+
+  /**
+   * Adds player if game is still not running and not full
+   */
   addPlayer(player: Player): void {
-    if (this.isWaiting())
-      if (this.players.length < 2) {
-        if (this.players[0]) {
-          // Player with same username tries to log in
-          if (this.players[0].username === player.username && player.username) {
-            throw 'Are you a schizophrenic?';
-          }
-        }
+    if (this.isWaiting)
+      if (!this.isFull) {
         player.timeLeft = this.timeLimitInSeconds * 1000;
         this.players.push(player);
       } else {
@@ -35,54 +77,35 @@ abstract class Game {
       }
   }
 
+  /**
+   * Sets game state to running and chooses and sets starting player
+   */
+  start(): void {
+    this.gameState === GameState.Running;
+  }
+
+  /**
+   *
+   */
+  isPlayersTurn(playerSocket: Socket): boolean {
+    return this.playerOnTurn.socket === playerSocket;
+  }
+
+  /**
+   *
+   */
   selectRandomStartingPlayer(): Player {
     const startingPlayer = this.players[Math.round(Math.random())];
     this.startingPlayer = startingPlayer;
     return startingPlayer;
   }
 
-  getPlayerOnTurn(): Player {
-    return this.round % 2 == 0
-      ? this.startingPlayer
-      : this.players[Math.abs(this.players.indexOf(this.startingPlayer) - 1)];
-  }
-
-  getNextPlayerOnTurn(): Player {
-    return this.round % 2 == 1
-      ? this.startingPlayer
-      : this.players[Math.abs(this.players.indexOf(this.startingPlayer) - 1)];
-  }
-
-  setWinner(winnerSocketID: string): void {
-    this.players.forEach((player) => {
-      if (player.socketID == winnerSocketID) this.winner = player;
+  getOtherPlayer(playerSocket: Socket): Player {
+    let otherPlayer: Player;
+    this.players.forEach((curr) => {
+      if (curr.socket.id !== playerSocket.id) otherPlayer = curr;
     });
-  }
-
-  getOtherPlayersIDByFirstOnes(firstOneID: string): string {
-    let id = '';
-    this.players.forEach((player) => {
-      if (player.socketID !== firstOneID) {
-        id = player.socketID;
-      }
-    });
-    return id;
-  }
-
-  isFull(): boolean {
-    return this.players.length >= 2;
-  }
-
-  isWaiting(): boolean {
-    return this.gameState === GameState.Waiting;
-  }
-
-  isRunning(): boolean {
-    return this.gameState === GameState.Running;
-  }
-
-  isEnded(): boolean {
-    return this.gameState === GameState.Ended;
+    return otherPlayer;
   }
 
   setGameState(gameState: GameState): void {
@@ -101,8 +124,8 @@ abstract class Game {
     this.turns.push(position);
   }
 
-  private generateGameboard(size: number): number[][] {
-    const gameboard: number[][] = [];
+  private generateGameboard(size: number): Symbol[][] {
+    const gameboard: Symbol[][] = [];
     for (let i = 0; i < size; i++) {
       gameboard.push([]);
       for (let ii = 0; ii < size; ii++) {

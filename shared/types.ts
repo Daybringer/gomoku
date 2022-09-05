@@ -1,23 +1,25 @@
 import { User } from './interfaces/user.interface';
+import { Socket } from 'socket.io';
+import { ProfileIcon } from './icons';
 
 /* eslint-disable */
-type position = [number, number];
+type Position = [number, number];
+type Symbol = 0 | 1 | 2;
 interface GameClickDTO {
   roomID: string;
-  position: position;
+  position: Position;
 }
 
 interface JoinGameDTO {
   roomID: string;
   logged: boolean;
-  username: string;
+  userID: number;
 }
 
 enum GameEvents {
   JoinGame = 'joinGame',
   InvalidRoomID = 'invalidRoomID',
   GameStarted = 'gameStarted',
-  StonePlaced = 'stonePlaced',
   GameClick = 'gameClick',
   GameEndedByDisconnect = 'gameEndedByDisconnect',
   GameEndedByCombination = 'gameEndedByCombination',
@@ -59,10 +61,11 @@ enum Opening {
 type Time = 3 | 5 | 10 | 'infinite';
 
 interface Player {
-  socketID: string;
-  username: string;
+  socket: Socket;
+  userID: number;
   logged: boolean;
-  secondsLeft?: number;
+  profileIcon: ProfileIcon;
+  username: string;
   // in ms
   timeLeft?: number;
 }
@@ -105,7 +108,7 @@ interface AuthenticationPayload {
 type Turn = [number, number];
 
 export {
-  position,
+  Position,
   GameClickDTO,
   GameEvents,
   SearchEvents,
@@ -121,4 +124,5 @@ export {
   Opening,
   Player,
   Time,
+  Symbol,
 };

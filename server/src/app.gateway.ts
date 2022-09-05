@@ -23,6 +23,7 @@ import {
   CustomRoomJoinedDTO,
   CustomRoomRedirectToGameDTO,
   UpdateActiveUsersDTO,
+  GameEndedByDisconnectDTO,
 } from './shared/socketIO';
 import { CustomRoomService } from './game/services/customRoom.service';
 
@@ -153,11 +154,14 @@ export class GameGateway implements OnGatewayDisconnect {
   handleDisconnect(client: Socket) {
     const { game, roomID } = this.gameService.findGameBySocketID(client.id);
     if (game) {
-      if (game.isRunning()) {
-        this.gameService.endGameDisconnect(game, client.id);
+      if (game.isRunning) {
+        this.gameService.endGameDisconnect(game, client);
+        const gameEndedByDisconnectDTO: GameEndedByDisconnectDTO = {
+          winner: game.getOtherPlayer(client),
+        };
         this.server
           .to(roomID)
-          .emit(GameEvents.GameEndedByDisconnect, client.id);
+          .emit(GameEvents.GameEndedByDisconnect, gameEndedByDisconnectDTO);
       }
     }
   }
