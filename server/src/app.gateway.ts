@@ -10,13 +10,10 @@ import { GameService } from './game/services/game.service';
 import { SearchService } from './game/services/search.service';
 
 // DTOs
+import { SearchEvents } from 'gomoku-shared-types/';
 import {
   GameClickDTO,
-  GameEvents,
   JoinGameDTO,
-  SearchEvents,
-} from 'gomoku-shared-types/';
-import {
   SocketIOEvents,
   CreateCustomDTO,
   CustomCreatedDTO,
@@ -161,21 +158,21 @@ export class GameGateway implements OnGatewayDisconnect {
         };
         this.server
           .to(roomID)
-          .emit(GameEvents.GameEndedByDisconnect, gameEndedByDisconnectDTO);
+          .emit(SocketIOEvents.GameEndedByDisconnect, gameEndedByDisconnectDTO);
       }
     }
   }
 
-  @SubscribeMessage(GameEvents.JoinGame)
+  @SubscribeMessage(SocketIOEvents.JoinGame)
   handleJoinGame(client: Socket, joinGameDTO: JoinGameDTO): void {
     this.gameService.handleJoinGame(this.server, client, joinGameDTO);
   }
 
-  @SubscribeMessage(GameEvents.GameClick)
+  @SubscribeMessage(SocketIOEvents.GameClick)
   hangleGameClick(client: Socket, gameClickDTO: GameClickDTO): void {
     this.gameService.handleGameClick(this.server, client, gameClickDTO);
   }
-  @SubscribeMessage(GameEvents.SendMessage)
+  @SubscribeMessage(SocketIOEvents.SendMessage)
   handleSendMessage(socket: Socket, message: string): void {
     this.gameService.handleSendMessage(this.server, socket, message);
   }

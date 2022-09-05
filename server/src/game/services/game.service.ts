@@ -1,16 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
-  JoinGameDTO,
-  GameClickDTO,
   EndingType,
   Player,
   GameState,
   GameType,
   Position,
-  GameEvents,
 } from 'gomoku-shared-types/';
 import {
+  JoinGameDTO,
+  GameClickDTO,
   CreateCustomDTO,
   GameEndedByTimeoutDTO,
   GameStartedEventDTO,
@@ -67,14 +66,14 @@ export class GameService {
     if (!game) {
       client.emit(SocketIOEvents.InvalidRoomID);
     } else {
-      this.addPlayer(game, client, logged, userID);
+      await this.addPlayer(game, client, logged, userID);
       if (game.isFull && !game.isRunning) game.start();
 
       // Subscribing socket to SocketIO room
       client.join(roomID);
-
       if (game.isRunning) {
         const gameStartedDTO = await this.constructGameStartedDTO(game);
+        console.log('rip');
         server.to(roomID).emit(SocketIOEvents.GameStarted, gameStartedDTO);
 
         // Delaying the 1s interval for calibration by the time the coin
@@ -131,7 +130,7 @@ export class GameService {
 
   handleSendMessage(server: Server, client: Socket, message: string) {
     const game = this.findGameBySocketID(client.id);
-    client.to(game.roomID).emit(GameEvents.RecieveMessage, message);
+    client.to(game.roomID).emit(SocketIOEvents.RecieveMessage, message);
   }
 
   // HELPER FUNCTIONS
@@ -184,7 +183,7 @@ export class GameService {
         const gameEndedByTimoutDTO: GameEndedByTimeoutDTO = { winner };
         server
           .to(roomID)
-          .emit(GameEvents.GameEndedByTimeout, gameEndedByTimoutDTO);
+          .emit(SocketIOEvents.GameEndedByTimeout, gameEndedByTimoutDTO);
       }
     });
   }
@@ -408,7 +407,6 @@ export class GameService {
     }
   }
 
-  // FIXME only works on two players
   endGameDisconnect(game: AnyGame, disconecteeSocket: Socket) {
     clearInterval(game.calibrationIntervalHandle);
     game.setGameState(GameState.Ended);

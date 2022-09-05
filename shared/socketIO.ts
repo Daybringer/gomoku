@@ -1,27 +1,27 @@
-import { Socket } from 'socket.io';
-import { PlayerGameProfile } from 'src/models/playerGameProfile.entity';
-import { ProfileIcon } from './icons';
-import { Opening, Player, Position } from './types';
+import { Socket } from "socket.io";
+import { PlayerGameProfile } from "src/models/playerGameProfile.entity";
+import { ProfileIcon } from "./icons";
+import { Opening, Player, Position } from "./types";
 
 export enum SocketIOEvents {
-  UpdateActiveUsers = 'updateActiveUsers',
-  JoinGame = 'joinGame',
-  InvalidRoomID = 'invalidRoomID',
-  GameStarted = 'gameStarted',
-  StonePlaced = 'stonePlaced',
-  GameClick = 'gameClick',
-  GameEndedByDisconnect = 'gameEndedByDisconnect',
-  GameEndedByCombination = 'gameEndedByCombination',
-  GameEndedByTimeout = 'gameEndedByTimout',
-  GameEndedByTie = 'gameEndedByTie',
-  TimeCalibration = 'timeCalibration',
-  SendMessage = 'sendMessage',
-  RecieveMessage = 'recieveMessage',
+  UpdateActiveUsers = "updateActiveUsers",
+  JoinGame = "joinGame",
+  InvalidRoomID = "invalidRoomID",
+  GameStarted = "gameStarted",
+  StonePlaced = "stonePlaced",
+  GameClick = "gameClick",
+  GameEndedByDisconnect = "gameEndedByDisconnect",
+  GameEndedByCombination = "gameEndedByCombination",
+  GameEndedByTimeout = "gameEndedByTimout",
+  GameEndedByTie = "gameEndedByTie",
+  TimeCalibration = "timeCalibration",
+  SendMessage = "sendMessage",
+  RecieveMessage = "recieveMessage",
   //Custom specials
-  CreateCustomWaiting = 'createCustomWaiting',
-  CustomWaitingCreated = 'customWaitingCreated',
-  CustomRoomJoined = 'customRoomJoined',
-  CustomRoomRedirectToGame = 'customRoomRedirectToGame',
+  CreateCustomWaiting = "createCustomWaiting",
+  CustomWaitingCreated = "customWaitingCreated",
+  CustomRoomJoined = "customRoomJoined",
+  CustomRoomRedirectToGame = "customRoomRedirectToGame",
 }
 
 abstract class GameEndedDTO {
@@ -34,6 +34,17 @@ export class GameEndedByTimeoutDTO extends GameEndedDTO {}
 
 export class TimeCalibrationDTO {
   readonly players: Player[] = [];
+}
+
+export class GameClickDTO {
+  readonly roomID: string;
+  readonly position: Position;
+}
+
+export class JoinGameDTO {
+  readonly roomID: string;
+  readonly logged: boolean;
+  readonly userID: number;
 }
 
 export class UpdateActiveUsersDTO {

@@ -81,7 +81,8 @@ abstract class Game {
    * Sets game state to running and chooses and sets starting player
    */
   start(): void {
-    this.gameState === GameState.Running;
+    this.gameState = GameState.Running;
+    this.selectRandomStartingPlayer();
   }
 
   /**
@@ -94,10 +95,9 @@ abstract class Game {
   /**
    *
    */
-  selectRandomStartingPlayer(): Player {
+  selectRandomStartingPlayer(): void {
     const startingPlayer = this.players[Math.round(Math.random())];
     this.startingPlayer = startingPlayer;
-    return startingPlayer;
   }
 
   getOtherPlayer(playerSocket: Socket): Player {

@@ -4,19 +4,19 @@
     :gameState="gameState"
     :gameEnding="gameEnding"
     :lastPositionID="lastPositionID"
-    :myUserID="me.userID"
-    :myIconName="me.iconName"
-    :myLogged="me.logged"
-    :myTime="me.time"
-    :myNickname="me.nickname"
+    :myUserID="me?.userID"
+    :myIconName="me?.profileIcon"
+    :myLogged="me?.logged"
+    :myTime="me?.timeLeft"
+    :myNickname="me?.username"
     :myColor="store.user.playerColor"
     :amIStartingPlayer="amIStartingPlayer"
-    :enemyLogged="opponent.logged"
-    :enemyIconName="opponent.iconName"
-    :enemyUserID="opponent.userID"
-    :enemyTime="opponent.time"
+    :enemyLogged="enemy?.logged"
+    :enemyIconName="enemy?.profileIcon"
+    :enemyUserID="enemy?.userID"
+    :enemyTime="enemy?.timeLeft"
     :enemyColor="store.user.enemyColor"
-    :enemyNickname="opponent.nickname"
+    :enemyNickname="enemy?.username"
     :messages="messages"
     @gameClick="gameClick"
     @sendMessage="sendMessage"
@@ -27,10 +27,16 @@
 import { GameState, Ending } from "@/types";
 import { COIN_SPIN_DURATION } from "@/shared/constants";
 // Backend-frontend shared types
-import { position, GameClickDTO, GameEvents, GameType } from "@/shared/types";
+import { Position, GameType, Player } from "@/shared/types";
 import {
+  GameClickDTO,
+  GameEndedByDisconnectDTO,
+  GameEndedByTimeoutDTO,
   GameStartedEventDTO,
-  GameStartedEventPlayerInfo,
+  JoinGameDTO,
+  SocketIOEvents,
+  StonePlacedDTO,
+  TimeCalibrationDTO,
 } from "@/shared/socketIO";
 
 // SocketIO
@@ -46,23 +52,20 @@ import { io, Socket } from "socket.io-client";
 export default defineComponent({
   name: "Game",
   components: { GameBase },
-  data() {
+  data(): {
+    amIStartingPlayer: boolean;
+    me?: Player;
+    enemy?: Player;
+    chatInput: string;
+    lastPositionID: number;
+    round: number;
+    gameState: GameState;
+    gameEnding: Ending;
+    messages: Array<Record<string, string>>;
+    boardSize: number;
+  } {
     return {
       amIStartingPlayer: true,
-      me: {
-        nickname: "-",
-        userID: 0,
-        iconName: "",
-        logged: false,
-        time: 0,
-      },
-      opponent: {
-        nickname: "-",
-        iconName: "",
-        userID: 0,
-        logged: false,
-        time: 0,
-      },
       chatInput: "",
       lastPositionID: 0,
       round: 0,
@@ -81,12 +84,12 @@ export default defineComponent({
     /**
      * Forwards click event from GameBase component to game server
      */
-    gameClick(position: position): void {
+    gameClick(position: Position): void {
       const gameClickDTO: GameClickDTO = {
         roomID: this.getRoomIDFromURL || "",
         position: position,
       };
-      socket.emit(GameEvents.GameClick, gameClickDTO);
+      socket.emit(SocketIOEvents.GameClick, gameClickDTO);
     },
     /**
      *
@@ -94,7 +97,7 @@ export default defineComponent({
     sendMessage(message: string) {
       const messageObj = { author: "me", text: message };
       this.messages.push(messageObj);
-      socket.emit(GameEvents.SendMessage, message);
+      socket.emit(SocketIOEvents.SendMessage, message);
     },
   },
   async mounted() {
@@ -102,14 +105,12 @@ export default defineComponent({
     const logged = this.store.isAuthenticated;
     // TODO not logged in, temporary solution for nicknames ==> Move the logic to server
     if (!logged) {
-      await this.store
-        .getRandomName()
-        .then((res) => {
-          this.me.nickname = res;
-        })
-        .catch();
-    } else {
-      this.me.nickname = this.store.user.username;
+      // await this.store
+      //   .getRandomName()
+      //   .then((res) => {
+      //     this.me.nickname = res;
+      //   })
+      //   .catch();
     }
 
     if (
@@ -117,50 +118,37 @@ export default defineComponent({
       this.getGameTypeFromURL === GameType.Ranked ||
       this.getGameTypeFromURL === GameType.Custom
     ) {
-      socket.emit(GameEvents.JoinGame, {
-        roomID: this.getRoomIDFromURL,
-        logged: logged,
-        username: this.me.nickname,
-      });
+      const joinGameDTO: JoinGameDTO = {
+        roomID: this.getRoomIDFromURL || "",
+        logged,
+        userID: this.store.user.id,
+      };
+      socket.emit(SocketIOEvents.JoinGame, joinGameDTO);
     } else {
       this.$router.push("/");
     }
 
-    socket.on(GameEvents.InvalidRoomID, () => {
+    socket.on(SocketIOEvents.InvalidRoomID, () => {
       // TODO show some notification
       this.$router.push("/");
     });
 
     // Game has begun
     socket.on(
-      GameEvents.GameStarted,
+      SocketIOEvents.GameStarted,
       (gameStartedEventDTO: GameStartedEventDTO) => {
+        console.log("gameStarted", gameStartedEventDTO);
         this.amIStartingPlayer =
-          socket.id === gameStartedEventDTO.startingPlayerSocketID;
+          socket.id === gameStartedEventDTO.startingPlayerSocket.id;
 
-        let me: GameStartedEventPlayerInfo,
-          opponent: GameStartedEventPlayerInfo;
-        const socketIDs = Object.keys(gameStartedEventDTO.players);
-        socketIDs.forEach((key) => {
-          if (key === socket.id) {
-            me = gameStartedEventDTO.players[key];
-          } else {
-            opponent = gameStartedEventDTO.players[key];
-          }
-        });
-
-        this.me.nickname = me!.username;
-        this.opponent.nickname = opponent!.username;
-        this.me.userID = me!.userID;
-        this.opponent.userID = opponent!.userID;
-        this.me.iconName = String(me!.profileIcon);
-        this.opponent.iconName = String(opponent!.profileIcon);
-        this.me.logged = me!.logged;
-        this.opponent.logged = opponent!.logged;
-        this.me.time = this.opponent.time =
-          gameStartedEventDTO.timeLimitInSeconds;
-
-        console.log(this.me, this.opponent);
+        const [foo, bar] = gameStartedEventDTO.players;
+        if (foo.socket.id === socket.id) {
+          this.me = foo;
+          this.enemy = bar;
+        } else {
+          this.me = bar;
+          this.enemy = foo;
+        }
 
         this.gameState = GameState.Coinflip;
 
@@ -174,57 +162,52 @@ export default defineComponent({
     );
 
     socket.on(
-      GameEvents.TimeCalibration,
-      (socketTimeDict: Record<string, number>) => {
-        for (const socketID in socketTimeDict) {
-          //FIXME this scenario only works with exactly two socket IDs in the dict
-          // socketID is mine
-          if (socketID == socket.id) {
-            this.me.time = socketTimeDict[socketID];
+      SocketIOEvents.TimeCalibration,
+      (timeCalibrationDTO: TimeCalibrationDTO) => {
+        const [foo, bar] = timeCalibrationDTO.players;
+        if (this.me && this.enemy) {
+          if (foo.socket.id === socket.id) {
+            this.me.timeLeft = foo.timeLeft;
+            this.enemy.timeLeft = bar.timeLeft;
           } else {
-            this.opponent.time = socketTimeDict[socketID];
+            this.me.timeLeft = bar.timeLeft;
+            this.enemy.timeLeft = foo.timeLeft;
           }
         }
       }
     );
 
     // New message
-    socket.on(GameEvents.RecieveMessage, (message) => {
+    socket.on(SocketIOEvents.RecieveMessage, (message) => {
       this.messages.push({ author: "opponent", text: message });
     });
 
-    // Player made a move
-    socket.on(GameEvents.StonePlaced, (data) => {
-      const { position, times } = data;
+    // Player made a successful move
+    socket.on(SocketIOEvents.StonePlaced, (stonePlacedDTO: StonePlacedDTO) => {
+      const { position, players } = stonePlacedDTO;
 
       this.round++;
+      // FIXME wtf is this
       this.lastPositionID = position[1] * this.boardSize + position[0];
-
-      for (const socketID in times) {
-        //FIXME this scenario only works with exactly two socket IDs in the dict
-        // socketID is mine
-        if (socketID == socket.id) {
-          this.me.time = times[socketID];
-        } else {
-          this.opponent.time = times[socketID];
-        }
-      }
     });
 
     // Different game endings
-    socket.on(GameEvents.GameEndedByDisconnect, (socketID: string) => {
-      // I have been disconnected
-      if (socket.id === socketID) {
-        this.gameState = GameState.Ended;
-        this.gameEnding = Ending.DefeatDisconnect;
-        // Enemy has been disconnected
-      } else {
-        this.gameState = GameState.Ended;
-        this.gameEnding = Ending.VictoryDisconnect;
+    socket.on(
+      SocketIOEvents.GameEndedByDisconnect,
+      (gameEndedByDisconnectDTO: GameEndedByDisconnectDTO) => {
+        // I have been disconnected
+        if (socket.id !== gameEndedByDisconnectDTO.winner.socket.id) {
+          this.gameState = GameState.Ended;
+          this.gameEnding = Ending.DefeatDisconnect;
+          // Enemy has been disconnected
+        } else {
+          this.gameState = GameState.Ended;
+          this.gameEnding = Ending.VictoryDisconnect;
+        }
       }
-    });
+    );
 
-    socket.on(GameEvents.GameEndedByCombination, (socketID: string) => {
+    socket.on(SocketIOEvents.GameEndedByCombination, (socketID: string) => {
       this.gameState = GameState.Ended;
       this.gameEnding =
         socketID !== socket.id
@@ -232,17 +215,20 @@ export default defineComponent({
           : Ending.DefeatFiveInRow;
     });
 
-    socket.on(GameEvents.GameEndedByTimeout, (socketID: string) => {
-      // I have timed out
-      if (socket.id === socketID) {
-        this.gameState = GameState.Ended;
-        this.gameEnding = Ending.DefeatTimeout;
-        // Enemy has timed out
-      } else {
-        this.gameState = GameState.Ended;
-        this.gameEnding = Ending.VictoryTimeout;
+    socket.on(
+      SocketIOEvents.GameEndedByTimeout,
+      (gameEndedByTimeoutDTO: GameEndedByTimeoutDTO) => {
+        // I have timed out
+        if (socket.id !== gameEndedByTimeoutDTO.winner.socket.id) {
+          this.gameState = GameState.Ended;
+          this.gameEnding = Ending.DefeatTimeout;
+          // Enemy has timed out
+        } else {
+          this.gameState = GameState.Ended;
+          this.gameEnding = Ending.VictoryTimeout;
+        }
       }
-    });
+    );
   },
   computed: {
     getURLParams() {

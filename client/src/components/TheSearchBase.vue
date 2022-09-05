@@ -43,7 +43,7 @@ export default defineComponent({
     },
   },
   mounted(): void {
-    this.interval = setInterval(this.timeChange, 1000);
+    this.interval = window.setInterval(this.timeChange, 1000);
   },
   beforeUnmount() {
     clearInterval(this.interval);

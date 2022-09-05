@@ -60,7 +60,7 @@ export default class GameSimulation {
 
     this.abort = true;
 
-    this.debounceHandle = setTimeout(() => {
+    this.debounceHandle = window.setTimeout(() => {
       this.resizeHandle();
     }, this.debounceTime);
   };
