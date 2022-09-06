@@ -97,9 +97,10 @@ export class GameService {
     if (!game) throw 'Game not found';
     if (!game.isPlayersTurn(client.id)) throw "It's not players turn";
     if (!game.isRunning) throw 'Game is not running';
-    if (!game.isPositionEmpty(position)) 'Position is not empty';
+    if (!game.isPositionEmpty(position)) throw 'Position is not empty';
 
     this.placeStone(game, position, client.id);
+    game.iterateRound();
 
     clearInterval(game.calibrationIntervalHandle);
 
@@ -109,8 +110,6 @@ export class GameService {
     };
 
     server.to(roomID).emit(SocketIOEvents.StonePlaced, stonePlacedDTO);
-
-    game.iterateRound();
 
     const currGameState = this.checkWin(game, position);
 

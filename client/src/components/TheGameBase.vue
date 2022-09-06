@@ -341,7 +341,7 @@ export default defineComponent({
           src: [
             `sounds/${this.isGameEndingVictory ? "victory.mp3" : "defeat.mp3"}`,
           ],
-          volume: 0.4,
+          volume: 0.2,
         });
         endingSFX.play();
       }
