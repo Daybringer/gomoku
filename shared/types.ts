@@ -1,5 +1,4 @@
 import { User } from "./interfaces/user.interface";
-import { Socket } from "socket.io";
 import { ProfileIcon } from "./icons";
 
 /* eslint-disable */
@@ -37,13 +36,13 @@ enum Opening {
 type Time = 3 | 5 | 10 | "infinite";
 
 interface Player {
-  socket: Socket;
+  socketID: string;
   userID: number;
   logged: boolean;
   profileIcon: ProfileIcon;
   username: string;
   /** in miliseconds */
-  timeLeft?: number;
+  timeLeft: number;
 }
 
 enum GameBoard {

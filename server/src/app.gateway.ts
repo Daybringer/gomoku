@@ -154,7 +154,7 @@ export class GameGateway implements OnGatewayDisconnect {
       if (game.isRunning) {
         this.gameService.endGameDisconnect(game, client);
         const gameEndedByDisconnectDTO: GameEndedByDisconnectDTO = {
-          winner: game.getOtherPlayer(client),
+          winner: game.getOtherPlayer(client.id),
         };
         this.server
           .to(roomID)

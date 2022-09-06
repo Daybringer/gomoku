@@ -70,7 +70,6 @@ abstract class Game {
   addPlayer(player: Player): void {
     if (this.isWaiting)
       if (!this.isFull) {
-        player.timeLeft = this.timeLimitInSeconds * 1000;
         this.players.push(player);
       } else {
         throw 'Game is already full';
@@ -88,8 +87,8 @@ abstract class Game {
   /**
    *
    */
-  isPlayersTurn(playerSocket: Socket): boolean {
-    return this.playerOnTurn.socket === playerSocket;
+  isPlayersTurn(playerSocketID: string): boolean {
+    return this.playerOnTurn.socketID === playerSocketID;
   }
 
   /**
@@ -100,10 +99,10 @@ abstract class Game {
     this.startingPlayer = startingPlayer;
   }
 
-  getOtherPlayer(playerSocket: Socket): Player {
+  getOtherPlayer(playerSocketID: string): Player {
     let otherPlayer: Player;
     this.players.forEach((curr) => {
-      if (curr.socket.id !== playerSocket.id) otherPlayer = curr;
+      if (curr.socketID !== playerSocketID) otherPlayer = curr;
     });
     return otherPlayer;
   }

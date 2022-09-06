@@ -16,6 +16,7 @@ import {
   SocketIOEvents,
   StonePlacedDTO,
   TimeCalibrationDTO,
+  GameEndedByCombinationDTO,
 } from 'src/shared/socketIO';
 import { Server, Socket } from 'socket.io';
 import { GameEntity } from 'src/models/game.entity';
@@ -66,14 +67,14 @@ export class GameService {
     if (!game) {
       client.emit(SocketIOEvents.InvalidRoomID);
     } else {
-      await this.addPlayer(game, client, logged, userID);
+      await this.addPlayer(game, client.id, logged, userID);
       if (game.isFull && !game.isRunning) game.start();
 
       // Subscribing socket to SocketIO room
       client.join(roomID);
       if (game.isRunning) {
         const gameStartedDTO = await this.constructGameStartedDTO(game);
-        console.log('rip');
+        console.log(gameStartedDTO);
         server.to(roomID).emit(SocketIOEvents.GameStarted, gameStartedDTO);
 
         // Delaying the 1s interval for calibration by the time the coin
@@ -95,11 +96,11 @@ export class GameService {
     const game = this.findGame(roomID);
 
     if (!game) throw 'Game not found';
-    if (!game.isPlayersTurn(client)) throw "It's not players turn";
+    if (!game.isPlayersTurn(client.id)) throw "It's not players turn";
     if (!game.isRunning) throw 'Game is not running';
     if (!game.isPositionEmpty(position)) 'Position is not empty';
 
-    this.placeStone(game, position, client);
+    this.placeStone(game, position, client.id);
 
     clearInterval(game.calibrationIntervalHandle);
 
@@ -117,7 +118,10 @@ export class GameService {
     if (currGameState === EndingType.Combination) {
       const winner = game.playerOnTurn;
       this.endGame(game, currGameState, winner);
-      server.to(roomID).emit(SocketIOEvents.GameEndedByCombination, winner);
+      const gameEndedByCombinationDTO: GameEndedByCombinationDTO = { winner };
+      server
+        .to(roomID)
+        .emit(SocketIOEvents.GameEndedByCombination, gameEndedByCombinationDTO);
     } else if (currGameState === EndingType.Tie) {
       this.endGame(game, currGameState);
       server.to(roomID).emit(SocketIOEvents.GameEndedByTie);
@@ -225,7 +229,7 @@ export class GameService {
     this.gameRooms.forEach((anyGameRooms: { [id: string]: AnyGame }) => {
       for (const key in anyGameRooms) {
         anyGameRooms[key].players.forEach((player) => {
-          if (player.socket.id === socketID) {
+          if (player.socketID === socketID) {
             game = anyGameRooms[key];
             roomID = key;
           }
@@ -238,8 +242,8 @@ export class GameService {
   /**
    *
    */
-  placeStone(game: AnyGame, position: Position, socket: Socket): void {
-    const currPlayerSymbol = game.startingPlayer.socket === socket ? 1 : 2;
+  placeStone(game: AnyGame, position: Position, socketID: string): void {
+    const currPlayerSymbol = game.startingPlayer.socketID === socketID ? 1 : 2;
     game.setSymbolAt(position, currPlayerSymbol);
     game.saveTurn(position);
   }
@@ -250,12 +254,12 @@ export class GameService {
   async constructGameStartedDTO(game: AnyGame): Promise<GameStartedEventDTO> {
     const gameStartedEventDTO: GameStartedEventDTO = {
       timeLimitInSeconds: game.timeLimitInSeconds,
-      startingPlayerSocket: game.startingPlayer.socket,
+      startingPlayerSocketID: game.startingPlayer.socketID,
       players: [],
     };
 
     game.players.forEach((player) => {
-      gameStartedEventDTO.players[player.socket.id] = player;
+      gameStartedEventDTO.players.push(player);
     });
 
     return gameStartedEventDTO;
@@ -343,8 +347,8 @@ export class GameService {
 
     const playerOneProfile = await this.savePlayerGameProfile(playerOne);
     const playerTwoProfile = await this.savePlayerGameProfile(playerTwo);
-    socketIDtoPlayerGameProfileID[playerOne.socket.id] = playerOneProfile.id;
-    socketIDtoPlayerGameProfileID[playerTwo.socket.id] = playerTwoProfile.id;
+    socketIDtoPlayerGameProfileID[playerOne.socketID] = playerOneProfile.id;
+    socketIDtoPlayerGameProfileID[playerTwo.socketID] = playerTwoProfile.id;
 
     // TODO
     // ranked game -> calculate Elo delta save it to profiles and update elos of users
@@ -359,7 +363,7 @@ export class GameService {
     // there has to be a winner
     if (game.gameEnding !== EndingType.Tie) {
       gameEntity.winnerGameProfileID =
-        socketIDtoPlayerGameProfileID[game.winner.socket.id];
+        socketIDtoPlayerGameProfileID[game.winner.socketID];
     }
 
     gameEntity.playerGameProfileIDs = [
@@ -377,7 +381,7 @@ export class GameService {
         const isTie = game.gameEnding === EndingType.Tie;
         const isThisUserTheWinner = isTie
           ? false
-          : profile.id == socketIDtoPlayerGameProfileID[game.winner.socket.id]
+          : profile.id == socketIDtoPlayerGameProfileID[game.winner.socketID]
           ? true
           : false;
 
@@ -398,7 +402,7 @@ export class GameService {
     game.setGameState(GameState.Ended);
     game.setGameEnding(gameEnding);
     if (gameEnding !== EndingType.Tie) {
-      if (winner.socket.id) {
+      if (winner.socketID) {
         game.winner = winner;
       } else {
         throw 'None WinnerSocketID given';
@@ -411,7 +415,7 @@ export class GameService {
     clearInterval(game.calibrationIntervalHandle);
     game.setGameState(GameState.Ended);
     game.setGameEnding(EndingType.Surrender);
-    game.winner = game.getOtherPlayer(disconecteeSocket);
+    game.winner = game.getOtherPlayer(disconecteeSocket.id);
     this.saveGame(game);
   }
 
@@ -420,16 +424,17 @@ export class GameService {
    */
   async addPlayer(
     game: AnyGame,
-    socket: Socket,
+    socketID: string,
     logged: boolean,
     userID: number,
   ): Promise<void> {
     const player: Player = {
-      socket,
+      socketID,
       userID,
       logged,
       profileIcon: ProfileIcon.defaultBoy,
       username: '',
+      timeLeft: game.timeLimitInSeconds * 1000,
     };
     if (logged) {
       const user = await this.usersService.findOneByID(userID);

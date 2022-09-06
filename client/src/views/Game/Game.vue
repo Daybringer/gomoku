@@ -4,19 +4,19 @@
     :gameState="gameState"
     :gameEnding="gameEnding"
     :lastPositionID="lastPositionID"
-    :myUserID="me?.userID"
-    :myIconName="me?.profileIcon"
-    :myLogged="me?.logged"
-    :myTime="me?.timeLeft"
+    :myUserID="me.userID"
+    :myIconName="me.profileIcon"
+    :myLogged="me.logged"
+    :myTime="me.timeLeft"
     :myNickname="me?.username"
     :myColor="store.user.playerColor"
     :amIStartingPlayer="amIStartingPlayer"
-    :enemyLogged="enemy?.logged"
-    :enemyIconName="enemy?.profileIcon"
-    :enemyUserID="enemy?.userID"
-    :enemyTime="enemy?.timeLeft"
+    :enemyLogged="enemy.logged"
+    :enemyIconName="enemy.profileIcon"
+    :enemyUserID="enemy.userID"
+    :enemyTime="enemy.timeLeft"
     :enemyColor="store.user.enemyColor"
-    :enemyNickname="enemy?.username"
+    :enemyNickname="enemy.username"
     :messages="messages"
     @gameClick="gameClick"
     @sendMessage="sendMessage"
@@ -48,14 +48,25 @@ import { useStore } from "@/store/store";
 // Utils
 import { defineComponent } from "vue";
 import { io, Socket } from "socket.io-client";
+import { ProfileIcon } from "@/shared/icons";
+const basePlayer = (): Player => {
+  return {
+    socketID: "a",
+    userID: 0,
+    logged: false,
+    profileIcon: ProfileIcon.defaultBoy,
+    username: "-",
+    timeLeft: 120000,
+  };
+};
 
 export default defineComponent({
   name: "Game",
   components: { GameBase },
   data(): {
     amIStartingPlayer: boolean;
-    me?: Player;
-    enemy?: Player;
+    me: Player;
+    enemy: Player;
     chatInput: string;
     lastPositionID: number;
     round: number;
@@ -65,6 +76,8 @@ export default defineComponent({
     boardSize: number;
   } {
     return {
+      me: basePlayer(),
+      enemy: basePlayer(),
       amIStartingPlayer: true,
       chatInput: "",
       lastPositionID: 0,
@@ -139,10 +152,10 @@ export default defineComponent({
       (gameStartedEventDTO: GameStartedEventDTO) => {
         console.log("gameStarted", gameStartedEventDTO);
         this.amIStartingPlayer =
-          socket.id === gameStartedEventDTO.startingPlayerSocket.id;
+          socket.id === gameStartedEventDTO.startingPlayerSocketID;
 
         const [foo, bar] = gameStartedEventDTO.players;
-        if (foo.socket.id === socket.id) {
+        if (foo.socketID === socket.id) {
           this.me = foo;
           this.enemy = bar;
         } else {
@@ -166,13 +179,16 @@ export default defineComponent({
       (timeCalibrationDTO: TimeCalibrationDTO) => {
         const [foo, bar] = timeCalibrationDTO.players;
         if (this.me && this.enemy) {
-          if (foo.socket.id === socket.id) {
+          if (foo.socketID === socket.id) {
             this.me.timeLeft = foo.timeLeft;
             this.enemy.timeLeft = bar.timeLeft;
           } else {
             this.me.timeLeft = bar.timeLeft;
             this.enemy.timeLeft = foo.timeLeft;
           }
+          console.log(this.me, this.enemy);
+        } else {
+          console.log("???");
         }
       }
     );
@@ -196,7 +212,7 @@ export default defineComponent({
       SocketIOEvents.GameEndedByDisconnect,
       (gameEndedByDisconnectDTO: GameEndedByDisconnectDTO) => {
         // I have been disconnected
-        if (socket.id !== gameEndedByDisconnectDTO.winner.socket.id) {
+        if (socket.id !== gameEndedByDisconnectDTO.winner.socketID) {
           this.gameState = GameState.Ended;
           this.gameEnding = Ending.DefeatDisconnect;
           // Enemy has been disconnected
@@ -219,7 +235,7 @@ export default defineComponent({
       SocketIOEvents.GameEndedByTimeout,
       (gameEndedByTimeoutDTO: GameEndedByTimeoutDTO) => {
         // I have timed out
-        if (socket.id !== gameEndedByTimeoutDTO.winner.socket.id) {
+        if (socket.id !== gameEndedByTimeoutDTO.winner.socketID) {
           this.gameState = GameState.Ended;
           this.gameEnding = Ending.DefeatTimeout;
           // Enemy has timed out
