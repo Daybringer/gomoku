@@ -115,7 +115,7 @@ export class GameService {
     const currGameState = this.checkWin(game, position);
 
     if (currGameState === EndingType.Combination) {
-      const winner = game.playerOnTurn;
+      const winner = game.getNextPlayerOnTurn;
       this.endGame(game, currGameState, winner);
       const gameEndedByCombinationDTO: GameEndedByCombinationDTO = { winner };
       server
@@ -439,6 +439,8 @@ export class GameService {
       const user = await this.usersService.findOneByID(userID);
       player.profileIcon = user.selectedIcon;
       player.username = user.username;
+    } else {
+      player.username = this.usersService.generateRandomName();
     }
     if (!game.isFull) game.addPlayer(player);
   }

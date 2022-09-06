@@ -30,6 +30,7 @@ import { COIN_SPIN_DURATION } from "@/shared/constants";
 import { Position, GameType, Player } from "@/shared/types";
 import {
   GameClickDTO,
+  GameEndedByCombinationDTO,
   GameEndedByDisconnectDTO,
   GameEndedByTimeoutDTO,
   GameStartedEventDTO,
@@ -116,15 +117,6 @@ export default defineComponent({
   async mounted() {
     socket = io("/game", { port: "3001" });
     const logged = this.store.isAuthenticated;
-    // TODO not logged in, temporary solution for nicknames ==> Move the logic to server
-    if (!logged) {
-      // await this.store
-      //   .getRandomName()
-      //   .then((res) => {
-      //     this.me.nickname = res;
-      //   })
-      //   .catch();
-    }
 
     if (
       this.getGameTypeFromURL === GameType.Quick ||
@@ -217,13 +209,16 @@ export default defineComponent({
       }
     );
 
-    socket.on(SocketIOEvents.GameEndedByCombination, (socketID: string) => {
-      this.gameState = GameState.Ended;
-      this.gameEnding =
-        socketID !== socket.id
-          ? Ending.VictoryFiveInRow
-          : Ending.DefeatFiveInRow;
-    });
+    socket.on(
+      SocketIOEvents.GameEndedByCombination,
+      (gameEndedByCombinationDTO: GameEndedByCombinationDTO) => {
+        this.gameState = GameState.Ended;
+        this.gameEnding =
+          gameEndedByCombinationDTO.winner.socketID === socket.id
+            ? Ending.VictoryFiveInRow
+            : Ending.DefeatFiveInRow;
+      }
+    );
 
     socket.on(
       SocketIOEvents.GameEndedByTimeout,
