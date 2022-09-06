@@ -7,8 +7,7 @@ import {
   ProfileIconRecordContent,
   profileIconRecords,
 } from "@/shared/icons";
-import { User } from "@/shared/interfaces/user.interface";
-import { Game, FilledGame } from "@/shared/interfaces/game.interface";
+import { FilledGame } from "@/shared/interfaces/game.interface";
 import { EndingType, GameBoard, GameType, LoginStrategy } from "@/shared/types";
 import UsersRepository from "@/repositories/usersRepository";
 import { useStore } from "@/store/store";
@@ -84,7 +83,7 @@ export default defineComponent({
     async setIcon(iconName: string) {
       UsersRepository.selectIcon(iconName).then(() => {
         this.store.user.selectedIcon = ProfileIcon[iconName];
-        this.store.user.selectedIcon = ProfileIcon[iconName];
+        this.store.saveLocalUser();
       });
     },
     buyIcon(iconName: string) {
@@ -113,6 +112,7 @@ export default defineComponent({
     async setGameBoard(gameBoard: GameBoard) {
       UsersRepository.setGameboard(gameBoard).then(() => {
         this.store.user.gameBoard = gameBoard;
+        this.store.saveLocalUser();
       });
     },
     setColor(isMyColor: boolean, color: string) {
@@ -121,6 +121,7 @@ export default defineComponent({
       } else {
         this.store.user.enemyColor = color;
       }
+      this.store.saveLocalUser();
       UsersRepository.setColors(
         this.store.user.playerColor!,
         this.store.user.enemyColor!
@@ -176,7 +177,7 @@ export default defineComponent({
                 </span>
                 <img
                   class="h-10"
-                  src="@/assets/svg/koin.svg"
+                  src="../assets/svg/koin.svg"
                   alt="Koin (Gomoku coin)"
                 />
                 <base-tooltip-with-icon

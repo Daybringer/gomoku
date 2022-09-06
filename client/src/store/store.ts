@@ -41,12 +41,19 @@ function userBase(): User {
     rankedWon: 0,
   };
 }
+function getLocalUser(): User | null {
+  const str = localStorage.getItem("user");
+  if (str) {
+    const user: User = JSON.parse(str);
+    return user;
+  } else {
+    return null;
+  }
+}
 
-// FIXME userProfile vs User type << unnecessary type,
-// but there might have been problems with inner interfaces
 export const useStore = defineStore("store", {
   state: () => ({
-    user: userBase(),
+    user: getLocalUser() || userBase(),
     userLoaded: false,
     token: localStorage.getItem("access-token") || "",
     googleIDToken: "",
@@ -192,6 +199,7 @@ export const useStore = defineStore("store", {
         .then((res) => {
           const user = res.data;
           this.user = user;
+          this.saveLocalUser();
           this.userLoaded = true;
           return user;
         })
@@ -201,9 +209,14 @@ export const useStore = defineStore("store", {
       const token = authPayload.payload.token;
       const user = authPayload.user;
       this.user = user;
+      this.saveLocalUser();
       this.userLoaded = true;
 
       this.saveToken(token);
+    },
+    saveLocalUser() {
+      const str = JSON.stringify(this.user);
+      localStorage.setItem("user", str);
     },
     saveToken(token: string): void {
       localStorage.setItem("access-token", token);
@@ -220,7 +233,7 @@ export const useStore = defineStore("store", {
     },
     logout(): void {
       this.flushUser();
-      localStorage.removeItem("access-token");
+      localStorage.clear();
       this.token = "";
     },
   },
