@@ -1,25 +1,26 @@
-import { Socket } from "socket.io";
-import { Opening, Player, Position } from "./types";
+import { Socket } from 'socket.io';
+import { Opening, Player, Position } from './types';
 
 export enum SocketIOEvents {
-  UpdateActiveUsers = "updateActiveUsers",
-  JoinGame = "joinGame",
-  InvalidRoomID = "invalidRoomID",
-  GameStarted = "gameStarted",
-  StonePlaced = "stonePlaced",
-  GameClick = "gameClick",
-  GameEndedByDisconnect = "gameEndedByDisconnect",
-  GameEndedByCombination = "gameEndedByCombination",
-  GameEndedByTimeout = "gameEndedByTimout",
-  GameEndedByTie = "gameEndedByTie",
-  TimeCalibration = "timeCalibration",
-  SendMessage = "sendMessage",
-  RecieveMessage = "recieveMessage",
+  UpdateActiveUsers = 'updateActiveUsers',
+  JoinGame = 'joinGame',
+  InvalidRoomID = 'invalidRoomID',
+  GameStarted = 'gameStarted',
+  StonePlaced = 'stonePlaced',
+  GameClick = 'gameClick',
+  GameEndedByDisconnect = 'gameEndedByDisconnect',
+  GameEndedByCombination = 'gameEndedByCombination',
+  GameEndedByTimeout = 'gameEndedByTimout',
+  GameEndedByTie = 'gameEndedByTie',
+  TimeCalibration = 'timeCalibration',
+  SendMessage = 'sendMessage',
+  RecieveMessage = 'recieveMessage',
   //Custom specials
-  CreateCustomWaiting = "createCustomWaiting",
-  CustomWaitingCreated = "customWaitingCreated",
-  CustomRoomJoined = "customRoomJoined",
-  CustomRoomRedirectToGame = "customRoomRedirectToGame",
+  CreateCustomWaiting = 'createCustomWaiting',
+  CustomWaitingCreated = 'customWaitingCreated',
+  CustomRoomJoined = 'customRoomJoined',
+  InvalidCustomRoom = 'invalidCustomRoom',
+  CustomRoomRedirectToGame = 'customRoomRedirectToGame',
 }
 
 abstract class GameEndedDTO {

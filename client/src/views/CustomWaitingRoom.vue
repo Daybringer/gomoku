@@ -88,6 +88,11 @@ export default defineComponent({
     };
     socket.emit(SocketIOEvents.CustomRoomJoined, customRoomJoinedDTO);
 
+    socket.on(SocketIOEvents.InvalidCustomRoom, () => {
+      // TODO show notification or redirect to special page
+      this.$router.push("/");
+    });
+
     socket.on(
       SocketIOEvents.CustomRoomRedirectToGame,
       (customRoomRedirectToGameDTO: CustomRoomRedirectToGameDTO) => {
@@ -96,6 +101,9 @@ export default defineComponent({
         );
       }
     );
+  },
+  unmounted() {
+    socket.close();
   },
 });
 </script>

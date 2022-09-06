@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateCustomDTO } from 'src/shared/socketIO';
+import { CreateCustomDTO, SocketIOEvents } from 'src/shared/socketIO';
 import { Socket } from 'socket.io';
 
 @Injectable()
@@ -52,7 +52,12 @@ export class CustomRoomService {
   }
 
   joinCustomWaitingRoom(socket: Socket, roomID: string): void {
-    this.customWaitingRooms[roomID].waitingPlayersSockets.push(socket);
+    if (this.customWaitingRooms[roomID]) {
+      this.customWaitingRooms[roomID].waitingPlayersSockets.push(socket);
+    } else {
+      socket.emit(SocketIOEvents.InvalidCustomRoom);
+      throw 'Invalid room';
+    }
   }
 
   isCustomWaitingRoomFull(roomID: string): boolean {

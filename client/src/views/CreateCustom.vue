@@ -105,6 +105,11 @@ export default defineComponent({
   },
   computed: {},
   mounted() {},
+  unmounted() {
+    if (socket) {
+      socket.close();
+    }
+  },
   methods: {
     openingRadio(opening: Opening) {
       this.opening = opening;
@@ -121,6 +126,7 @@ export default defineComponent({
       };
 
       socket.emit(SocketIOEvents.CreateCustomWaiting, createCustomDTO);
+
       socket.on(
         SocketIOEvents.CustomWaitingCreated,
         (customCreatedDTO: CustomCreatedDTO) => {
