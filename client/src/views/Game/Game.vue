@@ -1,6 +1,7 @@
 <template>
   <GameBase
     :round="round"
+    :hasTimeLimit="hasTimeLimit"
     :gameState="gameState"
     :gameEnding="gameEnding"
     :lastPositionID="lastPositionID"
@@ -65,6 +66,7 @@ export default defineComponent({
   name: "Game",
   components: { GameBase },
   data(): {
+    hasTimeLimit: boolean;
     amIStartingPlayer: boolean;
     me: Player;
     enemy: Player;
@@ -79,6 +81,7 @@ export default defineComponent({
     return {
       me: basePlayer(),
       enemy: basePlayer(),
+      hasTimeLimit: false,
       amIStartingPlayer: true,
       chatInput: "",
       lastPositionID: 0,
@@ -144,6 +147,8 @@ export default defineComponent({
       (gameStartedEventDTO: GameStartedEventDTO) => {
         this.amIStartingPlayer =
           socket.id === gameStartedEventDTO.startingPlayerSocketID;
+
+        this.hasTimeLimit = gameStartedEventDTO.hasTimeLimit;
 
         const [foo, bar] = gameStartedEventDTO.players;
         if (foo.socketID === socket.id) {

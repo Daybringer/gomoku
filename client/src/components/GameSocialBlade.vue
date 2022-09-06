@@ -70,8 +70,11 @@
       <circle cx="19" cy="12" r="1" />
     </svg>
 
-    <div class="flex-1 text-center text-xl text-gray-900 dark:text-gray-100">
-      {{ humanReadableTime }}
+    <div
+      class="flex-1 flex justify-center text-center text-xl text-gray-900 dark:text-gray-100"
+    >
+      {{ hasTimeLimit ? humanReadableTime : "" }}
+      <infinity-icon-svg class="h-8 self-center" v-show="!hasTimeLimit" />
     </div>
     <div class="flex-1 text-center text-xl text-gray-900 dark:text-gray-100">
       <p>{{ nickname }}</p>
@@ -103,7 +106,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-
+import InfinityIconSvg from "@/assets/svg/InfinityIconSvg.vue";
 import AnonymIconSvg from "@/assets/svg/AnonymIconSvg.vue";
 
 export default defineComponent({
@@ -112,6 +115,7 @@ export default defineComponent({
     symbol: String,
     symbolColor: String,
     time: Number,
+    hasTimeLimit: Boolean,
     nickname: String,
     iconName: String,
     logged: Boolean,
@@ -129,6 +133,7 @@ export default defineComponent({
   },
   components: {
     AnonymIconSvg,
+    InfinityIconSvg,
   },
   data() {
     return {};

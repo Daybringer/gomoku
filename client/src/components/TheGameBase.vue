@@ -117,6 +117,7 @@
             :symbol="mySymbol"
             :symbolColor="myColor"
             :time="myTime"
+            :hasTimeLimit="hasTimeLimit"
             :nickname="myNickname"
             :logged="myLogged"
             :iconName="myIconName"
@@ -128,6 +129,7 @@
             :symbolColor="enemyColor"
             :time="enemyTime"
             :nickname="enemyNickname"
+            :hasTimeLimit="hasTimeLimit"
             :logged="enemyLogged"
             :iconName="enemyIconName"
             :userID="enemyUserID"
@@ -257,6 +259,7 @@ export default defineComponent({
   },
   props: {
     myTime: Number,
+    hasTimeLimit: Boolean,
     enemyTime: String,
     amIStartingPlayer: Boolean,
     myLogged: Boolean,
@@ -385,6 +388,7 @@ export default defineComponent({
 
       const stonePlacedSoundEffect = new Howl({
         src: ["sounds/click1.ogg"],
+        volume: 0.8,
       });
       stonePlacedSoundEffect.play();
     },

@@ -1,4 +1,3 @@
-import { Socket } from 'socket.io';
 import {
   EndingType,
   GameState,
@@ -16,7 +15,7 @@ abstract class Game {
   round = 0;
   gameboardSize = 15;
   gameboard: Symbol[][] = this.generateGameboard(this.gameboardSize);
-  turns: Array<[number, number]> = [];
+  turns: Position[] = [];
   gameType: GameType;
   opening: Opening;
   timeLimitInSeconds: number;

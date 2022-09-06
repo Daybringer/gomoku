@@ -78,14 +78,16 @@ export class GameService {
 
         // Delaying the 1s interval for calibration by the time the coin
         // is spinning on client
-        setTimeout(() => {
-          // Checking second time if game is still running, because of possible early disconnects
-          if (game.isRunning) {
-            game.calibrationIntervalHandle = setInterval(() => {
-              this.calibrateTime(server, roomID, game);
-            }, 1000);
-          }
-        }, COIN_SPIN_DURATION);
+        if (game.hasTimeLimit) {
+          setTimeout(() => {
+            // Checking second time if game is still running, because of possible early disconnects
+            if (game.isRunning) {
+              game.calibrationIntervalHandle = setInterval(() => {
+                this.calibrateTime(server, roomID, game);
+              }, 1000);
+            }
+          }, COIN_SPIN_DURATION);
+        }
       }
     }
   }
@@ -124,9 +126,11 @@ export class GameService {
       this.endGame(game, currGameState);
       server.to(roomID).emit(SocketIOEvents.GameEndedByTie);
     } else {
-      game.calibrationIntervalHandle = setInterval(() => {
-        this.calibrateTime(server, roomID, game);
-      }, 1000);
+      if (game.hasTimeLimit) {
+        game.calibrationIntervalHandle = setInterval(() => {
+          this.calibrateTime(server, roomID, game);
+        }, 1000);
+      }
     }
   }
 
@@ -165,7 +169,6 @@ export class GameService {
     }
   }
 
-  // TODO implement no time limit option
   /**
    * function to be called every second; deducts time from current player and emits new times to all connected players
    */
@@ -253,6 +256,7 @@ export class GameService {
     const gameStartedEventDTO: GameStartedEventDTO = {
       timeLimitInSeconds: game.timeLimitInSeconds,
       startingPlayerSocketID: game.startingPlayer.socketID,
+      hasTimeLimit: game.hasTimeLimit,
       players: [],
     };
 

@@ -21,10 +21,12 @@ export default defineComponent({
 });
 </script>
 <style scoped>
-.notification-enter-active {
+.notification-enter-active,
+.notification-enter-from {
   animation: bounce-in 0.5s ease-out;
 }
-.notification-leave-active {
+.notification-leave-active,
+.notification-leave-from {
   /* transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1); */
   animation: bounce-out 0.5s ease-in;
 }
