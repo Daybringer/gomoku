@@ -150,7 +150,6 @@ export default defineComponent({
     socket.on(
       SocketIOEvents.GameStarted,
       (gameStartedEventDTO: GameStartedEventDTO) => {
-        console.log("gameStarted", gameStartedEventDTO);
         this.amIStartingPlayer =
           socket.id === gameStartedEventDTO.startingPlayerSocketID;
 
@@ -178,17 +177,12 @@ export default defineComponent({
       SocketIOEvents.TimeCalibration,
       (timeCalibrationDTO: TimeCalibrationDTO) => {
         const [foo, bar] = timeCalibrationDTO.players;
-        if (this.me && this.enemy) {
-          if (foo.socketID === socket.id) {
-            this.me.timeLeft = foo.timeLeft;
-            this.enemy.timeLeft = bar.timeLeft;
-          } else {
-            this.me.timeLeft = bar.timeLeft;
-            this.enemy.timeLeft = foo.timeLeft;
-          }
-          console.log(this.me, this.enemy);
+        if (foo.socketID === socket.id) {
+          this.me.timeLeft = foo.timeLeft;
+          this.enemy.timeLeft = bar.timeLeft;
         } else {
-          console.log("???");
+          this.me.timeLeft = bar.timeLeft;
+          this.enemy.timeLeft = foo.timeLeft;
         }
       }
     );

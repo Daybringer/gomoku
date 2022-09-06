@@ -35,8 +35,6 @@ export default defineComponent({
       socket.on(
         SocketIOEvents.UpdateActiveUsers,
         (updateActiveUsersDTO: UpdateActiveUsersDTO) => {
-          console.log("updated", updateActiveUsersDTO.activeUsers);
-
           onlineUsers.value = updateActiveUsersDTO.activeUsers;
         }
       );

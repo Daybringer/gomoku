@@ -74,7 +74,6 @@ export class GameService {
       client.join(roomID);
       if (game.isRunning) {
         const gameStartedDTO = await this.constructGameStartedDTO(game);
-        console.log(gameStartedDTO);
         server.to(roomID).emit(SocketIOEvents.GameStarted, gameStartedDTO);
 
         // Delaying the 1s interval for calibration by the time the coin
