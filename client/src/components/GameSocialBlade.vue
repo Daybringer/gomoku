@@ -1,6 +1,7 @@
 <template>
   <div
-    class="bg-white dark:bg-gray-500 w-full rounded-full min-h-12 flex flex-row items-center justify-between overflow-hidden shadow-md"
+    class="bg-white border-4 dark:bg-gray-500 w-full rounded-full min-h-12 flex flex-row items-center justify-between overflow-hidden shadow-md"
+    :style="isActive ? `border-color: ${symbolColor};` : ''"
   >
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -120,6 +121,7 @@ export default defineComponent({
     iconName: String,
     logged: Boolean,
     userID: Number,
+    isActive: Boolean,
   },
   computed: {
     humanReadableTime(this: any) {

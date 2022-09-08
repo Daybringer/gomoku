@@ -30,9 +30,10 @@
         </div>
       </div>
     </div>
-    <base-notification v-show="notificationShown">{{
-      "Successfully copied to clipboard"
-    }}</base-notification>
+    <base-notification
+      :text="'Successfully copied to clipboard'"
+      v-show="notificationShown"
+    />
   </view-base-fixed-height>
 </template>
 <script lang="ts">
@@ -107,4 +108,4 @@ export default defineComponent({
   },
 });
 </script>
-<style scoped></style>
+<style></style>

@@ -47,6 +47,43 @@
             ></div>
           </div>
         </div>
+        <!-- SWAP NOTIFICATIONS -->
+        <!-- Choose symbol swap1 -->
+        <game-base-instruction-slide v-show="slideNotification.choose">
+          <p class=" text-3xl  text-center">Choose a symbol</p>
+          <div class="flex w-full self-center justify-around">
+            <button
+              class="border-2 p-1 border-gray-700 dark:border-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-xl"
+            >
+              <game-stone-circle-svg
+                class="h-20 w-20"
+                :style="`color:${myColor}`"
+              />
+            </button>
+            <button
+              class="border-2 p-1 border-gray-700 dark:border-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-xl"
+            >
+              <game-stone-cross-svg
+                class="h-20 w-20"
+                :style="`color:${enemyColor}`"
+              />
+            </button>
+          </div>
+        </game-base-instruction-slide>
+        <!-- Enemy is choosing symbol -->
+        <game-base-instruction-slide v-show="slideNotification.enemyChoose">
+          <p class=" text-3xl  text-center">
+            Opponent is choosing their symbol
+          </p>
+        </game-base-instruction-slide>
+        <game-base-instruction-slide v-show="slideNotification.place">
+          <p class=" text-3xl  text-center">SWAP1: Place 3 stones</p>
+        </game-base-instruction-slide>
+        <game-base-instruction-slide v-show="slideNotification.enemyPlace">
+          <p class=" text-3xl  text-center">
+            SWAP1: Enemy is choosing opening shape
+          </p>
+        </game-base-instruction-slide>
         <!-- After game overlay -->
         <transition name="bounce">
           <div
@@ -67,7 +104,7 @@
                 class="absolute top-3 left-3 p-1 rounded-full bg-gray-200 dark:bg-gray-300 text-gray-900 focus:outline-none"
                 @click="afterGameModal = false"
               >
-                <CloseIconSVG class="h-8 stroke-current" />
+                <cross-icon-svg class="h-8" />
               </button>
               <h1
                 class="w-full text-center text-5xl p-4 xl:text-7xl font-medium text text-gomoku-blue"
@@ -122,8 +159,14 @@
             :logged="myLogged"
             :iconName="myIconName"
             :userID="myUserID"
+            :isActive="true"
           ></social-blade>
-          <div class="m-auto my-3 text-3xl text-white font-semibold">VS</div>
+          <div
+            class="m-auto my-3 text-3xl text-white font-semibold md:block hidden"
+          >
+            VS
+          </div>
+          <div class="md:hidden block my-2"></div>
           <social-blade
             :symbol="enemySymbol"
             :symbolColor="enemyColor"
@@ -133,6 +176,7 @@
             :logged="enemyLogged"
             :iconName="enemyIconName"
             :userID="enemyUserID"
+            :isActive="false"
           ></social-blade>
         </div>
         <!-- Chat container -->
@@ -219,18 +263,14 @@
 <script lang="ts">
 // Types
 import { GameState, Ending } from "@/types";
-enum Symbol {
-  Cross,
-  Circle,
-}
 // Howler
-import { Howl, Howler } from "howler";
+import { Howl } from "howler";
 // SVGs
 import VictoryConfettiConeSVG from "@/components/SVGVictoryConfettiCone.vue";
 import CircleOriginSVG from "@/components/SVGCircleOrigin.vue";
 import CrossOriginSVG from "@/components/SVGCrossOrigin.vue";
 import OpenOverlaySVG from "@/components/SVGOpenOverlay.vue";
-import CloseIconSVG from "@/components/SVGCloseIcon.vue";
+import CrossIconSvg from "@/assets/svg/CrossIconSvg.vue";
 import DefeatConeSVG from "@/components/SVGDefeatCone.vue";
 import MutedIconSVG from "@/components/SVGMutedIcon.vue";
 import UnmutedIconSVG from "@/components/SVGUnmutedIcon.vue";
@@ -240,6 +280,11 @@ import SocialBlade from "@/components/GameSocialBlade.vue";
 import ChatMessage from "@/components/GameChatMessage.vue";
 // Utils
 import { defineComponent } from "vue";
+import ChevronsDownIconSvg from "@/assets/svg/ChevronsDownIconSvg.vue";
+import GameBaseInstructionSlide from "./GameBaseInstructionSlide.vue";
+import { GameType } from "@/shared/types";
+import GameStoneCrossSvg from "@/assets/svg/GameStoneCross.svg.vue";
+import GameStoneCircleSvg from "@/assets/svg/GameStoneCircleSvg.vue";
 
 export default defineComponent({
   name: "GameBase",
@@ -253,9 +298,13 @@ export default defineComponent({
     VictoryConfettiConeSVG,
     DefeatConeSVG,
     OpenOverlaySVG,
-    CloseIconSVG,
+    CrossIconSvg,
     MutedIconSVG,
     UnmutedIconSVG,
+    ChevronsDownIconSvg,
+    GameBaseInstructionSlide,
+    GameStoneCrossSvg,
+    GameStoneCircleSvg,
   },
   props: {
     myTime: Number,
@@ -278,12 +327,29 @@ export default defineComponent({
     gameState: String,
     gameEnding: String,
   },
-  data() {
+  data(): {
+    chatInput: string;
+    afterGameModal: boolean;
+    muted: boolean;
+    gameType: GameType;
+    slideNotification: {
+      place: boolean;
+      enemyPlace: boolean;
+      choose: boolean;
+      enemyChoose: boolean;
+    };
+  } {
     return {
       chatInput: "",
       afterGameModal: true,
       muted: false,
-      gameType: "",
+      gameType: GameType.Quick,
+      slideNotification: {
+        place: true,
+        enemyPlace: false,
+        choose: false,
+        enemyChoose: false,
+      },
     };
   },
   computed: {
@@ -353,7 +419,7 @@ export default defineComponent({
       handler() {
         const messageSFX = new Howl({
           src: [`sounds/message.mp3`],
-          volume: 1.5,
+          volume: this.muted ? 0 : 1.5,
         });
         messageSFX.play();
         const chatContainer = document.getElementById(
@@ -427,7 +493,7 @@ export default defineComponent({
     const urlParams = new URLSearchParams(window.location.search);
 
     const gameType = urlParams.get("type");
-    this.gameType = gameType || "";
+    this.gameType = gameType as GameType;
   },
   unmounted() {
     window.removeEventListener("resize", this.equalizeGameContDimensions);
