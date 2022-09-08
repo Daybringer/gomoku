@@ -1,5 +1,7 @@
 <template>
   <GameBase
+    :me="me"
+    :enemy="enemy"
     :round="round"
     :hasTimeLimit="hasTimeLimit"
     :gameState="gameState"
@@ -62,6 +64,8 @@ const basePlayer = (): Player => {
   };
 };
 
+export type Message = Record<string, string>;
+
 export default defineComponent({
   name: "Game",
   components: { GameBase },
@@ -75,7 +79,7 @@ export default defineComponent({
     round: number;
     gameState: GameState;
     gameEnding: Ending;
-    messages: Array<Record<string, string>>;
+    messages: Array<Message>;
     boardSize: number;
   } {
     return {
@@ -88,7 +92,7 @@ export default defineComponent({
       round: 0,
       gameState: GameState.Waiting,
       gameEnding: Ending.None,
-      messages: [] as Array<Record<string, string>>,
+      messages: [],
       boardSize: 15,
     };
   },

@@ -13,7 +13,7 @@
           class="sticky z-50 top-0 self-end  w-7 md:w-8 flex items-center justify-center h-8 rounded-full border-2  border-gray-400 dark:border-gray-800 bg-gray-300 hover:bg-gray-400 dark:bg-gray-300 text-gray-900 focus:outline-none"
           @click="closeModal"
         >
-          <SVGCloseIcon class="h-6 stroke-current" />
+          <cross-icon-svg class="h-6" />
         </button>
         <slot></slot>
       </div>
@@ -23,16 +23,13 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 //Components
-import SVGCloseIcon from "@/components/SVGCloseIcon.vue";
+import CrossIconSvg from "@/assets/svg/CrossIconSvg.vue";
 export default defineComponent({
   name: "BaseModal",
   props: {
     isActive: Boolean,
   },
-  components: { SVGCloseIcon },
-  data(): {} {
-    return {};
-  },
+  components: { CrossIconSvg },
   computed: {},
   methods: {
     closeModal() {

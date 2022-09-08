@@ -29,12 +29,12 @@
           @click="afterGameModal = true"
           class="absolute top-2 left-2 p-1 rounded-full bg-gray-200  text-gray-900 focus:outline-none"
         >
-          <OpenOverlaySVG class="h-8 stroke-current" />
+          <chevrons-down-icon-svg class="h-8 w-8 -rotate-45 transform" />
         </button>
         <!-- Coinflip overlay -->
         <div
           class="absolute z-20 flex place-items-center justify-center h-full w-full bg-gray-100 dark:bg-gray-700"
-          v-if="isGameStateWaitingOrCoinflip"
+          v-if="isWaitingOrCoinflip"
         >
           <!-- Coin -->
           <div id="coin" :class="coinSide" v-if="isGameStateCoinflip">
@@ -47,6 +47,7 @@
             ></div>
           </div>
         </div>
+
         <!-- SWAP NOTIFICATIONS -->
         <!-- Choose symbol swap1 -->
         <game-base-instruction-slide v-show="slideNotification.choose">
@@ -84,6 +85,7 @@
             SWAP1: Enemy is choosing opening shape
           </p>
         </game-base-instruction-slide>
+
         <!-- After game overlay -->
         <transition name="bounce">
           <div
@@ -123,22 +125,6 @@
               >
                 New Game
               </router-link>
-              <div class="flex-1 relative">
-                <!-- Overlay victory -->
-                <VictoryConfettiConeSVG
-                  class="absolute bottom-0 xl:bottom-10 left-0 xl:left-10 h-80 xl:h-50"
-                  v-show="isGameEndingVictory"
-                />
-                <VictoryConfettiConeSVG
-                  v-show="isGameEndingVictory"
-                  class="absolute bottom-10 transform -rotate-90 right-10 h-0 xl:h-50"
-                />
-                <!-- Overlay defeat -->
-                <DefeatConeSVG
-                  class="absolute bottom-0 left-0 xl:bottom-10 xl:left-10 h-80 xl:h-50"
-                  v-show="!isGameEndingVictory"
-                />
-              </div>
             </div>
           </div>
         </transition>
@@ -151,15 +137,11 @@
         <!-- Social Blades -->
         <div class="flex flex-col">
           <social-blade
+            :player="me"
             :symbol="mySymbol"
             :symbolColor="myColor"
-            :time="myTime"
             :hasTimeLimit="hasTimeLimit"
-            :nickname="myNickname"
-            :logged="myLogged"
-            :iconName="myIconName"
-            :userID="myUserID"
-            :isActive="true"
+            :isActive="isMyRound"
           ></social-blade>
           <div
             class="m-auto my-3 text-3xl text-white font-semibold md:block hidden"
@@ -168,15 +150,11 @@
           </div>
           <div class="md:hidden block my-2"></div>
           <social-blade
+            :player="enemy"
             :symbol="enemySymbol"
             :symbolColor="enemyColor"
-            :time="enemyTime"
-            :nickname="enemyNickname"
             :hasTimeLimit="hasTimeLimit"
-            :logged="enemyLogged"
-            :iconName="enemyIconName"
-            :userID="enemyUserID"
-            :isActive="false"
+            :isActive="!isMyRound"
           ></social-blade>
         </div>
         <!-- Chat container -->
@@ -189,8 +167,8 @@
             :class="muted ? 'bg-red-500' : 'bg-gray-500 dark:bg-gray-300'"
             @click="toogleMute"
           >
-            <MutedIconSVG v-show="muted" class="h-6 stroke-current" />
-            <UnmutedIconSVG v-show="!muted" class="h-6 stroke-current" />
+            <no-mic-icon-svg v-show="muted" class="h-6 stroke-current" />
+            <mic-icon-svg v-show="!muted" class="h-6 stroke-current" />
           </button>
           <!-- Title -->
           <h3
@@ -247,44 +225,47 @@
     </div>
     <!-- Symbol origins -->
     <div>
-      <CrossOriginSVG
-        :amIStartingPlayer="amIStartingPlayer"
-        :enemyColor="enemyColor"
-        :myColor="myColor"
+      <game-stone-circle-svg
+        id="svgCircleOrigin"
+        class="hidden"
+        :style="`color:${mySymbol === 'circle' ? myColor : enemyColor};`"
       />
-      <CircleOriginSVG
-        :amIStartingPlayer="amIStartingPlayer"
-        :enemyColor="enemyColor"
-        :myColor="myColor"
+      <game-stone-cross-svg
+        id="svgCrossOrigin"
+        class="hidden"
+        :style="`color:${mySymbol === 'cross' ? myColor : enemyColor};`"
       />
     </div>
   </view-base-fixed-height>
 </template>
 <script lang="ts">
+import type {PropType} from "vue"
+import { defineComponent } from "vue";
 // Types
 import { GameState, Ending } from "@/types";
 // Howler
 import { Howl } from "howler";
-// SVGs
-import VictoryConfettiConeSVG from "@/components/SVGVictoryConfettiCone.vue";
-import CircleOriginSVG from "@/components/SVGCircleOrigin.vue";
-import CrossOriginSVG from "@/components/SVGCrossOrigin.vue";
-import OpenOverlaySVG from "@/components/SVGOpenOverlay.vue";
-import CrossIconSvg from "@/assets/svg/CrossIconSvg.vue";
-import DefeatConeSVG from "@/components/SVGDefeatCone.vue";
-import MutedIconSVG from "@/components/SVGMutedIcon.vue";
-import UnmutedIconSVG from "@/components/SVGUnmutedIcon.vue";
 // Components
 import ViewBaseFixedHeight from "@/components/ViewBaseFixedHeight.vue";
 import SocialBlade from "@/components/GameSocialBlade.vue";
 import ChatMessage from "@/components/GameChatMessage.vue";
-// Utils
-import { defineComponent } from "vue";
-import ChevronsDownIconSvg from "@/assets/svg/ChevronsDownIconSvg.vue";
 import GameBaseInstructionSlide from "./GameBaseInstructionSlide.vue";
-import { GameType } from "@/shared/types";
+// SVGs
 import GameStoneCrossSvg from "@/assets/svg/GameStoneCross.svg.vue";
 import GameStoneCircleSvg from "@/assets/svg/GameStoneCircleSvg.vue";
+import CrossIconSvg from "@/assets/svg/CrossIconSvg.vue";
+import ChevronsDownIconSvg from "@/assets/svg/ChevronsDownIconSvg.vue";
+import NoMicIconSvg from "@/assets/svg/NoMicIconSvg.vue"
+import MicIconSvg from "@/assets/svg/MicIconSvg.vue";
+// Utils
+import { GameType, Player } from "@/shared/types";
+import { Message } from "@/views/Game/Game.vue";
+
+export enum PlayerSymbol {
+  Cross = 'cross',
+  Circle = 'circle',
+  Undefined = 'undefined'
+}
 
 export default defineComponent({
   name: "GameBase",
@@ -293,38 +274,27 @@ export default defineComponent({
     SocialBlade,
     ChatMessage,
     //SVGs
-    CircleOriginSVG,
-    CrossOriginSVG,
-    VictoryConfettiConeSVG,
-    DefeatConeSVG,
-    OpenOverlaySVG,
     CrossIconSvg,
-    MutedIconSVG,
-    UnmutedIconSVG,
     ChevronsDownIconSvg,
     GameBaseInstructionSlide,
     GameStoneCrossSvg,
     GameStoneCircleSvg,
+    MicIconSvg,
+    NoMicIconSvg,
   },
   props: {
-    myTime: Number,
-    hasTimeLimit: Boolean,
-    enemyTime: String,
-    amIStartingPlayer: Boolean,
-    myLogged: Boolean,
-    enemyLogged: Boolean,
-    myIconName: String,
-    enemyIconName: String,
-    myNickname: String,
-    myUserID: Number,
-    enemyUserID: Number,
-    enemyNickname: String,
+    // Player info
+    me:{type: Object as PropType<Player>,required:true},
+    enemy:{type:Object as PropType<Player>,required:true},
     myColor: String,
     enemyColor: String,
-    messages: Array,
+    // General
+    hasTimeLimit: Boolean,
+    amIStartingPlayer: Boolean,
+    messages: {type:Array as PropType<Message[]>,required:true},
     lastPositionID: Number,
-    round: Number,
-    gameState: String,
+    round: {type:Number,required:true},
+    gameState: {type: Object as PropType<GameState>,required:true},
     gameEnding: String,
   },
   data(): {
@@ -345,7 +315,7 @@ export default defineComponent({
       muted: false,
       gameType: GameType.Quick,
       slideNotification: {
-        place: true,
+        place: false,
         enemyPlace: false,
         choose: false,
         enemyChoose: false,
@@ -357,12 +327,24 @@ export default defineComponent({
       return this.amIStartingPlayer ? "heads" : "tails";
     },
     mySymbol(): string {
-      if (this.isGameStateWaitingOrCoinflip) return "";
+      if (this.isWaitingOrCoinflip) return "";
       return this.amIStartingPlayer ? "circle" : "cross";
     },
     enemySymbol(): string {
-      if (this.isGameStateWaitingOrCoinflip) return "";
+      if (this.isWaitingOrCoinflip) return "";
       return !this.amIStartingPlayer ? "circle" : "cross";
+    },
+    isWaitingOrCoinflip():boolean{
+      return this.gameState === GameState.Waiting || this.gameState === GameState.Coinflip
+    },
+    isGameStateCoinflip(): boolean {
+      return this.gameState === GameState.Coinflip;
+    },
+    isGameStateEnded(): boolean {
+      return this.gameState === GameState.Ended;
+    },
+    isGameStateWaiting(): boolean {
+      return this.gameState === GameState.Waiting;
     },
     genArray() {
       const array: number[] = [];
@@ -373,18 +355,8 @@ export default defineComponent({
 
       return array;
     },
-    // FIXME Replacament for template in-place enums, might remove and move it if I find how
-    isGameStateCoinflip(): boolean {
-      return this.gameState === GameState.Coinflip;
-    },
-    isGameStateEnded(): boolean {
-      return this.gameState === GameState.Ended;
-    },
-    isGameStateWaiting(): boolean {
-      return this.gameState === GameState.Waiting;
-    },
-    isGameStateWaitingOrCoinflip(): boolean {
-      return this.isGameStateWaiting || this.isGameStateCoinflip;
+    isMyRound():boolean{
+      return this.amIStartingPlayer?this.round%2==0:this.round%2==1
     },
     isGameEndingVictory(): boolean {
       return (
@@ -484,9 +456,9 @@ export default defineComponent({
   mounted() {
     this.equalizeGameContDimensions();
     // FIXME why do I need to call it twice --> otherwise it doesn't fit fully and on small devices leaves a bar on side
-    setTimeout(() => {
-      this.equalizeGameContDimensions();
-    }, 1);
+    // setTimeout(() => {
+    //   this.equalizeGameContDimensions();
+    // }, 1);
 
     window.addEventListener("resize", this.equalizeGameContDimensions);
 
