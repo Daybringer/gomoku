@@ -1,5 +1,4 @@
-import { Socket } from 'socket.io';
-import { Opening, Player, Position } from './types';
+import { Opening, Player, Position, Symbol } from './types';
 
 export enum SocketIOEvents {
   UpdateActiveUsers = 'updateActiveUsers',
@@ -15,6 +14,9 @@ export enum SocketIOEvents {
   TimeCalibration = 'timeCalibration',
   SendMessage = 'sendMessage',
   RecieveMessage = 'recieveMessage',
+  ToClientSwapPickGameStone = 'toClientSwapPickGameStone',
+  ToServerSwapPickGameStone = 'toServerSwapPickGameStone',
+  SwapGameStonePicked = 'gameStonePicked',
   //Custom specials
   CreateCustomWaiting = 'createCustomWaiting',
   CustomWaitingCreated = 'customWaitingCreated',
@@ -32,6 +34,20 @@ export class GameEndedByDisconnectDTO extends GameEndedDTO {}
 export class GameEndedByTimeoutDTO extends GameEndedDTO {}
 
 export class GameEndedByCombinationDTO extends GameEndedDTO {}
+
+export class ToClientSwapPickGameStoneDTO {
+  readonly pickingPlayer: Player;
+}
+
+export class ToServerSwapPickGameStoneDTO {
+  readonly roomID: string;
+  readonly pickedSymbol: Symbol;
+}
+
+export class SwapGameStonePickedDTO {
+  readonly currentPlayer: Player;
+  readonly players: Player[];
+}
 
 export class TimeCalibrationDTO {
   readonly players: Player[] = [];
@@ -54,13 +70,15 @@ export class UpdateActiveUsersDTO {
 export class GameStartedEventDTO {
   readonly timeLimitInSeconds: number;
   readonly hasTimeLimit: boolean;
-  readonly startingPlayerSocketID: string;
+  readonly opening: Opening;
+  readonly startingPlayer: Player;
   readonly players: Player[];
 }
 
 export class StonePlacedDTO {
   readonly position: Position;
   readonly players: Player[];
+  readonly currentPlayer: Player;
 }
 
 export class CreateCustomDTO {

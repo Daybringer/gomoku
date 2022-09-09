@@ -2,27 +2,20 @@
   <GameBase
     :me="me"
     :enemy="enemy"
+    :currentPlayer="currentPlayer"
     :round="round"
     :hasTimeLimit="hasTimeLimit"
     :gameState="gameState"
     :gameEnding="gameEnding"
+    :opening="opening"
+    :openingPhase="openingPhase"
     :lastPositionID="lastPositionID"
-    :myUserID="me.userID"
-    :myIconName="me.profileIcon"
-    :myLogged="me.logged"
-    :myTime="me.timeLeft"
-    :myNickname="me?.username"
     :myColor="store.user.playerColor"
-    :amIStartingPlayer="amIStartingPlayer"
-    :enemyLogged="enemy.logged"
-    :enemyIconName="enemy.profileIcon"
-    :enemyUserID="enemy.userID"
-    :enemyTime="enemy.timeLeft"
     :enemyColor="store.user.enemyColor"
-    :enemyNickname="enemy.username"
     :messages="messages"
     @gameClick="gameClick"
     @sendMessage="sendMessage"
+    @pickGameStone="pickGameStone"
   />
 </template>
 <script lang="ts">
@@ -30,7 +23,14 @@
 import { GameState, Ending } from "@/types";
 import { COIN_SPIN_DURATION } from "@/shared/constants";
 // Backend-frontend shared types
-import { Position, GameType, Player } from "@/shared/types";
+import {
+  Position,
+  GameType,
+  Player,
+  Symbol,
+  Opening,
+  OpeningPhase,
+} from "@/shared/types";
 import {
   GameClickDTO,
   GameEndedByCombinationDTO,
@@ -40,7 +40,10 @@ import {
   JoinGameDTO,
   SocketIOEvents,
   StonePlacedDTO,
+  SwapGameStonePickedDTO,
   TimeCalibrationDTO,
+  ToClientSwapPickGameStoneDTO,
+  ToServerSwapPickGameStoneDTO,
 } from "@/shared/socketIO";
 
 // SocketIO
@@ -61,6 +64,7 @@ const basePlayer = (): Player => {
     profileIcon: ProfileIcon.defaultBoy,
     username: "-",
     timeLeft: 120000,
+    playerSymbol: 0,
   };
 };
 
@@ -71,9 +75,9 @@ export default defineComponent({
   components: { GameBase },
   data(): {
     hasTimeLimit: boolean;
-    amIStartingPlayer: boolean;
     me: Player;
     enemy: Player;
+    currentPlayer: Player;
     chatInput: string;
     lastPositionID: number;
     round: number;
@@ -81,12 +85,14 @@ export default defineComponent({
     gameEnding: Ending;
     messages: Array<Message>;
     boardSize: number;
+    openingPhase: OpeningPhase;
+    opening: Opening;
   } {
     return {
       me: basePlayer(),
       enemy: basePlayer(),
       hasTimeLimit: false,
-      amIStartingPlayer: true,
+      currentPlayer: basePlayer(),
       chatInput: "",
       lastPositionID: 0,
       round: 0,
@@ -94,6 +100,8 @@ export default defineComponent({
       gameEnding: Ending.None,
       messages: [],
       boardSize: 15,
+      openingPhase: OpeningPhase.Done,
+      opening: Opening.Standard,
     };
   },
   setup() {
@@ -119,6 +127,15 @@ export default defineComponent({
       const messageObj = { author: "me", text: message };
       this.messages.push(messageObj);
       socket.emit(SocketIOEvents.SendMessage, message);
+    },
+
+    /** */
+    pickGameStone(gameStone: Symbol) {
+      const dto: ToServerSwapPickGameStoneDTO = {
+        roomID: this.getRoomIDFromURL as string,
+        pickedSymbol: gameStone,
+      };
+      socket.emit(SocketIOEvents.ToServerSwapPickGameStone, dto);
     },
   },
   async mounted() {
@@ -149,12 +166,23 @@ export default defineComponent({
     socket.on(
       SocketIOEvents.GameStarted,
       (gameStartedEventDTO: GameStartedEventDTO) => {
-        this.amIStartingPlayer =
-          socket.id === gameStartedEventDTO.startingPlayerSocketID;
+        const {
+          hasTimeLimit,
+          startingPlayer,
+          players,
+          opening,
+        } = gameStartedEventDTO;
+        this.currentPlayer = startingPlayer;
+        this.hasTimeLimit = hasTimeLimit;
 
-        this.hasTimeLimit = gameStartedEventDTO.hasTimeLimit;
+        this.opening = opening;
+        if (opening === Opening.Standard) {
+          this.openingPhase = OpeningPhase.Done;
+        } else {
+          this.openingPhase = OpeningPhase.Place3;
+        }
 
-        const [foo, bar] = gameStartedEventDTO.players;
+        const [foo, bar] = players;
         if (foo.socketID === socket.id) {
           this.me = foo;
           this.enemy = bar;
@@ -193,10 +221,36 @@ export default defineComponent({
       this.messages.push({ author: "opponent", text: message });
     });
 
+    socket.on(
+      SocketIOEvents.ToClientSwapPickGameStone,
+      (dto: ToClientSwapPickGameStoneDTO) => {
+        this.currentPlayer = dto.pickingPlayer;
+        this.openingPhase = OpeningPhase.PickGameStone;
+      }
+    );
+
+    socket.on(
+      SocketIOEvents.SwapGameStonePicked,
+      (dto: SwapGameStonePickedDTO) => {
+        const { currentPlayer, players } = dto;
+        const [foo, bar] = players;
+        if (foo.socketID === socket.id) {
+          this.me = foo;
+          this.enemy = bar;
+        } else {
+          this.enemy = foo;
+          this.me = bar;
+        }
+
+        this.currentPlayer = currentPlayer;
+        this.openingPhase = OpeningPhase.Done;
+      }
+    );
+
     // Player made a successful move
     socket.on(SocketIOEvents.StonePlaced, (stonePlacedDTO: StonePlacedDTO) => {
-      const { position, players } = stonePlacedDTO;
-
+      const { position, currentPlayer } = stonePlacedDTO;
+      this.currentPlayer = currentPlayer;
       this.round++;
       // FIXME wtf is this
       this.lastPositionID = position[1] * this.boardSize + position[0];

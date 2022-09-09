@@ -54,6 +54,7 @@
           <p class=" text-3xl  text-center">Choose a symbol</p>
           <div class="flex w-full self-center justify-around">
             <button
+              @click="$emit('pickGameStone', 1)"
               class="border-2 p-1 border-gray-700 dark:border-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-xl"
             >
               <game-stone-circle-svg
@@ -62,6 +63,7 @@
               />
             </button>
             <button
+              @click="$emit('pickGameStone', 2)"
               class="border-2 p-1 border-gray-700 dark:border-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-xl"
             >
               <game-stone-cross-svg
@@ -141,7 +143,7 @@
             :symbol="mySymbol"
             :symbolColor="myColor"
             :hasTimeLimit="hasTimeLimit"
-            :isActive="isMyRound"
+            :isActive="currentPlayer.socketID === me.socketID"
           ></social-blade>
           <div
             class="m-auto my-3 text-3xl text-white font-semibold md:block hidden"
@@ -154,7 +156,7 @@
             :symbol="enemySymbol"
             :symbolColor="enemyColor"
             :hasTimeLimit="hasTimeLimit"
-            :isActive="!isMyRound"
+            :isActive="currentPlayer.socketID === enemy.socketID"
           ></social-blade>
         </div>
         <!-- Chat container -->
@@ -258,7 +260,7 @@ import ChevronsDownIconSvg from "@/assets/svg/ChevronsDownIconSvg.vue";
 import NoMicIconSvg from "@/assets/svg/NoMicIconSvg.vue"
 import MicIconSvg from "@/assets/svg/MicIconSvg.vue";
 // Utils
-import { GameType, Player } from "@/shared/types";
+import { GameType, Opening, OpeningPhase, Player } from "@/shared/types";
 import { Message } from "@/views/Game/Game.vue";
 
 export enum PlayerSymbol {
@@ -271,6 +273,7 @@ export default defineComponent({
   name: "GameBase",
   components: {
     ViewBaseFixedHeight,
+    // Components
     SocialBlade,
     ChatMessage,
     //SVGs
@@ -286,53 +289,62 @@ export default defineComponent({
     // Player info
     me:{type: Object as PropType<Player>,required:true},
     enemy:{type:Object as PropType<Player>,required:true},
-    myColor: String,
-    enemyColor: String,
+    myColor: {type:String,required:true},
+    enemyColor: {type:String,required:true},
+    currentPlayer:{type:Object as PropType<Player>,required:true},
     // General
     hasTimeLimit: Boolean,
-    amIStartingPlayer: Boolean,
     messages: {type:Array as PropType<Message[]>,required:true},
     lastPositionID: Number,
     round: {type:Number,required:true},
     gameState: {type: Object as PropType<GameState>,required:true},
-    gameEnding: String,
+    gameEnding: {type:Object as PropType<Ending>,required:true},
+    openingPhase:{type:Object as PropType<OpeningPhase>, required:true},
+    opening:{type:Object as PropType<Opening>,required:true},
   },
   data(): {
     chatInput: string;
     afterGameModal: boolean;
     muted: boolean;
     gameType: GameType;
-    slideNotification: {
-      place: boolean;
-      enemyPlace: boolean;
-      choose: boolean;
-      enemyChoose: boolean;
-    };
   } {
     return {
       chatInput: "",
       afterGameModal: true,
       muted: false,
       gameType: GameType.Quick,
-      slideNotification: {
-        place: false,
-        enemyPlace: false,
-        choose: false,
-        enemyChoose: false,
-      },
     };
   },
   computed: {
+    slideNotification(){
+      const notifications = {place:false,enemyPlace:false,choose:false,enemyChoose:false}
+      if(this.opening === Opening.Swap1 && this.gameState === GameState.Running){
+        if(this.openingPhase === OpeningPhase.Place3){
+          if(this.currentPlayer.socketID === this.me.socketID){
+            notifications.place = true
+          }else {
+            notifications.enemyPlace = true
+          }
+        } else if (this.openingPhase === OpeningPhase.PickGameStone){
+          if(this.currentPlayer.socketID === this.me.socketID){
+            notifications.choose = true;
+          }else {
+            notifications.enemyChoose = true;
+          }
+        }
+      }
+      return notifications
+    },
     coinSide(): string {
-      return this.amIStartingPlayer ? "heads" : "tails";
+      return this.me.socketID === this.currentPlayer.socketID ? "heads" : "tails";
     },
     mySymbol(): string {
       if (this.isWaitingOrCoinflip) return "";
-      return this.amIStartingPlayer ? "circle" : "cross";
+      return this.me.playerSymbol===1? "circle" : "cross";
     },
     enemySymbol(): string {
       if (this.isWaitingOrCoinflip) return "";
-      return !this.amIStartingPlayer ? "circle" : "cross";
+      return this.enemy.playerSymbol===1 ? "circle" : "cross";
     },
     isWaitingOrCoinflip():boolean{
       return this.gameState === GameState.Waiting || this.gameState === GameState.Coinflip
@@ -355,9 +367,6 @@ export default defineComponent({
 
       return array;
     },
-    isMyRound():boolean{
-      return this.amIStartingPlayer?this.round%2==0:this.round%2==1
-    },
     isGameEndingVictory(): boolean {
       return (
         this.gameEnding === Ending.VictoryFiveInRow ||
@@ -374,6 +383,7 @@ export default defineComponent({
   },
   watch: {
     lastPositionID: function() {
+      console.log("place")
       this.placeStone(this.lastPositionID!);
     },
     gameState: function() {
@@ -403,6 +413,28 @@ export default defineComponent({
       },
       deep: true,
     },
+    openingPhase:function(){
+      if(this.openingPhase === OpeningPhase.Done && this.opening === Opening.Swap1){
+        const circles = Array.from(document.getElementsByClassName("circle")as HTMLCollectionOf<HTMLElement>);
+        const crosses = Array.from(document.getElementsByClassName("cross")as HTMLCollectionOf<HTMLElement>);
+        if(this.me.playerSymbol===1){
+          circles.forEach((circle)=>{
+            circle.style.color = this.myColor;
+          })
+          crosses.forEach((cross)=>{
+            cross.style.color = this.enemyColor
+          })
+        }else{
+
+          circles.forEach((circle)=>{
+            circle.style.color = this.enemyColor;
+          })
+          crosses.forEach((cross)=>{
+            cross.style.color = this.myColor
+          })
+        }
+      }
+    }
   },
   methods: {
     gameClick(id: number) {
@@ -417,6 +449,13 @@ export default defineComponent({
         node = document.getElementById("svgCrossOrigin");
       }
       const clone = node?.cloneNode(true) as HTMLElement;
+
+
+      if (this.round! % 2 === 1) {
+        clone.classList.add('circle')
+      } else {
+        clone.classList.add("cross")
+      }
 
       clone.id = `${id}symbol`;
       clone.classList.remove("hidden");

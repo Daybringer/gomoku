@@ -6,6 +6,8 @@ import {
   GameState,
   GameType,
   Position,
+  Symbol,
+  OpeningPhase,
 } from 'gomoku-shared-types/';
 import {
   JoinGameDTO,
@@ -17,6 +19,9 @@ import {
   StonePlacedDTO,
   TimeCalibrationDTO,
   GameEndedByCombinationDTO,
+  ToClientSwapPickGameStoneDTO,
+  ToServerSwapPickGameStoneDTO,
+  SwapGameStonePickedDTO,
 } from 'src/shared/socketIO';
 import { Server, Socket } from 'socket.io';
 import { GameEntity } from 'src/models/game.entity';
@@ -26,6 +31,7 @@ import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
 import { AnyGame, CustomGame, QuickGame, RankedGame } from '../game.class';
 import { ProfileIcon } from 'src/shared/icons';
+import { isSymbolObject } from 'util/types';
 
 @Injectable()
 export class GameService {
@@ -97,40 +103,103 @@ export class GameService {
     const game = this.findGame(roomID);
 
     if (!game) throw 'Game not found';
-    if (!game.isPlayersTurn(client.id)) throw "It's not players turn";
+    if (!(game.currentPlayer.socketID === client.id))
+      throw "It's not players turn";
     if (!game.isRunning) throw 'Game is not running';
     if (!game.isPositionEmpty(position)) throw 'Position is not empty';
 
-    this.placeStone(game, position, client.id);
-    game.iterateRound();
+    if (game.openingPhase === OpeningPhase.Place3 && game.round < 3) {
+      const currSymbol = game.round % 2 === 0 ? 1 : 2;
+      game.placeStone(position, currSymbol);
+      game.iterateRound();
 
-    clearInterval(game.calibrationIntervalHandle);
+      const stonePlacedDTO: StonePlacedDTO = {
+        position,
+        players: game.players,
+        currentPlayer: game.currentPlayer,
+      };
+      server.to(roomID).emit(SocketIOEvents.StonePlaced, stonePlacedDTO);
 
-    const stonePlacedDTO: StonePlacedDTO = {
-      position,
-      players: game.players,
-    };
-
-    server.to(roomID).emit(SocketIOEvents.StonePlaced, stonePlacedDTO);
-
-    const currGameState = this.checkWin(game, position);
-
-    if (currGameState === EndingType.Combination) {
-      const winner = game.getNextPlayerOnTurn;
-      this.endGame(game, currGameState, winner);
-      const gameEndedByCombinationDTO: GameEndedByCombinationDTO = { winner };
-      server
-        .to(roomID)
-        .emit(SocketIOEvents.GameEndedByCombination, gameEndedByCombinationDTO);
-    } else if (currGameState === EndingType.Tie) {
-      this.endGame(game, currGameState);
-      server.to(roomID).emit(SocketIOEvents.GameEndedByTie);
-    } else {
-      if (game.hasTimeLimit) {
-        game.calibrationIntervalHandle = setInterval(() => {
-          this.calibrateTime(server, roomID, game);
-        }, 1000);
+      if (game.round === 3) {
+        game.openingPhase = OpeningPhase.PickGameStone;
+        game.currentPlayer = game.getNextPlayer;
+        const toClientSwapPickGameStoneDTO: ToClientSwapPickGameStoneDTO = {
+          pickingPlayer: game.currentPlayer,
+        };
+        server
+          .to(roomID)
+          .emit(
+            SocketIOEvents.ToClientSwapPickGameStone,
+            toClientSwapPickGameStoneDTO,
+          );
       }
+    } else if (game.openingPhase === OpeningPhase.PickGameStone) {
+      // do nothing
+    } else if (game.openingPhase === OpeningPhase.Done) {
+      game.placeStone(position, game.currentPlayer.playerSymbol);
+      const stonePlacedDTO: StonePlacedDTO = {
+        position,
+        players: game.players,
+        currentPlayer: game.getNextPlayer,
+      };
+      server.to(roomID).emit(SocketIOEvents.StonePlaced, stonePlacedDTO);
+
+      clearInterval(game.calibrationIntervalHandle);
+
+      const currGameState = this.checkWin(game, position);
+
+      if (currGameState === EndingType.Combination) {
+        const winner = game.currentPlayer;
+        this.endGame(game, currGameState, winner);
+        const gameEndedByCombinationDTO: GameEndedByCombinationDTO = { winner };
+        server
+          .to(roomID)
+          .emit(
+            SocketIOEvents.GameEndedByCombination,
+            gameEndedByCombinationDTO,
+          );
+      } else if (currGameState === EndingType.Tie) {
+        this.endGame(game, currGameState);
+        server.to(roomID).emit(SocketIOEvents.GameEndedByTie);
+      } else {
+        if (game.hasTimeLimit) {
+          game.calibrationIntervalHandle = setInterval(() => {
+            this.calibrateTime(server, roomID, game);
+          }, 1000);
+        }
+      }
+
+      game.iterateRound();
+      game.currentPlayer = game.getNextPlayer;
+    }
+  }
+
+  handlePickGameStone(
+    server: Server,
+    client: Socket,
+    dto: ToServerSwapPickGameStoneDTO,
+  ): void {
+    const game = this.findGame(dto.roomID);
+    if (!game) throw 'Game not found';
+    if (client.id === game.currentPlayer.socketID) {
+      game.currentPlayer.playerSymbol = dto.pickedSymbol;
+      const otherSymbol = 3 - dto.pickedSymbol;
+      game.getNextPlayer.playerSymbol = otherSymbol as Symbol;
+
+      // cross has less symbols so player with cross is now currentPlayer
+      if (dto.pickedSymbol === 1) {
+        game.currentPlayer = game.getNextPlayer;
+      }
+
+      game.openingPhase = OpeningPhase.Done;
+
+      const swapGameStonePickedDTO: SwapGameStonePickedDTO = {
+        players: game.players,
+        currentPlayer: game.currentPlayer,
+      };
+      server
+        .to(dto.roomID)
+        .emit(SocketIOEvents.SwapGameStonePicked, swapGameStonePickedDTO);
     }
   }
 
@@ -174,23 +243,23 @@ export class GameService {
    */
   calibrateTime(server: Server, roomID: string, game: AnyGame) {
     // deducting one second from currentPlayer
-    game.playerOnTurn.timeLeft -= 1000;
+    game.currentPlayer.timeLeft -= 1000;
 
     // sending new times to clients
     const timeCalibrationDTO: TimeCalibrationDTO = { players: game.players };
     server.to(roomID).emit(SocketIOEvents.TimeCalibration, timeCalibrationDTO);
 
     // checking if time has run out and possibly ending the game and emitting according event
-    game.players.forEach((player) => {
-      if (player.timeLeft <= 0) {
-        const winner = game.getNextPlayerOnTurn;
-        this.endGame(game, EndingType.Time, winner);
-        const gameEndedByTimoutDTO: GameEndedByTimeoutDTO = { winner };
-        server
-          .to(roomID)
-          .emit(SocketIOEvents.GameEndedByTimeout, gameEndedByTimoutDTO);
-      }
-    });
+
+    if (game.currentPlayer.timeLeft <= 0) {
+      const winner = game.getNextPlayer;
+      this.endGame(game, EndingType.Time, winner);
+
+      const gameEndedByTimoutDTO: GameEndedByTimeoutDTO = { winner };
+      server
+        .to(roomID)
+        .emit(SocketIOEvents.GameEndedByTimeout, gameEndedByTimoutDTO);
+    }
   }
 
   generateQuickGameRoom(): { game: AnyGame; roomID: string } {
@@ -241,21 +310,13 @@ export class GameService {
   }
 
   /**
-   *
-   */
-  placeStone(game: AnyGame, position: Position, socketID: string): void {
-    const currPlayerSymbol = game.startingPlayer.socketID === socketID ? 1 : 2;
-    game.setSymbolAt(position, currPlayerSymbol);
-    game.saveTurn(position);
-  }
-
-  /**
    * Builds DTO containing starting player and players info (if logged)
    */
   async constructGameStartedDTO(game: AnyGame): Promise<GameStartedEventDTO> {
     const gameStartedEventDTO: GameStartedEventDTO = {
       timeLimitInSeconds: game.timeLimitInSeconds,
-      startingPlayerSocketID: game.startingPlayer.socketID,
+      startingPlayer: game.startingPlayer,
+      opening: game.opening,
       hasTimeLimit: game.hasTimeLimit,
       players: [],
     };
@@ -269,11 +330,10 @@ export class GameService {
 
   // TODO implement over 5 character => not a win con OPTION
   checkWin(game: AnyGame, position: number[]): EndingType {
-    const round = game.round;
     const gamePlan = game.gameboard;
 
     const [xPos, yPos] = position;
-    const tile = round % 2 ? 1 : 2;
+    const symbol = game.currentPlayer.playerSymbol;
     let horizontal = 0;
     let vertical = 0;
     let diagonalR = 0;
@@ -282,28 +342,28 @@ export class GameService {
     for (let x = -4; x < 5; x++) {
       // * Horizontal check
       if (xPos + x >= 0 && xPos + x <= 14) {
-        if (gamePlan[xPos + x][yPos] === tile) {
+        if (gamePlan[xPos + x][yPos] === symbol) {
           horizontal++;
         } else {
           horizontal = 0;
         }
       }
       if (yPos + x >= 0 && yPos + x <= 14) {
-        if (gamePlan[xPos][yPos + x] === tile) {
+        if (gamePlan[xPos][yPos + x] === symbol) {
           vertical++;
         } else {
           vertical = 0;
         }
       }
       if (yPos + x >= 0 && yPos + x <= 14 && xPos + x >= 0 && xPos + x <= 14) {
-        if (gamePlan[xPos + x][yPos + x] === tile) {
+        if (gamePlan[xPos + x][yPos + x] === symbol) {
           diagonalR++;
         } else {
           diagonalR = 0;
         }
       }
       if (yPos + x >= 0 && yPos + x <= 14 && xPos - x >= 0 && xPos - x <= 14) {
-        if (gamePlan[xPos - x][yPos + x] === tile) {
+        if (gamePlan[xPos - x][yPos + x] === symbol) {
           diagonalL++;
         } else {
           diagonalL = 0;
@@ -320,7 +380,7 @@ export class GameService {
     }
     if (horizontal >= 5 || vertical >= 5 || diagonalL >= 5 || diagonalR >= 5) {
       return EndingType.Combination;
-    } else if (round === game.gameboardSize ** 2 - 1) {
+    } else if (game.round === game.gameboardSize ** 2 - 1) {
       return EndingType.Tie;
     } else {
       return;
@@ -404,13 +464,9 @@ export class GameService {
     game.setGameState(GameState.Ended);
     game.setGameEnding(gameEnding);
     if (gameEnding !== EndingType.Tie) {
-      if (winner.socketID) {
-        game.winner = winner;
-      } else {
-        throw 'None WinnerSocketID given';
-      }
-      return await this.saveGame(game);
+      game.winner = winner;
     }
+    return await this.saveGame(game);
   }
 
   endGameDisconnect(game: AnyGame, disconecteeSocket: Socket) {
@@ -422,7 +478,7 @@ export class GameService {
   }
 
   /**
-   * Creates Player object from given params (with username and icon from database if logged) and adds it to game if it is not full
+   * Creates Player object from given params (with username and icon from database if logged) and adds it to game if it's not full
    */
   async addPlayer(
     game: AnyGame,
@@ -437,6 +493,7 @@ export class GameService {
       profileIcon: ProfileIcon.defaultBoy,
       username: '',
       timeLeft: game.timeLimitInSeconds * 1000,
+      playerSymbol: 0,
     };
     if (logged) {
       const user = await this.usersService.findOneByID(userID);

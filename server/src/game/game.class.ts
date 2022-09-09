@@ -2,6 +2,7 @@ import {
   EndingType,
   GameState,
   Opening,
+  OpeningPhase,
   Player,
   Position,
   Symbol,
@@ -12,12 +13,14 @@ abstract class Game {
   players: Player[] = [];
   winner: Player;
   startingPlayer: Player;
+  currentPlayer: Player;
   round = 0;
   gameboardSize = 15;
   gameboard: Symbol[][] = this.generateGameboard(this.gameboardSize);
   turns: Position[] = [];
   gameType: GameType;
   opening: Opening;
+  openingPhase: OpeningPhase;
   timeLimitInSeconds: number;
   hasTimeLimit: boolean = true;
   gameState: GameState = GameState.Waiting;
@@ -39,16 +42,8 @@ abstract class Game {
     return this.gameState === GameState.Ended;
   }
 
-  get playerOnTurn(): Player {
-    return this.round % 2 == 0
-      ? this.startingPlayer
-      : this.players[Math.abs(this.players.indexOf(this.startingPlayer) - 1)];
-  }
-
-  get getNextPlayerOnTurn(): Player {
-    return this.round % 2 == 1
-      ? this.startingPlayer
-      : this.players[Math.abs(this.players.indexOf(this.startingPlayer) - 1)];
+  get getNextPlayer(): Player {
+    return this.getOtherPlayer(this.currentPlayer.socketID);
   }
 
   getSymbolAt(position: Position): Symbol {
@@ -61,6 +56,15 @@ abstract class Game {
 
   isPositionEmpty(position: Position): boolean {
     return this.getSymbolAt(position) === 0;
+  }
+
+  saveTurn(position: [number, number]): void {
+    this.turns.push(position);
+  }
+
+  placeStone(position: Position, symbol: Symbol): void {
+    this.setSymbolAt(position, symbol);
+    this.saveTurn(position);
   }
 
   /**
@@ -84,26 +88,20 @@ abstract class Game {
   }
 
   /**
-   *
-   */
-  isPlayersTurn(playerSocketID: string): boolean {
-    return this.playerOnTurn.socketID === playerSocketID;
-  }
-
-  /**
-   *
+   * selects starting player and assigns symbol
    */
   selectRandomStartingPlayer(): void {
     const startingPlayer = this.players[Math.round(Math.random())];
     this.startingPlayer = startingPlayer;
+    this.currentPlayer = startingPlayer;
+    this.currentPlayer.playerSymbol = 1;
+    this.getNextPlayer.playerSymbol = 2;
   }
 
-  getOtherPlayer(playerSocketID: string): Player {
-    let otherPlayer: Player;
-    this.players.forEach((curr) => {
-      if (curr.socketID !== playerSocketID) otherPlayer = curr;
-    });
-    return otherPlayer;
+  getOtherPlayer(socketID: string): Player {
+    const [foo, bar] = this.players;
+    if (foo.socketID === socketID) return bar;
+    return foo;
   }
 
   setGameState(gameState: GameState): void {
@@ -116,10 +114,6 @@ abstract class Game {
 
   iterateRound(): void {
     this.round++;
-  }
-
-  saveTurn(position: [number, number]): void {
-    this.turns.push(position);
   }
 
   private generateGameboard(size: number): Symbol[][] {
@@ -135,15 +129,24 @@ abstract class Game {
 }
 
 class QuickGame extends Game {
-  timeLimitInSeconds = 2 * 60;
-  gameType = GameType.Quick;
+  constructor() {
+    super();
+    this.timeLimitInSeconds = 2 * 60;
+    this.gameType = GameType.Quick;
+    this.openingPhase = OpeningPhase.Done;
+  }
 }
 
 class RankedGame extends Game {
-  timeLimitInSeconds = 3 * 60;
-  eloDiff: number = 0;
-  gameType = GameType.Ranked;
-  opening = Opening.Swap1;
+  eloDiff: number;
+  constructor() {
+    super();
+    this.timeLimitInSeconds = 3 * 60;
+    this.eloDiff = 0;
+    this.gameType = GameType.Ranked;
+    this.opening = Opening.Swap1;
+    this.openingPhase = OpeningPhase.Place3;
+  }
 }
 
 class CustomGame extends Game {
@@ -156,8 +159,14 @@ class CustomGame extends Game {
     this.timeLimitInSeconds = timeLimitInSeconds;
     this.opening = opening;
     this.hasTimeLimit = hasTimeLimit;
+    this.gameType = GameType.Custom;
+
+    if (this.opening === Opening.Swap1) {
+      this.openingPhase = OpeningPhase.Place3;
+    } else {
+      this.openingPhase = OpeningPhase.Done;
+    }
   }
-  gameType = GameType.Custom;
 }
 
 type AnyGame = QuickGame | RankedGame | CustomGame;

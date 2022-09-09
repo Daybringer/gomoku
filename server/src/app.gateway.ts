@@ -21,6 +21,7 @@ import {
   CustomRoomRedirectToGameDTO,
   UpdateActiveUsersDTO,
   GameEndedByDisconnectDTO,
+  ToServerSwapPickGameStoneDTO,
 } from './shared/socketIO';
 import { CustomRoomService } from './game/services/customRoom.service';
 
@@ -161,6 +162,11 @@ export class GameGateway implements OnGatewayDisconnect {
           .emit(SocketIOEvents.GameEndedByDisconnect, gameEndedByDisconnectDTO);
       }
     }
+  }
+
+  @SubscribeMessage(SocketIOEvents.ToServerSwapPickGameStone)
+  handlePickGameStone(client: Socket, dto: ToServerSwapPickGameStoneDTO): void {
+    this.gameService.handlePickGameStone(this.server, client, dto);
   }
 
   @SubscribeMessage(SocketIOEvents.JoinGame)
