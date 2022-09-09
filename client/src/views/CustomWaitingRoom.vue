@@ -23,9 +23,14 @@
             </span>
           </div>
           <base-button
-            class="text-xl w-full bg-gomoku-blue dark:bg-gomoku-blue text-gray-50 font-medium mt-5"
+            class="text-xl w-full  text-gray-50 font-medium mt-5"
+            :class="
+              copyButtonText === 'Copied'
+                ? 'bg-gray-400 dark:bg-gray-500'
+                : 'bg-gomoku-blue dark:bg-gomoku-blue'
+            "
             @click="copyToClipboard()"
-            >Copy link<clipboard-icon-svg class="pl-2 h-6"
+            >{{ copyButtonText }}<clipboard-icon-svg class="pl-2 h-6"
           /></base-button>
         </div>
       </div>
@@ -63,9 +68,10 @@ export default defineComponent({
     BaseMidHeadline,
     BaseNotification,
   },
-  data(): { notificationShown: boolean } {
+  data(): { notificationShown: boolean; copyButtonText: string } {
     return {
       notificationShown: false,
+      copyButtonText: "Copy link",
     };
   },
   computed: {
@@ -77,6 +83,7 @@ export default defineComponent({
     copyToClipboard(): void {
       this.notificationShown = true;
       navigator.clipboard.writeText(window.location.href);
+      this.copyButtonText = "Copied";
       setTimeout(() => {
         this.notificationShown = false;
       }, 3000);
