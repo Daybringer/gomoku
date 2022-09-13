@@ -50,7 +50,7 @@
 
         <!-- SWAP NOTIFICATIONS -->
         <!-- Choose symbol swap1 -->
-        <game-base-instruction-slide v-show="slideNotification.choose">
+        <!-- <game-base-instruction-slide v-show="slideNotification.choose">
           <p class=" text-3xl  text-center">Choose a symbol</p>
           <div class="flex w-full self-center justify-around">
             <button
@@ -71,10 +71,10 @@
                 :style="`color:${enemyColor}`"
               />
             </button>
-          </div>
-        </game-base-instruction-slide>
+          </div> -->
+        <!-- </game-base-instruction-slide> -->
         <!-- Enemy is choosing symbol -->
-        <game-base-instruction-slide v-show="slideNotification.enemyChoose">
+        <!-- <game-base-instruction-slide v-show="slideNotification.enemyChoose">
           <p class=" text-3xl  text-center">
             Opponent is choosing their symbol
           </p>
@@ -86,7 +86,7 @@
           <p class=" text-3xl  text-center">
             SWAP1: Enemy is choosing opening shape
           </p>
-        </game-base-instruction-slide>
+        </game-base-instruction-slide> -->
 
         <!-- After game overlay -->
         <transition name="bounce">
@@ -136,6 +136,65 @@
         ref="chatContainer"
         class="flex-1 min-h-0 min-w-0 w-full flex flex-col p-4 relative"
       >
+        <transition>
+          <div
+            class="fancy-background px-4 py-2 rounded-lg flex justify-center place-items-center w-full h-14 md:h-16  mb-4 bg-gray-100"
+          >
+            <div
+              v-if="
+                slideNotification.enemyChoose ||
+                  slideNotification.choose ||
+                  slideNotification.place ||
+                  slideNotification.enemyPlace
+              "
+              class="flex justify-center place-items-center rounded-lg flex-1 h-full bg-gray-100"
+            >
+              <transition>
+                <div
+                  class="flex-1 flex flex-row justify-around place-items-center"
+                  v-if="slideNotification.choose"
+                >
+                  <p class="text-lg md:text-xl">Choose a symbol:</p>
+                  <div class="flex self-center gap-8">
+                    <button
+                      @click="$emit('pickGameStone', 1)"
+                      class="border-2 p-1 border-gray-700 dark:border-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-xl"
+                    >
+                      <game-stone-circle-svg
+                        class="h-8 w-8"
+                        :style="`color:${myColor}`"
+                      />
+                    </button>
+                    <button
+                      @click="$emit('pickGameStone', 2)"
+                      class="border-2 p-1 border-gray-700 dark:border-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-xl"
+                    >
+                      <game-stone-cross-svg
+                        class="h-8 w-8"
+                        :style="`color:${enemyColor}`"
+                      />
+                    </button>
+                  </div>
+                </div>
+              </transition>
+              <transition>
+                <p class="text-lg" v-if="slideNotification.enemyChoose">
+                  Opponent is choosing their symbol
+                </p>
+              </transition>
+              <transition>
+                <p class="text-lg" v-if="slideNotification.enemyPlace">
+                  Enemy is placing 3 first stones
+                </p>
+              </transition>
+              <transition>
+                <p class="text-lg" v-if="slideNotification.place">
+                  Place 3 first stones
+                </p>
+              </transition>
+            </div>
+          </div>
+        </transition>
         <!-- Social Blades -->
         <div class="flex flex-col">
           <social-blade
@@ -512,6 +571,11 @@ export default defineComponent({
 });
 </script>
 <style scoped>
+.fancy-background {
+  background-image: url("../assets/svg/flowers.svg");
+  background-repeat: repeat;
+}
+
 .custom-shadow {
   box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.75);
 }
