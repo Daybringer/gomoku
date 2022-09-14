@@ -149,7 +149,7 @@
               "
               class="flex justify-center place-items-center rounded-lg flex-1 h-full bg-gray-100"
             >
-              <transition>
+              <transition name="slidetop">
                 <div
                   class="flex-1 flex flex-row justify-around place-items-center"
                   v-if="slideNotification.choose"
@@ -177,17 +177,17 @@
                   </div>
                 </div>
               </transition>
-              <transition>
+              <transition name="slidetop">
                 <p class="text-lg" v-if="slideNotification.enemyChoose">
                   Opponent is choosing their symbol
                 </p>
               </transition>
-              <transition>
+              <transition name="slidetop">
                 <p class="text-lg" v-if="slideNotification.enemyPlace">
                   Enemy is placing 3 first stones
                 </p>
               </transition>
-              <transition>
+              <transition name="slidetop">
                 <p class="text-lg" v-if="slideNotification.place">
                   Place 3 first stones
                 </p>
@@ -571,6 +571,38 @@ export default defineComponent({
 });
 </script>
 <style scoped>
+.slidetop-enter-active {
+  animation: slidetop-in 0.5s ease-in;
+  white-space: nowrap;
+}
+.slidetop-leave-active {
+  animation: slidetop-out 0.5s ease-out;
+  white-space: nowrap;
+}
+@keyframes slidetop-in {
+  0% {
+    transform: translateX(-40px);
+    opacity: 0%;
+  }
+
+  100% {
+    transform: translateX(40px);
+    opacity: 100%;
+  }
+}
+
+@keyframes slidetop-out {
+  0% {
+    transform: translateX(-40px);
+    opacity: 100%;
+  }
+
+  100% {
+    transform: translateX(40px);
+    opacity: 0%;
+  }
+}
+
 .fancy-background {
   background-image: url("../assets/svg/flowers.svg");
   background-repeat: repeat;
