@@ -262,11 +262,21 @@ export class GameService {
     }
   }
 
-  generateQuickGameRoom(): { game: AnyGame; roomID: string } {
+  generateQuickGameRoom(): { game: QuickGame; roomID: string } {
     const roomID = this.generateRoomID(...this.gameRooms);
     const newQuickGameRoom = new QuickGame();
     this.quickGameRooms[roomID] = newQuickGameRoom;
     return { game: newQuickGameRoom, roomID };
+  }
+
+  generateRankedGameRoom(playerUserIDs: [number, number]): {
+    game: RankedGame;
+    roomID: string;
+  } {
+    const roomID = this.generateRoomID(...this.gameRooms);
+    const newRankedGameRoom = new RankedGame(playerUserIDs);
+    this.rankedGameRooms[roomID] = newRankedGameRoom;
+    return { game: newRankedGameRoom, roomID };
   }
 
   // FIXME optimize so it returns straightaway if it finds the room with given ID

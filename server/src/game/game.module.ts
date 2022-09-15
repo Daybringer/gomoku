@@ -1,4 +1,6 @@
 import { Module } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GameEntity } from 'src/models/game.entity';
 import { PlayerGameProfile } from 'src/models/playerGameProfile.entity';
@@ -12,6 +14,13 @@ import { SearchService } from './services/search.service';
   imports: [
     TypeOrmModule.forFeature([GameEntity, PlayerGameProfile]),
     UsersModule,
+    JwtModule.registerAsync({
+      useFactory: async (config: ConfigService) => ({
+        secret: config.get('JWT_SECRET'),
+        signOptions: { expiresIn: '100h' },
+      }),
+      inject: [ConfigService],
+    }),
   ],
   controllers: [GameController],
   providers: [GameService, SearchService, CustomRoomService],

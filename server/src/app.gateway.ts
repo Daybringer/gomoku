@@ -22,8 +22,12 @@ import {
   UpdateActiveUsersDTO,
   GameEndedByDisconnectDTO,
   ToServerSwapPickGameStoneDTO,
+  SearchRankedGameDTO,
 } from './shared/socketIO';
 import { CustomRoomService } from './game/services/customRoom.service';
+import { UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from './auth/guards/jwt.guard';
+import { Client } from 'socket.io/dist/client';
 
 // Whole site things - current people online...
 @WebSocketGateway({ namespace: '/app' })
@@ -130,15 +134,47 @@ export class QuickSearchGateway
 
       this.server
         .to(String(matchedPlayers[0]))
-        .emit(SearchEvents.GameCreated, roomID);
+        .emit(SocketIOEvents.GameCreated, roomID);
       this.server
         .to(String(matchedPlayers[1]))
-        .emit(SearchEvents.GameCreated, roomID);
+        .emit(SocketIOEvents.GameCreated, roomID);
     }
   }
 
   handleDisconnect(client: Socket) {
     this.searchService.leaveQuickQueue(client.id);
+  }
+}
+
+@WebSocketGateway({ namespace: '/search/ranked' })
+export class RankedSearchGateway implements OnGatewayDisconnect {
+  constructor(
+    private gameService: GameService,
+    private searchService: SearchService,
+  ) {}
+
+  @WebSocketServer() server: Server;
+
+  @SubscribeMessage(SocketIOEvents.SearchRankedGame)
+  async searchRankedGame(client: Socket, dto: SearchRankedGameDTO) {
+    //TODO implement proper Ranked matchmaking
+    const member = await this.searchService.verifyJwt(client.id, dto.jwtToken);
+    this.searchService.joinRankedQueue(member);
+    const matchedPlayers = this.searchService.tryMatchPlayersRankedQue();
+    if (matchedPlayers !== null) {
+      const [alice, bob] = matchedPlayers;
+      const { roomID } = this.gameService.generateRankedGameRoom([
+        alice.userID,
+        bob.userID,
+      ]);
+
+      this.server.to(bob.socketID).emit(SocketIOEvents.GameCreated, roomID);
+      this.server.to(alice.socketID).emit(SocketIOEvents.GameCreated, roomID);
+    }
+  }
+
+  handleDisconnect(client: Socket) {
+    this.searchService.leaveRankedQueue(client.id);
   }
 }
 

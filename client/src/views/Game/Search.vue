@@ -11,11 +11,17 @@ import SearchBase from "@/components/TheSearchBase.vue";
 // Utils
 import { defineComponent } from "vue";
 import { GameType, SearchEvents } from "@/shared/types";
+import { useStore } from "@/store/store";
+import { SearchRankedGameDTO, SocketIOEvents } from "@/shared/socketIO";
 export default defineComponent({
   name: "App",
   components: { SearchBase },
   data() {
     return {};
+  },
+  setup() {
+    const store = useStore();
+    return { store };
   },
   mounted() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -24,12 +30,26 @@ export default defineComponent({
 
     if (gameType === GameType.Quick) {
       socket = io("/search/quick", { port: "3001" });
-      socket.on(SearchEvents.GameCreated, (roomID: string) => {
+      socket.on(SocketIOEvents.GameCreated, (roomID: string) => {
         // Timeout for smoother experience (if player instantly finds game it jumps a lot)
         setTimeout(() => {
           this.$router.push({
             path: "/game",
             query: { type: GameType.Quick, roomID: roomID },
+          });
+        }, 1000);
+      });
+    } else if (gameType === GameType.Ranked) {
+      // TODO show notification
+      if (!this.store.isAuthenticated) this.$router.push("/login");
+      socket = io("/search/ranked", { port: "3001" });
+      const dto: SearchRankedGameDTO = { jwtToken: this.store.token };
+      socket.emit(SocketIOEvents.SearchRankedGame, dto);
+      socket.on(SocketIOEvents.GameCreated, (roomID: string) => {
+        setTimeout(() => {
+          this.$router.push({
+            path: "/game",
+            query: { type: GameType.Ranked, roomID: roomID },
           });
         }, 1000);
       });

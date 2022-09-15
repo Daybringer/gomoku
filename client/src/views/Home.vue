@@ -90,7 +90,7 @@
           class="m-auto transform hover:scale-105 transition-transform ease-in duration-75"
         >
           <router-link
-            to="/search?type=quick"
+            to="/search?type=ranked"
             class="focus:outline-none focus:opacity-75"
           >
             <img src="../assets/svg/boxMatchRanked.svg" />

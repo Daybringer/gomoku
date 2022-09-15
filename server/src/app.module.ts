@@ -10,6 +10,7 @@ import {
   CustomWaitingGateway,
   GameGateway,
   GeneralGateway,
+  RankedSearchGateway,
 } from './app.gateway';
 import { ConfigModule } from '@nestjs/config';
 import { GameModule } from './game/game.module';
@@ -37,6 +38,7 @@ require('dotenv').config();
   providers: [
     GeneralGateway,
     QuickSearchGateway,
+    RankedSearchGateway,
     GameGateway,
     CreateCustomGateway,
     CustomWaitingGateway,

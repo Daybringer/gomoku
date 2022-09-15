@@ -139,8 +139,10 @@ class QuickGame extends Game {
 
 class RankedGame extends Game {
   eloDiff: number;
-  constructor() {
+  playerUserIDs: [number, number];
+  constructor(playerUserIDs: [number, number]) {
     super();
+    this.playerUserIDs = playerUserIDs;
     this.timeLimitInSeconds = 3 * 60;
     this.eloDiff = 0;
     this.gameType = GameType.Ranked;
