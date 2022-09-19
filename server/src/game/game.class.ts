@@ -138,13 +138,13 @@ class QuickGame extends Game {
 }
 
 class RankedGame extends Game {
+  // eloDiff only applies on symmetrical ELO ranking (Zero sum game of loser/winners ELO gains/loses)
   eloDiff: number;
   playerUserIDs: [number, number];
   constructor(playerUserIDs: [number, number]) {
     super();
     this.playerUserIDs = playerUserIDs;
     this.timeLimitInSeconds = 3 * 60;
-    this.eloDiff = 0;
     this.gameType = GameType.Ranked;
     this.opening = Opening.Swap1;
     this.openingPhase = OpeningPhase.Place3;

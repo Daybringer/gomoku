@@ -1,36 +1,37 @@
-import { Opening, Player, Position, Symbol } from "./types";
+import { Opening, Player, Position, Symbol } from './types';
 
 export enum SocketIOEvents {
   //Search
-  SearchRankedGame = "searchRankedGame",
-  GameCreated = "gameCreated",
+  SearchRankedGame = 'searchRankedGame',
+  GameCreated = 'gameCreated',
   //General
-  UpdateActiveUsers = "updateActiveUsers",
-  JoinGame = "joinGame",
-  InvalidRoomID = "invalidRoomID",
-  GameStarted = "gameStarted",
-  StonePlaced = "stonePlaced",
-  GameClick = "gameClick",
-  GameEndedByDisconnect = "gameEndedByDisconnect",
-  GameEndedByCombination = "gameEndedByCombination",
-  GameEndedByTimeout = "gameEndedByTimout",
-  GameEndedByTie = "gameEndedByTie",
-  TimeCalibration = "timeCalibration",
-  SendMessage = "sendMessage",
-  RecieveMessage = "recieveMessage",
-  ToClientSwapPickGameStone = "toClientSwapPickGameStone",
-  ToServerSwapPickGameStone = "toServerSwapPickGameStone",
-  SwapGameStonePicked = "gameStonePicked",
+  UpdateActiveUsers = 'updateActiveUsers',
+  JoinGame = 'joinGame',
+  InvalidRoomID = 'invalidRoomID',
+  GameStarted = 'gameStarted',
+  StonePlaced = 'stonePlaced',
+  GameClick = 'gameClick',
+  GameEndedByDisconnect = 'gameEndedByDisconnect',
+  GameEndedByCombination = 'gameEndedByCombination',
+  GameEndedByTimeout = 'gameEndedByTimout',
+  GameEndedByTie = 'gameEndedByTie',
+  TimeCalibration = 'timeCalibration',
+  SendMessage = 'sendMessage',
+  RecieveMessage = 'recieveMessage',
+  ToClientSwapPickGameStone = 'toClientSwapPickGameStone',
+  ToServerSwapPickGameStone = 'toServerSwapPickGameStone',
+  SwapGameStonePicked = 'gameStonePicked',
   //Custom specials
-  CreateCustomWaiting = "createCustomWaiting",
-  CustomWaitingCreated = "customWaitingCreated",
-  CustomRoomJoined = "customRoomJoined",
-  InvalidCustomRoom = "invalidCustomRoom",
-  CustomRoomRedirectToGame = "customRoomRedirectToGame",
+  CreateCustomWaiting = 'createCustomWaiting',
+  CustomWaitingCreated = 'customWaitingCreated',
+  CustomRoomJoined = 'customRoomJoined',
+  InvalidCustomRoom = 'invalidCustomRoom',
+  CustomRoomRedirectToGame = 'customRoomRedirectToGame',
 }
 
 abstract class GameEndedDTO {
   readonly winner: Player;
+  readonly userIDToEloDiff?: Record<number, number>;
 }
 
 export class GameEndedByDisconnectDTO extends GameEndedDTO {}

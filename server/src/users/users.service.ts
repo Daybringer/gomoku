@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { TokensService } from 'src/auth/token.service';
 import { AnyGame } from 'src/game/game.class';
 import { ProfileIcon, profileIconRecords } from 'src/shared/icons';
+import { User } from 'src/shared/interfaces/user.interface';
 import { MoreThan, Repository } from 'typeorm';
 
 import { UserEntity } from '../models/user.entity';
@@ -94,6 +95,12 @@ export class UsersService {
 
   async updateUsername(user: UserEntity, username: string) {
     return this.userRepository.update({ id: user.id }, { username: username });
+  }
+
+  async updateElo(userID: number, eloDiff: number) {
+    const user = await this.findOneByID(userID);
+    user.elo += eloDiff;
+    return this.userRepository.save(user);
   }
 
   async decrementNameTokens(user: UserEntity) {

@@ -31,7 +31,7 @@ import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
 import { AnyGame, CustomGame, QuickGame, RankedGame } from '../game.class';
 import { ProfileIcon } from 'src/shared/icons';
-import { isSymbolObject } from 'util/types';
+import { createRatingSystem } from './rating';
 
 @Injectable()
 export class GameService {
@@ -109,6 +109,7 @@ export class GameService {
     if (!game.isPositionEmpty(position)) throw 'Position is not empty';
 
     if (game.openingPhase === OpeningPhase.Place3 && game.round < 3) {
+      // SWAP1 first phase - player is placing three game stones
       const currSymbol = game.round % 2 === 0 ? 1 : 2;
       game.placeStone(position, currSymbol);
       game.iterateRound();
@@ -120,6 +121,7 @@ export class GameService {
       };
       server.to(roomID).emit(SocketIOEvents.StonePlaced, stonePlacedDTO);
 
+      // SWAP1 - Last game stone has been placed:
       if (game.round === 3) {
         game.openingPhase = OpeningPhase.PickGameStone;
         game.currentPlayer = game.getNextPlayer;
@@ -134,7 +136,7 @@ export class GameService {
           );
       }
     } else if (game.openingPhase === OpeningPhase.PickGameStone) {
-      // do nothing
+      // SWAP1 second phase - players is choosing their symbol => do nothing
     } else if (game.openingPhase === OpeningPhase.Done) {
       game.placeStone(position, game.currentPlayer.playerSymbol);
       const stonePlacedDTO: StonePlacedDTO = {
@@ -146,6 +148,7 @@ export class GameService {
 
       clearInterval(game.calibrationIntervalHandle);
 
+      // FIXME change structure of checkwin to return {hasEnded:,endingType:}
       const currGameState = this.checkWin(game, position);
 
       if (currGameState === EndingType.Combination) {
@@ -279,6 +282,31 @@ export class GameService {
     return { game: newRankedGameRoom, roomID };
   }
 
+  /**
+   * @returns -{userID:eloDiff} object
+   */
+  async calcElo(
+    playerAUserID: number,
+    playerBUserID: number,
+    isTie: boolean,
+    winnerUserID?: number,
+  ): Promise<Record<number, number>> {
+    const playerAElo = (await this.usersService.findOneByID(playerAUserID)).elo;
+    const playerBElo = (await this.usersService.findOneByID(playerBUserID)).elo;
+
+    const ratingSystem = createRatingSystem();
+    const APlayerScore = isTie ? 0.5 : winnerUserID == playerAUserID ? 2 : 0;
+    const { playerARatingDiff, playerBRatingDiff } =
+      ratingSystem.getNextRatings(playerAElo, playerBElo, APlayerScore);
+
+    const result = {};
+    result[playerAUserID] = playerARatingDiff;
+    result[playerBUserID] = playerBRatingDiff;
+    console.log(result, result[playerAUserID]);
+
+    return result;
+  }
+
   // FIXME optimize so it returns straightaway if it finds the room with given ID
   roomExists(roomID: string): boolean {
     let roomExists = false;
@@ -397,12 +425,19 @@ export class GameService {
     }
   }
 
-  async savePlayerGameProfile(player: Player): Promise<PlayerGameProfile> {
+  async savePlayerGameProfile(
+    player: Player,
+    eloDiff?: number,
+  ): Promise<PlayerGameProfile> {
     const playerGameProfileEntity = this.playerGameProfileRepository.create();
 
     if (player.logged) {
       const user = await this.usersService.findOneByUsername(player.username);
       playerGameProfileEntity.userID = user.id;
+    }
+
+    if (eloDiff) {
+      playerGameProfileEntity.eloDelta = eloDiff;
     }
 
     playerGameProfileEntity.timeLeft = player.timeLeft;
@@ -416,9 +451,36 @@ export class GameService {
     const socketIDtoPlayerGameProfileID: { [socketID: string]: number } = {};
 
     const [playerOne, playerTwo] = game.players;
+    let playerOneProfile, playerTwoProfile;
+    if (game.gameType === GameType.Ranked) {
+      const elos = await this.calcElo(
+        playerOne.userID,
+        playerTwo.userID,
+        game.gameEnding === EndingType.Tie,
+        game.winner ? game.winner.userID : 0,
+      );
+      playerOneProfile = await this.savePlayerGameProfile(
+        playerOne,
+        elos[playerOne.userID],
+      );
+      await this.usersService.updateElo(
+        playerOne.userID,
+        elos[playerOne.userID],
+      );
 
-    const playerOneProfile = await this.savePlayerGameProfile(playerOne);
-    const playerTwoProfile = await this.savePlayerGameProfile(playerTwo);
+      playerTwoProfile = await this.savePlayerGameProfile(
+        playerTwo,
+        elos[playerTwo.userID],
+      );
+      await this.usersService.updateElo(
+        playerTwo.userID,
+        elos[playerTwo.userID],
+      );
+    } else {
+      playerOneProfile = await this.savePlayerGameProfile(playerOne);
+      playerTwoProfile = await this.savePlayerGameProfile(playerTwo);
+    }
+
     socketIDtoPlayerGameProfileID[playerOne.socketID] = playerOneProfile.id;
     socketIDtoPlayerGameProfileID[playerTwo.socketID] = playerTwoProfile.id;
 
@@ -484,6 +546,7 @@ export class GameService {
     game.setGameState(GameState.Ended);
     game.setGameEnding(EndingType.Surrender);
     game.winner = game.getOtherPlayer(disconecteeSocket.id);
+
     this.saveGame(game);
   }
 

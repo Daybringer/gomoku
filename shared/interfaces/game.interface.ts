@@ -1,4 +1,4 @@
-import { GameType, EndingType, Turn } from "../types";
+import { GameType, EndingType, Turn } from '../types';
 
 // Propagate
 export interface Game {

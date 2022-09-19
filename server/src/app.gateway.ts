@@ -185,13 +185,21 @@ export class GameGateway implements OnGatewayDisconnect {
 
   @WebSocketServer() server: Server;
 
-  handleDisconnect(client: Socket) {
+  async handleDisconnect(client: Socket) {
     const { game, roomID } = this.gameService.findGameBySocketID(client.id);
     if (game) {
       if (game.isRunning) {
         this.gameService.endGameDisconnect(game, client);
+        const winner = game.getOtherPlayer(client.id);
+        const elos = await this.gameService.calcElo(
+          game.players[0].userID,
+          game.players[1].userID,
+          false,
+          game.getOtherPlayer(client.id).userID,
+        );
         const gameEndedByDisconnectDTO: GameEndedByDisconnectDTO = {
-          winner: game.getOtherPlayer(client.id),
+          winner: winner,
+          userIDToEloDiff: elos,
         };
         this.server
           .to(roomID)
