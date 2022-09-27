@@ -33,9 +33,6 @@ import {
 } from "@/shared/types";
 import {
   GameClickDTO,
-  GameEndedByCombinationDTO,
-  GameEndedByDisconnectDTO,
-  GameEndedByTimeoutDTO,
   GameStartedEventDTO,
   JoinGameDTO,
   SocketIOEvents,
@@ -247,7 +244,6 @@ export default defineComponent({
       }
     );
 
-    // Player made a successful move
     socket.on(SocketIOEvents.StonePlaced, (stonePlacedDTO: StonePlacedDTO) => {
       const { position, currentPlayer } = stonePlacedDTO;
       this.currentPlayer = currentPlayer;
@@ -256,47 +252,49 @@ export default defineComponent({
       this.lastPositionID = position[1] * this.boardSize + position[0];
     });
 
+    socket.on(SocketIOEvents.GameEnded, () => {});
+
     // Different game endings
-    socket.on(
-      SocketIOEvents.GameEndedByDisconnect,
-      (gameEndedByDisconnectDTO: GameEndedByDisconnectDTO) => {
-        // I have been disconnected
-        if (socket.id !== gameEndedByDisconnectDTO.winner.socketID) {
-          this.gameState = GameState.Ended;
-          this.gameEnding = Ending.DefeatDisconnect;
-          // Enemy has been disconnected
-        } else {
-          this.gameState = GameState.Ended;
-          this.gameEnding = Ending.VictoryDisconnect;
-        }
-      }
-    );
+    // socket.on(
+    //   SocketIOEvents.GameEndedByDisconnect,
+    //   (gameEndedByDisconnectDTO: GameEndedByDisconnectDTO) => {
+    //     // I have been disconnected
+    //     if (socket.id !== gameEndedByDisconnectDTO.winner.socketID) {
+    //       this.gameState = GameState.Ended;
+    //       this.gameEnding = Ending.DefeatDisconnect;
+    //       // Enemy has been disconnected
+    //     } else {
+    //       this.gameState = GameState.Ended;
+    //       this.gameEnding = Ending.VictoryDisconnect;
+    //     }
+    //   }
+    // );
 
-    socket.on(
-      SocketIOEvents.GameEndedByCombination,
-      (gameEndedByCombinationDTO: GameEndedByCombinationDTO) => {
-        this.gameState = GameState.Ended;
-        this.gameEnding =
-          gameEndedByCombinationDTO.winner.socketID === socket.id
-            ? Ending.VictoryFiveInRow
-            : Ending.DefeatFiveInRow;
-      }
-    );
+    // socket.on(
+    //   SocketIOEvents.GameEndedByCombination,
+    //   (gameEndedByCombinationDTO: GameEndedByCombinationDTO) => {
+    //     this.gameState = GameState.Ended;
+    //     this.gameEnding =
+    //       gameEndedByCombinationDTO.winner.socketID === socket.id
+    //         ? Ending.VictoryFiveInRow
+    //         : Ending.DefeatFiveInRow;
+    //   }
+    // );
 
-    socket.on(
-      SocketIOEvents.GameEndedByTimeout,
-      (gameEndedByTimeoutDTO: GameEndedByTimeoutDTO) => {
-        // I have timed out
-        if (socket.id !== gameEndedByTimeoutDTO.winner.socketID) {
-          this.gameState = GameState.Ended;
-          this.gameEnding = Ending.DefeatTimeout;
-          // Enemy has timed out
-        } else {
-          this.gameState = GameState.Ended;
-          this.gameEnding = Ending.VictoryTimeout;
-        }
-      }
-    );
+    // socket.on(
+    //   SocketIOEvents.GameEndedByTimeout,
+    //   (gameEndedByTimeoutDTO: GameEndedByTimeoutDTO) => {
+    //     // I have timed out
+    //     if (socket.id !== gameEndedByTimeoutDTO.winner.socketID) {
+    //       this.gameState = GameState.Ended;
+    //       this.gameEnding = Ending.DefeatTimeout;
+    //       // Enemy has timed out
+    //     } else {
+    //       this.gameState = GameState.Ended;
+    //       this.gameEnding = Ending.VictoryTimeout;
+    //     }
+    //   }
+    // );
   },
   computed: {
     getURLParams() {

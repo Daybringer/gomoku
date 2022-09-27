@@ -13,15 +13,14 @@ import {
   JoinGameDTO,
   GameClickDTO,
   CreateCustomDTO,
-  GameEndedByTimeoutDTO,
   GameStartedEventDTO,
   SocketIOEvents,
   StonePlacedDTO,
   TimeCalibrationDTO,
-  GameEndedByCombinationDTO,
   ToClientSwapPickGameStoneDTO,
   ToServerSwapPickGameStoneDTO,
   SwapGameStonePickedDTO,
+  GameEndedDTO,
 } from 'src/shared/socketIO';
 import { Server, Socket } from 'socket.io';
 import { GameEntity } from 'src/models/game.entity';
@@ -98,7 +97,11 @@ export class GameService {
     }
   }
 
-  handleGameClick(server: Server, client: Socket, gameClickDTO: GameClickDTO) {
+  async handleGameClick(
+    server: Server,
+    client: Socket,
+    gameClickDTO: GameClickDTO,
+  ) {
     const { roomID, position } = gameClickDTO;
     const game = this.findGame(roomID);
 
@@ -153,17 +156,31 @@ export class GameService {
 
       if (currGameState === EndingType.Combination) {
         const winner = game.currentPlayer;
+        const elos = await this.calcElo(
+          game.players[0].userID,
+          game.players[1].userID,
+          false,
+          winner.userID,
+        );
         this.endGame(game, currGameState, winner);
-        const gameEndedByCombinationDTO: GameEndedByCombinationDTO = { winner };
-        server
-          .to(roomID)
-          .emit(
-            SocketIOEvents.GameEndedByCombination,
-            gameEndedByCombinationDTO,
-          );
+        const dto: GameEndedDTO = {
+          endingType: EndingType.Combination,
+          winner,
+          userIDToEloDiff: elos,
+        };
+        server.to(roomID).emit(SocketIOEvents.GameEnded, dto);
       } else if (currGameState === EndingType.Tie) {
         this.endGame(game, currGameState);
-        server.to(roomID).emit(SocketIOEvents.GameEndedByTie);
+        const elos = await this.calcElo(
+          game.players[0].userID,
+          game.players[1].userID,
+          true,
+        );
+        const dto: GameEndedDTO = {
+          endingType: EndingType.Tie,
+          userIDToEloDiff: elos,
+        };
+        server.to(roomID).emit(SocketIOEvents.GameEnded, dto);
       } else {
         if (game.hasTimeLimit) {
           game.calibrationIntervalHandle = setInterval(() => {
@@ -244,7 +261,7 @@ export class GameService {
   /**
    * function to be called every second; deducts time from current player and emits new times to all connected players
    */
-  calibrateTime(server: Server, roomID: string, game: AnyGame) {
+  async calibrateTime(server: Server, roomID: string, game: AnyGame) {
     // deducting one second from currentPlayer
     game.currentPlayer.timeLeft -= 1000;
 
@@ -256,12 +273,21 @@ export class GameService {
 
     if (game.currentPlayer.timeLeft <= 0) {
       const winner = game.getNextPlayer;
+
+      const elos = await this.calcElo(
+        game.players[0].userID,
+        game.players[1].userID,
+        false,
+        winner.userID,
+      );
       this.endGame(game, EndingType.Time, winner);
 
-      const gameEndedByTimoutDTO: GameEndedByTimeoutDTO = { winner };
-      server
-        .to(roomID)
-        .emit(SocketIOEvents.GameEndedByTimeout, gameEndedByTimoutDTO);
+      const dto: GameEndedDTO = {
+        endingType: EndingType.Time,
+        winner,
+        userIDToEloDiff: elos,
+      };
+      server.to(roomID).emit(SocketIOEvents.GameEnded, dto);
     }
   }
 

@@ -10,7 +10,6 @@ import { GameService } from './game/services/game.service';
 import { SearchService } from './game/services/search.service';
 
 // DTOs
-import { SearchEvents } from 'gomoku-shared-types/';
 import {
   GameClickDTO,
   JoinGameDTO,
@@ -20,14 +19,12 @@ import {
   CustomRoomJoinedDTO,
   CustomRoomRedirectToGameDTO,
   UpdateActiveUsersDTO,
-  GameEndedByDisconnectDTO,
   ToServerSwapPickGameStoneDTO,
   SearchRankedGameDTO,
+  GameEndedDTO,
 } from './shared/socketIO';
 import { CustomRoomService } from './game/services/customRoom.service';
-import { UseGuards } from '@nestjs/common';
-import { JwtAuthGuard } from './auth/guards/jwt.guard';
-import { Client } from 'socket.io/dist/client';
+import { EndingType } from 'gomoku-shared-types/';
 
 // Whole site things - current people online...
 @WebSocketGateway({ namespace: '/app' })
@@ -197,13 +194,12 @@ export class GameGateway implements OnGatewayDisconnect {
           false,
           game.getOtherPlayer(client.id).userID,
         );
-        const gameEndedByDisconnectDTO: GameEndedByDisconnectDTO = {
+        const dto: GameEndedDTO = {
+          endingType: EndingType.Surrender,
           winner: winner,
           userIDToEloDiff: elos,
         };
-        this.server
-          .to(roomID)
-          .emit(SocketIOEvents.GameEndedByDisconnect, gameEndedByDisconnectDTO);
+        this.server.to(roomID).emit(SocketIOEvents.GameEnded, dto);
       }
     }
   }

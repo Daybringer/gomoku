@@ -1,44 +1,37 @@
-import { Opening, Player, Position, Symbol } from './types';
+import { EndingType, Opening, Player, Position, Symbol } from "./types";
 
 export enum SocketIOEvents {
   //Search
-  SearchRankedGame = 'searchRankedGame',
-  GameCreated = 'gameCreated',
+  SearchRankedGame = "searchRankedGame",
+  GameCreated = "gameCreated",
   //General
-  UpdateActiveUsers = 'updateActiveUsers',
-  JoinGame = 'joinGame',
-  InvalidRoomID = 'invalidRoomID',
-  GameStarted = 'gameStarted',
-  StonePlaced = 'stonePlaced',
-  GameClick = 'gameClick',
-  GameEndedByDisconnect = 'gameEndedByDisconnect',
-  GameEndedByCombination = 'gameEndedByCombination',
-  GameEndedByTimeout = 'gameEndedByTimout',
-  GameEndedByTie = 'gameEndedByTie',
-  TimeCalibration = 'timeCalibration',
-  SendMessage = 'sendMessage',
-  RecieveMessage = 'recieveMessage',
-  ToClientSwapPickGameStone = 'toClientSwapPickGameStone',
-  ToServerSwapPickGameStone = 'toServerSwapPickGameStone',
-  SwapGameStonePicked = 'gameStonePicked',
+  UpdateActiveUsers = "updateActiveUsers",
+  JoinGame = "joinGame",
+  InvalidRoomID = "invalidRoomID",
+  GameStarted = "gameStarted",
+  StonePlaced = "stonePlaced",
+  GameClick = "gameClick",
+  GameEnded = "gameEnded",
+  TimeCalibration = "timeCalibration",
+  SendMessage = "sendMessage",
+  RecieveMessage = "recieveMessage",
+  ToClientSwapPickGameStone = "toClientSwapPickGameStone",
+  ToServerSwapPickGameStone = "toServerSwapPickGameStone",
+  SwapGameStonePicked = "gameStonePicked",
   //Custom specials
-  CreateCustomWaiting = 'createCustomWaiting',
-  CustomWaitingCreated = 'customWaitingCreated',
-  CustomRoomJoined = 'customRoomJoined',
-  InvalidCustomRoom = 'invalidCustomRoom',
-  CustomRoomRedirectToGame = 'customRoomRedirectToGame',
+  CreateCustomWaiting = "createCustomWaiting",
+  CustomWaitingCreated = "customWaitingCreated",
+  CustomRoomJoined = "customRoomJoined",
+  InvalidCustomRoom = "invalidCustomRoom",
+  CustomRoomRedirectToGame = "customRoomRedirectToGame",
 }
 
-abstract class GameEndedDTO {
-  readonly winner: Player;
+export class GameEndedDTO {
+  readonly endingType: EndingType;
+  readonly winner?: Player;
   readonly userIDToEloDiff?: Record<number, number>;
 }
 
-export class GameEndedByDisconnectDTO extends GameEndedDTO {}
-
-export class GameEndedByTimeoutDTO extends GameEndedDTO {}
-
-export class GameEndedByCombinationDTO extends GameEndedDTO {}
 export class SearchRankedGameDTO {
   readonly jwtToken: string;
 }
