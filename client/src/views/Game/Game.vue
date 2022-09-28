@@ -6,7 +6,9 @@
     :round="round"
     :hasTimeLimit="hasTimeLimit"
     :gameState="gameState"
-    :gameEnding="gameEnding"
+    :elos="elos"
+    :endingType="endingType"
+    :winner="winner"
     :opening="opening"
     :openingPhase="openingPhase"
     :lastPositionID="lastPositionID"
@@ -20,7 +22,7 @@
 </template>
 <script lang="ts">
 // Types
-import { GameState, Ending } from "@/types";
+import { GameState } from "@/types";
 import { COIN_SPIN_DURATION } from "@/shared/constants";
 // Backend-frontend shared types
 import {
@@ -30,9 +32,11 @@ import {
   Symbol,
   Opening,
   OpeningPhase,
+  EndingType,
 } from "@/shared/types";
 import {
   GameClickDTO,
+  GameEndedDTO,
   GameStartedEventDTO,
   JoinGameDTO,
   SocketIOEvents,
@@ -55,7 +59,7 @@ import { io, Socket } from "socket.io-client";
 import { ProfileIcon } from "@/shared/icons";
 const basePlayer = (): Player => {
   return {
-    socketID: "a",
+    socketID: "",
     userID: 0,
     logged: false,
     profileIcon: ProfileIcon.defaultBoy,
@@ -79,7 +83,9 @@ export default defineComponent({
     lastPositionID: number;
     round: number;
     gameState: GameState;
-    gameEnding: Ending;
+    endingType: EndingType;
+    winner: Player;
+    elos: Record<number, number>;
     messages: Array<Message>;
     boardSize: number;
     openingPhase: OpeningPhase;
@@ -94,7 +100,9 @@ export default defineComponent({
       lastPositionID: 0,
       round: 0,
       gameState: GameState.Waiting,
-      gameEnding: Ending.None,
+      endingType: EndingType.Combination,
+      winner: basePlayer(),
+      elos: {},
       messages: [],
       boardSize: 15,
       openingPhase: OpeningPhase.Done,
@@ -107,9 +115,6 @@ export default defineComponent({
     return { store };
   },
   methods: {
-    /**
-     * Forwards click event from GameBase component to game server
-     */
     gameClick(position: Position): void {
       const gameClickDTO: GameClickDTO = {
         roomID: this.getRoomIDFromURL || "",
@@ -117,16 +122,11 @@ export default defineComponent({
       };
       socket.emit(SocketIOEvents.GameClick, gameClickDTO);
     },
-    /**
-     *
-     */
     sendMessage(message: string) {
       const messageObj = { author: "me", text: message };
       this.messages.push(messageObj);
       socket.emit(SocketIOEvents.SendMessage, message);
     },
-
-    /** */
     pickGameStone(gameStone: Symbol) {
       const dto: ToServerSwapPickGameStoneDTO = {
         roomID: this.getRoomIDFromURL as string,
@@ -139,65 +139,49 @@ export default defineComponent({
     socket = io("/game", { port: "3001" });
     const logged = this.store.isAuthenticated;
 
-    if (
-      this.getGameTypeFromURL === GameType.Quick ||
-      this.getGameTypeFromURL === GameType.Ranked ||
-      this.getGameTypeFromURL === GameType.Custom
-    ) {
-      const joinGameDTO: JoinGameDTO = {
-        roomID: this.getRoomIDFromURL || "",
-        logged,
-        userID: this.store.user.id,
-      };
-      socket.emit(SocketIOEvents.JoinGame, joinGameDTO);
-    } else {
-      this.$router.push("/");
-    }
+    if (!this.getGameTypeFromURL) this.$router.push("/");
+
+    const joinGameDTO: JoinGameDTO = {
+      roomID: this.getRoomIDFromURL || "",
+      logged,
+      userID: this.store.user.id,
+    };
+    socket.emit(SocketIOEvents.JoinGame, joinGameDTO);
 
     socket.on(SocketIOEvents.InvalidRoomID, () => {
       // TODO show some notification
       this.$router.push("/");
     });
 
-    // Game has begun
-    socket.on(
-      SocketIOEvents.GameStarted,
-      (gameStartedEventDTO: GameStartedEventDTO) => {
-        const {
-          hasTimeLimit,
-          startingPlayer,
-          players,
-          opening,
-        } = gameStartedEventDTO;
-        this.currentPlayer = startingPlayer;
-        this.hasTimeLimit = hasTimeLimit;
+    socket.on(SocketIOEvents.GameStarted, (dto: GameStartedEventDTO) => {
+      const { hasTimeLimit, startingPlayer, players, opening } = dto;
+      this.currentPlayer = startingPlayer;
+      this.hasTimeLimit = hasTimeLimit;
 
-        this.opening = opening;
-        if (opening === Opening.Standard) {
-          this.openingPhase = OpeningPhase.Done;
-        } else {
-          this.openingPhase = OpeningPhase.Place3;
-        }
-
-        const [foo, bar] = players;
-        if (foo.socketID === socket.id) {
-          this.me = foo;
-          this.enemy = bar;
-        } else {
-          this.me = bar;
-          this.enemy = foo;
-        }
-
-        this.gameState = GameState.Coinflip;
-
-        // FIXME magic numbers (200)
-        setTimeout(() => {
-          if (this.gameState === GameState.Coinflip) {
-            this.gameState = GameState.Running;
-          }
-        }, COIN_SPIN_DURATION - 200);
+      this.opening = opening;
+      if (opening === Opening.Standard) {
+        this.openingPhase = OpeningPhase.Done;
+      } else {
+        this.openingPhase = OpeningPhase.Place3;
       }
-    );
+
+      const [foo, bar] = players;
+      if (foo.socketID === socket.id) {
+        this.me = foo;
+        this.enemy = bar;
+      } else {
+        this.me = bar;
+        this.enemy = foo;
+      }
+
+      this.gameState = GameState.Coinflip;
+
+      setTimeout(() => {
+        if (this.gameState === GameState.Coinflip) {
+          this.gameState = GameState.Running;
+        }
+      }, COIN_SPIN_DURATION);
+    });
 
     socket.on(
       SocketIOEvents.TimeCalibration,
@@ -213,8 +197,7 @@ export default defineComponent({
       }
     );
 
-    // New message
-    socket.on(SocketIOEvents.RecieveMessage, (message) => {
+    socket.on(SocketIOEvents.RecieveMessage, (message: string) => {
       this.messages.push({ author: "opponent", text: message });
     });
 
@@ -248,60 +231,34 @@ export default defineComponent({
       const { position, currentPlayer } = stonePlacedDTO;
       this.currentPlayer = currentPlayer;
       this.round++;
-      // FIXME wtf is this
       this.lastPositionID = position[1] * this.boardSize + position[0];
     });
 
-    socket.on(SocketIOEvents.GameEnded, () => {});
+    socket.on(SocketIOEvents.GameEnded, (dto: GameEndedDTO) => {
+      const { endingType, winner, userIDToEloDiff } = dto;
 
-    // Different game endings
-    // socket.on(
-    //   SocketIOEvents.GameEndedByDisconnect,
-    //   (gameEndedByDisconnectDTO: GameEndedByDisconnectDTO) => {
-    //     // I have been disconnected
-    //     if (socket.id !== gameEndedByDisconnectDTO.winner.socketID) {
-    //       this.gameState = GameState.Ended;
-    //       this.gameEnding = Ending.DefeatDisconnect;
-    //       // Enemy has been disconnected
-    //     } else {
-    //       this.gameState = GameState.Ended;
-    //       this.gameEnding = Ending.VictoryDisconnect;
-    //     }
-    //   }
-    // );
+      if (userIDToEloDiff) this.elos = userIDToEloDiff;
+      if (winner) this.winner = winner;
 
-    // socket.on(
-    //   SocketIOEvents.GameEndedByCombination,
-    //   (gameEndedByCombinationDTO: GameEndedByCombinationDTO) => {
-    //     this.gameState = GameState.Ended;
-    //     this.gameEnding =
-    //       gameEndedByCombinationDTO.winner.socketID === socket.id
-    //         ? Ending.VictoryFiveInRow
-    //         : Ending.DefeatFiveInRow;
-    //   }
-    // );
-
-    // socket.on(
-    //   SocketIOEvents.GameEndedByTimeout,
-    //   (gameEndedByTimeoutDTO: GameEndedByTimeoutDTO) => {
-    //     // I have timed out
-    //     if (socket.id !== gameEndedByTimeoutDTO.winner.socketID) {
-    //       this.gameState = GameState.Ended;
-    //       this.gameEnding = Ending.DefeatTimeout;
-    //       // Enemy has timed out
-    //     } else {
-    //       this.gameState = GameState.Ended;
-    //       this.gameEnding = Ending.VictoryTimeout;
-    //     }
-    //   }
-    // );
+      this.endingType = endingType;
+      this.gameState = GameState.Ended;
+    });
   },
   computed: {
     getURLParams() {
       return new URLSearchParams(window.location.search);
     },
     getGameTypeFromURL(): string | null {
-      return this.getURLParams.get("type");
+      const type = this.getURLParams.get("type");
+      if (type == GameType.Quick) {
+        return GameType.Quick;
+      } else if (type == GameType.Ranked) {
+        return GameType.Ranked;
+      } else if (type == GameType.Custom) {
+        return GameType.Custom;
+      } else {
+        return null;
+      }
     },
     getRoomIDFromURL(): string | null {
       return this.getURLParams.get("roomID");
