@@ -206,17 +206,23 @@ export class GameGateway implements OnGatewayDisconnect {
 
   @SubscribeMessage(SocketIOEvents.ToServerSwapPickGameStone)
   handlePickGameStone(client: Socket, dto: ToServerSwapPickGameStoneDTO): void {
-    this.gameService.handlePickGameStone(this.server, client, dto);
+    this.gameService
+      .handlePickGameStone(this.server, client, dto)
+      .catch((err: string) => err);
   }
 
   @SubscribeMessage(SocketIOEvents.JoinGame)
   handleJoinGame(client: Socket, joinGameDTO: JoinGameDTO): void {
-    this.gameService.handleJoinGame(this.server, client, joinGameDTO);
+    this.gameService
+      .handleJoinGame(this.server, client, joinGameDTO)
+      .catch((err: string) => err);
   }
 
   @SubscribeMessage(SocketIOEvents.GameClick)
   hangleGameClick(client: Socket, gameClickDTO: GameClickDTO): void {
-    this.gameService.handleGameClick(this.server, client, gameClickDTO);
+    this.gameService
+      .handleGameClick(this.server, client, gameClickDTO)
+      .catch((err: string) => err);
   }
   @SubscribeMessage(SocketIOEvents.SendMessage)
   handleSendMessage(socket: Socket, message: string): void {

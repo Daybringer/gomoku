@@ -194,11 +194,11 @@ export class GameService {
     }
   }
 
-  handlePickGameStone(
+  async handlePickGameStone(
     server: Server,
     client: Socket,
     dto: ToServerSwapPickGameStoneDTO,
-  ): void {
+  ): Promise<void> {
     const game = this.findGame(dto.roomID);
     if (!game) throw 'Game not found';
     if (client.id === game.currentPlayer.socketID) {
