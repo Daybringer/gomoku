@@ -100,7 +100,7 @@ export default defineComponent({
       lastPositionID: 0,
       round: 0,
       gameState: GameState.Waiting,
-      endingType: EndingType.Combination,
+      endingType: EndingType.Tie,
       winner: basePlayer(),
       elos: {},
       messages: [],
