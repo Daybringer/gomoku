@@ -621,7 +621,7 @@ export default defineComponent({
 }
 
 .minimizeAfterGameModal {
-  animation: minimizeAfterGameModal 0.5s forwards;
+  animation: minimizeAfterGameModal 0.5s forwards ease-in;
 }
 
 .fancy-background {
@@ -641,11 +641,11 @@ export default defineComponent({
 }
 
 @keyframes minimizeAfterGameModal {
-  0% {
+  100% {
     transform: scale(1);
   }
-  0% {
-    transform: scale(0) translate(-50%, -50%);
+  100% {
+    transform: scale(0);
   }
 }
 

@@ -24,7 +24,7 @@ import {
   GameEndedDTO,
 } from './shared/socketIO';
 import { CustomRoomService } from './game/services/customRoom.service';
-import { EndingType } from 'gomoku-shared-types/';
+import { EndingType, GameType } from 'gomoku-shared-types/';
 
 // Whole site things - current people online...
 @WebSocketGateway({ namespace: '/app' })
@@ -187,17 +187,23 @@ export class GameGateway implements OnGatewayDisconnect {
     if (game) {
       if (game.isRunning) {
         this.gameService.endGameDisconnect(game, client);
+
         const winner = game.getOtherPlayer(client.id);
-        const elos = await this.gameService.calcElo(
-          game.players[0].userID,
-          game.players[1].userID,
-          false,
-          game.getOtherPlayer(client.id).userID,
-        );
+        let elos = {};
+
+        if (game.gameType === GameType.Ranked) {
+          elos = await this.gameService.calcElo(
+            game.players[0].userID,
+            game.players[1].userID,
+            false,
+            game.getOtherPlayer(client.id).userID,
+          );
+        }
+
         const dto: GameEndedDTO = {
           endingType: EndingType.Surrender,
           winner: winner,
-          userIDToEloDiff: elos,
+          userIDToEloDiff: elos || {},
         };
         this.server.to(roomID).emit(SocketIOEvents.GameEnded, dto);
       }
@@ -208,21 +214,21 @@ export class GameGateway implements OnGatewayDisconnect {
   handlePickGameStone(client: Socket, dto: ToServerSwapPickGameStoneDTO): void {
     this.gameService
       .handlePickGameStone(this.server, client, dto)
-      .catch((err: string) => err);
+      .catch((err: string) => console.log(err));
   }
 
   @SubscribeMessage(SocketIOEvents.JoinGame)
   handleJoinGame(client: Socket, joinGameDTO: JoinGameDTO): void {
     this.gameService
       .handleJoinGame(this.server, client, joinGameDTO)
-      .catch((err: string) => err);
+      .catch((err: string) => console.log(err));
   }
 
   @SubscribeMessage(SocketIOEvents.GameClick)
   hangleGameClick(client: Socket, gameClickDTO: GameClickDTO): void {
     this.gameService
       .handleGameClick(this.server, client, gameClickDTO)
-      .catch((err: string) => err);
+      .catch((err: string) => console.log(err));
   }
   @SubscribeMessage(SocketIOEvents.SendMessage)
   handleSendMessage(socket: Socket, message: string): void {

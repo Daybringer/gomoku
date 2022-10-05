@@ -151,46 +151,71 @@ export class GameService {
 
       clearInterval(game.calibrationIntervalHandle);
 
-      // FIXME change structure of checkwin to return {hasEnded:,endingType:}
-      const currGameState = this.checkWin(game, position);
+      // FIXME change structure of checkWin to return {hasEnded:,endingType:}
+      const currGameState = this.checkWin(game, position, 15, 5, false);
 
-      if (currGameState === EndingType.Combination) {
-        const winner = game.currentPlayer;
-        const elos = await this.calcElo(
-          game.players[0].userID,
-          game.players[1].userID,
-          false,
-          winner.userID,
-        );
-        this.endGame(game, currGameState, winner);
-        const dto: GameEndedDTO = {
-          endingType: EndingType.Combination,
-          winner,
-          userIDToEloDiff: elos,
-        };
-        server.to(roomID).emit(SocketIOEvents.GameEnded, dto);
-      } else if (currGameState === EndingType.Tie) {
-        this.endGame(game, currGameState);
-        const elos = await this.calcElo(
-          game.players[0].userID,
-          game.players[1].userID,
-          true,
-        );
-        const dto: GameEndedDTO = {
-          endingType: EndingType.Tie,
-          userIDToEloDiff: elos,
-        };
-        server.to(roomID).emit(SocketIOEvents.GameEnded, dto);
-      } else {
+      if (currGameState === null) {
+        game.iterateRound();
+        game.currentPlayer = game.getNextPlayer;
+
         if (game.hasTimeLimit) {
           game.calibrationIntervalHandle = setInterval(() => {
             this.calibrateTime(server, roomID, game);
           }, 1000);
         }
+      } else {
+        const winner = game.currentPlayer;
+
+        let elos = {};
+        if (game.gameType === GameType.Ranked) {
+          elos = await this.calcElo(
+            game.players[0].userID,
+            game.players[1].userID,
+            currGameState === EndingType.Tie,
+            winner.userID,
+          );
+        }
+
+        const dto: GameEndedDTO = {
+          endingType: currGameState,
+          winner,
+          userIDToEloDiff: elos,
+        };
+
+        this.endGame(game, currGameState, winner);
+
+        server.to(roomID).emit(SocketIOEvents.GameEnded, dto);
       }
 
-      game.iterateRound();
-      game.currentPlayer = game.getNextPlayer;
+      // if (currGameState === EndingType.Combination) {
+      //   const winner = game.currentPlayer;
+      //   const elos = await this.calcElo(
+      //     game.players[0].userID,
+      //     game.players[1].userID,
+      //     false,
+      //     winner.userID,
+      //   );
+      //   this.endGame(game, currGameState, winner);
+      //   const dto: GameEndedDTO = {
+      //     endingType: EndingType.Combination,
+      //     winner,
+      //     userIDToEloDiff: elos,
+      //   };
+      //   server.to(roomID).emit(SocketIOEvents.GameEnded, dto);
+      // } else if (currGameState === EndingType.Tie) {
+      //   this.endGame(game, currGameState);
+      //   const elos = await this.calcElo(
+      //     game.players[0].userID,
+      //     game.players[1].userID,
+      //     true,
+      //   );
+      //   const dto: GameEndedDTO = {
+      //     endingType: EndingType.Tie,
+      //     userIDToEloDiff: elos,
+      //   };
+      //   server.to(roomID).emit(SocketIOEvents.GameEnded, dto);
+      // } else {
+      // }
     }
   }
 
@@ -228,11 +253,6 @@ export class GameService {
     client.to(game.roomID).emit(SocketIOEvents.RecieveMessage, message);
   }
 
-  // HELPER FUNCTIONS
-
-  /**
-   *
-   */
   private generateRoomID(...rooms: Record<string, unknown>[]) {
     const IDLength = 6;
 
@@ -273,15 +293,18 @@ export class GameService {
 
     if (game.currentPlayer.timeLeft <= 0) {
       const winner = game.getNextPlayer;
+      let elos = {};
 
-      const elos = await this.calcElo(
-        game.players[0].userID,
-        game.players[1].userID,
-        false,
-        winner.userID,
-      );
+      if (game.gameType === GameType.Ranked) {
+        elos = await this.calcElo(
+          game.players[0].userID,
+          game.players[1].userID,
+          false,
+          winner.userID,
+        );
+      }
+
       this.endGame(game, EndingType.Time, winner);
-
       const dto: GameEndedDTO = {
         endingType: EndingType.Time,
         winner,
@@ -392,8 +415,14 @@ export class GameService {
     return gameStartedEventDTO;
   }
 
-  // TODO implement over 5 character => not a win con OPTION
-  checkWin(game: AnyGame, position: number[]): EndingType {
+  // TODO return winning combination
+  checkWin(
+    game: AnyGame,
+    position: [number, number],
+    gameboardSize: number = 15,
+    winChainLength: number = 5,
+    exactChainLength: boolean = false,
+  ): EndingType | null {
     const gamePlan = game.gameboard;
 
     const [xPos, yPos] = position;
@@ -402,53 +431,77 @@ export class GameService {
     let vertical = 0;
     let diagonalR = 0;
     let diagonalL = 0;
-    // FIXME replace constants with gameBoardsize equivalent
-    for (let x = -4; x < 5; x++) {
-      // * Horizontal check
-      if (xPos + x >= 0 && xPos + x <= 14) {
+    for (let x = -(winChainLength - 1); x < winChainLength; x++) {
+      // HORIZONTAL check
+      if (xPos + x >= 0 && xPos + x <= gameboardSize - 1) {
         if (gamePlan[xPos + x][yPos] === symbol) {
           horizontal++;
         } else {
           horizontal = 0;
         }
       }
-      if (yPos + x >= 0 && yPos + x <= 14) {
+
+      // VERTICAL check
+      if (yPos + x >= 0 && yPos + x <= gameboardSize - 1) {
         if (gamePlan[xPos][yPos + x] === symbol) {
           vertical++;
         } else {
           vertical = 0;
         }
       }
-      if (yPos + x >= 0 && yPos + x <= 14 && xPos + x >= 0 && xPos + x <= 14) {
+
+      // DIAGONAL checks
+      if (
+        yPos + x >= 0 &&
+        yPos + x <= gameboardSize - 1 &&
+        xPos + x >= 0 &&
+        xPos + x <= gameboardSize - 1
+      ) {
         if (gamePlan[xPos + x][yPos + x] === symbol) {
           diagonalR++;
         } else {
           diagonalR = 0;
         }
       }
-      if (yPos + x >= 0 && yPos + x <= 14 && xPos - x >= 0 && xPos - x <= 14) {
+
+      if (
+        yPos + x >= 0 &&
+        yPos + x <= gameboardSize - 1 &&
+        xPos - x >= 0 &&
+        xPos - x <= gameboardSize - 1
+      ) {
         if (gamePlan[xPos - x][yPos + x] === symbol) {
           diagonalL++;
         } else {
           diagonalL = 0;
         }
       }
-      if (
-        horizontal >= 5 ||
-        vertical >= 5 ||
-        diagonalL >= 5 ||
-        diagonalR >= 5
-      ) {
-        return EndingType.Combination;
+
+      if (exactChainLength) {
+        if (
+          horizontal == winChainLength ||
+          vertical == winChainLength ||
+          diagonalL == winChainLength ||
+          diagonalR == winChainLength
+        ) {
+          return EndingType.Combination;
+        }
+      } else {
+        if (
+          horizontal >= winChainLength ||
+          vertical >= winChainLength ||
+          diagonalL >= winChainLength ||
+          diagonalR >= winChainLength
+        ) {
+          return EndingType.Combination;
+        }
       }
     }
-    if (horizontal >= 5 || vertical >= 5 || diagonalL >= 5 || diagonalR >= 5) {
-      return EndingType.Combination;
-    } else if (game.round === game.gameboardSize ** 2 - 1) {
+    if (game.round === game.gameboardSize ** 2 - 1) {
       return EndingType.Tie;
-    } else {
-      return;
     }
+
+    return null;
   }
 
   async savePlayerGameProfile(
