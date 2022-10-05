@@ -81,7 +81,7 @@
             to="/search?type=quick"
             class="focus:outline-none focus:opacity-75"
           >
-            <img class="" src="../assets/svg/boxMatchQuick.svg" />
+            quick
           </router-link>
         </div>
       </div>
@@ -93,7 +93,7 @@
             to="/search?type=ranked"
             class="focus:outline-none focus:opacity-75"
           >
-            <img src="../assets/svg/boxMatchRanked.svg" />
+            ranked
           </router-link>
         </div>
       </div>
@@ -102,7 +102,7 @@
           class="m-auto transform hover:scale-105 transition-transform ease-in duration-75"
         >
           <router-link to="/custom" class="focus:outline-none focus:opacity-75">
-            <img src="../assets/svg/boxMatchCustom.svg" />
+            custom
           </router-link>
         </div>
       </div>
@@ -111,7 +111,7 @@
           class="m-auto transform hover:scale-105 transition-transform ease-in duration-75"
         >
           <router-link to="/ai" class="focus:outline-none focus:opacity-75">
-            <img src="../assets/svg/boxMatchAI.svg" />
+            ai
           </router-link>
         </div>
       </div>

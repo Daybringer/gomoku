@@ -56,15 +56,15 @@
       >
         <transition>
           <div
+            v-if="
+              slideNotification.enemyChoose ||
+                slideNotification.choose ||
+                slideNotification.place ||
+                slideNotification.enemyPlace
+            "
             class="fancy-background px-4 py-2 rounded-lg flex justify-center place-items-center w-full h-14 md:h-16  mb-4 bg-gray-100"
           >
             <div
-              v-if="
-                slideNotification.enemyChoose ||
-                  slideNotification.choose ||
-                  slideNotification.place ||
-                  slideNotification.enemyPlace
-              "
               class="flex justify-center place-items-center rounded-lg flex-1 h-full bg-gray-100"
             >
               <transition name="slidetop">

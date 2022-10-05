@@ -343,7 +343,7 @@ export class GameService {
     const playerAElo = (await this.usersService.findOneByID(playerAUserID)).elo;
     const playerBElo = (await this.usersService.findOneByID(playerBUserID)).elo;
 
-    const ratingSystem = createRatingSystem();
+    const ratingSystem = createRatingSystem(20, 600);
     const APlayerScore = isTie ? 0.5 : winnerUserID == playerAUserID ? 2 : 0;
     const { playerARatingDiff, playerBRatingDiff } =
       ratingSystem.getNextRatings(playerAElo, playerBElo, APlayerScore);
