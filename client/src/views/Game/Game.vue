@@ -15,9 +15,12 @@
     :myColor="store.user.playerColor"
     :enemyColor="store.user.enemyColor"
     :messages="messages"
+    :gameType="getGameTypeFromURL"
+    :askingForRematch="askingForRematch"
     @gameClick="gameClick"
     @sendMessage="sendMessage"
     @pickGameStone="pickGameStone"
+    @rematchCustom="rematchCustom"
   />
 </template>
 <script lang="ts">
@@ -90,6 +93,7 @@ export default defineComponent({
     boardSize: number;
     openingPhase: OpeningPhase;
     opening: Opening;
+    askingForRematch: number;
   } {
     return {
       me: basePlayer(),
@@ -107,6 +111,7 @@ export default defineComponent({
       boardSize: 15,
       openingPhase: OpeningPhase.Done,
       opening: Opening.Standard,
+      askingForRematch: 0,
     };
   },
   setup() {
@@ -133,6 +138,9 @@ export default defineComponent({
         pickedSymbol: gameStone,
       };
       socket.emit(SocketIOEvents.ToServerSwapPickGameStone, dto);
+    },
+    rematchCustom() {
+      socket.emit(SocketIOEvents.AskForRematch, this.getRoomIDFromURL);
     },
   },
   async mounted() {
@@ -202,6 +210,13 @@ export default defineComponent({
     });
 
     socket.on(
+      SocketIOEvents.RedirectToCustomRematch,
+      (newGameRoomID: string) => {
+        this.$router.push(`/game?type=custom&roomID=${newGameRoomID}`);
+      }
+    );
+
+    socket.on(
       SocketIOEvents.ToClientSwapPickGameStone,
       (dto: ToClientSwapPickGameStoneDTO) => {
         this.currentPlayer = dto.pickingPlayer;
@@ -248,7 +263,7 @@ export default defineComponent({
     getURLParams() {
       return new URLSearchParams(window.location.search);
     },
-    getGameTypeFromURL(): string | null {
+    getGameTypeFromURL(): GameType {
       const type = this.getURLParams.get("type");
       if (type == GameType.Quick) {
         return GameType.Quick;
@@ -256,9 +271,9 @@ export default defineComponent({
         return GameType.Ranked;
       } else if (type == GameType.Custom) {
         return GameType.Custom;
-      } else {
-        return null;
       }
+      console.error("Not valid gameType");
+      return GameType.Quick;
     },
     getRoomIDFromURL(): string | null {
       return this.getURLParams.get("roomID");

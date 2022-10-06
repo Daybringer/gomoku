@@ -46,7 +46,9 @@
           :amIWinner="amIWinner"
           :endingType="endingType"
           :myElo="myElo"
-          :newGameURL="newGameURL"
+          :gameType="gameType"
+          :askingForRematch="askingForRematch"
+          @rematchCustom="$emit('rematchCustom')"
         />
       </div>
       <!-- Socials container -->
@@ -277,17 +279,18 @@ export default defineComponent({
     gameState: {type: Object as PropType<GameState>,required:true},
     endingType:{type:Object as PropType<EndingType>,required:true},
     openingPhase:{type:Object as PropType<OpeningPhase>, required:true},
-    opening:{type:Object as PropType<Opening>,required:true}
+    opening:{type:Object as PropType<Opening>,required:true},
+    gameType:{type:Object as PropType<GameType>},
+    askingForRematch:{type:Number,required:true},
   },
+  emits:['rematchCustom','gameClick','sendMessage','pickGameStone'],
   data(): {
     chatInput: string;
     muted: boolean;
-    gameType: GameType;
   } {
     return {
       chatInput: "",
       muted: false,
-      gameType: GameType.Quick,
     };
   },
   computed: {
@@ -350,9 +353,6 @@ export default defineComponent({
       }
 
       return array;
-    },
-    newGameURL(): string {
-      return `search?type=${this.gameType || ""}`;
     },
   },
   watch: {
@@ -466,13 +466,7 @@ export default defineComponent({
   },
   mounted() {
     this.equalizeGameContDimensions();
-
     window.addEventListener("resize", this.equalizeGameContDimensions);
-
-    const urlParams = new URLSearchParams(window.location.search);
-
-    const gameType = urlParams.get("type");
-    this.gameType = gameType as GameType;
   },
   unmounted() {
     window.removeEventListener("resize", this.equalizeGameContDimensions);

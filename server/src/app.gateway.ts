@@ -22,6 +22,7 @@ import {
   ToServerSwapPickGameStoneDTO,
   SearchRankedGameDTO,
   GameEndedDTO,
+  AskForRematchDTO,
 } from './shared/socketIO';
 import { CustomRoomService } from './game/services/customRoom.service';
 import { EndingType, GameType } from 'gomoku-shared-types/';
@@ -230,8 +231,19 @@ export class GameGateway implements OnGatewayDisconnect {
       .handleGameClick(this.server, client, gameClickDTO)
       .catch((err: string) => console.log(err));
   }
+
   @SubscribeMessage(SocketIOEvents.SendMessage)
   handleSendMessage(socket: Socket, message: string): void {
     this.gameService.handleSendMessage(this.server, socket, message);
+  }
+
+  @SubscribeMessage(SocketIOEvents.AskForRematch)
+  handleCustomAskForRematch(socket: Socket, dto: AskForRematchDTO): void {
+    this.gameService.handleCustomAskForRematch(
+      this.server,
+      socket,
+      dto.oldRoomID,
+      dto.createCustomDTO,
+    );
   }
 }

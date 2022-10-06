@@ -62,7 +62,7 @@
   </div>
 </template>
 <script lang="ts">
-import { EndingType } from "@/shared/types";
+import { EndingType, GameType } from "@/shared/types";
 import { defineComponent, PropType } from "vue";
 // SVGs
 import CrossIconSvg from "@/assets/svg/CrossIconSvg.vue";
@@ -73,8 +73,10 @@ export default defineComponent({
     myElo: { type: Number, required: true },
     amIWinner: { type: Boolean, required: true },
     endingType: { type: Object as PropType<EndingType>, required: true },
-    newGameURL: { type: String, required: true },
+    gameType: { type: Object as PropType<GameType>, required: true },
+    askingForRematch: { type: Number, required: true },
   },
+  emits: ["rematchCustom"],
   components: {
     CrossIconSvg,
     ChevronsDownIconSvg,
@@ -102,8 +104,19 @@ export default defineComponent({
         return `${this.myElo} ELO`;
       }
     },
+    newGameURL(): string {
+      return `search?type=${this.gameType || ""}`;
+    },
   },
-  methods: {},
+  methods: {
+    playAgain() {
+      if (this.gameType === GameType.Custom) {
+        this.$emit("rematchCustom");
+      } else {
+        this.$router.push(this.newGameURL);
+      }
+    },
+  },
   watch: {
     endingType: {
       handler() {

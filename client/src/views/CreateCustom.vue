@@ -130,7 +130,9 @@ export default defineComponent({
       socket.on(
         SocketIOEvents.CustomWaitingCreated,
         (customCreatedDTO: CustomCreatedDTO) => {
-          this.$router.push(`/custom/${customCreatedDTO.roomID}`);
+          this.$router.push(
+            `/custom/${customCreatedDTO.roomID}?hasTimeLimit=${createCustomDTO.hasTimeLimit}&timeLimitInSeconds=${createCustomDTO.timeLimitInSeconds}&opening=${createCustomDTO.opening}`
+          );
         }
       );
     },

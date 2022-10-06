@@ -44,6 +44,7 @@ export class GameService {
   quickGameRooms: { [id: string]: QuickGame } = {};
   rankedGameRooms: { [id: string]: RankedGame } = {};
   customGameRooms: { [id: string]: CustomGame } = {};
+  customRematch: { [roomID: string]: number };
 
   gameRooms = [this.quickGameRooms, this.rankedGameRooms, this.customGameRooms];
 
@@ -252,6 +253,22 @@ export class GameService {
     const game = this.findGameBySocketID(client.id);
     client.to(game.roomID).emit(SocketIOEvents.RecieveMessage, message);
   }
+
+  handleCustomAskForRematch(
+    server: Server,
+    client: Socket,
+    oldRoomID: string,
+    settings: CreateCustomDTO,
+  ) {
+    this.customRematch[oldRoomID]++;
+    if (this.customRematch[oldRoomID] === 2) {
+      const { roomID } = this.createCustomGame(settings);
+      server.to(oldRoomID).emit(SocketIOEvents.RedirectToCustomRematch, roomID);
+      delete this.customRematch[oldRoomID];
+    }
+  }
+
+  // HELPER FUNCTIONS
 
   private generateRoomID(...rooms: Record<string, unknown>[]) {
     const IDLength = 6;

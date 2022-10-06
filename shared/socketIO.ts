@@ -1,29 +1,31 @@
-import { EndingType, Opening, Player, Position, Symbol } from "./types";
+import { EndingType, Opening, Player, Position, Symbol } from './types';
 
 export enum SocketIOEvents {
   //Search
-  SearchRankedGame = "searchRankedGame",
-  GameCreated = "gameCreated",
+  SearchRankedGame = 'searchRankedGame',
+  GameCreated = 'gameCreated',
   //General
-  UpdateActiveUsers = "updateActiveUsers",
-  JoinGame = "joinGame",
-  InvalidRoomID = "invalidRoomID",
-  GameStarted = "gameStarted",
-  StonePlaced = "stonePlaced",
-  GameClick = "gameClick",
-  GameEnded = "gameEnded",
-  TimeCalibration = "timeCalibration",
-  SendMessage = "sendMessage",
-  RecieveMessage = "recieveMessage",
-  ToClientSwapPickGameStone = "toClientSwapPickGameStone",
-  ToServerSwapPickGameStone = "toServerSwapPickGameStone",
-  SwapGameStonePicked = "gameStonePicked",
+  UpdateActiveUsers = 'updateActiveUsers',
+  JoinGame = 'joinGame',
+  InvalidRoomID = 'invalidRoomID',
+  GameStarted = 'gameStarted',
+  StonePlaced = 'stonePlaced',
+  GameClick = 'gameClick',
+  GameEnded = 'gameEnded',
+  TimeCalibration = 'timeCalibration',
+  SendMessage = 'sendMessage',
+  RecieveMessage = 'recieveMessage',
+  ToClientSwapPickGameStone = 'toClientSwapPickGameStone',
+  ToServerSwapPickGameStone = 'toServerSwapPickGameStone',
+  SwapGameStonePicked = 'gameStonePicked',
   //Custom specials
-  CreateCustomWaiting = "createCustomWaiting",
-  CustomWaitingCreated = "customWaitingCreated",
-  CustomRoomJoined = "customRoomJoined",
-  InvalidCustomRoom = "invalidCustomRoom",
-  CustomRoomRedirectToGame = "customRoomRedirectToGame",
+  CreateCustomWaiting = 'createCustomWaiting',
+  CustomWaitingCreated = 'customWaitingCreated',
+  CustomRoomJoined = 'customRoomJoined',
+  InvalidCustomRoom = 'invalidCustomRoom',
+  CustomRoomRedirectToGame = 'customRoomRedirectToGame',
+  AskForRematch = 'askForRematch',
+  RedirectToCustomRematch = 'redirectToCustomRematch',
 }
 
 export class GameEndedDTO {
@@ -79,6 +81,11 @@ export class StonePlacedDTO {
   readonly position: Position;
   readonly players: Player[];
   readonly currentPlayer: Player;
+}
+
+export class AskForRematchDTO {
+  readonly oldRoomID: string;
+  readonly createCustomDTO: CreateCustomDTO;
 }
 
 export class CreateCustomDTO {
