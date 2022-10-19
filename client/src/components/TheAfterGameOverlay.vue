@@ -23,7 +23,7 @@
         v-show="isShown"
       >
         <div
-          class="w-full h-full rounded-lg p-4 bg-white dark:bg-gray-700 shadow-2xl flex relative justify-start place-items-center flex-col gap-6"
+          class="w-full h-full rounded-lg p-4 bg-white dark:bg-gray-700 shadow-2xl flex relative justify-start place-items-center flex-col md:gap-6 gap-2"
         >
           <button
             class="absolute top-3 left-3 p-1 rounded-full bg-gray-200 dark:bg-gray-300 text-gray-900 focus:outline-none"
@@ -32,13 +32,13 @@
             <cross-icon-svg class="h-8" />
           </button>
           <h1
-            class="w-full text-center text-5xl p-4 xl:text-7xl font-medium text-gomoku-blue"
+            class="w-full text-center text-5xl px-4 md:py-4 xl:text-7xl font-medium text-gomoku-blue"
           >
             {{ amIWinner ? "Victory!" : "Defeat!" }}
           </h1>
           <h3
             v-show="hasEndedByDisconnect"
-            class="w-full text-center text-gray-800 text-2xl"
+            class="w-full text-center text-gray-800 md:text-2xl text-lg"
           >
             Opponent has disconnected
           </h3>
@@ -50,7 +50,18 @@
           >
             {{ eloGain }}
           </div>
-
+          <img
+            v-show="!amIWinner"
+            src="../assets/svg/lose.svg"
+            class="sad-animation md:w-50 w-1/3  md:p-8 "
+            alt=""
+          />
+          <img
+            v-show="amIWinner"
+            src="../assets/svg/win.svg"
+            class="animation-bounce md:w-50 w-1/3 md:p-8 mt-4"
+            alt=""
+          />
           <base-button
             class="text-xl w-full  text-gray-50 font-medium mt-5"
             :class="
@@ -59,7 +70,7 @@
                 : 'bg-gomoku-blue dark:bg-gomoku-blue'
             "
             @click="playAgain"
-            >{{ newGameButtonText }}
+            >{{ askedForRematch ? "Waiting for opponent" : newGameButtonText }}
           </base-button>
         </div>
       </div>
@@ -69,6 +80,7 @@
 <script lang="ts">
 import { EndingType, GameType } from "@/shared/types";
 import { defineComponent, PropType } from "vue";
+import BaseButton from "@/components/BaseButton.vue";
 // SVGs
 import CrossIconSvg from "@/assets/svg/CrossIconSvg.vue";
 import ChevronsDownIconSvg from "@/assets/svg/ChevronsDownIconSvg.vue";
@@ -85,6 +97,7 @@ export default defineComponent({
   components: {
     CrossIconSvg,
     ChevronsDownIconSvg,
+    BaseButton,
   },
   data(): { isShown: boolean; askedForRematch: boolean } {
     return { isShown: false, askedForRematch: false };
@@ -160,6 +173,36 @@ export default defineComponent({
 }
 .bounce-leave-active {
   animation: bounce-in 0.4s reverse ease-out;
+}
+
+.sad-animation {
+  animation: down 3s infinite;
+}
+
+@keyframes down {
+  0%,
+  100% {
+    transform: translateY(15%);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+.animation-bounce {
+  animation: bounce 1s infinite;
+}
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(-15%) rotate(10deg);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
 }
 @keyframes bounce-in {
   0% {
