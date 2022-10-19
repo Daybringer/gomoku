@@ -1,6 +1,8 @@
 <template>
   <navbar id="navbar" :activeIntersection="activeIntersection"></navbar>
+  <!-- FIXME MIGHT Be careful of :key attribute, might cause higher response time (my insight) -->
   <router-view
+    :key="$route.fullPath"
     :activeUsers="this.onlineUsers"
     class="min-height-screen-calc "
     @intersectionCrossed="setIntersection"

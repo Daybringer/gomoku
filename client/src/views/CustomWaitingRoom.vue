@@ -53,10 +53,12 @@ import ClipboardIconSvg from "@/assets/svg/ClipboardIconSvg.vue";
 import BaseNotification from "@/components/BaseNotification.vue";
 import { defineComponent } from "vue";
 import {
+  CreateCustomDTO,
   CustomRoomJoinedDTO,
   CustomRoomRedirectToGameDTO,
   SocketIOEvents,
 } from "@/shared/socketIO";
+import { Opening } from "@/shared/types";
 export default defineComponent({
   name: "CustomWaitingRoom",
   props: {},
@@ -75,8 +77,20 @@ export default defineComponent({
     };
   },
   computed: {
+    getURLParams() {
+      return new URLSearchParams(window.location.search);
+    },
     roomID(): string {
       return this.$route.params.roomID as string;
+    },
+    hasTimeLimit(): boolean {
+      return this.getURLParams.get("hasTimeLimit") === "true";
+    },
+    timeLimitInSeconds(): number {
+      return Number(this.getURLParams.get("timeLimitInSeconds"));
+    },
+    opening(): Opening {
+      return this.getURLParams.get("opening") as Opening;
     },
   },
   methods: {
@@ -98,14 +112,20 @@ export default defineComponent({
 
     socket.on(SocketIOEvents.InvalidCustomRoom, () => {
       // TODO show notification or redirect to special page
+
       this.$router.push("/");
     });
 
     socket.on(
       SocketIOEvents.CustomRoomRedirectToGame,
       (customRoomRedirectToGameDTO: CustomRoomRedirectToGameDTO) => {
+        const createCustomDTO: CreateCustomDTO = {
+          hasTimeLimit: this.hasTimeLimit,
+          timeLimitInSeconds: this.timeLimitInSeconds,
+          opening: this.opening,
+        };
         this.$router.push(
-          `/game?type=custom&roomID=${customRoomRedirectToGameDTO.roomID}`
+          `/game?type=custom&roomID=${customRoomRedirectToGameDTO.roomID}&hasTimeLimit=${createCustomDTO.hasTimeLimit}&timeLimitInSeconds=${createCustomDTO.timeLimitInSeconds}&opening=${createCustomDTO.opening}`
         );
       }
     );

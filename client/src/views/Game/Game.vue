@@ -38,6 +38,8 @@ import {
   EndingType,
 } from "@/shared/types";
 import {
+  AskForRematchDTO,
+  CreateCustomDTO,
   GameClickDTO,
   GameEndedDTO,
   GameStartedEventDTO,
@@ -140,7 +142,11 @@ export default defineComponent({
       socket.emit(SocketIOEvents.ToServerSwapPickGameStone, dto);
     },
     rematchCustom() {
-      socket.emit(SocketIOEvents.AskForRematch, this.getRoomIDFromURL);
+      const askForRematchDTO: AskForRematchDTO = {
+        oldRoomID: this.roomID,
+        createCustomDTO: this.constructSettingsDTO,
+      };
+      socket.emit(SocketIOEvents.AskForRematch, askForRematchDTO);
     },
   },
   async mounted() {
@@ -212,7 +218,10 @@ export default defineComponent({
     socket.on(
       SocketIOEvents.RedirectToCustomRematch,
       (newGameRoomID: string) => {
-        this.$router.push(`/game?type=custom&roomID=${newGameRoomID}`);
+        const dto = this.constructSettingsDTO;
+        this.$router.push(
+          `/game?type=custom&roomID=${newGameRoomID}&hasTimeLimit=${dto.hasTimeLimit}&timeLimitInSeconds=${dto.timeLimitInSeconds}&opening=${dto.opening}`
+        );
       }
     );
 
@@ -277,6 +286,25 @@ export default defineComponent({
     },
     getRoomIDFromURL(): string | null {
       return this.getURLParams.get("roomID");
+    },
+    roomID(): string {
+      return this.getURLParams.get("roomID") as string;
+    },
+    hasTimeLimit(): boolean {
+      return this.getURLParams.get("hasTimeLimit") === "true";
+    },
+    timeLimitInSeconds(): number {
+      return Number(this.getURLParams.get("timeLimitInSeconds"));
+    },
+    constructSettingsDTO(): CreateCustomDTO {
+      return {
+        hasTimeLimit: this.hasTimeLimit,
+        timeLimitInSeconds: this.timeLimitInSeconds,
+        opening: this.opening,
+      };
+    },
+    opening(): Opening {
+      return this.getURLParams.get("opening") as Opening;
     },
   },
   beforeUnmount() {

@@ -50,12 +50,17 @@
           >
             {{ eloGain }}
           </div>
-          <router-link
-            :to="newGameURL"
-            class="justify-self-end my-auto w-full py-2 xl:py-4 text-center rounded-lg font-medium text-lg text-white bg-gomoku-blue hover:bg-gomoku-blue-dark focus:bg-gomoku-blue-dark"
-          >
-            New Game
-          </router-link>
+
+          <base-button
+            class="text-xl w-full  text-gray-50 font-medium mt-5"
+            :class="
+              askedForRematch
+                ? 'bg-gray-400 dark:bg-gray-500'
+                : 'bg-gomoku-blue dark:bg-gomoku-blue'
+            "
+            @click="playAgain"
+            >{{ newGameButtonText }}
+          </base-button>
         </div>
       </div>
     </transition>
@@ -81,8 +86,8 @@ export default defineComponent({
     CrossIconSvg,
     ChevronsDownIconSvg,
   },
-  data(): { isShown: boolean } {
-    return { isShown: false };
+  data(): { isShown: boolean; askedForRematch: boolean } {
+    return { isShown: false, askedForRematch: false };
   },
   computed: {
     isTie(): boolean {
@@ -107,11 +112,21 @@ export default defineComponent({
     newGameURL(): string {
       return `search?type=${this.gameType || ""}`;
     },
+    newGameButtonText(): string {
+      if (this.gameType === GameType.Custom) {
+        return "Rematch game";
+      } else {
+        return "Search new game";
+      }
+    },
   },
   methods: {
     playAgain() {
       if (this.gameType === GameType.Custom) {
-        this.$emit("rematchCustom");
+        if (!this.askedForRematch) {
+          this.$emit("rematchCustom");
+          this.askedForRematch = true;
+        }
       } else {
         this.$router.push(this.newGameURL);
       }

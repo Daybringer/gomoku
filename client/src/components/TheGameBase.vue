@@ -48,7 +48,11 @@
           :myElo="myElo"
           :gameType="gameType"
           :askingForRematch="askingForRematch"
-          @rematchCustom="$emit('rematchCustom')"
+          @rematchCustom="
+            () => {
+              $emit('rematchCustom');
+            }
+          "
         />
       </div>
       <!-- Socials container -->

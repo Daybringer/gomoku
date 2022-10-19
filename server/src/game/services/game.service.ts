@@ -44,7 +44,7 @@ export class GameService {
   quickGameRooms: { [id: string]: QuickGame } = {};
   rankedGameRooms: { [id: string]: RankedGame } = {};
   customGameRooms: { [id: string]: CustomGame } = {};
-  customRematch: { [roomID: string]: number };
+  customRematch: { [roomID: string]: number } = {};
 
   gameRooms = [this.quickGameRooms, this.rankedGameRooms, this.customGameRooms];
 
@@ -260,7 +260,11 @@ export class GameService {
     oldRoomID: string,
     settings: CreateCustomDTO,
   ) {
-    this.customRematch[oldRoomID]++;
+    if (oldRoomID in this.customRematch) {
+      this.customRematch[oldRoomID]++;
+    } else {
+      this.customRematch[oldRoomID] = 1;
+    }
     if (this.customRematch[oldRoomID] === 2) {
       const { roomID } = this.createCustomGame(settings);
       server.to(oldRoomID).emit(SocketIOEvents.RedirectToCustomRematch, roomID);
