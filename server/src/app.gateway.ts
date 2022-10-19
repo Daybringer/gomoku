@@ -239,7 +239,6 @@ export class GameGateway implements OnGatewayDisconnect {
 
   @SubscribeMessage(SocketIOEvents.AskForRematch)
   handleCustomAskForRematch(socket: Socket, dto: AskForRematchDTO): void {
-    console.log('asking for rematch:', dto);
     this.gameService.handleCustomAskForRematch(
       this.server,
       socket,

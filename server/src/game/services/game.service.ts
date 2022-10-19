@@ -73,11 +73,17 @@ export class GameService {
     if (!game) {
       client.emit(SocketIOEvents.InvalidRoomID);
     } else {
-      await this.addPlayer(game, client.id, logged, userID);
-      if (game.isFull && !game.isRunning) game.start();
+      if (game.isFull || game.isRunning) {
+        client.emit(SocketIOEvents.InvalidRoomID);
+        throw 'Game is already full/running';
+      }
 
       // Subscribing socket to SocketIO room
       client.join(roomID);
+
+      await this.addPlayer(game, client.id, logged, userID);
+      if (game.isFull && !game.isRunning) game.start();
+
       if (game.isRunning) {
         const gameStartedDTO = await this.constructGameStartedDTO(game);
         server.to(roomID).emit(SocketIOEvents.GameStarted, gameStartedDTO);

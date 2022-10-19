@@ -20,34 +20,4 @@ export default defineComponent({
   mounted() {},
 });
 </script>
-<style>
-.notification-enter-active {
-  animation: notification-in 0.5s ease-out;
-}
-.notification-leave-active {
-  animation: notification-out 0.5s ease-in;
-}
-@keyframes notification-in {
-  0% {
-    transform: translateX(-180px);
-    opacity: 20%;
-  }
-
-  100% {
-    transform: translateX(0px);
-    opacity: 100%;
-  }
-}
-
-@keyframes notification-out {
-  0% {
-    transform: translateX(0px);
-    opacity: 100%;
-  }
-
-  100% {
-    transform: translateX(180px);
-    opacity: 20%;
-  }
-}
-</style>
+<style></style>
