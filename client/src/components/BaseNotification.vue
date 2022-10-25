@@ -20,4 +20,23 @@ export default defineComponent({
   mounted() {},
 });
 </script>
-<style></style>
+<style scoped>
+.notification-enter-from {
+  transform: translateX(-180px);
+  opacity: 20%;
+}
+.notification-enter-to {
+  transition: 0.25s ease-out;
+  transform: translateX(0px);
+  opacity: 100%;
+}
+.notification-leave-from {
+  transform: translateX(0px);
+  opacity: 100%;
+}
+.notification-leave-to {
+  transition: 0.25s ease-in;
+  transform: translatex(180px);
+  opacity: 20%;
+}
+</style>

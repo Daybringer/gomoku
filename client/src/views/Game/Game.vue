@@ -314,14 +314,17 @@ export default defineComponent({
 </script>
 <style>
 .bounce-enter-active {
-  animation: bounce-in 0.4s ease-out;
+  animation: bounce-in 0.4s ease-out !important;
+  animation-fill-mode: forwards;
 }
 .bounce-leave-active {
-  animation: bounce-in 0.4s reverse ease-out;
+  animation: bounce-in 0.4s reverse ease-out !important;
+  animation-fill-mode: forwards;
 }
 
 .sad-animation {
   animation: down 3s infinite;
+  animation-delay: 0.4s;
 }
 
 @keyframes down {
@@ -337,6 +340,7 @@ export default defineComponent({
 }
 .animation-bounce {
   animation: bounce 1s infinite;
+  animation-delay: 0.4s;
 }
 @keyframes bounce {
   0%,

@@ -8,7 +8,7 @@
       <chevrons-down-icon-svg class="h-8 w-8 -rotate-45 transform" />
     </button>
 
-    <transition name="bounce">
+    <transition name="bounce" css="true" type="animation" v-show="isShown">
       <div
         class="absolute z-20 flex p-6 xl:p-12 flex-col h-full w-full bg-gray-100 dark:bg-gray-800"
         :class="
@@ -20,7 +20,6 @@
               : 'tie-background'
             : 'minimizeAfterGameModal'
         "
-        v-show="isShown"
       >
         <div
           class="w-full h-full rounded-lg p-4 bg-white dark:bg-gray-700 shadow-2xl flex relative justify-start place-items-center flex-col md:gap-6 gap-2"
@@ -32,13 +31,13 @@
             <cross-icon-svg class="h-8" />
           </button>
           <h1
-            class="w-full text-center text-5xl px-4 md:py-4 xl:text-7xl font-medium text-gomoku-blue"
+            class="w-full text-center text-5xl px-4 2xl:py-4 xl:text-7xl font-medium text-gomoku-blue"
           >
             {{ amIWinner ? "Victory!" : "Defeat!" }}
           </h1>
           <h3
             v-show="hasEndedByDisconnect"
-            class="w-full text-center text-gray-800 md:text-2xl text-lg"
+            class="w-full text-center text-gray-800 xl:text-2xl text-lg"
           >
             Opponent has disconnected
           </h3>
@@ -63,7 +62,7 @@
             alt=""
           />
           <base-button
-            class="text-xl w-full  text-gray-50 font-medium mt-5"
+            class="text-xl w-full  text-gray-50 font-medium  mt-auto"
             :class="
               askedForRematch
                 ? 'bg-gray-400 dark:bg-gray-500'

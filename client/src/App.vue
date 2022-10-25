@@ -7,6 +7,18 @@
     class="min-height-screen-calc "
     @intersectionCrossed="setIntersection"
   />
+  <transition-group>
+    <base-toast
+      v-for="notification in notifications"
+      :key="notification.UUID"
+      :text="notification.text"
+      :type="notification.type"
+      :autoDismiss="notification.autoDismiss"
+      :duration="notification.duration"
+      :imageName="notification.imageName"
+      :UUID="notification.UUID"
+    />
+  </transition-group>
 </template>
 <script lang="ts">
 import { io, Socket } from "socket.io-client";
@@ -15,11 +27,15 @@ import { SocketIOEvents, UpdateActiveUsersDTO } from "@/shared/socketIO";
 import { useStore } from "@/store/store";
 import { defineComponent, ref, reactive, toRefs, onMounted } from "vue";
 import Navbar from "@/components/TheNavbar.vue";
+import BaseToast from "./components/BaseToast.vue";
+import { useNotificationsStore } from "./store/notifications";
 export default defineComponent({
   name: "App",
-  components: { Navbar },
+  components: { Navbar, BaseToast },
   setup() {
     const store = useStore();
+    const notificationStore = useNotificationsStore();
+    const notifications = reactive(notificationStore.$state.notifications);
 
     if (store.token) {
       store.setBearer(store.token);
@@ -46,6 +62,7 @@ export default defineComponent({
       ...toRefs(state),
       setIntersection,
       onlineUsers,
+      notifications,
     };
   },
   mounted() {},
