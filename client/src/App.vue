@@ -7,18 +7,22 @@
     class="min-height-screen-calc "
     @intersectionCrossed="setIntersection"
   />
-  <transition-group>
-    <base-toast
-      v-for="notification in notifications"
-      :key="notification.UUID"
-      :text="notification.text"
-      :type="notification.type"
-      :autoDismiss="notification.autoDismiss"
-      :duration="notification.duration"
-      :imageName="notification.imageName"
-      :UUID="notification.UUID"
-    />
-  </transition-group>
+  <div
+    class="fixed w-full flex flex-col place-items-center z-50 bottom-8 gap-2"
+  >
+    <transition-group>
+      <base-toast
+        v-for="notification in notifications"
+        :key="notification.UUID"
+        :text="notification.text"
+        :type="notification.type"
+        :autoDismiss="notification.autoDismiss"
+        :duration="notification.duration"
+        :imageName="notification.imageName"
+        :UUID="notification.UUID"
+      />
+    </transition-group>
+  </div>
 </template>
 <script lang="ts">
 import { io, Socket } from "socket.io-client";
