@@ -11,9 +11,17 @@ export default defineComponent({
   },
   name: "Test",
   methods: {
-    createNotification() {
+    createNotification(mode: number) {
       const store = useNotificationsStore();
-      store.createNotification(NotificationType.Success, "Some text");
+      if (mode == 1) {
+        store.createNotification(NotificationType.Success, "Some text");
+      } else if (mode == 2) {
+        store.createNotification(NotificationType.Error, "Some text");
+      } else if (mode == 3) {
+        store.createNotification(NotificationType.Warning, "Some text");
+      } else {
+        store.createNotification(NotificationType.Info, "Some text");
+      }
     },
   },
 });
@@ -23,9 +31,28 @@ export default defineComponent({
     <div>
       <button
         class="rounded-lg shadow-lg py-2 px-4 text-xl border-2 border-gray-500"
-        @click="createNotification()"
+        @click="createNotification(1)"
       >
-        Create notification
+        Create success notification
+      </button>
+      <button
+        class="rounded-lg shadow-lg py-2 px-4 text-xl border-2 border-gray-500"
+        @click="createNotification(2)"
+      >
+        Create error notification
+      </button>
+      <button
+        class="rounded-lg shadow-lg py-2 px-4 text-xl border-2 border-gray-500"
+        @click="createNotification(3)"
+      >
+        Create warning notification
+      </button>
+
+      <button
+        class="rounded-lg shadow-lg py-2 px-4 text-xl border-2 border-gray-500"
+        @click="createNotification(4)"
+      >
+        Create info notification
       </button>
     </div>
   </view-base-fixed-height>

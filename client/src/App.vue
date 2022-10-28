@@ -10,7 +10,7 @@
   <div
     class="fixed w-full flex flex-col place-items-center z-50 bottom-8 gap-2"
   >
-    <transition-group>
+    <transition-group name="notification-list">
       <base-toast
         v-for="notification in notifications"
         :key="notification.UUID"
@@ -100,5 +100,21 @@ a {
 }
 a:active {
   outline: none !important;
+}
+.notification-list-move,
+.notification-list-enter-active,
+.notification-list-leave-active {
+  transition: all 0.5s ease;
+}
+/* .notification-list-leave-active {
+  position: absolute;
+} */
+.notification-list-enter-from {
+  opacity: 0;
+  transform: translate(-30px);
+}
+.notification-list-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div
     :style="`--toast-duration:${duration}s;--toast-color:${toastColor};`"
-    class=" relative flex flex-col place-items-center text-center mx-4 px-4 py-1 gap-1 md:py-2 bg-gray-50 border border-transparent rounded-full shadow-2xl"
+    class=" relative flex flex-col place-items-center text-center mx-4 px-4 py-1 gap-1 md:py-2 bg-gray-50 dark:bg-gray-300 border border-transparent rounded-full custom-shadow"
   >
     <div class="flex-1 flex flex-row place-items-center pt-2">
       <info-icon v-if="isInfo" class="h-8 text-blue-500" />
@@ -77,6 +77,9 @@ export default defineComponent({
 });
 </script>
 <style scoped>
+.custom-shadow {
+  box-shadow: 0 2px 10px 1px rgba(0, 0, 0, 0.45);
+}
 .progress {
   background: var(--toast-color);
   width: 80%;
