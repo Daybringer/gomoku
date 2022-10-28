@@ -1,15 +1,15 @@
 <template>
   <div
     :style="`--toast-duration:${duration}s;--toast-color:${toastColor};`"
-    class=" relative flex flex-col place-items-center text-center mx-4 px-4 py-1 gap-1 md:py-2 bg-gray-50 dark:bg-gray-300 border border-transparent rounded-full custom-shadow"
+    class="min-toast-w relative flex flex-col place-items-center text-center mx-2 px-2 md:px-4 py-1 gap-1 md:py-1 bg-gray-50 dark:bg-gray-300 border border-transparent rounded-full custom-shadow"
   >
-    <div class="flex-1 flex flex-row place-items-center pt-2">
-      <info-icon v-if="isInfo" class="h-8 text-blue-500" />
-      <success-icon v-if="isSuccess" class="h-8 text-green-500" />
-      <error-icon v-if="isError" class="h-8 text-red-500" />
-      <allert-icon v-if="isWarning" class="h-8 text-yellow-500" />
-      <div class="px-2 flex-1 text-sm md:text-base text-left">
-        Some text here, error here, error there and things
+    <div class="flex-1 flex flex-row place-items-center pt-1">
+      <info-icon v-if="isInfo" class="h-7 md:h-8 self-start text-blue-500" />
+      <success-icon v-if="isSuccess" class="h-7 md:h-8 text-green-500" />
+      <error-icon v-if="isError" class="h-7 md:h-8 text-red-500" />
+      <allert-icon v-if="isWarning" class="h-7 md:h-8 text-yellow-500" />
+      <div class="px-2 flex-1 text-base text-center">
+        {{ text }}
       </div>
     </div>
     <div
@@ -87,6 +87,9 @@ export default defineComponent({
   animation: progress var(--toast-duration) linear forwards;
 }
 
+.min-toast-w {
+  min-width: 20rem;
+}
 @keyframes progress {
   to {
     width: 0;

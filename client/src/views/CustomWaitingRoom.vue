@@ -35,10 +35,6 @@
         </div>
       </div>
     </div>
-    <base-notification
-      :text="'Successfully copied to clipboard'"
-      v-show="notificationShown"
-    />
   </view-base-fixed-height>
 </template>
 <script lang="ts">
@@ -50,7 +46,6 @@ import SwingAnimationSvg from "@/assets/svg/SwingAnimationSvg.vue";
 import BaseButton from "@/components/BaseButton.vue";
 import BaseMidHeadline from "@/components/BaseMidHeadline.vue";
 import ClipboardIconSvg from "@/assets/svg/ClipboardIconSvg.vue";
-import BaseNotification from "@/components/BaseNotification.vue";
 import { defineComponent } from "vue";
 import {
   CreateCustomDTO,
@@ -59,6 +54,7 @@ import {
   SocketIOEvents,
 } from "@/shared/socketIO";
 import { Opening } from "@/shared/types";
+import { NotificationType, useNotificationsStore } from "@/store/notifications";
 export default defineComponent({
   name: "CustomWaitingRoom",
   props: {},
@@ -68,11 +64,9 @@ export default defineComponent({
     SwingAnimationSvg,
     ClipboardIconSvg,
     BaseMidHeadline,
-    BaseNotification,
   },
-  data(): { notificationShown: boolean; copyButtonText: string } {
+  data(): { copyButtonText: string } {
     return {
-      notificationShown: false,
       copyButtonText: "Copy link",
     };
   },
@@ -95,13 +89,17 @@ export default defineComponent({
   },
   methods: {
     copyToClipboard(): void {
-      this.notificationShown = true;
       navigator.clipboard.writeText(window.location.href);
       this.copyButtonText = "Copied";
-      setTimeout(() => {
-        this.notificationShown = false;
-      }, 3000);
+      this.notification.createNotification(
+        NotificationType.Success,
+        "Room ID has been successfuly copied"
+      );
     },
+  },
+  setup() {
+    const notification = useNotificationsStore();
+    return { notification };
   },
   mounted() {
     socket = io("/custom/waiting", { port: 3001 });
@@ -111,8 +109,10 @@ export default defineComponent({
     socket.emit(SocketIOEvents.CustomRoomJoined, customRoomJoinedDTO);
 
     socket.on(SocketIOEvents.InvalidCustomRoom, () => {
-      // TODO show notification or redirect to special page
-
+      this.notification.createNotification(
+        NotificationType.Error,
+        "Invalid custom room ID"
+      );
       this.$router.push("/");
     });
 

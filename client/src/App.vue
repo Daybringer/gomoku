@@ -104,17 +104,17 @@ a:active {
 .notification-list-move,
 .notification-list-enter-active,
 .notification-list-leave-active {
-  transition: all 0.5s ease;
+  transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 /* .notification-list-leave-active {
   position: absolute;
 } */
 .notification-list-enter-from {
   opacity: 0;
-  transform: translate(-30px);
+  transform: translate(-80px);
 }
 .notification-list-leave-to {
   opacity: 0;
-  transform: translateX(30px);
+  transform: translateX(80px);
 }
 </style>

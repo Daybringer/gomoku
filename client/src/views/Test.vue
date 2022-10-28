@@ -14,9 +14,15 @@ export default defineComponent({
     createNotification(mode: number) {
       const store = useNotificationsStore();
       if (mode == 1) {
-        store.createNotification(NotificationType.Success, "Some text");
+        store.createNotification(
+          NotificationType.Success,
+          "Some textSome textSome text"
+        );
       } else if (mode == 2) {
-        store.createNotification(NotificationType.Error, "Some text");
+        store.createNotification(
+          NotificationType.Error,
+          "Lorem ipsum dolorem something here and theres"
+        );
       } else if (mode == 3) {
         store.createNotification(NotificationType.Warning, "Some text");
       } else {
