@@ -6,7 +6,8 @@ export default defineComponent({
   props: {},
   components: {},
   data(): {} {
-    return {};
+    return {
+    };
   },
   computed: {},
   methods: {},

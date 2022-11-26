@@ -1,7 +1,7 @@
 <template>
   <view-base-fixed-height>
     <!-- Background top overlay -->
-    <div class="absolute top-16 w-full h-2/6 bg-gray-800  z-0"></div>
+    <div class="absolute top-16 w-full h-2/6 bg-gray-800 z-0"></div>
     <!-- Main div -->
     <div
       ref="container"
@@ -16,12 +16,14 @@
         <div
           v-for="cellID in genArray"
           :key="cellID"
-          :id="cellID"
+          :id="String(cellID)"
           class="bg-white dark:bg-gray-500 cursor-pointer relative"
           :class="
             lastPositionID == cellID && round !== 0 ? 'currPositionOutline' : ''
           "
           @click="gameClick(cellID)"
+          @mouseenter="placeHoverStone(cellID)"
+          @mouseleave="removeHoverStone(cellID)"
         ></div>
         <!-- Coinflip overlay -->
         <div
@@ -64,11 +66,11 @@
           <div
             v-if="
               slideNotification.enemyChoose ||
-                slideNotification.choose ||
-                slideNotification.place ||
-                slideNotification.enemyPlace
+              slideNotification.choose ||
+              slideNotification.place ||
+              slideNotification.enemyPlace
             "
-            class="fancy-background px-4 py-2 rounded-lg flex justify-center place-items-center w-full h-14 md:h-16  mb-4 bg-gray-100"
+            class="fancy-background px-4 py-2 rounded-lg flex justify-center place-items-center w-full h-14 md:h-16 mb-4 bg-gray-100"
           >
             <div
               class="flex justify-center place-items-center rounded-lg flex-1 h-full bg-gray-100"
@@ -86,11 +88,9 @@
                     >
                       <game-stone-circle-svg
                         class="h-8 w-8"
-                        :style="
-                          `color:${
-                            mySymbol === 'circle' ? myColor : enemyColor
-                          };`
-                        "
+                        :style="`color:${
+                          mySymbol === 'circle' ? myColor : enemyColor
+                        };`"
                       />
                     </button>
                     <button
@@ -99,11 +99,9 @@
                     >
                       <game-stone-cross-svg
                         class="h-8 w-8"
-                        :style="
-                          `color:${
-                            mySymbol === 'cross' ? myColor : enemyColor
-                          };`
-                        "
+                        :style="`color:${
+                          mySymbol === 'cross' ? myColor : enemyColor
+                        };`"
                       />
                     </button>
                   </div>
@@ -176,20 +174,20 @@
             id="chatContainer"
             class="flex-grow flex flex-col space-y-2 pt-2 mb-2 h-0 relative"
             :class="muted ? 'overflow-hidden' : 'overflow-auto'"
-            style="scroll-behavior: smooth;"
+            style="scroll-behavior: smooth"
           >
             <chat-message
               v-for="message in messages"
               v-show="!muted"
               :text="message.text"
               :author="message.author"
-              :key="message"
+              :key="message.text + message.author"
               :borderColorHEX="message.author === 'me' ? myColor : enemyColor"
             ></chat-message>
             <!-- Muted overlay -->
             <div
               v-show="muted"
-              class="w-90 h-90 absolute-center flex place-items-center justify-center font-medium text-gray-100 text-lg  bg-gray-600 rounded-xl"
+              class="w-90 h-90 absolute-center flex place-items-center justify-center font-medium text-gray-100 text-lg bg-gray-600 rounded-xl"
             >
               Muted
             </div>
@@ -232,7 +230,7 @@
   </view-base-fixed-height>
 </template>
 <script lang="ts">
-import type {PropType} from "vue"
+import type { PropType } from "vue";
 import { defineComponent } from "vue";
 // Types
 import { GameState } from "@/types";
@@ -240,16 +238,22 @@ import { GameState } from "@/types";
 import { Howl } from "howler";
 // Components
 import ViewBaseFixedHeight from "@/components/ViewBaseFixedHeight.vue";
-import TheAfterGameOverlay from "@/components/TheAfterGameOverlay.vue"
+import TheAfterGameOverlay from "@/components/TheAfterGameOverlay.vue";
 import SocialBlade from "@/components/GameSocialBlade.vue";
 import ChatMessage from "@/components/GameChatMessage.vue";
 // SVGs
 import GameStoneCrossSvg from "@/assets/svg/GameStoneCross.svg.vue";
 import GameStoneCircleSvg from "@/assets/svg/GameStoneCircleSvg.vue";
-import NoMicIconSvg from "@/assets/svg/NoMicIconSvg.vue"
+import NoMicIconSvg from "@/assets/svg/NoMicIconSvg.vue";
 import MicIconSvg from "@/assets/svg/MicIconSvg.vue";
 // Utils
-import { EndingType, GameType, Opening, OpeningPhase, Player } from "@/shared/types";
+import {
+  EndingType,
+  GameType,
+  Opening,
+  OpeningPhase,
+  Player,
+} from "@/shared/types";
 import { Message } from "@/views/Game/Game.vue";
 
 export default defineComponent({
@@ -268,26 +272,26 @@ export default defineComponent({
   },
   props: {
     // Player info
-    me:{type: Object as PropType<Player>,required:true},
-    enemy:{type:Object as PropType<Player>,required:true},
-    winner:{type:Object as PropType<Player>,required:true},
-    elos:{type:Object as PropType<Player>,required:true},
-    myColor: {type:String,required:true},
-    enemyColor: {type:String,required:true},
-    currentPlayer:{type:Object as PropType<Player>,required:true},
+    me: { type: Object as PropType<Player>, required: true },
+    enemy: { type: Object as PropType<Player>, required: true },
+    winner: { type: Object as PropType<Player>, required: true },
+    elos: { type: Object as PropType<Player>, required: true },
+    myColor: { type: String, required: true },
+    enemyColor: { type: String, required: true },
+    currentPlayer: { type: Object as PropType<Player>, required: true },
     // General
     hasTimeLimit: Boolean,
-    messages: {type:Array as PropType<Message[]>,required:true},
+    messages: { type: Array as PropType<Message[]>, required: true },
     lastPositionID: Number,
-    round: {type:Number,required:true},
-    gameState: {type: Object as PropType<GameState>,required:true},
-    endingType:{type:Object as PropType<EndingType>,required:true},
-    openingPhase:{type:Object as PropType<OpeningPhase>, required:true},
-    opening:{type:Object as PropType<Opening>,required:true},
-    gameType:{type:Object as PropType<GameType>},
-    askingForRematch:{type:Number,required:true},
+    round: { type: Number, required: true },
+    gameState: { type: Object as PropType<GameState>, required: true },
+    endingType: { type: Object as PropType<EndingType>, required: true },
+    openingPhase: { type: Object as PropType<OpeningPhase>, required: true },
+    opening: { type: Object as PropType<Opening>, required: true },
+    gameType: { type: Object as PropType<GameType>, required: true },
+    askingForRematch: { type: Number, required: true },
   },
-  emits:['rematchCustom','gameClick','sendMessage','pickGameStone'],
+  emits: ["rematchCustom", "gameClick", "sendMessage", "pickGameStone"],
   data(): {
     chatInput: string;
     muted: boolean;
@@ -298,38 +302,51 @@ export default defineComponent({
     };
   },
   computed: {
-    slideNotification(){
-      const notifications = {place:false,enemyPlace:false,choose:false,enemyChoose:false}
-      if(this.opening === Opening.Swap1 && this.gameState === GameState.Running){
-        if(this.openingPhase === OpeningPhase.Place3){
-          if(this.currentPlayer.socketID === this.me.socketID){
-            notifications.place = true
-          }else {
-            notifications.enemyPlace = true
+    slideNotification() {
+      const notifications = {
+        place: false,
+        enemyPlace: false,
+        choose: false,
+        enemyChoose: false,
+      };
+      if (
+        this.opening === Opening.Swap1 &&
+        this.gameState === GameState.Running
+      ) {
+        if (this.openingPhase === OpeningPhase.Place3) {
+          if (this.currentPlayer.socketID === this.me.socketID) {
+            notifications.place = true;
+          } else {
+            notifications.enemyPlace = true;
           }
-        } else if (this.openingPhase === OpeningPhase.PickGameStone){
-          if(this.currentPlayer.socketID === this.me.socketID){
+        } else if (this.openingPhase === OpeningPhase.PickGameStone) {
+          if (this.currentPlayer.socketID === this.me.socketID) {
             notifications.choose = true;
-          }else {
+          } else {
             notifications.enemyChoose = true;
           }
         }
       }
-      return notifications
+      return notifications;
     },
     coinSide(): string {
-      return this.me.socketID === this.currentPlayer.socketID ? "heads" : "tails";
+      return this.me.socketID === this.currentPlayer.socketID
+        ? "heads"
+        : "tails";
     },
     mySymbol(): string {
       if (this.isWaitingOrCoinflip) return "";
-      return this.me.playerSymbol===1? "circle" : "cross";
+      return this.me.playerSymbol === 1 ? "circle" : "cross";
     },
     enemySymbol(): string {
       if (this.isWaitingOrCoinflip) return "";
-      return this.enemy.playerSymbol===1 ? "circle" : "cross";
+      return this.enemy.playerSymbol === 1 ? "circle" : "cross";
     },
-    isWaitingOrCoinflip():boolean{
-      return this.gameState === GameState.Waiting || this.gameState === GameState.Coinflip
+    isWaitingOrCoinflip(): boolean {
+      return (
+        this.gameState === GameState.Waiting ||
+        this.gameState === GameState.Coinflip
+      );
     },
     isGameStateCoinflip(): boolean {
       return this.gameState === GameState.Coinflip;
@@ -343,13 +360,13 @@ export default defineComponent({
     amIWinner(): boolean {
       return this.winner.socketID === this.me.socketID;
     },
-    myElo():number{
-      if(this.me.logged){
-        if (this.elos[this.me.userID]) return this.elos[this.me.userID]
+    myElo(): number {
+      if (this.me.logged) {
+        if (this.elos[this.me.userID]) return this.elos[this.me.userID];
       }
-      return 0
+      return 0;
     },
-    genArray() {
+    genArray(): number[] {
       const array: number[] = [];
 
       for (let i = 0; i < 225; i++) {
@@ -360,15 +377,19 @@ export default defineComponent({
     },
   },
   watch: {
-    lastPositionID: function() {
+    lastPositionID: function () {
       this.placeStone(this.lastPositionID!);
     },
-    gameState: function() {
+    gameState: function () {
       if (this.gameState === GameState.Ended) {
         const endingSFX = new Howl({
           // TODO implement tie sound
           src: [
-            `sounds/${this.winner.socketID === this.me.socketID ? "victory.mp3" : "defeat.mp3"}`,
+            `sounds/${
+              this.winner.socketID === this.me.socketID
+                ? "victory.mp3"
+                : "defeat.mp3"
+            }`,
           ],
           volume: 0.2,
         });
@@ -391,48 +412,58 @@ export default defineComponent({
       },
       deep: true,
     },
-    openingPhase:function(){
-      if(this.openingPhase === OpeningPhase.Done && this.opening === Opening.Swap1){
-        const circles = Array.from(document.getElementsByClassName("circle")as HTMLCollectionOf<HTMLElement>);
-        const crosses = Array.from(document.getElementsByClassName("cross")as HTMLCollectionOf<HTMLElement>);
-        if(this.me.playerSymbol===1){
-          circles.forEach((circle)=>{
+    openingPhase: function () {
+      if (
+        this.openingPhase === OpeningPhase.Done &&
+        this.opening === Opening.Swap1
+      ) {
+        const circles = Array.from(
+          document.getElementsByClassName(
+            "circle"
+          ) as HTMLCollectionOf<HTMLElement>
+        );
+        const crosses = Array.from(
+          document.getElementsByClassName(
+            "cross"
+          ) as HTMLCollectionOf<HTMLElement>
+        );
+        if (this.me.playerSymbol === 1) {
+          circles.forEach((circle) => {
             circle.style.color = this.myColor;
-          })
-          crosses.forEach((cross)=>{
-            cross.style.color = this.enemyColor
-          })
-        }else{
-
-          circles.forEach((circle)=>{
+          });
+          crosses.forEach((cross) => {
+            cross.style.color = this.enemyColor;
+          });
+        } else {
+          circles.forEach((circle) => {
             circle.style.color = this.enemyColor;
-          })
-          crosses.forEach((cross)=>{
-            cross.style.color = this.myColor
-          })
+          });
+          crosses.forEach((cross) => {
+            cross.style.color = this.myColor;
+          });
         }
       }
-    }
+    },
   },
   methods: {
     gameClick(id: number) {
       const position = [id % 15, Math.floor(id / 15)];
       this.$emit("gameClick", position);
     },
+
     placeStone(id: number) {
-      let node;
-      if (this.round! % 2 === 1) {
+      let node: HTMLElement | null;
+      if (this.round % 2 === 1) {
         node = document.getElementById("svgCircleOrigin");
       } else {
         node = document.getElementById("svgCrossOrigin");
       }
       const clone = node?.cloneNode(true) as HTMLElement;
 
-
-      if (this.round! % 2 === 1) {
-        clone.classList.add('circle')
+      if (this.round % 2 === 1) {
+        clone.classList.add("circle");
       } else {
-        clone.classList.add("cross")
+        clone.classList.add("cross");
       }
 
       clone.id = `${id}symbol`;
@@ -447,6 +478,48 @@ export default defineComponent({
       });
       stonePlacedSoundEffect.play();
     },
+    placeHoverStone(id: number) {
+      if (this.currentPlayer.socketID !== this.me.socketID) {
+        return;
+      }
+      const parent = document.getElementById(String(id));
+      if (parent) {
+        if (parent.children.length > 0) {
+          return;
+        }
+      }
+
+      let node: HTMLElement | null;
+
+      // assuming next round, hence the +1 on rounds
+      if ((this.round + 1) % 2 === 1) {
+        node = document.getElementById("svgCircleOrigin");
+      } else {
+        node = document.getElementById("svgCrossOrigin");
+      }
+      const clone = node?.cloneNode(true) as HTMLElement;
+
+      if ((this.round + 1) % 2 === 1) {
+        clone.classList.add("circle");
+      } else {
+        clone.classList.add("cross");
+      }
+
+      clone.id = `${id}symbol`;
+      clone.classList.remove("hidden");
+      clone.classList.add("svgCC");
+      clone.classList.add("svgCCHover");
+
+      parent?.appendChild(clone);
+    },
+    removeHoverStone(id: number) {
+      const parent = document.getElementById(String(id));
+      const hoverChildren = parent?.getElementsByClassName("svgCCHover");
+      if (hoverChildren) {
+        hoverChildren[0].remove();
+      }
+    },
+
     sendMessage() {
       this.chatInput = this.chatInput.trim();
       if (this.chatInput) {
@@ -498,6 +571,10 @@ export default defineComponent({
   -webkit-animation: opacityIn 0.5s forwards;
   animation: opacityIn 0.5s forwards;
   opacity: 1;
+}
+
+.svgCCHover {
+  opacity: 0.3 !important;
 }
 
 .currPositionOutline {

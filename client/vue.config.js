@@ -4,6 +4,7 @@ module.exports = {
   devServer: {
     proxy: "http://localhost:3000",
   },
+
   // FIXME pinia ^2.0.0 esm workaround
   // chainWebpack: (config) => {
   //   // ...

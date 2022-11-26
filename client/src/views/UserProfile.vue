@@ -12,6 +12,7 @@ import { EndingType, GameBoard, GameType, LoginStrategy } from "@/shared/types";
 import UsersRepository from "@/repositories/usersRepository";
 import { useStore } from "@/store/store";
 
+
 // Components
 import ViewBaseResponsive from "@/components/ViewBaseResponsive.vue";
 import RowToMobileStackedLayout from "@/layouts/RowToMobileStackedLayout.vue";
