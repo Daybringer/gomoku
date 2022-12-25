@@ -17,6 +17,7 @@
     :messages="messages"
     :gameType="getGameTypeFromURL"
     :askingForRematch="askingForRematch"
+    :winningCombination="winningCombination"
     @gameClick="gameClick"
     @sendMessage="sendMessage"
     @pickGameStone="pickGameStone"
@@ -96,6 +97,7 @@ export default defineComponent({
     openingPhase: OpeningPhase;
     opening: Opening;
     askingForRematch: number;
+    winningCombination: Array<Position>;
   } {
     return {
       me: basePlayer(),
@@ -114,6 +116,7 @@ export default defineComponent({
       openingPhase: OpeningPhase.Done,
       opening: Opening.Standard,
       askingForRematch: 0,
+      winningCombination: [],
     };
   },
   setup() {
@@ -259,10 +262,11 @@ export default defineComponent({
     });
 
     socket.on(SocketIOEvents.GameEnded, (dto: GameEndedDTO) => {
-      const { endingType, winner, userIDToEloDiff } = dto;
+      const { endingType, winner, userIDToEloDiff, winningCombination } = dto;
 
       if (userIDToEloDiff) this.elos = userIDToEloDiff;
       if (winner) this.winner = winner;
+      if (winningCombination) this.winningCombination = winningCombination;
 
       this.endingType = endingType;
       this.gameState = GameState.Ended;
@@ -281,7 +285,6 @@ export default defineComponent({
       } else if (type == GameType.Custom) {
         return GameType.Custom;
       }
-      console.error("Not valid gameType");
       return GameType.Quick;
     },
     getRoomIDFromURL(): string | null {

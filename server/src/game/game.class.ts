@@ -7,6 +7,7 @@ import {
   Position,
   Symbol,
 } from '../shared/types';
+import { GomokuBoard } from 'gomoku-game';
 import { GameType } from '../shared/types';
 
 abstract class Game {
@@ -15,8 +16,7 @@ abstract class Game {
   startingPlayer: Player;
   currentPlayer: Player;
   round = 0;
-  gameboardSize = 15;
-  gameboard: Symbol[][] = this.generateGameboard(this.gameboardSize);
+  gameboard: GomokuBoard;
   turns: Position[] = [];
   gameType: GameType;
   opening: Opening;
@@ -46,16 +46,16 @@ abstract class Game {
     return this.getOtherPlayer(this.currentPlayer.socketID);
   }
 
-  getSymbolAt(position: Position): Symbol {
-    return this.gameboard[position[0]][position[1]];
+  get board(): [number, number][] {
+    return this.gameboard.getBoard() as [number, number][];
   }
 
-  setSymbolAt(position: Position, symbol: Symbol): void {
-    this.gameboard[position[0]][position[1]] = symbol;
+  getSymbolAt(position: Position): Symbol {
+    return this.gameboard.getStone(...position);
   }
 
   isPositionEmpty(position: Position): boolean {
-    return this.getSymbolAt(position) === 0;
+    return this.gameboard.isPositionEmpty(...position);
   }
 
   saveTurn(position: [number, number]): void {
@@ -63,7 +63,7 @@ abstract class Game {
   }
 
   placeStone(position: Position, symbol: Symbol): void {
-    this.setSymbolAt(position, symbol);
+    this.gameboard.setStone(...position, symbol);
     this.saveTurn(position);
   }
 
@@ -115,17 +115,6 @@ abstract class Game {
   iterateRound(): void {
     this.round++;
   }
-
-  private generateGameboard(size: number): Symbol[][] {
-    const gameboard: Symbol[][] = [];
-    for (let i = 0; i < size; i++) {
-      gameboard.push([]);
-      for (let ii = 0; ii < size; ii++) {
-        gameboard[i].push(0);
-      }
-    }
-    return gameboard;
-  }
 }
 
 class QuickGame extends Game {
@@ -134,6 +123,7 @@ class QuickGame extends Game {
     this.timeLimitInSeconds = 2 * 60;
     this.gameType = GameType.Quick;
     this.openingPhase = OpeningPhase.Done;
+    this.gameboard = new GomokuBoard(15, 15, 5, true);
   }
 }
 
@@ -148,6 +138,7 @@ class RankedGame extends Game {
     this.gameType = GameType.Ranked;
     this.opening = Opening.Swap1;
     this.openingPhase = OpeningPhase.Place3;
+    this.gameboard = new GomokuBoard(15, 15, 5, true);
   }
 }
 

@@ -104,6 +104,12 @@ export class GameService {
     }
   }
 
+  /**
+   *
+   * @param server
+   * @param client
+   * @param gameClickDTO
+   */
   async handleGameClick(
     server: Server,
     client: Socket,
@@ -158,71 +164,64 @@ export class GameService {
 
       clearInterval(game.calibrationIntervalHandle);
 
-      // FIXME change structure of checkWin to return {hasEnded:,endingType:}
-      const currGameState = this.checkWin(game, position, 15, 5, false);
+      const [column, row] = position;
 
-      if (currGameState === null) {
+      if (game.gameboard.hasWon(game.currentPlayer.playerSymbol, column, row)) {
+        const winner = game.currentPlayer;
+
+        let elos = {};
+
+        if (game.gameType === GameType.Ranked) {
+          elos = await this.calcElo(
+            game.players[0].userID,
+            game.players[1].userID,
+            false,
+            winner.userID,
+          );
+        }
+
+        const dto: GameEndedDTO = {
+          endingType: EndingType.Combination,
+          winningCombination: game.gameboard.getWinningCombination(),
+          winner,
+          userIDToEloDiff: elos,
+        };
+
+        this.endGame(game, EndingType.Combination, winner);
+
+        server.to(roomID).emit(SocketIOEvents.GameEnded, dto);
+      } else {
         game.iterateRound();
         game.currentPlayer = game.getNextPlayer;
+
+        let elos = {};
+
+        if (game.gameType === GameType.Ranked) {
+          elos = await this.calcElo(
+            game.players[0].userID,
+            game.players[1].userID,
+            false,
+          );
+        }
+
+        if (game.gameboard.isTie()) {
+          const dto: GameEndedDTO = {
+            endingType: EndingType.Tie,
+            userIDToEloDiff: elos,
+          };
+          return;
+        }
 
         if (game.hasTimeLimit) {
           game.calibrationIntervalHandle = setInterval(() => {
             this.calibrateTime(server, roomID, game);
           }, 1000);
         }
-      } else {
-        const winner = game.currentPlayer;
 
-        let elos = {};
-        if (game.gameType === GameType.Ranked) {
-          elos = await this.calcElo(
-            game.players[0].userID,
-            game.players[1].userID,
-            currGameState === EndingType.Tie,
-            winner.userID,
-          );
-        }
-
-        const dto: GameEndedDTO = {
-          endingType: currGameState,
-          winner,
-          userIDToEloDiff: elos,
-        };
-
-        this.endGame(game, currGameState, winner);
-
-        server.to(roomID).emit(SocketIOEvents.GameEnded, dto);
+        // TODO check tie
+        // FIXME !!!!
+        //game.gameboard.isTie();
       }
-
-      // if (currGameState === EndingType.Combination) {
-      //   const winner = game.currentPlayer;
-      //   const elos = await this.calcElo(
-      //     game.players[0].userID,
-      //     game.players[1].userID,
-      //     false,
-      //     winner.userID,
-      //   );
-      //   this.endGame(game, currGameState, winner);
-      //   const dto: GameEndedDTO = {
-      //     endingType: EndingType.Combination,
-      //     winner,
-      //     userIDToEloDiff: elos,
-      //   };
-      //   server.to(roomID).emit(SocketIOEvents.GameEnded, dto);
-      // } else if (currGameState === EndingType.Tie) {
-      //   this.endGame(game, currGameState);
-      //   const elos = await this.calcElo(
-      //     game.players[0].userID,
-      //     game.players[1].userID,
-      //     true,
-      //   );
-      //   const dto: GameEndedDTO = {
-      //     endingType: EndingType.Tie,
-      //     userIDToEloDiff: elos,
-      //   };
-      //   server.to(roomID).emit(SocketIOEvents.GameEnded, dto);
-      // } else {
-      // }
     }
   }
 
@@ -378,7 +377,6 @@ export class GameService {
     const result = {};
     result[playerAUserID] = playerARatingDiff;
     result[playerBUserID] = playerBRatingDiff;
-    console.log(result, result[playerAUserID]);
 
     return result;
   }
@@ -442,95 +440,6 @@ export class GameService {
     return gameStartedEventDTO;
   }
 
-  // TODO return winning combination
-  checkWin(
-    game: AnyGame,
-    position: [number, number],
-    gameboardSize: number = 15,
-    winChainLength: number = 5,
-    exactChainLength: boolean = false,
-  ): EndingType | null {
-    const gamePlan = game.gameboard;
-
-    const [xPos, yPos] = position;
-    const symbol = game.currentPlayer.playerSymbol;
-    let horizontal = 0;
-    let vertical = 0;
-    let diagonalR = 0;
-    let diagonalL = 0;
-    for (let x = -(winChainLength - 1); x < winChainLength; x++) {
-      // HORIZONTAL check
-      if (xPos + x >= 0 && xPos + x <= gameboardSize - 1) {
-        if (gamePlan[xPos + x][yPos] === symbol) {
-          horizontal++;
-        } else {
-          horizontal = 0;
-        }
-      }
-
-      // VERTICAL check
-      if (yPos + x >= 0 && yPos + x <= gameboardSize - 1) {
-        if (gamePlan[xPos][yPos + x] === symbol) {
-          vertical++;
-        } else {
-          vertical = 0;
-        }
-      }
-
-      // DIAGONAL checks
-      if (
-        yPos + x >= 0 &&
-        yPos + x <= gameboardSize - 1 &&
-        xPos + x >= 0 &&
-        xPos + x <= gameboardSize - 1
-      ) {
-        if (gamePlan[xPos + x][yPos + x] === symbol) {
-          diagonalR++;
-        } else {
-          diagonalR = 0;
-        }
-      }
-
-      if (
-        yPos + x >= 0 &&
-        yPos + x <= gameboardSize - 1 &&
-        xPos - x >= 0 &&
-        xPos - x <= gameboardSize - 1
-      ) {
-        if (gamePlan[xPos - x][yPos + x] === symbol) {
-          diagonalL++;
-        } else {
-          diagonalL = 0;
-        }
-      }
-
-      if (exactChainLength) {
-        if (
-          horizontal == winChainLength ||
-          vertical == winChainLength ||
-          diagonalL == winChainLength ||
-          diagonalR == winChainLength
-        ) {
-          return EndingType.Combination;
-        }
-      } else {
-        if (
-          horizontal >= winChainLength ||
-          vertical >= winChainLength ||
-          diagonalL >= winChainLength ||
-          diagonalR >= winChainLength
-        ) {
-          return EndingType.Combination;
-        }
-      }
-    }
-    if (game.round === game.gameboardSize ** 2 - 1) {
-      return EndingType.Tie;
-    }
-
-    return null;
-  }
-
   async savePlayerGameProfile(
     player: Player,
     eloDiff?: number,
@@ -590,17 +499,11 @@ export class GameService {
     socketIDtoPlayerGameProfileID[playerOne.socketID] = playerOneProfile.id;
     socketIDtoPlayerGameProfileID[playerTwo.socketID] = playerTwoProfile.id;
 
-    // TODO
-    // ranked game -> calculate Elo delta save it to profiles and update elos of users
-    if (game.gameType === GameType.Ranked) {
-      // get Elos
-    }
-
     gameEntity.type = game.gameType;
-    gameEntity.finalState = game.gameboard;
+    gameEntity.finalState = game.gameboard.getBoard();
     gameEntity.turnHistory = game.turns;
     gameEntity.typeOfWin = game.gameEnding;
-    // there has to be a winner
+
     if (game.gameEnding !== EndingType.Tie) {
       gameEntity.winnerGameProfileID =
         socketIDtoPlayerGameProfileID[game.winner.socketID];

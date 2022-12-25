@@ -253,6 +253,7 @@ import {
   Opening,
   OpeningPhase,
   Player,
+  Position,
 } from "@/shared/types";
 import { Message } from "@/views/Game/Game.vue";
 
@@ -290,6 +291,7 @@ export default defineComponent({
     opening: { type: Object as PropType<Opening>, required: true },
     gameType: { type: Object as PropType<GameType>, required: true },
     askingForRematch: { type: Number, required: true },
+    winningCombination: { type: Array as PropType<Position[]>, required: true },
   },
   emits: ["rematchCustom", "gameClick", "sendMessage", "pickGameStone"],
   data(): {
@@ -395,6 +397,22 @@ export default defineComponent({
         });
         endingSFX.play();
       }
+    },
+    winningCombination: {
+      handler() {
+        this.winningCombination.forEach((position) => {
+          const [x, y] = position;
+
+          const parent = document.getElementById(String(x + y * 15));
+          if (parent) {
+            parent.style.outlineColor = "#e03135";
+            parent.style.outlineWidth = "2px";
+            parent.style.outlineOffset = "-1px";
+            parent.style.outlineStyle = "solid";
+          }
+        });
+      },
+      deep: true,
     },
     messages: {
       handler() {

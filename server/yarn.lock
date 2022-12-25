@@ -4619,6 +4619,11 @@ globby@^11.0.3:
     merge2 "^1.4.1"
     slash "^3.0.0"
 
+gomoku-game@^0.0.7:
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/gomoku-game/-/gomoku-game-0.0.7.tgz#a9ec66768f28eacceb007a7e59982115bc3e6fa7"
+  integrity sha512-rTwacm/O8Qpppl5OiZbVcMvJsBs3jPIhWyQCzQZ8Tzem8ZXZJ+iwQivyR2MNh43kry3PZjjjIK3XDC+6s5kKhg==
+
 google-auth-library@^8.0.2:
   version "8.0.2"
   resolved "https://registry.yarnpkg.com/google-auth-library/-/google-auth-library-8.0.2.tgz#5fa0f2d3795c3e4019d2bb315ade4454cc9c30b5"
