@@ -3937,11 +3937,6 @@ globby@^11.0.2, globby@^11.0.3:
     merge2 "^1.4.1"
     slash "^3.0.0"
 
-gomoku-shared-types-ts@^1.0.0:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/gomoku-shared-types-ts/-/gomoku-shared-types-ts-1.0.1.tgz#da90d85e5f7a40c7f19035d989f103f2cc86b7b3"
-  integrity sha512-pcE3clpqe5ecbuv2mZ4epkJCbvZ4XKhFKx74jpia0s2zXf5qVESvYGH7GVORzpo611g5m4umFy/zyky8nKoS5g==
-
 graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.2.0, graceful-fs@^4.2.4, graceful-fs@^4.2.6, graceful-fs@^4.2.9:
   version "4.2.10"
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.10.tgz#147d3a006da4ca3ce14728c7aefc287c367d7a6c"
