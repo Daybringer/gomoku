@@ -139,22 +139,10 @@
       <hr class="mx-3 mt-1 border-2 rounded border-gray-500" />
       <div class="pt-4 flex flex-1 md:w-80 self-center overflow-y-auto">
         <profile-matches-container>
-          <!-- FIXME pass whole match instead of single props -->
           <profile-match-blade
             v-for="match in matches"
             :key="match.id"
-            :gameID="match.id"
-            :myID="match.me.id"
-            :elo="match.me.delta"
-            :dateString="match.dateString"
-            :enemyID="match.opponent.id"
-            :enemyLogged="match.opponent.logged"
-            :enemyUsername="match.opponent.username"
-            :gameType="match.type"
-            :logged="true"
-            :username="match.me.username"
-            :tie="isTie(match.typeOfWin)"
-            :win="match.win"
+            :game="match"
           ></profile-match-blade>
           <base-loading-spinner
             class="h-14 w-14 border-gray-700 dark:border-gray-300"
@@ -195,7 +183,7 @@ import FiveCombinationIcon from "@/assets/svg/FiveCombinationIcon.vue";
 import NoWifiIcon from "@/assets/svg/NoWifiIcon.vue";
 import HourglassIcon from "@/assets/svg/HourglassIcon.vue";
 //types
-import { FilledGame } from "@/shared/interfaces/game.interface";
+import { ExpandedGame } from "@/shared/interfaces/game.interface";
 import { EndingType } from "@/shared/types";
 export default defineComponent({
   name: "MatchHistoryOverview",
@@ -231,7 +219,7 @@ export default defineComponent({
     combinationToggled: boolean;
     timeToggled: boolean;
     disconnectToggled: boolean;
-    matches: FilledGame[];
+    matches: ExpandedGame[];
   } {
     return {
       loading: false,

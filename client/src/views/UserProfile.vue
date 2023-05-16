@@ -7,7 +7,7 @@ import {
   ProfileIconRecordContent,
   profileIconRecords,
 } from "@/shared/icons";
-import { FilledGame } from "@/shared/interfaces/game.interface";
+import { ExpandedGame } from "@/shared/interfaces/game.interface";
 import { EndingType, GameBoard } from "@/shared/types";
 import UsersRepository from "@/repositories/usersRepository";
 import { useStore } from "@/store/store";
@@ -52,7 +52,7 @@ export default defineComponent({
   },
   data(): {
     koinHintToggled: boolean;
-    lastMatches: FilledGame[];
+    lastMatches: ExpandedGame[];
   } {
     return {
       koinHintToggled: false,
@@ -128,12 +128,12 @@ export default defineComponent({
 });
 </script>
 <template>
-  <view-base-responsive id="Start" :backgroundTint="'light'">
-    <dark-container>
+  <ViewBaseResponsive id="Start" :backgroundTint="'light'">
+    <DarkContainer>
       <!-- First row -->
       <div class="flex-1 grid grid-cols-1 xl:grid-cols-2 gap-4 mb-4">
         <!-- General info -->
-        <profile-section id="General">
+        <ProfileSection id="General">
           <div
             class="flex-1 flex flex-col xl:grid gap-5 xl:gap-0 grid-cols-7 grid-rows-3"
           >
@@ -148,12 +148,12 @@ export default defineComponent({
                 {{ store.user.username }}
               </h1>
               <!-- user profile icon -->
-              <profile-user-icon-picker
+              <ProfileUserIconPicker
                 :currentIcon="store.user.selectedIcon"
                 :availableIcons="store.user.availableIcons"
                 @setIcon="setIcon"
                 @buyIcon="buyIcon"
-              ></profile-user-icon-picker>
+              ></ProfileUserIconPicker>
               <!-- koins -->
               <div class="flex flex-row place-items-center gap-2 py-4">
                 <span class="text-3xl font-bold">
@@ -164,7 +164,7 @@ export default defineComponent({
                   src="../assets/svg/koin.svg"
                   alt="Koin (Gomoku coin)"
                 />
-                <base-tooltip-with-icon
+                <BaseTooltipWithIcon
                   class="place-self-end"
                   :content="` Koin is a currency that is used for buying profile icons, backgrounds...
                      <br> It can be obtained by sheer playing. `"
@@ -180,7 +180,7 @@ export default defineComponent({
               >
                 Rank
               </h2>
-              <profile-rank-representation :currElo="store.user.elo" />
+              <ProfileRankRepresentation :currElo="store.user.elo" />
               <p>
                 <span class="text-xl font-medium">ELO: </span
                 ><span class="text-lg">{{ store.user.elo }}</span>
@@ -224,70 +224,56 @@ export default defineComponent({
               <div
                 class="flex flex-row justify-around items-center flex-wrap gap-2"
               >
-                <profile-achievement class="h-20 w-20" />
-                <profile-achievement class="h-20 w-20" />
-                <profile-achievement class="h-20 w-20" />
-                <profile-achievement class="h-20 w-20" />
-                <profile-achievement class="h-20 w-20" />
+                <ProfileAchievement class="h-20 w-20" />
+                <ProfileAchievement class="h-20 w-20" />
+                <ProfileAchievement class="h-20 w-20" />
+                <ProfileAchievement class="h-20 w-20" />
+                <ProfileAchievement class="h-20 w-20" />
               </div>
-              <base-button
+              <BaseButton
                 class="mb-2"
                 @click="
                   () => {
                     $router.push(`/profile/${store.user.id}/achievements`);
                   }
                 "
-                >See all achievements</base-button
+                >See all achievements</BaseButton
               >
             </div>
           </div>
-        </profile-section>
+        </ProfileSection>
 
         <!-- Match history -->
-        <profile-section id="MatchHistory">
-          <base-bold-headline class="pt-2">Match history</base-bold-headline>
-          <profile-matches-container>
+        <ProfileSection id="MatchHistory">
+          <BaseBoldHeadline class="pt-2">Match history</BaseBoldHeadline>
+          <ProfileMatchesContainer>
             <!-- Displaying few loaded matches -->
-            <!-- FIXME pass whole match instead of single props -->
-            <profile-match-blade
+            <ProfileMatchBlade
               v-for="match in lastMatches"
               :key="match.id"
-              :gameID="match.id"
-              :myID="store.user.id"
-              :elo="match.me.delta"
-              :dateString="match.dateString"
-              :enemyID="match.opponent.id"
-              :enemyLogged="match.opponent.logged"
-              :enemyUsername="match.opponent.username"
-              :gameType="match.type"
-              :logged="true"
-              :username="match.me.username"
-              :tie="isTie(match.typeOfWin)"
-              :win="match.win"
-            ></profile-match-blade>
+              :game="match"
+            />
             <!-- All matches link -->
-            <router-link :to="'/profile/' + store.user.id + '/match-history'">
-              <base-button> All matches </base-button>
-            </router-link>
-          </profile-matches-container>
-        </profile-section>
+            <RouterLink :to="'/profile/' + store.user.id + '/match-history'">
+              <BaseButton> All matches </BaseButton>
+            </RouterLink>
+          </ProfileMatchesContainer>
+        </ProfileSection>
       </div>
       <!-- Second row -->
       <div class="flex-1 grid grid-cols-1 xl:grid-cols-2 gap-4">
         <!-- Customizations -->
-        <profile-section id="Customizations">
-          <base-bold-headline class="pt-2 pb-4"
-            >Customizations</base-bold-headline
-          >
+        <ProfileSection id="Customizations">
+          <BaseBoldHeadline class="pt-2 pb-4">Customizations</BaseBoldHeadline>
           <div
             class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-0 justify-around"
           >
             <!-- Gameboard pickers -->
             <div class="flex-1 flex flex-col">
-              <base-mid-headline>Gameboard</base-mid-headline>
+              <BaseMidHeadline>Gameboard</BaseMidHeadline>
               <div class="flex flex-row justify-around pt-3 px-3 gap-2 flex-1">
                 <div class="flex flex-col">
-                  <profile-pick-board-button
+                  <ProfilePickBoardButton
                     @setBoard="setBoard"
                     :currentBoard="store.user.gameBoard"
                     :myColor="store.user.playerColor"
@@ -296,14 +282,14 @@ export default defineComponent({
                   />
                 </div>
                 <div class="flex flex-col">
-                  <profile-pick-board-button
+                  <ProfilePickBoardButton
                     @setBoard="setBoard"
                     :currentBoard="store.user.gameBoard"
                     :type="'classic'"
                   />
                 </div>
                 <div class="flex flex-col">
-                  <profile-pick-board-button
+                  <ProfilePickBoardButton
                     @setBoard="setBoard"
                     :currentBoard="store.user.gameBoard"
                     :myColor="store.user.playerColor"
@@ -315,21 +301,21 @@ export default defineComponent({
             </div>
             <!-- Game color pickers-->
             <div class="flex-1 flex flex-col">
-              <base-mid-headline>Game colors</base-mid-headline>
+              <BaseMidHeadline>Game colors</BaseMidHeadline>
               <div
                 class="flex flex-row justify-around md:mt-2 p-3 gap-2 flex-1"
               >
                 <div class="flex flex-col items-center">
-                  <base-low-headline>Your color</base-low-headline>
-                  <profile-pick-color-button
+                  <BaseLowHeadline>Your color</BaseLowHeadline>
+                  <ProfilePickColorButton
                     :currentColor="store.user.playerColor"
                     :isMyColor="true"
                     @setColor="setColor"
                   />
                 </div>
                 <div class="flex flex-col items-center">
-                  <base-low-headline>Enemy's color</base-low-headline>
-                  <profile-pick-color-button
+                  <BaseLowHeadline>Enemy's color</BaseLowHeadline>
+                  <ProfilePickColorButton
                     :currentColor="store.user.enemyColor"
                     :isMyColor="false"
                     @setColor="setColor"
@@ -341,42 +327,42 @@ export default defineComponent({
           <div
             class="flex flex-1 flex-col md:flex-row justify-around md:items-center mt-4 lg:mt-0 gap-5 p-5"
           >
-            <base-button
+            <BaseButton
               @click="
                 () => {
                   $router.push('/set-username');
                 }
               "
-              >Change Username</base-button
+              >Change Username</BaseButton
             >
 
-            <base-button
+            <BaseButton
               @click="
                 () => {
                   $router.push('/set-email');
                 }
               "
-              >Change Email</base-button
+              >Change Email</BaseButton
             >
 
-            <base-button
+            <BaseButton
               @click="
                 () => {
                   $router.push('/set-password');
                 }
               "
-              >Change Password</base-button
+              >Change Password</BaseButton
             >
           </div>
-        </profile-section>
+        </ProfileSection>
 
         <!-- Elo chart -->
         <!-- TODO replace the dummy graph with one with real data; add switches and so on -->
-        <profile-section id="Graphs">
-          <base-bold-headline class="pt-2">Elo history</base-bold-headline>
-          <elo-chart></elo-chart>
-        </profile-section>
+        <ProfileSection id="Graphs">
+          <BaseBoldHeadline class="pt-2">Elo history</BaseBoldHeadline>
+          <EloChart></EloChart>
+        </ProfileSection>
       </div>
-    </dark-container>
-  </view-base-responsive>
+    </DarkContainer>
+  </ViewBaseResponsive>
 </template>

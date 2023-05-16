@@ -12,7 +12,7 @@ import { defineComponent } from "vue";
 import BaseTooltip from "@/components/BaseTooltip.vue";
 import QuestionmarkIcon from "@/assets/svg/QuestionmarkIcon.vue";
 export default defineComponent({
-  name: "",
+  name: "ProfileAchievement",
   props: {},
   components: { BaseTooltip, QuestionmarkIcon },
   data(): { tooltipText: string } {
