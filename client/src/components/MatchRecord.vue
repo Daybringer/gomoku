@@ -4,7 +4,7 @@
   >
     <!-- Names and icons -->
     <div class="grid grid-cols-11 items-center flex-1 gap-1 mb-2 md:mb-0">
-      <IconNameBox
+      <ProfileLink
         :logged="true"
         :username="game.me.username"
         :userID="game.me.id"
@@ -12,7 +12,7 @@
         class="col-span-5"
       />
       <p class="text-lg text-center">VS</p>
-      <IconNameBox
+      <ProfileLink
         :userID="game.opponent.id"
         :logged="game.opponent.logged"
         :username="game.opponent.username"
@@ -35,7 +35,7 @@
 </template>
 <script setup lang="ts">
 //Components
-import IconNameBox from "./MatchRecordIconNameBox.vue";
+import ProfileLink from "./MatchRecordProfileLink.vue";
 import GameLink from "@/components/MatchRecordGameLink.vue";
 import ResultIcon from "./MatchRecordResultIcon.vue";
 import GameTypeIcon from "./MatchRecordGameTypeIcon.vue";
@@ -53,9 +53,8 @@ const eloGain = computed(() => {
   if (props.game.type === GameType.Ranked) {
     if (elo > 0) {
       return `+${elo}`;
-    } else {
-      return `${elo}`;
     }
+    return `${elo}`;
   }
   return "--";
 });
