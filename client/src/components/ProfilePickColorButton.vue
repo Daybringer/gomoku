@@ -9,7 +9,7 @@
       class="w-16 h-16 md:w-20 md:h-20 mt-1 border-4 border-gomoku-black z-0 flex justify-center items-center"
       :style="`background-color:${currentColor};`"
     >
-      <SVGColorPickerIcon
+      <color-picker-icon
         class="w-12 h-12 stroke-current text-gray-50 opacity-50"
       />
     </button>
@@ -21,7 +21,7 @@
         }
       "
     >
-      <div class="flex-1 flex flex-col ">
+      <div class="flex-1 flex flex-col">
         <base-bold-headline class="md:mt-4">Pick a color</base-bold-headline>
         <div
           class="flex-1 flex flex-row gap-4 flex-wrap place-content-around justify-center"
@@ -47,7 +47,7 @@
 import { defineComponent } from "vue";
 //Components
 import BaseModal from "@/components/BaseModal.vue";
-import SVGColorPickerIcon from "@/components/SVGColorPickerIcon.vue";
+import ColorPickerIcon from "@/assets/svg/ColorPickerIcon.vue";
 import BaseBoldHeadline from "./BaseBoldHeadline.vue";
 export default defineComponent({
   name: "ProfilePickColorButton",
@@ -57,7 +57,7 @@ export default defineComponent({
   },
   components: {
     BaseModal,
-    SVGColorPickerIcon,
+    ColorPickerIcon,
     BaseBoldHeadline,
   },
   data(): { modalActive: boolean; newColor: string; colorList: string[] } {
@@ -83,7 +83,6 @@ export default defineComponent({
       this.$emit("setColor", this.isMyColor, newColor);
     },
   },
-  mounted() {},
 });
 </script>
 <style scoped></style>

@@ -8,18 +8,14 @@ import {
   profileIconRecords,
 } from "@/shared/icons";
 import { FilledGame } from "@/shared/interfaces/game.interface";
-import { EndingType, GameBoard, GameType, LoginStrategy } from "@/shared/types";
+import { EndingType, GameBoard } from "@/shared/types";
 import UsersRepository from "@/repositories/usersRepository";
 import { useStore } from "@/store/store";
 
-
 // Components
 import ViewBaseResponsive from "@/components/ViewBaseResponsive.vue";
-import RowToMobileStackedLayout from "@/layouts/RowToMobileStackedLayout.vue";
-import RowToMobileStackedColumn from "@/layouts/RowToMobileStackedColumn.vue";
 import BaseBoldHeadline from "@/components/BaseBoldHeadline.vue";
 import BaseButton from "@/components/BaseButton.vue";
-import ProfileGeneralContainer from "@/components/ProfileGeneralContainer.vue";
 import ProfileMatchesContainer from "@/components/ProfileMatchesContainer.vue";
 import ProfileMatchBlade from "@/components/ProfileMatchBlade.vue";
 import EloChart from "@/components/ProfileEloChart.vue";
@@ -27,15 +23,10 @@ import DarkContainer from "@/components/DarkContainer.vue";
 import ProfileSection from "@/components/ProfileSection.vue";
 import BaseMidHeadline from "@/components/BaseMidHeadline.vue";
 import BaseLowHeadline from "@/components/BaseLowHeadline.vue";
-import SVGStandardBoardIcon from "@/components/SVGStandardBoardIcon.vue";
-import SVGClassicBoardIcon from "@/components/SVGClassicBoardIcon.vue";
-import SVGModernBoardIcon from "@/components/SVGModernBoardIcon.vue";
 import ProfilePickBoardButton from "@/components/ProfilePickBoardButton.vue";
 import ProfilePickColorButton from "@/components/ProfilePickColorButton.vue";
 import ProfileUserIconPicker from "@/components/ProfileUserIconPicker.vue";
 import BaseTooltipWithIcon from "@/components/BaseTooltipWithIcon.vue";
-import RankPlaceholderSvg from "@/assets/svg/RankPlaceholderSvg.vue";
-import QuestionMarkSvg from "@/assets/svg/QuestionMarkSvg.vue";
 import ProfileAchievement from "@/components/ProfileAchievement.vue";
 import ProfileRankRepresentation from "@/components/ProfileRankRepresentation.vue";
 
@@ -43,11 +34,8 @@ export default defineComponent({
   name: "UserProfileDemo",
   components: {
     ViewBaseResponsive,
-    RowToMobileStackedLayout,
-    RowToMobileStackedColumn,
     BaseBoldHeadline,
     BaseButton,
-    ProfileGeneralContainer,
     ProfileMatchBlade,
     ProfileMatchesContainer,
     EloChart,
@@ -55,15 +43,10 @@ export default defineComponent({
     ProfileSection,
     BaseMidHeadline,
     BaseLowHeadline,
-    SVGStandardBoardIcon,
-    SVGClassicBoardIcon,
-    SVGModernBoardIcon,
     ProfilePickBoardButton,
     ProfilePickColorButton,
     ProfileUserIconPicker,
     BaseTooltipWithIcon,
-    RankPlaceholderSvg,
-    QuestionMarkSvg,
     ProfileAchievement,
     ProfileRankRepresentation,
   },
@@ -90,7 +73,7 @@ export default defineComponent({
     buyIcon(iconName: string) {
       const iconRecord: ProfileIconRecordContent =
         profileIconRecords[ProfileIcon[iconName]];
-      const iconPrice = iconRecord.price;
+      //const iconPrice = iconRecord.price;
       if (this.store.user.credit! >= iconRecord.price) {
         UsersRepository.buyIcon(iconName).then(() => {
           this.store.user.credit! -= iconRecord.price;
@@ -156,7 +139,7 @@ export default defineComponent({
           >
             <!-- Name, icon, koins -->
             <div
-              class="col-span-3 row-span-2 flex items-center flex-col gap-2 p-1 "
+              class="col-span-3 row-span-2 flex items-center flex-col gap-2 p-1"
             >
               <!-- name -->
               <h1
@@ -183,16 +166,14 @@ export default defineComponent({
                 />
                 <base-tooltip-with-icon
                   class="place-self-end"
-                  :content="
-                    ` Koin is a currency that is used for buying profile icons, backgrounds...
-                     <br> It can be obtained by sheer playing. `
-                  "
+                  :content="` Koin is a currency that is used for buying profile icons, backgrounds...
+                     <br> It can be obtained by sheer playing. `"
                 />
               </div>
             </div>
             <!-- Trophy -->
             <div
-              class="col-span-2 row-span-2 flex flex-col  justify-start  items-center gap-2 p-2 "
+              class="col-span-2 row-span-2 flex flex-col justify-start items-center gap-2 p-2"
             >
               <h2
                 class="text-4xl text-center font-medium py-2 text-gray-900 dark:text-gray-200"
@@ -238,7 +219,7 @@ export default defineComponent({
             </div>
             <!-- Achievements -->
             <div
-              class="2xl:mt-4 mt- col-span-full row-span-1 flex flex-col gap-3 items-center "
+              class="2xl:mt-4 mt- col-span-full row-span-1 flex flex-col gap-3 items-center"
             >
               <div
                 class="flex flex-row justify-around items-center flex-wrap gap-2"
@@ -253,7 +234,7 @@ export default defineComponent({
                 class="mb-2"
                 @click="
                   () => {
-                    this.$router.push(`/profile/${store.user.id}/achievements`);
+                    $router.push(`/profile/${store.user.id}/achievements`);
                   }
                 "
                 >See all achievements</base-button
@@ -286,9 +267,7 @@ export default defineComponent({
             ></profile-match-blade>
             <!-- All matches link -->
             <router-link :to="'/profile/' + store.user.id + '/match-history'">
-              <base-button>
-                All matches
-              </base-button>
+              <base-button> All matches </base-button>
             </router-link>
           </profile-matches-container>
         </profile-section>
@@ -301,13 +280,13 @@ export default defineComponent({
             >Customizations</base-bold-headline
           >
           <div
-            class="flex-1  grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-0 justify-around "
+            class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-0 justify-around"
           >
             <!-- Gameboard pickers -->
-            <div class="flex-1 flex flex-col ">
+            <div class="flex-1 flex flex-col">
               <base-mid-headline>Gameboard</base-mid-headline>
-              <div class="flex flex-row justify-around pt-3 px-3 gap-2  flex-1">
-                <div class="flex flex-col  ">
+              <div class="flex flex-row justify-around pt-3 px-3 gap-2 flex-1">
+                <div class="flex flex-col">
                   <profile-pick-board-button
                     @setBoard="setBoard"
                     :currentBoard="store.user.gameBoard"
@@ -316,7 +295,7 @@ export default defineComponent({
                     :type="'standard'"
                   />
                 </div>
-                <div class=" flex flex-col">
+                <div class="flex flex-col">
                   <profile-pick-board-button
                     @setBoard="setBoard"
                     :currentBoard="store.user.gameBoard"
@@ -335,7 +314,7 @@ export default defineComponent({
               </div>
             </div>
             <!-- Game color pickers-->
-            <div class="flex-1 flex flex-col ">
+            <div class="flex-1 flex flex-col">
               <base-mid-headline>Game colors</base-mid-headline>
               <div
                 class="flex flex-row justify-around md:mt-2 p-3 gap-2 flex-1"
@@ -360,12 +339,12 @@ export default defineComponent({
             </div>
           </div>
           <div
-            class="flex flex-1 flex-col md:flex-row justify-around  md:items-center mt-4 lg:mt-0 gap-5 p-5"
+            class="flex flex-1 flex-col md:flex-row justify-around md:items-center mt-4 lg:mt-0 gap-5 p-5"
           >
             <base-button
               @click="
                 () => {
-                  this.$router.push('/set-username');
+                  $router.push('/set-username');
                 }
               "
               >Change Username</base-button
@@ -374,7 +353,7 @@ export default defineComponent({
             <base-button
               @click="
                 () => {
-                  this.$router.push('/set-email');
+                  $router.push('/set-email');
                 }
               "
               >Change Email</base-button
@@ -383,7 +362,7 @@ export default defineComponent({
             <base-button
               @click="
                 () => {
-                  this.$router.push('/set-password');
+                  $router.push('/set-password');
                 }
               "
               >Change Password</base-button
@@ -401,4 +380,3 @@ export default defineComponent({
     </dark-container>
   </view-base-responsive>
 </template>
-<style scoped></style>

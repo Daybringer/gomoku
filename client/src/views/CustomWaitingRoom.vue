@@ -1,8 +1,8 @@
 <template>
   <view-base-fixed-height>
-    <div class="flex-1 flex flex-col-reverse md:flex-row justify-center ">
-      <div class=" flex-1 flex flex-col justify-center">
-        <swing-animation-svg class="w-80 md:w-60 self-center md:self-end" />
+    <div class="flex-1 flex flex-col-reverse md:flex-row justify-center">
+      <div class="flex-1 flex flex-col justify-center">
+        <swing-animation class="w-80 md:w-60 self-center md:self-end" />
       </div>
       <div class="flex-1 flex justify-center place-items-center mb-20">
         <div class="flex flex-col gap-1 place-items-center">
@@ -13,7 +13,7 @@
           </p>
           <div
             class="text-gray-400 dark:text-gray-500 md:text-8xl text-7xl relative"
-            style="letter-spacing: 0.5rem;"
+            style="letter-spacing: 0.5rem"
           >
             <!--SHADOW -->
             <span>{{ roomID }}</span>
@@ -23,14 +23,14 @@
             </span>
           </div>
           <base-button
-            class="text-xl w-full  text-gray-50 font-medium mt-5"
+            class="text-xl w-full text-gray-50 font-medium mt-5"
             :class="
               copyButtonText === 'Copied'
                 ? 'bg-gray-400 dark:bg-gray-500'
                 : 'bg-gomoku-blue dark:bg-gomoku-blue'
             "
             @click="copyToClipboard()"
-            >{{ copyButtonText }}<clipboard-icon-svg class="pl-2 h-6"
+            >{{ copyButtonText }}<clipboard-icon class="pl-2 h-6"
           /></base-button>
         </div>
       </div>
@@ -42,10 +42,9 @@ import io, { Socket } from "socket.io-client";
 let socket: Socket;
 
 import ViewBaseFixedHeight from "@/components/ViewBaseFixedHeight.vue";
-import SwingAnimationSvg from "@/assets/svg/SwingAnimationSvg.vue";
 import BaseButton from "@/components/BaseButton.vue";
-import BaseMidHeadline from "@/components/BaseMidHeadline.vue";
-import ClipboardIconSvg from "@/assets/svg/ClipboardIconSvg.vue";
+import ClipboardIcon from "@/assets/svg/ClipboardIcon.vue";
+import SwingAnimation from "@/assets/svg/SwingAnimation.vue";
 import { defineComponent } from "vue";
 import {
   CreateCustomDTO,
@@ -61,9 +60,8 @@ export default defineComponent({
   components: {
     ViewBaseFixedHeight,
     BaseButton,
-    SwingAnimationSvg,
-    ClipboardIconSvg,
-    BaseMidHeadline,
+    SwingAnimation,
+    ClipboardIcon,
   },
   data(): { copyButtonText: string } {
     return {

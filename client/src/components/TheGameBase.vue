@@ -86,7 +86,7 @@
                       @click="$emit('pickGameStone', 1)"
                       class="border-2 p-1 border-gray-700 dark:border-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-xl"
                     >
-                      <game-stone-circle-svg
+                      <game-stone-circle
                         class="h-8 w-8"
                         :style="`color:${
                           mySymbol === 'circle' ? myColor : enemyColor
@@ -97,7 +97,7 @@
                       @click="$emit('pickGameStone', 2)"
                       class="border-2 p-1 border-gray-700 dark:border-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-xl"
                     >
-                      <game-stone-cross-svg
+                      <game-stone-cross
                         class="h-8 w-8"
                         :style="`color:${
                           mySymbol === 'cross' ? myColor : enemyColor
@@ -158,8 +158,8 @@
             :class="muted ? 'bg-red-500' : 'bg-gray-500 dark:bg-gray-300'"
             @click="muted = !muted"
           >
-            <no-mic-icon-svg v-show="muted" class="h-6 stroke-current" />
-            <mic-icon-svg v-show="!muted" class="h-6 stroke-current" />
+            <no-microphone-icon v-show="muted" class="h-6 stroke-current" />
+            <microphone-icon v-show="!muted" class="h-6 stroke-current" />
           </button>
           <!-- Title -->
           <h3
@@ -216,12 +216,12 @@
     </div>
     <!-- Symbol origins -->
     <div>
-      <game-stone-circle-svg
+      <game-stone-circle
         id="svgCircleOrigin"
         class="hidden"
         :style="`color:${mySymbol === 'circle' ? myColor : enemyColor};`"
       />
-      <game-stone-cross-svg
+      <game-stone-cross
         id="svgCrossOrigin"
         class="hidden"
         :style="`color:${mySymbol === 'cross' ? myColor : enemyColor};`"
@@ -242,10 +242,10 @@ import TheAfterGameOverlay from "@/components/TheAfterGameOverlay.vue";
 import SocialBlade from "@/components/GameSocialBlade.vue";
 import ChatMessage from "@/components/GameChatMessage.vue";
 // SVGs
-import GameStoneCrossSvg from "@/assets/svg/GameStoneCross.svg.vue";
-import GameStoneCircleSvg from "@/assets/svg/GameStoneCircleSvg.vue";
-import NoMicIconSvg from "@/assets/svg/NoMicIconSvg.vue";
-import MicIconSvg from "@/assets/svg/MicIconSvg.vue";
+import GameStoneCircle from "@/assets/svg/GameStoneCircle.vue";
+import GameStoneCross from "@/assets/svg/GameStoneCross.vue";
+import NoMicrophoneIcon from "@/assets/svg/NoMicrophoneIcon.vue";
+import MicrophoneIcon from "@/assets/svg/MicrophoneIcon.vue";
 // Utils
 import {
   EndingType,
@@ -266,10 +266,10 @@ export default defineComponent({
     SocialBlade,
     ChatMessage,
     //SVGs
-    GameStoneCrossSvg,
-    GameStoneCircleSvg,
-    MicIconSvg,
-    NoMicIconSvg,
+    GameStoneCross,
+    GameStoneCircle,
+    MicrophoneIcon,
+    NoMicrophoneIcon,
   },
   props: {
     // Player info

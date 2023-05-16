@@ -7,7 +7,7 @@
       <span class="text-gray-800 dark:text-gray-200 text-3xl">{{
         timeToShow
       }}</span>
-      <swing-animation-svg />
+      <swing-animation />
     </div>
   </view-base>
 </template>
@@ -15,11 +15,11 @@
 <script lang="ts">
 // Components
 import ViewBase from "@/components/ViewBaseFixedHeight.vue";
-import SwingAnimationSvg from "@/assets/svg/SwingAnimationSvg.vue";
+import SwingAnimation from "@/assets/svg/SwingAnimation.vue";
 import { defineComponent } from "vue";
 export default defineComponent({
   name: "SearchBase",
-  components: { ViewBase, SwingAnimationSvg },
+  components: { ViewBase, SwingAnimation },
   data() {
     return {
       interval: 0,
@@ -64,5 +64,4 @@ export default defineComponent({
     width: 50vh;
   }
 }
-/* CSS Swing animation */
 </style>

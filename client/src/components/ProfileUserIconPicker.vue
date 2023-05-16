@@ -5,10 +5,7 @@
         modalActive = true;
       }
     "
-    class=" border-gray-700 dark:border-gray-400 border-4 p-1 md:p-3
-    bg-gray-300 hover:bg-gray-400
-    dark:hover:bg-gray-500 dark:bg-gray-600
-    rounded-xl w-2/5 sm:w-1/4 xl:w-50 cursor-pointer"
+    class="border-gray-700 dark:border-gray-400 border-4 p-1 md:p-3 bg-gray-300 hover:bg-gray-400 dark:hover:bg-gray-500 dark:bg-gray-600 rounded-xl w-2/5 sm:w-1/4 xl:w-50 cursor-pointer"
   >
     <img :src="getSvgURL(currentIcon || '')" alt="" />
   </button>
@@ -29,7 +26,7 @@
         v-for="iconName in Object.values(profileIconList)"
         v-show="iconName !== 'transparent'"
         :key="iconName"
-        class=" bg-gray-300 dark:bg-gray-500 dark:hover:bg-gray-400  p-2 rounded-lg hover:bg-gray-400 relative"
+        class="bg-gray-300 dark:bg-gray-500 dark:hover:bg-gray-400 p-2 rounded-lg hover:bg-gray-400 relative"
         :class="
           currentIcon == iconName
             ? 'border-4 border-gray-800 dark:border-gray-200'
@@ -37,13 +34,13 @@
         "
         @click="
           () => {
-            this.currentBuyIconRecord = this.getIconRecord(iconName);
-            this.currentBuyIconName = iconName;
-            if (this.isAvailable(iconName)) {
-              this.$emit('setIcon', iconName);
-              this.modalActive = false;
+            currentBuyIconRecord = getIconRecord(iconName);
+            currentBuyIconName = iconName;
+            if (isAvailable(iconName)) {
+              $emit('setIcon', iconName);
+              modalActive = false;
             } else {
-              this.buyModalActive = true;
+              buyModalActive = true;
             }
           }
         "
@@ -51,22 +48,22 @@
         <base-tooltip :content="getIconRecord(iconName).iconFullName">
           <img
             class="h-16 md:h-20"
-            :class="!this.isAvailable(iconName) ? 'opacity-50' : ''"
+            :class="!isAvailable(iconName) ? 'opacity-50' : ''"
             :src="getSvgURL(iconName)"
             alt=""
           />
         </base-tooltip>
         <div
-          v-show="!this.isAvailable(iconName)"
+          v-show="!isAvailable(iconName)"
           class="absolute bottom-1 right-1 rounded h-6 w-6 bg-gray-200 border-2 border-gray-600 text-gray-900 z-30"
         >
-          <lock-svg />
+          <lock-icon />
         </div>
       </button>
       <div
-        class="h-20 md:h-24 w-20 md:w-24 mx-2 px-8 flex place-items-center justify-center text-center rounded-md "
+        class="h-20 md:h-24 w-20 md:w-24 mx-2 px-8 flex place-items-center justify-center text-center rounded-md"
       >
-        <p class=" italic">More coming...</p>
+        <p class="italic">More coming...</p>
       </div>
     </div>
   </base-modal>
@@ -89,8 +86,7 @@
         class="w-1/3 border-2 rounded-sm border-gray-400 dark:border-gray-700 text-center"
       />
       <img
-        class="h-20 md:h-32 my-2 border-gray-700 border-4 p-1 md:p-3
-    bg-gray-300 rounded-lg"
+        class="h-20 md:h-32 my-2 border-gray-700 border-4 p-1 md:p-3 bg-gray-300 rounded-lg"
         :src="getSvgURL(currentBuyIconName)"
         alt=""
       />
@@ -118,11 +114,11 @@
       </div>
       <div class="flex flex-row">
         <base-button
-          class=" font-medium"
+          class="font-medium"
           @click="
             () => {
-              this.$emit('buyIcon', currentBuyIconName);
-              this.buyModalActive = false;
+              $emit('buyIcon', currentBuyIconName);
+              buyModalActive = false;
             }
           "
           :class="
@@ -149,14 +145,14 @@ import BaseModal from "@/components/BaseModal.vue";
 import BaseButton from "@/components/BaseButton.vue";
 import BaseTooltip from "./BaseTooltip.vue";
 import BaseMidHeadline from "@/components/BaseMidHeadline.vue";
-import LockSvg from "@/assets/svg/LockSvg.vue";
+import LockIcon from "@/assets/svg/LockIcon.vue";
 export default defineComponent({
   name: "",
   props: {
     currentIcon: String,
     availableIcons: Object,
   },
-  components: { BaseModal, LockSvg, BaseTooltip, BaseMidHeadline, BaseButton },
+  components: { BaseModal, LockIcon, BaseTooltip, BaseMidHeadline, BaseButton },
   data(): {
     modalActive: boolean;
     buyModalActive: boolean;
@@ -188,9 +184,7 @@ export default defineComponent({
     getIconRecord(iconName: string): ProfileIconRecordContent {
       return profileIconRecords[iconName];
     },
-    buyIcon(iconName: string): void {},
   },
-  mounted() {},
 });
 </script>
 <style scoped></style>

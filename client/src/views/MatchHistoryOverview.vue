@@ -1,6 +1,6 @@
 <template>
   <view-base-fixed-height>
-    <div class="h-full w-full  flex flex-col rounded-lg text-center">
+    <div class="h-full w-full flex flex-col rounded-lg text-center">
       <base-bold-headline class="mb-4">Match history</base-bold-headline>
       <hr class="m-3 border-2 rounded border-gray-500" />
       <div
@@ -18,7 +18,7 @@
                 "
                 :toggled="quickToggled"
               >
-                <SVGQuickIcon />
+                <MatchQuickIcon />
               </base-toggle-button>
             </base-tooltip>
             <base-tooltip :content="'Ranked'">
@@ -30,7 +30,7 @@
                 "
                 :toggled="rankedToggled"
               >
-                <SVGRankedIcon />
+                <MatchRankedIcon />
               </base-toggle-button>
             </base-tooltip>
             <base-tooltip :content="'Custom'">
@@ -42,7 +42,7 @@
                 "
                 :toggled="customToggled"
               >
-                <SVGCustomIcon />
+                <MatchCustomIcon />
               </base-toggle-button>
             </base-tooltip>
           </div>
@@ -62,7 +62,7 @@
                 "
                 :toggled="victoryToggled"
               >
-                <SVGVictoryIcon class="text-yellow-400" />
+                <VictoryIcon class="text-yellow-400" />
               </base-toggle-button>
             </base-tooltip>
             <base-tooltip :content="'Defeat'">
@@ -74,7 +74,7 @@
                 "
                 :toggled="defeatToggled"
               >
-                <SVGLoseIcon class="text-red-500" />
+                <LoseIcon class="text-red-500" />
               </base-toggle-button>
             </base-tooltip>
             <base-tooltip :content="'Tie'">
@@ -86,7 +86,7 @@
                 "
                 :toggled="tieToggled"
               >
-                <SVGTieIcon />
+                <TieIcon />
               </base-toggle-button>
             </base-tooltip>
           </div>
@@ -103,7 +103,7 @@
                 "
                 :toggled="combinationToggled"
               >
-                <five-combination-icon-svg class="h-8" />
+                <five-combination-icon class="h-8" />
               </base-toggle-button>
             </base-tooltip>
             <base-tooltip class="whitespace-nowrap" :content="'Time limit'">
@@ -115,7 +115,7 @@
                 "
                 :toggled="timeToggled"
               >
-                <hourglass-icon-svg class="h-8" />
+                <hourglass-icon class="h-8" />
               </base-toggle-button>
             </base-tooltip>
             <base-tooltip :content="'Disconnect'">
@@ -127,7 +127,7 @@
                 "
                 :toggled="disconnectToggled"
               >
-                <no-wifi-icon-svg class="h-8" />
+                <no-wifi-icon class="h-8" />
               </base-toggle-button>
             </base-tooltip>
           </div>
@@ -177,7 +177,6 @@ import { defineComponent } from "vue";
 // Components
 import ViewBaseFixedHeight from "@/components/ViewBaseFixedHeight.vue";
 import BaseLowHeadline from "@/components/BaseLowHeadline.vue";
-import BaseMidHeadline from "@/components/BaseMidHeadline.vue";
 import BaseBoldHeadline from "@/components/BaseBoldHeadline.vue";
 import BaseButton from "@/components/BaseButton.vue";
 import BaseToggleButton from "@/components/BaseToggleButton.vue";
@@ -186,15 +185,15 @@ import ProfileMatchesContainer from "@/components/ProfileMatchesContainer.vue";
 import BaseLoadingSpinner from "@/components/BaseLoadingSpinner.vue";
 import BaseTooltip from "@/components/BaseTooltip.vue";
 // Icons
-import SVGQuickIcon from "@/components/SVGQuickIcon.vue";
-import SVGRankedIcon from "@/components/SVGRankedIcon.vue";
-import SVGCustomIcon from "@/components/SVGCustomIcon.vue";
-import SVGVictoryIcon from "@/components/SVGVictoryIcon.vue";
-import SVGLoseIcon from "@/components/SVGLoseIcon.vue";
-import SVGTieIcon from "@/components/SVGTieIcon.vue";
-import FiveCombinationIconSvg from "@/assets/svg/FiveCombinationIconSvg.vue";
-import NoWifiIconSvg from "@/assets/svg/NoWifiIconSvg.vue";
-import HourglassIconSvg from "@/assets/svg/HourglassIconSvg.vue";
+import MatchQuickIcon from "@/assets/svg/MatchQuickIcon.vue";
+import MatchRankedIcon from "@/assets/svg/MatchRankedIcon.vue";
+import MatchCustomIcon from "@/assets/svg/MatchCustomIcon.vue";
+import VictoryIcon from "@/assets/svg/VictoryIcon.vue";
+import LoseIcon from "@/assets/svg/LoseIcon.vue";
+import TieIcon from "@/assets/svg/TieIcon.vue";
+import FiveCombinationIcon from "@/assets/svg/FiveCombinationIcon.vue";
+import NoWifiIcon from "@/assets/svg/NoWifiIcon.vue";
+import HourglassIcon from "@/assets/svg/HourglassIcon.vue";
 //types
 import { FilledGame } from "@/shared/interfaces/game.interface";
 import { EndingType } from "@/shared/types";
@@ -204,23 +203,22 @@ export default defineComponent({
   components: {
     ViewBaseFixedHeight,
     BaseLowHeadline,
-    BaseMidHeadline,
     BaseBoldHeadline,
     BaseButton,
     BaseToggleButton,
-    SVGQuickIcon,
-    SVGRankedIcon,
-    SVGCustomIcon,
-    SVGVictoryIcon,
-    SVGLoseIcon,
-    SVGTieIcon,
+    MatchQuickIcon,
+    MatchRankedIcon,
+    MatchCustomIcon,
+    VictoryIcon,
+    LoseIcon,
+    TieIcon,
     BaseTooltip,
     ProfileMatchBlade,
     ProfileMatchesContainer,
     BaseLoadingSpinner,
-    FiveCombinationIconSvg,
-    NoWifiIconSvg,
-    HourglassIconSvg,
+    FiveCombinationIcon,
+    NoWifiIcon,
+    HourglassIcon,
   },
   data(): {
     loading: boolean;
@@ -265,7 +263,6 @@ export default defineComponent({
       return typeOfWin === EndingType.Tie;
     },
   },
-  mounted() {},
 });
 </script>
 <style scoped></style>

@@ -1,14 +1,14 @@
 <template>
-  <div class="absolute z-20 h-full w-full ">
+  <div class="absolute z-20 h-full w-full">
     <button
       v-show="!isShown"
       @click="isShown = true"
-      class="absolute top-2 left-2 p-1 rounded-full bg-gray-200  text-gray-900 focus:outline-none"
+      class="absolute top-2 left-2 p-1 rounded-full bg-gray-200 text-gray-900 focus:outline-none"
     >
-      <chevrons-down-icon-svg class="h-8 w-8 -rotate-45 transform" />
+      <chevrons-down-icon class="h-8 w-8 -rotate-45 transform" />
     </button>
 
-    <transition name="bounce" css="true" type="animation" v-show="isShown">
+    <transition name="bounce" :css="true" type="animation" v-show="isShown">
       <div
         class="absolute z-20 flex p-6 xl:p-12 flex-col h-full w-full bg-gray-100 dark:bg-gray-800"
         :class="
@@ -28,7 +28,7 @@
             class="absolute top-3 left-3 p-1 rounded-full bg-gray-200 dark:bg-gray-300 text-gray-900 focus:outline-none"
             @click="isShown = false"
           >
-            <cross-icon-svg class="h-8" />
+            <cross-icon class="h-8" />
           </button>
           <h1
             class="w-full text-center text-5xl px-4 2xl:py-4 xl:text-7xl font-medium text-gomoku-blue"
@@ -52,7 +52,7 @@
           <img
             v-show="!amIWinner"
             src="../assets/svg/lose.svg"
-            class="sad-animation md:w-50 w-1/3  md:p-8 "
+            class="sad-animation md:w-50 w-1/3 md:p-8"
             alt=""
           />
           <img
@@ -62,7 +62,7 @@
             alt=""
           />
           <base-button
-            class="text-xl w-full  text-gray-50 font-medium  mt-auto"
+            class="text-xl w-full text-gray-50 font-medium mt-auto"
             :class="
               askedForRematch
                 ? 'bg-gray-400 dark:bg-gray-500'
@@ -81,8 +81,8 @@ import { EndingType, GameType } from "@/shared/types";
 import { defineComponent, PropType } from "vue";
 import BaseButton from "@/components/BaseButton.vue";
 // SVGs
-import CrossIconSvg from "@/assets/svg/CrossIconSvg.vue";
-import ChevronsDownIconSvg from "@/assets/svg/ChevronsDownIconSvg.vue";
+import CrossIcon from "@/assets/svg/CrossIcon.vue";
+import ChevronsDownIcon from "@/assets/svg/ChevronsDownIcon.vue";
 export default defineComponent({
   name: "",
   props: {
@@ -94,8 +94,8 @@ export default defineComponent({
   },
   emits: ["rematchCustom"],
   components: {
-    CrossIconSvg,
-    ChevronsDownIconSvg,
+    CrossIcon,
+    ChevronsDownIcon,
     BaseButton,
   },
   data(): { isShown: boolean; askedForRematch: boolean } {
@@ -163,7 +163,5 @@ export default defineComponent({
 .defeat-background {
   background-image: url("../assets/svg/leavesPattern.svg");
   background-repeat: repeat;
-}
-.tie-background {
 }
 </style>

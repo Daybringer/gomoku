@@ -18,7 +18,7 @@ const GAuthOptions = {
 
 app.directive("click-outside", {
   beforeMount(el, binding, vnode) {
-    el.clickOutsideEvent = function(event: any) {
+    el.clickOutsideEvent = function (event: any) {
       if (!(el === event.target || el.contains(event.target))) {
         binding.value(event, el);
       }
@@ -32,7 +32,4 @@ app.directive("click-outside", {
 
 app.use(createPinia());
 
-app
-  .use(router)
-  .use(GAuth, GAuthOptions)
-  .mount("#vue-app");
+app.use(router).use(GAuth, GAuthOptions).mount("#vue-app");

@@ -52,7 +52,7 @@
               @toggle="timeRadio('infinite')"
               :toggled="time === 'infinite'"
             >
-              <infinity-icon-svg class="h-6 md:h-8" />
+              <infinity-icon class="h-6 md:h-8" />
             </base-toggle-button>
           </div>
         </div>
@@ -70,12 +70,11 @@
 import io, { Socket } from "socket.io-client";
 let socket: Socket;
 import ViewBaseFixedHeight from "@/components/ViewBaseFixedHeight.vue";
-import BaseLowHeadline from "@/components/BaseLowHeadline.vue";
 import BaseMidHeadline from "@/components/BaseMidHeadline.vue";
 import BaseBoldHeadline from "@/components/BaseBoldHeadline.vue";
 import BaseButton from "@/components/BaseButton.vue";
 import BaseToggleButton from "@/components/BaseToggleButton.vue";
-import InfinityIconSvg from "@/assets/svg/InfinityIconSvg.vue";
+import InfinityIcon from "@/assets/svg/InfinityIcon.vue";
 import { defineComponent } from "vue";
 
 import { Opening, Time } from "@/shared/types";
@@ -91,11 +90,10 @@ export default defineComponent({
   components: {
     ViewBaseFixedHeight,
     BaseButton,
-    BaseLowHeadline,
     BaseBoldHeadline,
     BaseMidHeadline,
     BaseToggleButton,
-    InfinityIconSvg,
+    InfinityIcon,
   },
   data(): { opening: Opening; time: Time } {
     return { opening: Opening.Standard, time: 5 };
@@ -104,7 +102,6 @@ export default defineComponent({
     return { Opening };
   },
   computed: {},
-  mounted() {},
   unmounted() {
     if (socket) {
       socket.close();

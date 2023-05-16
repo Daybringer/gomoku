@@ -1,25 +1,25 @@
 <template>
   <div
-    class="bg-white  border-4 dark:bg-gray-500 w-full rounded-full min-h-12 flex flex-row items-center justify-between overflow-hidden shadow-md"
+    class="bg-white border-4 dark:bg-gray-500 w-full rounded-full min-h-12 flex flex-row items-center justify-between overflow-hidden shadow-md"
     :style="isActive ? `border-color: ${symbolColor};` : ''"
   >
-    <game-stone-cross-svg
+    <game-stone-cross
       class="h-8 w-8 mx-3"
       :style="`color:${symbolColor};`"
       v-show="symbol === 'cross'"
     />
-    <game-stone-circle-svg
+    <game-stone-circle
       class="h-8 w-8 mx-3"
       :style="`color:${symbolColor};`"
       v-show="symbol === 'circle'"
     />
-    <dots-icon-svg class="h-8 w-8 mx-3" v-show="symbol === ''" />
+    <dots-icon class="h-8 w-8 mx-3" v-show="symbol === ''" />
 
     <div
       class="flex-1 flex justify-center text-center text-xl text-gray-900 dark:text-gray-100"
     >
       {{ hasTimeLimit ? humanReadableTime : "" }}
-      <infinity-icon-svg class="h-8 self-center" v-show="!hasTimeLimit" />
+      <infinity-icon class="h-8 self-center" v-show="!hasTimeLimit" />
     </div>
     <div class="flex-1 text-center text-xl text-gray-900 dark:text-gray-100">
       <p>{{ player.username }}</p>
@@ -42,7 +42,7 @@
           v-show="player.logged"
           :src="getSvgURL(player.profileIcon || 'defaultBoy')"
         />
-        <anonym-icon-svg
+        <anonym-icon
           v-show="!player.logged"
           alt="unlogged_user_icon"
           class="m-auto h-12 w-auto align-middle"
@@ -56,11 +56,11 @@
 import { defineComponent, PropType } from "vue";
 import { Player } from "@/shared/types";
 // SVGs
-import InfinityIconSvg from "@/assets/svg/InfinityIconSvg.vue";
-import AnonymIconSvg from "@/assets/svg/AnonymIconSvg.vue";
-import GameStoneCircleSvg from "@/assets/svg/GameStoneCircleSvg.vue";
-import GameStoneCrossSvg from "@/assets/svg/GameStoneCross.svg.vue";
-import DotsIconSvg from "@/assets/svg/DotsIconSvg.vue";
+import InfinityIcon from "@/assets/svg/InfinityIcon.vue";
+import AnonymIcon from "@/assets/svg/AnonymIcon.vue";
+import GameStoneCircle from "@/assets/svg/GameStoneCircle.vue";
+import GameStoneCross from "@/assets/svg/GameStoneCross.vue";
+import DotsIcon from "@/assets/svg/DotsIcon.vue";
 
 export default defineComponent({
   name: "SocialBlade",
@@ -82,11 +82,11 @@ export default defineComponent({
     },
   },
   components: {
-    AnonymIconSvg,
-    InfinityIconSvg,
-    GameStoneCircleSvg,
-    GameStoneCrossSvg,
-    DotsIconSvg,
+    AnonymIcon,
+    InfinityIcon,
+    GameStoneCircle,
+    GameStoneCross,
+    DotsIcon,
   },
   methods: {
     getSvgURL(svgName: string) {

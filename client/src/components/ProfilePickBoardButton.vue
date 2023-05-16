@@ -7,15 +7,15 @@
     class="border-4 p-1 rounded-md hover:opacity-80"
   >
     <base-low-headline>{{ headlineText }}</base-low-headline>
-    <div class="p-1 ">
-      <SVGClassicBoardIcon class="h-16 md:h-20" v-if="type == 'classic'" />
-      <SVGModernBoardIcon
+    <div class="p-1">
+      <classic-board-icon class="h-16 md:h-20" v-if="type == 'classic'" />
+      <modern-board-icon
         :myColor="myColor"
         :enemyColor="enemyColor"
         class="h-16 md:h-20"
         v-if="type == 'modern'"
       />
-      <SVGStandardBoardIcon
+      <standard-board-icon
         :myColor="myColor"
         :enemyColor="enemyColor"
         class="h-16 md:h-20"
@@ -25,9 +25,9 @@
   </button>
 </template>
 <script lang="ts">
-import SVGClassicBoardIcon from "@/components/SVGClassicBoardIcon.vue";
-import SVGModernBoardIcon from "@/components/SVGModernBoardIcon.vue";
-import SVGStandardBoardIcon from "@/components/SVGStandardBoardIcon.vue";
+import ClassicBoardIcon from "@/assets/svg/ClassicBoardIcon.vue";
+import ModernBoardIcon from "@/assets/svg/ModernBoardIcon.vue";
+import StandardBoardIcon from "@/assets/svg/StandardBoardIcon.vue";
 import BaseLowHeadline from "@/components/BaseLowHeadline.vue";
 import { defineComponent } from "vue";
 export default defineComponent({
@@ -39,9 +39,9 @@ export default defineComponent({
     enemyColor: String,
   },
   components: {
-    SVGClassicBoardIcon,
-    SVGModernBoardIcon,
-    SVGStandardBoardIcon,
+    ClassicBoardIcon,
+    ModernBoardIcon,
+    StandardBoardIcon,
     BaseLowHeadline,
   },
   data(): {} {
@@ -83,7 +83,6 @@ export default defineComponent({
       }
     },
   },
-  mounted() {},
 });
 </script>
 <style scoped></style>
