@@ -3,7 +3,9 @@
     class="bg-white dark:bg-gray-600 w-full rounded-lg min-h-12 p-2 grid md:grid-cols-2 gap-1 items-stretch md:flex-row md:justify-between shadow-md"
   >
     <!-- Names and icons -->
-    <div class="grid grid-cols-11 items-center flex-1 gap-1 mb-2 md:mb-0">
+    <div
+      class="grid grid-cols-11 items-center flex-1 gap-2 md:gap-0 mb-2 md:pr-2 md:mb-0"
+    >
       <ProfileLink
         :logged="true"
         :username="game.me.username"
@@ -20,14 +22,14 @@
         class="col-span-5"
       />
     </div>
-    <div class="grid grid-flow-col-dense items-center gap-2">
+    <div class="grid grid-flow-col-dense items-center justify-around gap-2">
       <ResultIcon
         class="col-span-1"
         :tie="game.typeOfWin === EndingType.Tie"
         :win="game.win"
       />
       <GameTypeIcon class="col-span-1" :gameType="game.type" />
-      <div class="col-span-1">{{ eloGain }}</div>
+      <div>{{ eloGain }}</div>
       <div class="text-lg col-span-2">{{ humanDate }}</div>
       <GameLink :gameID="game.id" />
     </div>
