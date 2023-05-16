@@ -4,7 +4,7 @@
   >
     <!-- Names and icons -->
     <div class="grid grid-cols-11 items-center flex-1 gap-1 mb-2 md:mb-0">
-      <icon-name-box
+      <IconNameBox
         :logged="true"
         :username="game.me.username"
         :userID="game.me.id"
@@ -12,7 +12,7 @@
         class="col-span-5"
       />
       <p class="text-lg text-center">VS</p>
-      <icon-name-box
+      <IconNameBox
         :userID="game.opponent.id"
         :logged="game.opponent.logged"
         :username="game.opponent.username"
@@ -20,30 +20,26 @@
         class="col-span-5"
       />
     </div>
-    <!-- Stuff -->
     <div class="grid grid-flow-col-dense items-center gap-2">
-      <profile-match-blade-win-lose-icon
+      <ResultIcon
         class="col-span-1"
         :tie="game.typeOfWin === EndingType.Tie"
         :win="game.win"
       />
-      <profile-match-blade-game-type-icon
-        class="col-span-1"
-        :gameType="game.type"
-      />
+      <GameTypeIcon class="col-span-1" :gameType="game.type" />
       <div class="col-span-1">{{ eloGain }}</div>
       <div class="text-lg col-span-2">{{ humanDate }}</div>
-      <profile-match-blade-game-link
-        :gameID="game.id"
-      ></profile-match-blade-game-link>
+      <GameLink :gameID="game.id" />
     </div>
   </div>
 </template>
 <script setup lang="ts">
+//Components
 import IconNameBox from "./MatchRecordIconNameBox.vue";
-import ProfileMatchBladeWinLoseIcon from "./ProfileMatchBladeWinLoseIcon.vue";
-import ProfileMatchBladeGameTypeIcon from "./ProfileMatchBladeGameTypeIcon.vue";
-import ProfileMatchBladeGameLink from "@/components/ProfileMatchBladeGameLink.vue";
+import GameLink from "@/components/MatchRecordGameLink.vue";
+import ResultIcon from "./MatchRecordResultIcon.vue";
+import GameTypeIcon from "./MatchRecordGameTypeIcon.vue";
+// TS
 import { EndingType, GameType } from "@/shared/types";
 import { computed, defineProps } from "vue";
 import { ExpandedGame } from "@/shared/interfaces/game.interface";
@@ -51,12 +47,14 @@ import { ExpandedGame } from "@/shared/interfaces/game.interface";
 const props = defineProps<{
   game: ExpandedGame;
 }>();
+
 const eloGain = computed(() => {
+  const elo = props.game.me.delta;
   if (props.game.type === GameType.Ranked) {
-    if (props.game.me.delta > 0) {
-      return `+${props.game.me.delta}`;
+    if (elo > 0) {
+      return `+${elo}`;
     } else {
-      return `${props.game.me.delta}`;
+      return `${elo}`;
     }
   }
   return "--";

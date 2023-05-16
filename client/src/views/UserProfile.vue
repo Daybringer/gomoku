@@ -17,7 +17,7 @@ import ViewBaseResponsive from "@/components/ViewBaseResponsive.vue";
 import BaseBoldHeadline from "@/components/BaseBoldHeadline.vue";
 import BaseButton from "@/components/BaseButton.vue";
 import ProfileMatchesContainer from "@/components/ProfileMatchesContainer.vue";
-import ProfileMatchBlade from "@/components/ProfileMatchBlade.vue";
+import ProfileMatchBlade from "@/components/MatchRecord.vue";
 import EloChart from "@/components/ProfileEloChart.vue";
 import DarkContainer from "@/components/DarkContainer.vue";
 import ProfileSection from "@/components/ProfileSection.vue";

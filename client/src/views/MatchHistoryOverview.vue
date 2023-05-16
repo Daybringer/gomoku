@@ -168,7 +168,7 @@ import BaseLowHeadline from "@/components/BaseLowHeadline.vue";
 import BaseBoldHeadline from "@/components/BaseBoldHeadline.vue";
 import BaseButton from "@/components/BaseButton.vue";
 import BaseToggleButton from "@/components/BaseToggleButton.vue";
-import ProfileMatchBlade from "@/components/ProfileMatchBlade.vue";
+import ProfileMatchBlade from "@/components/MatchRecord.vue";
 import ProfileMatchesContainer from "@/components/ProfileMatchesContainer.vue";
 import BaseLoadingSpinner from "@/components/BaseLoadingSpinner.vue";
 import BaseTooltip from "@/components/BaseTooltip.vue";
