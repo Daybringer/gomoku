@@ -20,6 +20,7 @@ enum ProfileIcon {
   unicorn = "unicorn",
   lotus = "lotus",
   turtle = "turtle",
+  guest = "guest",
 }
 // TODO complete all names and descriptions
 type ProfileIconKeys = keyof typeof ProfileIcon;
@@ -37,6 +38,13 @@ const profileIconRecords: Record<ProfileIconKeys, ProfileIconRecordContent> = {
     purchasable: false,
     price: 0,
     boundAchievementID: 9292,
+  },
+  guest: {
+    iconFullName: "guest",
+    description: "guest",
+    purchasable: false,
+    price: 0,
+    boundAchievementID: null,
   },
   defaultBoy: {
     description:
