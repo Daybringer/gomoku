@@ -26,7 +26,7 @@
 </template>
 <script lang="ts">
 // Types
-import { GameState } from "@/types";
+import { GameState } from "@/utils/types.dt";
 import { COIN_SPIN_DURATION } from "@/shared/constants";
 // Backend-frontend shared types
 import {

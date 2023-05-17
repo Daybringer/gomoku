@@ -160,7 +160,7 @@
   </view-base-fixed-height>
 </template>
 <script lang="ts">
-import { exampleGame1 } from "./matches";
+import { exampleGame1 } from "@/dummy_data/matches";
 import { defineComponent } from "vue";
 // Components
 import ViewBaseFixedHeight from "@/components/ViewBaseFixedHeight.vue";

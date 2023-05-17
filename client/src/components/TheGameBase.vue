@@ -233,7 +233,7 @@
 import type { PropType } from "vue";
 import { defineComponent } from "vue";
 // Types
-import { GameState } from "@/types";
+import { GameState } from "@/utils/types.dt";
 // Howler
 import { Howl } from "howler";
 // Components

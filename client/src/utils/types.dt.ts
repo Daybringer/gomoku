@@ -13,5 +13,12 @@ interface GamePlan {
   width: number;
   height: number;
 }
+enum GameState {
+  Waiting = "waiting",
+  Coinflip = "coinflip",
+  Running = "running",
+  Ended = "ended",
+}
 
-export { Options, GamePlan };
+
+export { Options, GamePlan, GameState };

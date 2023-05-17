@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 // Types
-import { exampleGame1 } from "./matches";
+import { exampleGame1 } from "@/dummy_data/matches";
 import {
   ProfileIcon,
   ProfileIconRecordContent,
