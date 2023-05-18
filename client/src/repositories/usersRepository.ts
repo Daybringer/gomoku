@@ -25,14 +25,12 @@ export default {
   changeUsername(username: string) {
     return Repository.post(`${resource}/change-username`, { username });
   },
-  buyIcon(iconName: string) {
-    const icon: ProfileIcon = ProfileIcon[iconName];
-    const buyIconDTO: BuyIconDTO = { icon };
+  buyIcon(profileIcon: ProfileIcon) {
+    const buyIconDTO: BuyIconDTO = { icon: profileIcon };
     return Repository.post(`${resource}/buy-icon`, buyIconDTO);
   },
-  selectIcon(iconName: string) {
-    const icon: ProfileIcon = ProfileIcon[iconName];
-    const selectIconDTO: SelectIconDTO = { icon };
+  selectIcon(profileIcon: ProfileIcon) {
+    const selectIconDTO: SelectIconDTO = { icon: profileIcon };
     return Repository.post(`${resource}/select-icon`, selectIconDTO);
   },
   setGameboard(gameboard: GameBoard) {

@@ -51,7 +51,7 @@ export class UserEntity {
   elo?: number;
 
   @Column({ default: 0 })
-  credit?: number;
+  credit: number;
 
   @Column({ default: 0 })
   nameChangeTokens?: number;

@@ -2,7 +2,7 @@ const path = require("path");
 module.exports = {
   outputDir: path.resolve(__dirname, "../dist/public"),
   devServer: {
-    proxy: "http://localhost:3000",
+    proxy: "http://localhost:3000/",
   },
 
   // FIXME pinia ^2.0.0 esm workaround

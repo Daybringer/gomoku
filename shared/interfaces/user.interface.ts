@@ -15,14 +15,14 @@ export interface User {
   strategy: LoginStrategy;
   verified?: boolean;
   elo?: number;
-  credit?: number;
+  credit: number;
   nameChangeTokens?: number;
-  achievements?: Achievement[];
+  achievements: Achievement[];
   playerColor: string;
   enemyColor: string;
   gameBoard: GameBoard;
   selectedIcon: ProfileIcon;
-  availableIcons?: ProfileIcon[];
+  availableIcons: ProfileIcon[];
   rankedWon: number;
   rankedLost: number;
   rankedTied: number;

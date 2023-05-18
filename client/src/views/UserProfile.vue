@@ -1,23 +1,19 @@
-<script lang="ts">
-import { defineComponent } from "vue";
-// Types
+<script setup lang="ts">
+import { onBeforeMount } from "vue";
 import { exampleGame1 } from "@/dummy_data/matches";
-import {
-  ProfileIcon,
-  ProfileIconRecordContent,
-  profileIconRecords,
-} from "@/shared/icons";
+import { ProfileIcon, profileIconRecords } from "@/shared/icons";
 import { ExpandedGame } from "@/shared/interfaces/game.interface";
-import { EndingType, GameBoard } from "@/shared/types";
+import { GameBoard } from "@/shared/types";
 import UsersRepository from "@/repositories/usersRepository";
 import { useStore } from "@/store/store";
+import { NotificationType, useNotificationsStore } from "@/store/notifications";
 
 // Components
 import ViewBaseResponsive from "@/components/ViewBaseResponsive.vue";
 import BaseBoldHeadline from "@/components/BaseBoldHeadline.vue";
 import BaseButton from "@/components/BaseButton.vue";
 import ProfileMatchesContainer from "@/components/ProfileMatchesContainer.vue";
-import ProfileMatchBlade from "@/components/MatchRecord.vue";
+import MatchRecord from "@/components/MatchRecord.vue";
 import EloChart from "@/components/ProfileEloChart.vue";
 import DarkContainer from "@/components/DarkContainer.vue";
 import ProfileSection from "@/components/ProfileSection.vue";
@@ -30,103 +26,59 @@ import BaseTooltipWithIcon from "@/components/BaseTooltipWithIcon.vue";
 import ProfileAchievement from "@/components/ProfileAchievement.vue";
 import ProfileRankRepresentation from "@/components/ProfileRankRepresentation.vue";
 
-export default defineComponent({
-  name: "UserProfileDemo",
-  components: {
-    ViewBaseResponsive,
-    BaseBoldHeadline,
-    BaseButton,
-    ProfileMatchBlade,
-    ProfileMatchesContainer,
-    EloChart,
-    DarkContainer,
-    ProfileSection,
-    BaseMidHeadline,
-    BaseLowHeadline,
-    ProfilePickBoardButton,
-    ProfilePickColorButton,
-    ProfileUserIconPicker,
-    BaseTooltipWithIcon,
-    ProfileAchievement,
-    ProfileRankRepresentation,
-  },
-  data(): {
-    koinHintToggled: boolean;
-    lastMatches: ExpandedGame[];
-  } {
-    return {
-      koinHintToggled: false,
-      lastMatches: [],
-    };
-  },
-  setup() {
-    const store = useStore();
-    return { store };
-  },
-  methods: {
-    async setIcon(iconName: string) {
-      UsersRepository.selectIcon(iconName).then(() => {
-        this.store.user.selectedIcon = ProfileIcon[iconName];
-        this.store.saveLocalUser();
-      });
-    },
-    buyIcon(iconName: string) {
-      const iconRecord: ProfileIconRecordContent =
-        profileIconRecords[ProfileIcon[iconName]];
-      //const iconPrice = iconRecord.price;
-      if (this.store.user.credit! >= iconRecord.price) {
-        UsersRepository.buyIcon(iconName).then(() => {
-          this.store.user.credit! -= iconRecord.price;
-          this.store.user.availableIcons!.push(ProfileIcon[iconName]);
-        });
-      } else {
-        // TODO show error
-        console.log("You can't afford this icon");
-      }
-    },
-    setBoard(variant: number) {
-      if (variant == 0) {
-        this.setGameBoard(GameBoard.Standard);
-      } else if (variant == 1) {
-        this.setGameBoard(GameBoard.Classic);
-      } else {
-        this.setGameBoard(GameBoard.Modern);
-      }
-    },
-    async setGameBoard(gameBoard: GameBoard) {
-      UsersRepository.setGameboard(gameBoard).then(() => {
-        this.store.user.gameBoard = gameBoard;
-        this.store.saveLocalUser();
-      });
-    },
-    setColor(isMyColor: boolean, color: string) {
-      if (isMyColor) {
-        this.store.user.playerColor = color;
-      } else {
-        this.store.user.enemyColor = color;
-      }
-      this.store.saveLocalUser();
-      UsersRepository.setColors(
-        this.store.user.playerColor!,
-        this.store.user.enemyColor!
-      );
-    },
-    async fetchMatches() {
-      this.lastMatches.push(exampleGame1);
-      this.lastMatches.push(exampleGame1);
-      this.lastMatches.push(exampleGame1);
-      this.lastMatches.push(exampleGame1);
-    },
-    isTie(typeOfWin: any): boolean {
-      return typeOfWin === EndingType.Tie;
-    },
-  },
-  computed: {},
-  async beforeMount() {
-    this.fetchMatches();
-  },
-});
+const store = useStore();
+const notificationsStore = useNotificationsStore();
+const lastMatches: ExpandedGame[] = [];
+
+onBeforeMount(() => fetchMatches());
+
+async function setIcon(profileIcon: ProfileIcon) {
+  if (store.user.availableIcons.includes(profileIcon))
+    UsersRepository.selectIcon(profileIcon).then(() => {
+      store.user.selectedIcon = profileIcon;
+      store.saveLocalUser();
+    });
+}
+
+async function buyIcon(profileIcon: ProfileIcon) {
+  const price = profileIconRecords[profileIcon].price;
+  if (store.user.credit >= price) {
+    UsersRepository.buyIcon(profileIcon).then(() => {
+      store.user.credit -= price;
+      store.user.availableIcons.push(profileIcon);
+    });
+  } else {
+    notificationsStore.createNotification(
+      NotificationType.Error,
+      "You don't have enough Koins."
+    );
+  }
+}
+
+async function setGameBoard(gameBoard: GameBoard) {
+  UsersRepository.setGameboard(gameBoard).then(() => {
+    store.user.gameBoard = gameBoard;
+    store.saveLocalUser();
+  });
+}
+
+function setColor(isMyColor: boolean, color: string) {
+  if (isMyColor) {
+    store.user.playerColor = color;
+  } else {
+    store.user.enemyColor = color;
+  }
+  store.saveLocalUser();
+  UsersRepository.setColors(store.user.playerColor!, store.user.enemyColor!);
+}
+async function fetchMatches() {
+  lastMatches.push(exampleGame1);
+  lastMatches.push(exampleGame1);
+  lastMatches.push(exampleGame1);
+  lastMatches.push(exampleGame1);
+}
 </script>
+
 <template>
   <ViewBaseResponsive id="Start" :backgroundTint="'light'">
     <DarkContainer>
@@ -248,7 +200,7 @@ export default defineComponent({
           <BaseBoldHeadline class="pt-2">Match history</BaseBoldHeadline>
           <ProfileMatchesContainer>
             <!-- Displaying few loaded matches -->
-            <ProfileMatchBlade
+            <MatchRecord
               v-for="match in lastMatches"
               :key="match.id"
               :game="match"
@@ -274,7 +226,7 @@ export default defineComponent({
               <div class="flex flex-row justify-around pt-3 px-3 gap-2 flex-1">
                 <div class="flex flex-col">
                   <ProfilePickBoardButton
-                    @setBoard="setBoard"
+                    @setBoard="setGameBoard(GameBoard.Standard)"
                     :currentBoard="store.user.gameBoard"
                     :myColor="store.user.playerColor"
                     :enemyColor="store.user.enemyColor"
@@ -283,14 +235,14 @@ export default defineComponent({
                 </div>
                 <div class="flex flex-col">
                   <ProfilePickBoardButton
-                    @setBoard="setBoard"
+                    @setBoard="setGameBoard(GameBoard.Classic)"
                     :currentBoard="store.user.gameBoard"
                     :type="'classic'"
                   />
                 </div>
                 <div class="flex flex-col">
                   <ProfilePickBoardButton
-                    @setBoard="setBoard"
+                    @setBoard="setGameBoard(GameBoard.Modern)"
                     :currentBoard="store.user.gameBoard"
                     :myColor="store.user.playerColor"
                     :enemyColor="store.user.enemyColor"
@@ -358,10 +310,10 @@ export default defineComponent({
 
         <!-- Elo chart -->
         <!-- TODO replace the dummy graph with one with real data; add switches and so on -->
-        <ProfileSection id="Graphs">
+        <!-- <ProfileSection id="Graphs">
           <BaseBoldHeadline class="pt-2">Elo history</BaseBoldHeadline>
           <EloChart></EloChart>
-        </ProfileSection>
+        </ProfileSection> -->
       </div>
     </DarkContainer>
   </ViewBaseResponsive>
