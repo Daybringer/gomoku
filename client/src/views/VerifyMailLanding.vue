@@ -1,11 +1,9 @@
 <template>
   <view-base :placeItems="'start'">
     <div
-      class="max-w-lg w-full md:p-8 p-4  space-y-6 rounded-lg border-gray-50 bg-white dark:bg-gray-600 dark:border-transparent border-opacity-30 border-t-1 shadow-2xl border-2"
+      class="max-w-lg w-full md:p-8 p-4 space-y-6 rounded-lg border-gray-50 bg-white dark:bg-gray-600 dark:border-transparent border-opacity-30 border-t-1 shadow-2xl border-2"
     >
-      <bold-headline>
-        Email confirmation
-      </bold-headline>
+      Email confirmation
       <status-message
         v-show="resolved"
         :type="!success ? 'error' : 'success'"
@@ -17,9 +15,8 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import StatusMessage from "@/components/FormStatusMessage.vue";
-import BoldHeadline from "@/components/BaseBoldHeadline.vue";
 import ViewBase from "@/components/ViewBaseFixedHeight.vue";
-
+import BaseHighHeadline from "@/components/BaseHighHeadline.vue";
 import { useStore } from "@/store/store";
 export default defineComponent({
   name: "VerifyMailLanding",
@@ -30,7 +27,7 @@ export default defineComponent({
       statusText: "",
     };
   },
-  components: { StatusMessage, BoldHeadline, ViewBase },
+  components: { StatusMessage, BaseHighHeadline, ViewBase },
   mounted() {
     const urlParams = new URLSearchParams(window.location.search);
 

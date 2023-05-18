@@ -10,7 +10,7 @@ import { NotificationType, useNotificationsStore } from "@/store/notifications";
 
 // Components
 import ViewBaseResponsive from "@/components/ViewBaseResponsive.vue";
-import BaseBoldHeadline from "@/components/BaseBoldHeadline.vue";
+import BaseHighHeadline from "@/components/BaseHighHeadline.vue";
 import BaseButton from "@/components/BaseButton.vue";
 import ProfileMatchesContainer from "@/components/ProfileMatchesContainer.vue";
 import MatchRecord from "@/components/MatchRecord.vue";
@@ -80,10 +80,9 @@ async function fetchMatches() {
 </script>
 
 <template>
-  <ViewBaseResponsive id="Start" :backgroundTint="'light'">
-    <DarkContainer>
-      <!-- First row -->
-      <div class="flex-1 grid grid-cols-1 xl:grid-cols-2 gap-4 mb-4">
+  <ViewBaseResponsive class="items-center" id="Start">
+    <div class="flex flex-col gap-12">
+      <DarkContainer>
         <!-- General info -->
         <ProfileSection id="General">
           <div
@@ -194,10 +193,12 @@ async function fetchMatches() {
             </div>
           </div>
         </ProfileSection>
+      </DarkContainer>
 
-        <!-- Match history -->
+      <!-- Match history -->
+      <DarkContainer>
         <ProfileSection id="MatchHistory">
-          <BaseBoldHeadline class="pt-2">Match history</BaseBoldHeadline>
+          <BaseHighHeadline>Match history</BaseHighHeadline>
           <ProfileMatchesContainer>
             <!-- Displaying few loaded matches -->
             <MatchRecord
@@ -211,12 +212,12 @@ async function fetchMatches() {
             </RouterLink>
           </ProfileMatchesContainer>
         </ProfileSection>
-      </div>
-      <!-- Second row -->
-      <div class="flex-1 grid grid-cols-1 xl:grid-cols-2 gap-4">
-        <!-- Customizations -->
+      </DarkContainer>
+      <!-- </div> -->
+      <!-- Customizations -->
+      <DarkContainer>
         <ProfileSection id="Customizations">
-          <BaseBoldHeadline class="pt-2 pb-4">Customizations</BaseBoldHeadline>
+          <BaseHighHeadline>Customizations</BaseHighHeadline>
           <div
             class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-0 justify-around"
           >
@@ -309,14 +310,13 @@ async function fetchMatches() {
             >
           </div>
         </ProfileSection>
-
-        <!-- Elo chart -->
-        <!-- TODO replace the dummy graph with one with real data; add switches and so on -->
-        <!-- <ProfileSection id="Graphs">
+      </DarkContainer>
+      <!-- Elo chart -->
+      <!-- TODO replace the dummy graph with one with real data; add switches and so on -->
+      <!-- <ProfileSection id="Graphs">
           <BaseBoldHeadline class="pt-2">Elo history</BaseBoldHeadline>
           <EloChart></EloChart>
         </ProfileSection> -->
-      </div>
-    </DarkContainer>
+    </div>
   </ViewBaseResponsive>
 </template>

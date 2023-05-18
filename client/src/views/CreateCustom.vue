@@ -1,7 +1,7 @@
 <template>
   <view-base-fixed-height :placeItems="'start'">
     <div class="flex-1 py-8 px-4 gap-4 flex flex-col">
-      <base-bold-headline class="mb-4">Custom game</base-bold-headline>
+      <base-high-headline class="mb-4">Custom game</base-high-headline>
       <img
         src="@/assets/svg/puzzle.svg"
         class="h-20 md:h-32 absolute left-2 md:left-10 top-20"
@@ -71,7 +71,7 @@ import io, { Socket } from "socket.io-client";
 let socket: Socket;
 import ViewBaseFixedHeight from "@/components/ViewBaseFixedHeight.vue";
 import BaseMidHeadline from "@/components/BaseMidHeadline.vue";
-import BaseBoldHeadline from "@/components/BaseBoldHeadline.vue";
+import BaseHighHeadline from "@/components/BaseHighHeadline.vue";
 import BaseButton from "@/components/BaseButton.vue";
 import BaseToggleButton from "@/components/BaseToggleButton.vue";
 import InfinityIcon from "@/assets/svg/InfinityIcon.vue";
@@ -90,7 +90,7 @@ export default defineComponent({
   components: {
     ViewBaseFixedHeight,
     BaseButton,
-    BaseBoldHeadline,
+    BaseHighHeadline,
     BaseMidHeadline,
     BaseToggleButton,
     InfinityIcon,

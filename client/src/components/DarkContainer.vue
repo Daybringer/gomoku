@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="flex-1 bg-gray-700 -m-2 lg:-m-0 rounded-3xl  lg:rounded-2xl px-3 py-3 sm:p-4"
-  >
+  <div class="flex-1 bg-gray-700 dark:bg-gray-900 rounded-3xl p-3">
     <slot></slot>
   </div>
 </template>

@@ -1,11 +1,11 @@
 <template>
   <div
-    class=" flex justify-center place-items-center  bg-gray-100  dark:bg-gray-700  py-12 px-4 sm:px-6 lg:px-8"
+    class="flex justify-center place-items-center bg-gray-100 dark:bg-gray-700 py-12 px-4 sm:px-6 lg:px-8"
   >
     <div
-      class="max-w-lg w-full md:p-8 p-4  space-y-8 rounded-lg border-gray-50 dark:bg-gray-600 dark:border-transparent  bg-white border-opacity-30 border-t-1 shadow-2xl border-2"
+      class="max-w-lg w-full md:p-8 p-4 space-y-8 rounded-lg border-gray-50 dark:bg-gray-600 dark:border-transparent bg-white border-opacity-30 border-t-1 shadow-2xl border-2"
     >
-      <bold-headline>Register</bold-headline>
+      <base-high-headline>Register</base-high-headline>
       <hr class="dark:border-gray-500" />
       <status-message
         v-show="showSuccess"
@@ -96,9 +96,7 @@
           <social-sign-in :type="'facebook'"></social-sign-in>
         </div>
       </form>
-      <div v-show="showSuccess">
-        Some email confirmation, IDK :smile:
-      </div>
+      <div v-show="showSuccess">Some email confirmation, IDK :smile:</div>
     </div>
   </div>
 </template>
@@ -113,7 +111,7 @@ import SubmitButton from "@/components/FormSubmitButton.vue";
 import InputBase from "@/components/FormInputBase.vue";
 import SocialSignIn from "@/components/FormSocialSignIn.vue";
 import StatusMessage from "@/components/FormStatusMessage.vue";
-import BoldHeadline from "@/components/BaseBoldHeadline.vue";
+import BaseHighHeadline from "@/components/BaseHighHeadline.vue";
 
 // Axios repositories
 import { RepositoryFactory } from "@/repositories/RepositoryFactory";
@@ -125,9 +123,7 @@ import { useStore } from "@/store/store";
 // yup validation
 import { object, string, ref } from "yup";
 const registerFormSchema = object().shape({
-  email: string()
-    .required("Email is required")
-    .email("Invalid email"),
+  email: string().required("Email is required").email("Invalid email"),
   username: string()
     .required("Username is required")
     .min(3, "Username is too short (3-20)")
@@ -156,7 +152,7 @@ export default defineComponent({
     SocialSignIn,
     SubmitButton,
     StatusMessage,
-    BoldHeadline,
+    BaseHighHeadline,
   },
   data() {
     return {

@@ -22,7 +22,7 @@
       "
     >
       <div class="flex-1 flex flex-col">
-        <base-bold-headline class="md:mt-4">Pick a color</base-bold-headline>
+        <high-headline class="md:mt-4">Pick a color</high-headline>
         <div
           class="flex-1 flex flex-row gap-4 flex-wrap place-content-around justify-center"
         >
@@ -48,7 +48,7 @@
 import { defineProps, ref } from "vue";
 import BaseModal from "@/components/BaseModal.vue";
 import ColorPickerIcon from "@/assets/svg/ColorPickerIcon.vue";
-import BaseBoldHeadline from "./BaseBoldHeadline.vue";
+import HighHeadline from "./BaseHighHeadline.vue";
 const props = defineProps<{ currentColor: string; isMyColor: boolean }>();
 const emits = defineEmits<{
   (e: "setColor", isMyColor: boolean, color: string);

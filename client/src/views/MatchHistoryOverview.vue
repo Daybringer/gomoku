@@ -165,7 +165,7 @@ import { defineComponent } from "vue";
 // Components
 import ViewBaseFixedHeight from "@/components/ViewBaseFixedHeight.vue";
 import BaseLowHeadline from "@/components/BaseLowHeadline.vue";
-import BaseBoldHeadline from "@/components/BaseBoldHeadline.vue";
+import BaseHighHeadline from "@/components/BaseHighHeadline.vue";
 import BaseButton from "@/components/BaseButton.vue";
 import BaseToggleButton from "@/components/BaseToggleButton.vue";
 import ProfileMatchBlade from "@/components/MatchRecord.vue";
@@ -191,7 +191,7 @@ export default defineComponent({
   components: {
     ViewBaseFixedHeight,
     BaseLowHeadline,
-    BaseBoldHeadline,
+    BaseHighHeadline,
     BaseButton,
     BaseToggleButton,
     MatchQuickIcon,
