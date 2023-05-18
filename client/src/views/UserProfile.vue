@@ -21,7 +21,7 @@ import BaseMidHeadline from "@/components/BaseMidHeadline.vue";
 import BaseLowHeadline from "@/components/BaseLowHeadline.vue";
 import ProfilePickBoardButton from "@/components/ProfilePickBoardButton.vue";
 import ProfilePickColorButton from "@/components/ProfilePickColorButton.vue";
-import ProfileUserIconPicker from "@/components/ProfileUserIconPicker.vue";
+import ProfileIconPicker from "@/components/ProfileIconPicker.vue";
 import BaseTooltipWithIcon from "@/components/BaseTooltipWithIcon.vue";
 import ProfileAchievement from "@/components/ProfileAchievement.vue";
 import ProfileRankRepresentation from "@/components/ProfileRankRepresentation.vue";
@@ -100,12 +100,12 @@ async function fetchMatches() {
                 {{ store.user.username }}
               </h1>
               <!-- user profile icon -->
-              <ProfileUserIconPicker
+              <ProfileIconPicker
                 :currentIcon="store.user.selectedIcon"
                 :availableIcons="store.user.availableIcons"
                 @setIcon="setIcon"
                 @buyIcon="buyIcon"
-              ></ProfileUserIconPicker>
+              />
               <!-- koins -->
               <div class="flex flex-row place-items-center gap-2 py-4">
                 <span class="text-3xl font-bold">

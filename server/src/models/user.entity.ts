@@ -57,7 +57,7 @@ export class UserEntity {
   nameChangeTokens?: number;
 
   @Column({ type: 'enum', array: true, enum: Achievement, default: [] })
-  achievements?: Achievement[];
+  achievements: Achievement[];
 
   @Column({ default: '#00b3fe' })
   playerColor: string;
@@ -77,7 +77,7 @@ export class UserEntity {
     enum: ProfileIcon,
     default: [ProfileIcon.defaultBoy],
   })
-  availableIcons?: ProfileIcon[];
+  availableIcons: ProfileIcon[];
 
   @Column({ default: 0 })
   rankedWon: number;

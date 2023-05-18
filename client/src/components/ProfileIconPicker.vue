@@ -5,9 +5,9 @@
         modalActive = true;
       }
     "
-    class="border-gray-700 dark:border-gray-400 border-4 p-1 md:p-3 bg-gray-300 hover:bg-gray-400 dark:hover:bg-gray-500 dark:bg-gray-600 rounded-xl w-2/5 sm:w-1/4 xl:w-50 cursor-pointer"
+    class="border-gray-700 dark:border-gray-400 border-4 p-3 bg-gray-300 hover:bg-gray-400 dark:hover:bg-gray-500 dark:bg-gray-600 rounded-xl w-2/5 sm:w-1/4 xl:w-50 cursor-pointer"
   >
-    <img :src="getSvgURL(currentIcon || '')" alt="" />
+    <img :src="getSvgURL(currentIcon)" :alt="currentIcon" />
   </button>
 
   <!-- Select icon modal -->
@@ -23,48 +23,43 @@
       class="flex-1 flex flex-row gap-4 items-center justify-center flex-wrap"
     >
       <button
-        v-for="iconName in Object.values(profileIconList)"
-        v-show="iconName !== 'transparent'"
-        :key="iconName"
+        v-for="profileIcon in Object.values(ProfileIcon)"
+        v-show="
+          profileIcon !== ProfileIcon.transparent &&
+          profileIcon !== ProfileIcon.guest
+        "
+        :key="profileIcon"
         class="bg-gray-300 dark:bg-gray-500 dark:hover:bg-gray-400 p-2 rounded-lg hover:bg-gray-400 relative"
         :class="
-          currentIcon == iconName
+          currentIcon === profileIcon
             ? 'border-4 border-gray-800 dark:border-gray-200'
             : 'border-4 border-gray-200 dark:border-gray-800'
         "
         @click="
           () => {
-            currentBuyIconRecord = getIconRecord(iconName);
-            currentBuyIconName = iconName;
-            if (isAvailable(iconName)) {
-              $emit('setIcon', iconName);
+            if (isAvailable(profileIcon)) {
+              $emit('setIcon', profileIcon);
               modalActive = false;
             } else {
+              currentBuyIcon = profileIcon;
               buyModalActive = true;
             }
           }
         "
       >
-        <base-tooltip :content="getIconRecord(iconName).iconFullName">
-          <img
-            class="h-16 md:h-20"
-            :class="!isAvailable(iconName) ? 'opacity-50' : ''"
-            :src="getSvgURL(iconName)"
-            alt=""
-          />
-        </base-tooltip>
+        <img
+          class="h-16 md:h-20"
+          :class="!isAvailable(profileIcon) ? 'opacity-50' : ''"
+          :src="getSvgURL(profileIcon)"
+          :alt="profileIcon"
+        />
         <div
-          v-show="!isAvailable(iconName)"
+          v-show="!isAvailable(profileIcon)"
           class="absolute bottom-1 right-1 rounded h-6 w-6 bg-gray-200 border-2 border-gray-600 text-gray-900 z-30"
         >
           <lock-icon />
         </div>
       </button>
-      <div
-        class="h-20 md:h-24 w-20 md:w-24 mx-2 px-8 flex place-items-center justify-center text-center rounded-md"
-      >
-        <p class="italic">More coming...</p>
-      </div>
     </div>
   </base-modal>
 
@@ -87,7 +82,7 @@
       />
       <img
         class="h-20 md:h-32 my-2 border-gray-700 border-4 p-1 md:p-3 bg-gray-300 rounded-lg"
-        :src="getSvgURL(currentBuyIconName)"
+        :src="getSvgURL(currentBuyIcon)"
         alt=""
       />
       <p class="italic">
@@ -117,7 +112,7 @@
           class="font-medium"
           @click="
             () => {
-              $emit('buyIcon', currentBuyIconName);
+              $emit('buyIcon', currentBuyIcon);
               buyModalActive = false;
             }
           "
@@ -132,59 +127,35 @@
     </div>
   </base-modal>
 </template>
-<script lang="ts">
-import { defineComponent } from "vue";
-import {
-  ProfileIcon,
-  profileIconRecords,
-  ProfileIconRecordContent,
-} from "@/shared/icons";
-
+<script setup lang="ts">
+import { ProfileIcon, profileIconRecords } from "@/shared/icons";
+import { defineProps, defineEmits, ref } from "vue";
 // components
 import BaseModal from "@/components/BaseModal.vue";
 import BaseButton from "@/components/BaseButton.vue";
-import BaseTooltip from "./BaseTooltip.vue";
 import BaseMidHeadline from "@/components/BaseMidHeadline.vue";
 import LockIcon from "@/assets/svg/LockIcon.vue";
-export default defineComponent({
-  name: "",
-  props: {
-    currentIcon: String,
-    availableIcons: Object,
-  },
-  components: { BaseModal, LockIcon, BaseTooltip, BaseMidHeadline, BaseButton },
-  data(): {
-    modalActive: boolean;
-    buyModalActive: boolean;
-    currentBuyIconName: string;
-    currentBuyIconRecord: ProfileIconRecordContent;
-  } {
-    return {
-      modalActive: false,
-      buyModalActive: false,
-      currentBuyIconRecord: profileIconRecords.defaultBoy,
-      currentBuyIconName: ProfileIcon.defaultBoy,
-    };
-  },
-  computed: {
-    profileIconList(): string[] {
-      return Object.values(ProfileIcon);
-    },
-    availableIconsArr(): string[] {
-      return Object.values(this.availableIcons!);
-    },
-  },
-  methods: {
-    getSvgURL(svgName: string) {
-      return require(`../assets/svg/profile_icons/${svgName}.svg`);
-    },
-    isAvailable(iconName: string): boolean {
-      return this.availableIcons!.includes(iconName);
-    },
-    getIconRecord(iconName: string): ProfileIconRecordContent {
-      return profileIconRecords[iconName];
-    },
-  },
-});
+import { computed } from "@vue/reactivity";
+
+const props = defineProps<{
+  currentIcon: ProfileIcon;
+  availableIcons: ProfileIcon[];
+}>();
+defineEmits<{
+  (e: "setIcon", profileIcon: ProfileIcon);
+  (e: "buyIcon", profileIcon: ProfileIcon);
+}>();
+
+const modalActive = ref(false);
+const buyModalActive = ref(false);
+const currentBuyIcon = ref(ProfileIcon.defaultBoy);
+const currentBuyIconRecord = computed(
+  () => profileIconRecords[currentBuyIcon.value]
+);
+function getSvgURL(profileIcon: ProfileIcon) {
+  return require(`../assets/svg/profile_icons/${profileIcon}.svg`);
+}
+function isAvailable(profileIcon: ProfileIcon): boolean {
+  return props.availableIcons.includes(profileIcon);
+}
 </script>
-<style scoped></style>
