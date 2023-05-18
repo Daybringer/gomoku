@@ -37,52 +37,36 @@
                 modalActive = false;
               }
             "
-          />
+          ></button>
         </div>
       </div>
     </base-modal>
   </div>
 </template>
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
 //Components
+import { defineProps, ref } from "vue";
 import BaseModal from "@/components/BaseModal.vue";
 import ColorPickerIcon from "@/assets/svg/ColorPickerIcon.vue";
 import BaseBoldHeadline from "./BaseBoldHeadline.vue";
-export default defineComponent({
-  name: "ProfilePickColorButton",
-  props: {
-    currentColor: String,
-    isMyColor: Boolean,
-  },
-  components: {
-    BaseModal,
-    ColorPickerIcon,
-    BaseBoldHeadline,
-  },
-  data(): { modalActive: boolean; newColor: string; colorList: string[] } {
-    return {
-      modalActive: false,
-      newColor: "",
-      colorList: [
-        "#ff006e",
-        "#3a86ff",
-        "#44bba4",
-        "#ffbf00",
-        "#ff822e",
-        "#a937c8",
-        "#0cce6b",
-        "#4a3fd9",
-        "#d94a3f",
-      ],
-    };
-  },
-  computed: {},
-  methods: {
-    setColor(newColor: string): void {
-      this.$emit("setColor", this.isMyColor, newColor);
-    },
-  },
-});
+const props = defineProps<{ currentColor: string; isMyColor: boolean }>();
+const emits = defineEmits<{
+  (e: "setColor", isMyColor: boolean, color: string);
+}>();
+const modalActive = ref(false);
+const colorList = [
+  "#ff006e",
+  "#3a86ff",
+  "#44bba4",
+  "#ffbf00",
+  "#ff822e",
+  "#a937c8",
+  "#0cce6b",
+  "#4a3fd9",
+  "#d94a3f",
+];
+
+function setColor(chosenColor: string): void {
+  emits("setColor", props.isMyColor, chosenColor);
+}
 </script>
-<style scoped></style>

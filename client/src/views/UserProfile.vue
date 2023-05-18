@@ -14,13 +14,13 @@ import BaseBoldHeadline from "@/components/BaseBoldHeadline.vue";
 import BaseButton from "@/components/BaseButton.vue";
 import ProfileMatchesContainer from "@/components/ProfileMatchesContainer.vue";
 import MatchRecord from "@/components/MatchRecord.vue";
-import EloChart from "@/components/ProfileEloChart.vue";
+// import EloChart from "@/components/ProfileEloChart.vue";
 import DarkContainer from "@/components/DarkContainer.vue";
 import ProfileSection from "@/components/ProfileSection.vue";
 import BaseMidHeadline from "@/components/BaseMidHeadline.vue";
 import BaseLowHeadline from "@/components/BaseLowHeadline.vue";
 import ProfilePickBoardButton from "@/components/ProfilePickBoardButton.vue";
-import ProfilePickColorButton from "@/components/ProfilePickColorButton.vue";
+import ProfileColorPicker from "@/components/ProfileColorPicker.vue";
 import ProfileIconPicker from "@/components/ProfileIconPicker.vue";
 import BaseTooltipWithIcon from "@/components/BaseTooltipWithIcon.vue";
 import ProfileAchievement from "@/components/ProfileAchievement.vue";
@@ -259,7 +259,7 @@ async function fetchMatches() {
               >
                 <div class="flex flex-col items-center">
                   <BaseLowHeadline>Your color</BaseLowHeadline>
-                  <ProfilePickColorButton
+                  <ProfileColorPicker
                     :currentColor="store.user.playerColor"
                     :isMyColor="true"
                     @setColor="setColor"
@@ -267,7 +267,7 @@ async function fetchMatches() {
                 </div>
                 <div class="flex flex-col items-center">
                   <BaseLowHeadline>Enemy's color</BaseLowHeadline>
-                  <ProfilePickColorButton
+                  <ProfileColorPicker
                     :currentColor="store.user.enemyColor"
                     :isMyColor="false"
                     @setColor="setColor"
