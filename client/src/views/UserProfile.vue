@@ -19,7 +19,7 @@ import DarkContainer from "@/components/DarkContainer.vue";
 import ProfileSection from "@/components/ProfileSection.vue";
 import BaseMidHeadline from "@/components/BaseMidHeadline.vue";
 import BaseLowHeadline from "@/components/BaseLowHeadline.vue";
-import ProfilePickBoardButton from "@/components/ProfilePickBoardButton.vue";
+import ProfileBoardPicker from "@/components/ProfileBoardPicker.vue";
 import ProfileColorPicker from "@/components/ProfileColorPicker.vue";
 import ProfileIconPicker from "@/components/ProfileIconPicker.vue";
 import BaseTooltipWithIcon from "@/components/BaseTooltipWithIcon.vue";
@@ -225,28 +225,30 @@ async function fetchMatches() {
               <BaseMidHeadline>Gameboard</BaseMidHeadline>
               <div class="flex flex-row justify-around pt-3 px-3 gap-2 flex-1">
                 <div class="flex flex-col">
-                  <ProfilePickBoardButton
-                    @setBoard="setGameBoard(GameBoard.Standard)"
-                    :currentBoard="store.user.gameBoard"
-                    :myColor="store.user.playerColor"
-                    :enemyColor="store.user.enemyColor"
-                    :type="'standard'"
+                  <ProfileBoardPicker
+                    @setBoard="setGameBoard"
+                    :type="GameBoard.Standard"
+                    :current="store.user.gameBoard"
+                    :player-color="store.user.playerColor"
+                    :opponent-color="store.user.enemyColor"
                   />
                 </div>
                 <div class="flex flex-col">
-                  <ProfilePickBoardButton
-                    @setBoard="setGameBoard(GameBoard.Classic)"
-                    :currentBoard="store.user.gameBoard"
-                    :type="'classic'"
+                  <ProfileBoardPicker
+                    @setBoard="setGameBoard"
+                    :type="GameBoard.Classic"
+                    :player-color="store.user.playerColor"
+                    :opponent-color="store.user.enemyColor"
+                    :current="store.user.gameBoard"
                   />
                 </div>
                 <div class="flex flex-col">
-                  <ProfilePickBoardButton
-                    @setBoard="setGameBoard(GameBoard.Modern)"
-                    :currentBoard="store.user.gameBoard"
-                    :myColor="store.user.playerColor"
-                    :enemyColor="store.user.enemyColor"
-                    :type="'modern'"
+                  <ProfileBoardPicker
+                    @setBoard="setGameBoard"
+                    :current="store.user.gameBoard"
+                    :player-color="store.user.playerColor"
+                    :opponent-color="store.user.enemyColor"
+                    :type="GameBoard.Modern"
                   />
                 </div>
               </div>

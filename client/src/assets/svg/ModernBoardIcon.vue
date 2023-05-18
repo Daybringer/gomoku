@@ -12,28 +12,28 @@
         y="14.25"
         width="13.946"
         height="13.946"
-        :fill="enemyColor"
+        :fill="opponentColor"
       />
       <rect
         x=".70069"
         y=".94171"
         width="13.946"
         height="13.946"
-        :fill="myColor"
+        :fill="playerColor"
       />
       <rect
         x="14.411"
         y="14.794"
         width="13.946"
         height="13.946"
-        :fill="myColor"
+        :fill="playerColor"
       />
       <rect
         x="14.388"
         y="28.736"
         width="13.946"
         height="13.946"
-        :fill="enemyColor"
+        :fill="opponentColor"
       />
     </g>
     <g transform="translate(-82.181 -114.54)" fill="currentColor">
@@ -108,14 +108,6 @@
     </g>
   </svg>
 </template>
-<script lang="ts">
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  props: {
-    myColor: String,
-    enemyColor: String,
-  },
-  setup() {},
-});
+<script setup lang="ts">
+defineProps<{ playerColor: string; opponentColor: string }>();
 </script>

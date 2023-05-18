@@ -83,7 +83,7 @@
         rx="4.6244"
         ry="4.8213"
         fill="none"
-        :stroke="myColor"
+        :stroke="playerColor"
         stroke-linejoin="round"
         stroke-width="1.3747"
         data-v-69bfb0ac=""
@@ -91,7 +91,7 @@
       />
       <g
         transform="matrix(1.2029 .78722 -.78722 1.2029 -149.95 469.76)"
-        :fill="enemyColor"
+        :fill="opponentColor"
         paint-order="markers fill stroke"
       >
         <rect
@@ -114,7 +114,7 @@
       </g>
       <g
         transform="matrix(1.2029 .78722 -.78722 1.2029 -136.21 456)"
-        :fill="enemyColor"
+        :fill="opponentColor"
         paint-order="markers fill stroke"
       >
         <rect
@@ -141,7 +141,7 @@
         rx="4.6244"
         ry="4.8213"
         fill="none"
-        :stroke="myColor"
+        :stroke="playerColor"
         stroke-linejoin="round"
         stroke-width="1.3747"
         data-v-69bfb0ac=""
@@ -150,14 +150,6 @@
     </g>
   </svg>
 </template>
-<script lang="ts">
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  props: {
-    myColor: String,
-    enemyColor: String,
-  },
-  setup() {},
-});
+<script setup lang="ts">
+defineProps<{ playerColor: string; opponentColor: string }>();
 </script>
