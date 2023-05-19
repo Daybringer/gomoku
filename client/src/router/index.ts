@@ -54,6 +54,11 @@ const routes: Array<RouteRecordRaw> = [
     meta: { requiresAuth: true },
   },
   {
+    path: "/profile/:id",
+    component: () => import("../views/UserProfile.vue"),
+    meta: { requiresAuth: false, },
+  },
+  {
     path: "/profile/:id/match-history",
     component: () => import("../views/MatchHistoryOverview.vue"),
   },

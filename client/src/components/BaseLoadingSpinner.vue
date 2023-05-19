@@ -1,5 +1,7 @@
 <template>
-  <span class="loader border-4"></span>
+  <span
+    class="loader border-4 h-14 w-14 border-gray-700 dark:border-gray-300"
+  ></span>
 </template>
 <style scoped>
 .loader {

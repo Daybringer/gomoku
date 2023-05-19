@@ -5,7 +5,9 @@
         modalActive = true;
       }
     "
+    :disabled="disabled"
     class="border-gray-700 dark:border-gray-400 border-4 p-3 bg-gray-300 hover:bg-gray-400 dark:hover:bg-gray-500 dark:bg-gray-600 rounded-xl w-2/5 sm:w-1/4 xl:w-50 cursor-pointer"
+    :class="disabled ? 'cursor-not-allowed' : ''"
   >
     <img :src="getSvgURL(currentIcon)" :alt="currentIcon" />
   </button>
@@ -140,6 +142,7 @@ import { computed } from "@vue/reactivity";
 const props = defineProps<{
   currentIcon: ProfileIcon;
   availableIcons: ProfileIcon[];
+  disabled?: boolean;
 }>();
 defineEmits<{
   (e: "setIcon", profileIcon: ProfileIcon);

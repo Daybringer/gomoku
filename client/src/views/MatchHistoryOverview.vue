@@ -138,23 +138,20 @@
       >
       <hr class="mx-3 mt-1 border-2 rounded border-gray-500" />
       <div class="pt-4 flex flex-1 md:w-80 self-center overflow-y-auto">
-        <profile-matches-container>
+        <MatchRecordsContainer>
           <profile-match-blade
             v-for="match in matches"
             :key="match.id"
             :game="match"
           ></profile-match-blade>
-          <base-loading-spinner
-            class="h-14 w-14 border-gray-700 dark:border-gray-300"
-            v-show="loading"
-          />
+          <base-loading-spinner v-show="loading" />
           <p
             class="italic text-2xl text-gray-600 dark:text-gray-300"
             v-show="!loading && matches.length == 0"
           >
             None found. Go and find some
           </p>
-        </profile-matches-container>
+        </MatchRecordsContainer>
       </div>
     </div>
   </view-base-fixed-height>
@@ -169,7 +166,7 @@ import BaseHighHeadline from "@/components/BaseHighHeadline.vue";
 import BaseButton from "@/components/BaseButton.vue";
 import BaseToggleButton from "@/components/BaseToggleButton.vue";
 import ProfileMatchBlade from "@/components/MatchRecord.vue";
-import ProfileMatchesContainer from "@/components/ProfileMatchesContainer.vue";
+import MatchRecordsContainer from "@/components/MatchRecordsContainer.vue";
 import BaseLoadingSpinner from "@/components/BaseLoadingSpinner.vue";
 import BaseTooltip from "@/components/BaseTooltip.vue";
 // Icons
@@ -202,7 +199,7 @@ export default defineComponent({
     TieIcon,
     BaseTooltip,
     ProfileMatchBlade,
-    ProfileMatchesContainer,
+    MatchRecordsContainer,
     BaseLoadingSpinner,
     FiveCombinationIcon,
     NoWifiIcon,

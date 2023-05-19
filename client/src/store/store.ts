@@ -19,7 +19,7 @@ export interface UserProfile {
 }
 
 // This serves as a placeholder and a default's for unlogged users
-function userBase(): User {
+export function userBase(): User {
   return {
     id: 0,
     elo: 1000,
@@ -65,25 +65,6 @@ export const useStore = defineStore("store", {
     },
     getUsername(): string {
       return this.user.username;
-    },
-    // Matches
-    getTotalQuick(): number {
-      return this.user.quickLost + this.user.quickTied + this.user.quickWon;
-    },
-    getTotalRanked(): number {
-      return this.user.rankedLost + this.user.rankedTied + this.user.rankedWon;
-    },
-    getTotalMatches(): number {
-      return this.getTotalQuick + this.getTotalRanked;
-    },
-    getTotalWon(): number {
-      return this.user.rankedWon + this.user.quickWon;
-    },
-    getTotalLost(): number {
-      return this.user.rankedLost + this.user.quickLost;
-    },
-    getTotalTie(): number {
-      return this.user.rankedTied + this.user.quickTied;
     },
   },
   actions: {
