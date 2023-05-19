@@ -29,6 +29,7 @@ onBeforeMount(async () => {
   }
 });
 
+// TODO implement fetching a real user
 async function fetchUser(): Promise<User> {
   return new Promise<User>((resolve) => {
     setTimeout(() => {
