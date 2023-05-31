@@ -40,29 +40,28 @@ async function fetchUser(): Promise<User> {
 </script>
 
 <template>
-  <ViewBaseResponsive class="flex-1 flex flex-col gap-12" id="Start">
-    <BaseLoadingSpinner
-      class="absolute top-1/2 left-1/2 h-24 w-24"
-      v-if="!isUserLoaded"
-    ></BaseLoadingSpinner>
-    <!-- General info -->
-    <DarkContainer v-show="isUserLoaded">
-      <GeneralProfileSection
-        :user="user"
-        :visiting-profile="areWeVisitingProfile"
-      >
-      </GeneralProfileSection>
-    </DarkContainer>
+  <ViewBaseResponsive class="items-center" id="Start">
+    <div class="xl:w-60 flex-1 flex flex-col gap-12">
+      <BaseLoadingSpinner
+        class="absolute top-1/2 left-1/2 h-24 w-24"
+        v-if="!isUserLoaded"
+      ></BaseLoadingSpinner>
+      <DarkContainer v-show="isUserLoaded">
+        <GeneralProfileSection
+          :user="user"
+          :visiting-profile="areWeVisitingProfile"
+        >
+        </GeneralProfileSection>
+      </DarkContainer>
 
-    <!-- Match history -->
-    <DarkContainer v-show="isUserLoaded">
-      <MatchHistoryProfileSection
-        :userID="user.id"
-      ></MatchHistoryProfileSection>
-    </DarkContainer>
-    <!-- Customizations -->
-    <DarkContainer v-if="!areWeVisitingProfile" v-show="isUserLoaded">
-      <CustomizationProfileSection></CustomizationProfileSection>
-    </DarkContainer>
+      <DarkContainer v-show="isUserLoaded">
+        <MatchHistoryProfileSection
+          :userID="user.id"
+        ></MatchHistoryProfileSection>
+      </DarkContainer>
+      <DarkContainer v-if="!areWeVisitingProfile" v-show="isUserLoaded">
+        <CustomizationProfileSection></CustomizationProfileSection>
+      </DarkContainer>
+    </div>
   </ViewBaseResponsive>
 </template>

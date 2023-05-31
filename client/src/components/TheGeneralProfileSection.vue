@@ -7,11 +7,17 @@ import ProfileRankRepresentation from "@/components/ProfileRankRepresentation.vu
 import BaseMidHeadline from "./BaseMidHeadline.vue";
 import BaseButton from "./BaseButton.vue";
 import UsersRepository from "@/repositories/usersRepository";
-import * as utils from "@/utils/user";
+import {
+  getTotalLost,
+  getTotalMatches,
+  getTotalTie,
+  getTotalWon,
+} from "@/utils/user";
 import { User } from "@/shared/interfaces/user.interface";
 import { ProfileIcon, profileIconRecords } from "@/shared/icons";
 import { NotificationType, useNotificationsStore } from "@/store/notifications";
 import { useStore } from "@/store/store";
+import BaseHighHeadline from "./BaseHighHeadline.vue";
 
 defineProps<{ user: User; visitingProfile: boolean }>();
 const store = useStore();
@@ -46,12 +52,28 @@ async function buyIcon(profileIcon: ProfileIcon) {
     class="flex-1 flex flex-col xl:grid gap-5 xl:gap-0 grid-cols-7 grid-rows-3"
     id="General"
   >
+    <!-- Trophy -->
+    <div
+      class="col-span-2 row-span-2 flex flex-col justify-start items-center gap-2 p-2"
+    >
+      <BaseMidHeadline>Rank</BaseMidHeadline>
+      <ProfileRankRepresentation :currElo="user.elo" />
+      <p>
+        <span class="text-xl font-medium">ELO: </span
+        ><span class="text-lg">{{ user.elo }}</span>
+      </p>
+      <p>
+        <!-- TODO leaderboard position -->
+        <span class="text-xl font-medium">Leaderboard: </span
+        ><span class="text-lg">#1</span>
+      </p>
+    </div>
     <!-- Name, icon, koins -->
     <div class="col-span-3 row-span-2 flex items-center flex-col gap-2 p-1">
       <!-- name -->
-      <h1 class="text-4xl text-center font-medium py-2 underline">
-        {{ user.username }}
-      </h1>
+      <BaseMidHeadline style="font-size: 2rem" class="underline">{{
+        user.username
+      }}</BaseMidHeadline>
       <!-- user profile icon -->
       <ProfileIconPicker
         :disabled="visitingProfile"
@@ -80,63 +102,34 @@ async function buyIcon(profileIcon: ProfileIcon) {
         />
       </div>
     </div>
-    <!-- Trophy -->
-    <div
-      class="col-span-2 row-span-2 flex flex-col justify-start items-center gap-2 p-2"
-    >
-      <h2
-        class="text-4xl text-center font-medium py-2 text-gray-900 dark:text-gray-200"
-      >
-        Rank
-      </h2>
-      <ProfileRankRepresentation :currElo="user.elo" />
-      <p>
-        <span class="text-xl font-medium">ELO: </span
-        ><span class="text-lg">{{ user.elo }}</span>
-      </p>
-      <p>
-        <!-- TODO implement ranks -->
-        <span class="text-xl font-medium">Leaderboard: </span
-        ><span class="text-lg">FIXME</span>
-      </p>
-    </div>
+
     <!-- User match statistics -->
     <div
       class="col-span-2 row-span-2 flex flex-col justify-start items-center gap-2 p-2"
     >
-      <h2
-        class="text-4xl text-center font-medium py-2 text-gray-900 dark:text-gray-200"
-      >
-        Statistics
-      </h2>
+      <BaseMidHeadline>Statistics</BaseMidHeadline>
       <p class="whitespace-nowrap">
         <span class="text-lg font-medium">Total matches: </span>
-        <span>{{ utils.getTotalMatches(user) }}</span>
+        <span> {{ getTotalMatches(user) }}</span>
       </p>
       <p class="whitespace-nowrap">
         <span class="text-lg font-medium">Won: </span>
-        <span>{{ utils.getTotalWon(user) }}</span>
+        <span>{{ getTotalWon(user) }}</span>
       </p>
       <p class="whitespace-nowrap">
         <span class="text-lg font-medium">Lost: </span>
-        <span>{{ utils.getTotalLost(user) }}</span>
+        <span>{{ getTotalLost(user) }}</span>
       </p>
       <p class="whitespace-nowrap">
         <span class="text-lg font-medium">Tied: </span>
-        <span>{{ utils.getTotalTie(user) }}</span>
+        <span>{{ getTotalTie(user) }}</span>
       </p>
     </div>
     <!-- Achievements -->
-    <div
-      class="2xl:mt-4 mt- col-span-full row-span-1 flex flex-col gap-3 items-center"
-    >
+    <div class="col-span-full flex flex-col gap-3 items-center">
       <BaseMidHeadline>Achievements</BaseMidHeadline>
       <div class="flex flex-row justify-around items-center flex-wrap gap-2">
-        <!-- <ProfileAchievement class="h-20 w-20" />
-          <ProfileAchievement class="h-20 w-20" />
-          <ProfileAchievement class="h-20 w-20" />
-          <ProfileAchievement class="h-20 w-20" />
-          <ProfileAchievement class="h-20 w-20" /> -->
+        <ProfileAchievement v-for="item in [0, 1, 2, 3]" class="h-20 w-20" />
       </div>
       <RouterLink :to="`/profile/${user.id}/achievements`">
         <BaseButton class="mb-2">See all achievements</BaseButton>
