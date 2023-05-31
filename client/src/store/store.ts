@@ -125,6 +125,7 @@ export const useStore = defineStore("store", {
         UsersRepository.changeUsername(newUsername)
           .then(() => {
             resolve("Username has been changed");
+            this.user.username = newUsername;
           })
           .catch((err) => {
             console.log(err);
