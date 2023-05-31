@@ -13,7 +13,8 @@ import MatchRankedIcon from "@/assets/svg/MatchRankedIcon.vue";
 import MatchCustomIcon from "@/assets/svg/MatchCustomIcon.vue";
 import BaseTooltip from "./BaseTooltip.vue";
 import { computed, defineProps } from "vue";
+import { capitalize } from "@/utils/general";
 
 const props = defineProps<{ gameType: GameType }>();
-const tooltipContent = computed(() => props.gameType);
+const tooltipContent = computed(() => capitalize(props.gameType));
 </script>
