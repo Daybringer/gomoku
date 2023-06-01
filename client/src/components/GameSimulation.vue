@@ -1,37 +1,29 @@
 <template>
   <canvas
-    class="absolute h-full w-full z-10 opacity-50"
+    class="absolute h-full w-full z-10 opacity-90"
     id="simulationCanvas"
     ref="simulationCanvas"
   ></canvas>
 </template>
-
-<script lang="ts">
-import { defineComponent, onMounted, onUnmounted, ref } from "vue";
+<script setup lang="ts">
+import { onMounted, onUnmounted } from "vue";
 import GameSimulation from "../utils/gameSimulation";
 import { useStore } from "@/store/store";
-export default defineComponent({
-  name: "GameSimulation",
-  setup() {
-    const store = useStore();
-    const gameSimulation = new GameSimulation({
-      drawSpeed: 0.75,
-      gridLineWidth: 0.5,
-      primaryColor: store.user.playerColor,
-      secondaryColor: store.user.enemyColor,
-      gridColor: "#8f8f8f",
-      cellSize: 35,
-    });
+const store = useStore();
+const gameSimulation = new GameSimulation({
+  drawSpeed: 0.75,
+  gridLineWidth: 1,
+  primaryColor: store.user.playerColor,
+  secondaryColor: store.user.enemyColor,
+  gridColor: "#808080",
+  cellSize: 35,
+});
 
-    onMounted(() => {
-      gameSimulation.initialize("simulationCanvas");
-    });
+onMounted(() => {
+  gameSimulation.initialize("simulationCanvas");
+});
 
-    onUnmounted(() => {
-      gameSimulation.destroy();
-    });
-  },
+onUnmounted(() => {
+  gameSimulation.destroy();
 });
 </script>
-
-<style></style>

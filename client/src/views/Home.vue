@@ -5,7 +5,7 @@
     id="home"
     ref="home"
   >
-    <div class="relative h-20  md:h-24 w-full bg-gray-800 text-center">
+    <div class="relative h-20 md:h-24 w-full bg-gray-800 text-center">
       <intersection-observer @intersect="intersectionCrossed('home')" />
       <div class="m-auto top-0">
         <span class="text-gray-300 font-semibold md:text-xl italic"
@@ -20,35 +20,20 @@
     </div>
 
     <!-- Current online users -->
-    <div class="text-center bg-gray-800 text-gray-400  font-medium text-lg">
+    <div class="text-center bg-gray-800 text-gray-400 font-medium text-lg">
       <p>{{ Number(this.activeUsers) + 1 }} people playing</p>
     </div>
-    <div class=" bg-gray-800 h-20 z-30 w-full m-auto"></div>
+    <div class="bg-gray-800 h-20 z-30 w-full m-auto"></div>
     <div
       id="mainCard"
       ref="mainCard"
-      class=" w-90 h-90 flex flex-1 mb-8 bg-white dark:bg-gray-200 shadow-xl z-40 m-auto rounded-xl relative md:rounded-2xl overflow-hidden -mt-16 md:-mt-12"
+      class="w-90 h-90 flex flex-1 mb-8 bg-gray-50 dark:bg-gray-700 shadow-xl z-40 m-auto rounded-xl relative md:rounded-2xl overflow-hidden -mt-16 md:-mt-12"
     >
       <!-- Play button -->
       <div class="m-auto z-20">
         <router-link to="/search?type=quick">
           <button
-            class="
-            border-gray-800
-            bg-white
-            dark:bg-gray-800
-            dark:border-transparent
-            border-4
-            text-gray-800
-            dark:text-gray-200
-            text-3xl
-            font-bold
-            py-4
-            px-28
-            rounded-lg
-            hover:shadow-outline-gray
-            focus:shadow-outline-gray
-            focus:outline-none"
+            class="border-gray-800 bg-white dark:bg-gray-800 dark:border-transparent border-4 text-gray-800 dark:text-gray-200 text-3xl font-bold py-4 px-28 rounded-lg hover:shadow-outline-gray focus:shadow-outline-gray focus:outline-none"
           >
             Play
           </button>
@@ -62,7 +47,7 @@
   <div
     ref="matches"
     id="matches"
-    class="w-full min-height-screen-calc flex bg-gray-200 dark:bg-gray-700  flex-col scroll-margin-navbar"
+    class="w-full min-height-screen-calc flex bg-gray-200 dark:bg-gray-700 flex-col scroll-margin-navbar"
   >
     <intersection-observer @intersect="intersectionCrossed('matches')" />
     <h2
@@ -71,11 +56,11 @@
       Matches
     </h2>
     <div
-      class=" mx-auto mb-auto md:mt-16 2xl:mt-32  w-80 md:w-60 gap-8 grid grid-cols-1 md:grid-cols-2 z-40"
+      class="mx-auto mb-auto md:mt-16 2xl:mt-32 w-80 md:w-60 gap-8 grid grid-cols-1 md:grid-cols-2 z-40"
     >
-      <div class="flex ">
+      <div class="flex">
         <div
-          class="m-auto transform hover:scale-105  transition-transform ease-in duration-75"
+          class="m-auto transform hover:scale-105 transition-transform ease-in duration-75"
         >
           <router-link
             to="/search?type=quick"
@@ -121,16 +106,16 @@
   <div
     id="rules"
     ref="rules"
-    class="w-full min-height-screen-calc flex bg-gray-200 dark:bg-gray-700  flex-col scroll-margin-navbar"
+    class="w-full min-height-screen-calc flex bg-gray-200 dark:bg-gray-700 flex-col scroll-margin-navbar"
   >
     <intersection-observer @intersect="intersectionCrossed('rules')" />
     <h2
-      class="text-5xl my-6  md:mt-4 2xl:mt-4 text-gray-800 dark:text-gray-200 font-semibold w-full text-center"
+      class="text-5xl my-6 md:mt-4 2xl:mt-4 text-gray-800 dark:text-gray-200 font-semibold w-full text-center"
     >
       Rules
     </h2>
     <div
-      class=" w-90 xl:w-2/3 mt-4  p-4 py-8 flex flex-col mb-8 bg-gray-800 rounded-lg m-auto"
+      class="w-90 xl:w-2/3 mt-4 p-4 py-8 flex flex-col mb-8 bg-gray-800 rounded-lg m-auto"
     >
       <!-- Basics -->
       <rule-section
@@ -148,9 +133,7 @@
             <b>wins</b> the game
           </li>
 
-          <li class="pb-3">
-            Starting player is determined by a coin flip
-          </li>
+          <li class="pb-3">Starting player is determined by a coin flip</li>
           <li class="pb-3">
             Players alternate until somebody wins or the board is filled, in
             which case the game is tied
@@ -177,15 +160,9 @@
           <ul
             class="list-disc list-inside text-gray-300 font-normal p-3 text-left"
           >
-            <li class="pb-3">
-              Players don't have to be logged in
-            </li>
-            <li class="pb-3">
-              Each player has a time limit of 5mins
-            </li>
-            <li class="pb-3">
-              ELO doesn't matter, just have fun!
-            </li>
+            <li class="pb-3">Players don't have to be logged in</li>
+            <li class="pb-3">Each player has a time limit of 5mins</li>
+            <li class="pb-3">ELO doesn't matter, just have fun!</li>
           </ul>
         </rule-section>
         <!-- Ranked -->
@@ -197,21 +174,13 @@
           <ul
             class="list-disc list-inside text-gray-300 font-normal p-3 text-left"
           >
-            <li class="pb-3">
-              Players have to be logged in
-            </li>
-            <li class="pb-3">
-              Each player has a time limit of 10mins
-            </li>
+            <li class="pb-3">Players have to be logged in</li>
+            <li class="pb-3">Each player has a time limit of 10mins</li>
             <li class="pb-3">
               Players of similar ELO are matched against each other
             </li>
-            <li class="pb-3">
-              Winner's ELO increases, loser's decreases
-            </li>
-            <li class="pb-3">
-              The game starts with SWAP1
-            </li>
+            <li class="pb-3">Winner's ELO increases, loser's decreases</li>
+            <li class="pb-3">The game starts with SWAP1</li>
           </ul>
         </rule-section>
         <!-- Custom -->
@@ -230,9 +199,7 @@
             <li class="pb-3">
               It's up to the player to prescribe a time limit and a swap
             </li>
-            <li class="pb-3">
-              ELO is not affected by the outcome of the game
-            </li>
+            <li class="pb-3">ELO is not affected by the outcome of the game</li>
           </ul>
         </rule-section>
         <!-- AI -->
@@ -244,18 +211,10 @@
           <ul
             class="list-disc list-inside text-gray-300 font-normal p-3 text-left"
           >
-            <li class="pb-3">
-              A player enters a game against a bot
-            </li>
-            <li class="pb-3">
-              The rules of the game will vary
-            </li>
-            <li class="pb-3">
-              ELO is not affected by the outcome of the game
-            </li>
-            <li class="pb-3">
-              Each game presents a unique challenge
-            </li>
+            <li class="pb-3">A player enters a game against a bot</li>
+            <li class="pb-3">The rules of the game will vary</li>
+            <li class="pb-3">ELO is not affected by the outcome of the game</li>
+            <li class="pb-3">Each game presents a unique challenge</li>
           </ul>
         </rule-section>
       </rule-section>
@@ -267,9 +226,7 @@
         targetHeading="SWAP1"
       >
         <ul class="list-disc list-inside text-gray-300 font-normal p-3">
-          <li class="pb-3">
-            Starting player is determined by a coin flip
-          </li>
+          <li class="pb-3">Starting player is determined by a coin flip</li>
           <li class="pb-3">
             He then places 3 stones - 2 of one color and 1 of the other
           </li>
@@ -277,9 +234,7 @@
             The opponent chooses one of the colors, starting player is assigned
             the other one
           </li>
-          <li class="pb-3">
-            The player with only 1 stone goes 1st
-          </li>
+          <li class="pb-3">The player with only 1 stone goes 1st</li>
           <li class="list-none">
             <button
               class="border-gray-400 border-4 text-gray-200 text-base font-medium py-1 px-6 rounded-md focus:shadow-outline-white focus:outline-none hover:bg-gray-400 hover:text-gray-700"
@@ -301,12 +256,8 @@
             The game starts like SWAP1, but the opponent has
             <b>3</b> choices
             <ul class="list-disc list-inside text-gray-300 font-normal p-3">
-              <li class="pb-3">
-                Play with the 2 placed stones and go 2nd
-              </li>
-              <li class="pb-3">
-                Play with the 1 placed stone and go 1st
-              </li>
+              <li class="pb-3">Play with the 2 placed stones and go 2nd</li>
+              <li class="pb-3">Play with the 1 placed stone and go 1st</li>
               <li class="pb-3">
                 Place 2 more stones and let starting player choose his color
               </li>
@@ -320,7 +271,7 @@
   <div
     ref="origins"
     id="origins"
-    class="w-full min-height-screen-calc flex pb-8 bg-gray-200 dark:bg-gray-700  flex-col scroll-margin-navbar"
+    class="w-full min-height-screen-calc flex pb-8 bg-gray-200 dark:bg-gray-700 flex-col scroll-margin-navbar"
   >
     <intersection-observer @intersect="intersectionCrossed('origins')" />
     <h2
@@ -348,7 +299,7 @@
   <div
     ref="contact"
     id="contact"
-    class="w-full bg-gomoku-black  p-4 pb-2 flex flex-col scroll-margin-navbar"
+    class="w-full bg-gomoku-black p-4 pb-2 flex flex-col scroll-margin-navbar"
   >
     <intersection-observer @intersect="intersectionCrossed('contact')" />
     <div
@@ -357,11 +308,11 @@
       <a
         href="https://github.com/Daybringer/gomoku"
         target="_blank"
-        class="focus:outline-none focus:text-gray-700 "
+        class="focus:outline-none focus:text-gray-700"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-8 stroke-current mr-5  hover:text-gray-500 focus:outline-none"
+          class="h-8 stroke-current mr-5 hover:text-gray-500 focus:outline-none"
           viewBox="0 0 24 24"
           stroke-width="1.8"
           fill="none"
@@ -377,7 +328,7 @@
       <a
         href="https://discord.gg/ASYgt6j"
         target="_blank"
-        class="focus:outline-none focus:text-gray-700 "
+        class="focus:outline-none focus:text-gray-700"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -408,7 +359,7 @@
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-8 stroke-current ml-5  hover:text-gray-500 focus:outline-none"
+          class="h-8 stroke-current ml-5 hover:text-gray-500 focus:outline-none"
           viewBox="0 0 24 24"
           stroke-width="1.8"
           stroke="#2c3e50"
@@ -440,11 +391,11 @@
       >
     </div>
     <div class="w-full h-6 flex-1 m-auto text-center">
-      <span class="text-gray-200 text-base font-normal "
+      <span class="text-gray-200 text-base font-normal"
         >Copyright (c) 2020
         <a
           href="https://daybringer.github.io/"
-          class="focus:text-gray-600 focus:outline-none  hover:text-gray-500"
+          class="focus:text-gray-600 focus:outline-none hover:text-gray-500"
           target="_blank"
           >Vaňata
         </a>
@@ -452,7 +403,7 @@
           >licensed under
           <a
             href="https://github.com/Daybringer/gomoku/blob/master/LICENSE"
-            class="focus:text-gray-600 focus:outline-none  not-italic hover:text-gray-500"
+            class="focus:text-gray-600 focus:outline-none not-italic hover:text-gray-500"
             target="_blank"
             >MIT</a
           ></span

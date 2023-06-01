@@ -78,7 +78,7 @@ async function setUsername() {
         router.push("/");
       })
       .catch((err: AxiosError) => {
-        // if (err.response) serverError.value = err.response.data.message;
+        if (err.response) serverError.value = err.response.data.message;
       });
   } else {
     serverError.value = formData.errors.username;
