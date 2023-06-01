@@ -1,78 +1,61 @@
 <template>
-  <navbar id="navbar" :activeIntersection="activeIntersection"></navbar>
+  <Navbar id="navbar" :activeIntersection="activeIntersection"></Navbar>
   <!-- FIXME MIGHT Be careful of :key attribute, might cause higher response time (my insight) -->
-  <router-view
+  <RouterView
     :key="$route.fullPath"
     :activeUsers="onlineUsers"
     class="min-height-screen-calc"
     @intersectionCrossed="setIntersection"
   />
+  <!-- NOTIFICATIONS -->
   <div
     class="fixed w-full flex flex-col place-items-center z-50 bottom-8 gap-2"
   >
-    <transition-group name="notification-list">
-      <base-toast
+    <TransitionGroup name="notification-list">
+      <BaseToast
         v-for="notification in notifications"
         :key="notification.UUID"
-        :text="notification.text"
-        :type="notification.type"
-        :autoDismiss="notification.autoDismiss"
-        :duration="notification.duration"
-        :imageName="notification.imageName"
-        :UUID="notification.UUID"
+        :notification="notification"
       />
-    </transition-group>
+    </TransitionGroup>
   </div>
 </template>
-<script lang="ts">
+<script setup lang="ts">
 import { io, Socket } from "socket.io-client";
-let socket: Socket;
 import { SocketIOEvents, UpdateActiveUsersDTO } from "@/shared/socketIO";
 import { useStore } from "@/store/store";
-import { defineComponent, ref, reactive, toRefs, onMounted } from "vue";
+import { ref, reactive, onMounted, onBeforeUnmount } from "vue";
 import Navbar from "@/components/TheNavbar.vue";
 import BaseToast from "./components/BaseToast.vue";
 import { useNotificationsStore } from "./store/notifications";
-export default defineComponent({
-  name: "App",
-  components: { Navbar, BaseToast },
-  setup() {
-    const store = useStore();
-    const notificationStore = useNotificationsStore();
-    const notifications = reactive(notificationStore.$state.notifications);
+let socket: Socket;
+const store = useStore();
+const notifications = reactive(useNotificationsStore().$state.notifications);
 
-    if (store.token) {
-      store.setBearer(store.token);
-      store.fetchOwnProfile();
+if (store.token) {
+  store.setBearer(store.token);
+  store.fetchOwnProfile();
+}
+
+const onlineUsers = ref(0);
+const activeIntersection = ref("");
+
+const setIntersection = (intersectionName: string) => {
+  activeIntersection.value = intersectionName;
+};
+
+onMounted(() => {
+  socket = io("/app", { port: 3001 });
+  socket.on(
+    SocketIOEvents.UpdateActiveUsers,
+    (updateActiveUsersDTO: UpdateActiveUsersDTO) => {
+      onlineUsers.value = updateActiveUsersDTO.activeUsers;
     }
-    let onlineUsers = reactive(ref(0));
-    const state = reactive({ activeIntersection: "" });
+  );
+});
 
-    const setIntersection = (intersectionName: string) => {
-      state.activeIntersection = intersectionName;
-    };
-
-    onMounted(() => {
-      socket = io("/app", { port: 3001 });
-      socket.on(
-        SocketIOEvents.UpdateActiveUsers,
-        (updateActiveUsersDTO: UpdateActiveUsersDTO) => {
-          onlineUsers.value = updateActiveUsersDTO.activeUsers;
-        }
-      );
-    });
-
-    return {
-      ...toRefs(state),
-      setIntersection,
-      onlineUsers,
-      notifications,
-    };
-  },
-  mounted() {},
-  beforeUnmount() {
-    socket.close();
-  },
+onBeforeUnmount(() => {
+  socket.close();
 });
 </script>
 <style>
@@ -101,14 +84,13 @@ a {
 a:active {
   outline: none !important;
 }
+
+/* ---------- NOTIFICATIONS ---------- */
 .notification-list-move,
 .notification-list-enter-active,
 .notification-list-leave-active {
   transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
-/* .notification-list-leave-active {
-  position: absolute;
-} */
 .notification-list-enter-from {
   opacity: 0;
   transform: translate(-80px);

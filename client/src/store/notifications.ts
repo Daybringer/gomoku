@@ -7,7 +7,7 @@ export enum NotificationType {
   Info,
 }
 
-interface Notification {
+export interface Notification {
   UUID: string;
   type: NotificationType;
   text: string;
