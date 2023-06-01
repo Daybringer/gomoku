@@ -137,18 +137,9 @@ export const useStore = defineStore("store", {
      * @param newUsername
      * @returns
      */
-    async setUsername(newUsername: string): Promise<string> {
-      return new Promise((resolve, reject) => {
-        UsersRepository.changeUsername(newUsername)
-          .then(() => {
-            resolve("Username has been changed");
-            this.user.username = newUsername;
-          })
-          .catch((err) => {
-            console.log(err);
-            reject(err.response.data.message);
-          });
-      });
+    setUsername(newUsername: string): void {
+      this.user.username = newUsername;
+      this.saveLocalUser();
     },
     async login(usernameOrEmail: string, password: string) {
       return new Promise((resolve, reject) => {

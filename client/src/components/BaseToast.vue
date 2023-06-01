@@ -8,9 +8,7 @@
       <success-icon v-if="isSuccess" class="h-7 md:h-8 text-green-500" />
       <error-icon v-if="isError" class="h-7 md:h-8 text-red-500" />
       <allert-icon v-if="isWarning" class="h-7 md:h-8 text-yellow-500" />
-      <div class="px-2 flex-1 text-base text-center">
-        {{ text }}
-      </div>
+      <div class="px-2 flex-1 text-base text-center" v-html="text"></div>
     </div>
     <div
       class="progress left-0 bottom-0 border border-transparent rounded-full"
