@@ -27,13 +27,21 @@ import { SetColorsDTO } from 'src/shared/DTO/set-colors.dto';
 
 @Controller('/users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) { }
 
   @Post('/check-username')
   @UsePipes(new ValidationPipe())
   async checkUsername(@Body() req: CheckUsernameDTO): Promise<boolean> {
     const user = await this.usersService.findOneByUsername(req.username);
     return !!user;
+  }
+
+
+  @Get('/profile/:id')
+  async fetchUser(@Param('id') id: number): Promise<User> {
+
+    const { password, mailVerificationCode, socialID, ...user } = await this.usersService.findOneByID(id);
+    return user;
   }
 
   @Post('/generate-name')
@@ -89,7 +97,7 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Get('profile')
-  async fetchUser(@Req() req): Promise<User> {
+  async fetchSelfUser(@Req() req): Promise<User> {
     const { password, ...rest } = req.user;
     return rest;
   }

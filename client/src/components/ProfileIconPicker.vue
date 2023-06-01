@@ -39,7 +39,7 @@
         "
         @click="
           () => {
-            if (isAvailable(profileIcon)) {
+            if (availableIcons.includes(profileIcon)) {
               $emit('setIcon', profileIcon);
               modalActive = false;
             } else {
@@ -51,12 +51,12 @@
       >
         <img
           class="h-16 md:h-20"
-          :class="!isAvailable(profileIcon) ? 'opacity-50' : ''"
+          :class="!availableIcons.includes(profileIcon) ? 'opacity-50' : ''"
           :src="getSvgURL(profileIcon)"
           :alt="profileIcon"
         />
         <div
-          v-show="!isAvailable(profileIcon)"
+          v-show="!availableIcons.includes(profileIcon)"
           class="absolute bottom-1 right-1 rounded h-6 w-6 bg-gray-200 border-2 border-gray-600 text-gray-900 z-30"
         >
           <lock-icon />
@@ -131,7 +131,7 @@
 </template>
 <script setup lang="ts">
 import { ProfileIcon, profileIconRecords } from "@/shared/icons";
-import { defineProps, defineEmits, ref } from "vue";
+import { defineProps, defineEmits, ref, watch } from "vue";
 // components
 import BaseModal from "@/components/BaseModal.vue";
 import BaseButton from "@/components/BaseButton.vue";
@@ -158,7 +158,7 @@ const currentBuyIconRecord = computed(
 function getSvgURL(profileIcon: ProfileIcon) {
   return require(`../assets/svg/profile_icons/${profileIcon}.svg`);
 }
-function isAvailable(profileIcon: ProfileIcon): boolean {
-  return props.availableIcons.includes(profileIcon);
-}
+watch(props.availableIcons, () => {
+  console.log(props.availableIcons);
+});
 </script>

@@ -174,10 +174,10 @@ const profileIconRecords: Record<ProfileIconKeys, ProfileIconRecordContent> = {
     boundAchievementID: null,
   },
   turtle: {
-    description: "",
+    description: "Klárky oblíbená ikonka",
     iconFullName: "Valiant farmer",
     purchasable: true,
-    price: 100,
+    price: 0,
     boundAchievementID: null,
   },
   unicorn: {

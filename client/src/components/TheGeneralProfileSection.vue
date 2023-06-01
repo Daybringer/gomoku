@@ -38,6 +38,10 @@ async function buyIcon(profileIcon: ProfileIcon) {
     UsersRepository.buyIcon(profileIcon).then(() => {
       store.user.credit -= price;
       store.user.availableIcons.push(profileIcon);
+      notificationsStore.createNotification(
+        NotificationType.Success,
+        "Successfully bought icon."
+      );
     });
   } else {
     notificationsStore.createNotification(

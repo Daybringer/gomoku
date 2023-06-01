@@ -30,11 +30,6 @@ app.directive("click-outside", {
   },
 });
 
-app.mixin({
-  methods: {
-  }
-})
-
 app.use(createPinia());
 
 app.use(router).use(GAuth, GAuthOptions).mount("#vue-app");

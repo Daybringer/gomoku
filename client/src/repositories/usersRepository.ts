@@ -15,7 +15,9 @@ export default {
   userWithUsernameExists(username: string) {
     return Repository.post(`${resource}/check-username`, { username });
   },
-  // getUserProfile() {},
+  getUserProfile(id: number) {
+    return Repository.get<User>(`${resource}/profile/${id}`)
+  },
   getOwnUserProfile() {
     return Repository.get<User>(`${resource}/profile`);
   },

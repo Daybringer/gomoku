@@ -68,6 +68,23 @@ export const useStore = defineStore("store", {
     },
   },
   actions: {
+    /**
+     * Warning: Owerwrites original data.
+     * @returns
+     * Deeply copies source user to destination user.\n\n
+     * 
+     */
+    copyUser(src: User, dest: User): void {
+      console.log("BEFORE", src, dest);
+      Object.keys(src).forEach((key) => {
+        if (Array.isArray(src[key])) {
+          dest[key] = [...src[key]];
+        } else {
+          dest[key] = src[key];
+        }
+      })
+      console.log("AFTER", src, dest);
+    },
     async register(user: {
       username: string;
       email: string;

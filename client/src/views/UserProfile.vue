@@ -8,35 +8,29 @@ import DarkContainer from "@/components/DarkContainer.vue";
 import BaseLoadingSpinner from "@/components/BaseLoadingSpinner.vue";
 // TS
 import { useRoute } from "vue-router";
-import { onBeforeMount, ref } from "vue";
+import { onBeforeMount, reactive, ref } from "vue";
 import { useStore, userBase } from "@/store/store";
 import { User } from "@/shared/interfaces/user.interface";
-import { exampleUser1 } from "@/dummy_data/users";
+import usersRepository from "@/repositories/usersRepository";
 
 const store = useStore();
 const userID = useRoute().params.id;
 const areWeVisitingProfile = ref(userID !== undefined);
-let user = ref(userBase());
+let visitedUser = reactive(userBase());
+
 let isUserLoaded = ref(false);
 
 onBeforeMount(async () => {
   if (areWeVisitingProfile.value) {
-    user.value = await fetchUser();
+    const fetchedUser: User = (
+      await usersRepository.getUserProfile(Number(userID))
+    ).data;
+    store.copyUser(fetchedUser, visitedUser);
     isUserLoaded.value = true;
   } else {
-    user.value = store.user;
     isUserLoaded.value = true;
   }
 });
-
-// TODO implement fetching a real user
-async function fetchUser(): Promise<User> {
-  return new Promise<User>((resolve) => {
-    setTimeout(() => {
-      resolve(exampleUser1);
-    }, 2000);
-  });
-}
 </script>
 
 <template>
@@ -48,7 +42,7 @@ async function fetchUser(): Promise<User> {
       ></BaseLoadingSpinner>
       <DarkContainer v-show="isUserLoaded">
         <GeneralProfileSection
-          :user="user"
+          :user="areWeVisitingProfile ? visitedUser : store.user"
           :visiting-profile="areWeVisitingProfile"
         >
         </GeneralProfileSection>
@@ -56,7 +50,7 @@ async function fetchUser(): Promise<User> {
 
       <DarkContainer v-show="isUserLoaded">
         <MatchHistoryProfileSection
-          :userID="user.id"
+          :userID="areWeVisitingProfile ? visitedUser.id : store.user.id"
         ></MatchHistoryProfileSection>
       </DarkContainer>
       <DarkContainer v-if="!areWeVisitingProfile" v-show="isUserLoaded">
