@@ -17,7 +17,6 @@ import { User } from "@/shared/interfaces/user.interface";
 import { ProfileIcon, profileIconRecords } from "@/shared/icons";
 import { NotificationType, useNotificationsStore } from "@/store/notifications";
 import { useStore } from "@/store/store";
-import BaseHighHeadline from "./BaseHighHeadline.vue";
 
 defineProps<{ user: User; visitingProfile: boolean }>();
 const store = useStore();

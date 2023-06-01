@@ -21,7 +21,7 @@ export class UsersService {
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
     private readonly tokenService: TokensService,
-  ) {}
+  ) { }
 
   async createLocal(
     username: string,
@@ -47,7 +47,7 @@ export class UsersService {
     const randLetter = String.fromCharCode(97 + Math.floor(Math.random() * 26));
     const chosenAdj: string =
       adjectives[randLetter][
-        Math.floor(Math.random() * adjectives[randLetter].length)
+      Math.floor(Math.random() * adjectives[randLetter].length)
       ];
     const chosenNoun: string =
       nouns[randLetter][Math.floor(Math.random() * nouns[randLetter].length)];
@@ -144,6 +144,8 @@ export class UsersService {
     const profileIconRecord = profileIconRecords[icon];
     if (!profileIconRecord.purchasable)
       throw new BadRequestException('Icon is not purchasable');
+    if (user.availableIcons.includes(icon))
+      throw new BadRequestException('Icon is already owned');
     if (user.credit >= profileIconRecord.price) {
       user.credit -= profileIconRecord.price;
       user.availableIcons.push(icon);

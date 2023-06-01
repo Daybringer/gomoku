@@ -10,23 +10,31 @@ import BaseLoadingSpinner from "@/components/BaseLoadingSpinner.vue";
 import { useRoute } from "vue-router";
 import { onBeforeMount, reactive, ref } from "vue";
 import { useStore, userBase } from "@/store/store";
-import { User } from "@/shared/interfaces/user.interface";
 import usersRepository from "@/repositories/usersRepository";
+import { NotificationType, useNotificationsStore } from "@/store/notifications";
+import router from "@/router";
 
 const store = useStore();
 const userID = useRoute().params.id;
 const areWeVisitingProfile = ref(userID !== undefined);
 let visitedUser = reactive(userBase());
-
 let isUserLoaded = ref(false);
 
 onBeforeMount(async () => {
   if (areWeVisitingProfile.value) {
-    const fetchedUser: User = (
-      await usersRepository.getUserProfile(Number(userID))
-    ).data;
-    store.copyUser(fetchedUser, visitedUser);
-    isUserLoaded.value = true;
+    usersRepository
+      .getUserProfile(Number(userID))
+      .then((response) => {
+        store.copyUser(response.data, visitedUser);
+        isUserLoaded.value = true;
+      })
+      .catch(() => {
+        useNotificationsStore().createNotification(
+          NotificationType.Error,
+          "User with given ID doesn't exist"
+        );
+        router.push("/");
+      });
   } else {
     isUserLoaded.value = true;
   }
