@@ -1,4 +1,5 @@
-import { GetGamesByUserIDDTO } from 'src/shared/DTO/get-games-by-user-id.dto';
+import { GetGameByUserIDDTOResponse } from 'src/shared/DTO/get-game-by-user-id.response.dto';
+import { GetGamesByUserIDDTO } from 'src/shared/DTO/get-game-by-user-id.dto';
 import { GetGameByIDResponseDTO } from 'src/shared/DTO/get-game-by-id.response.dto';
 import { ExpandedGame } from 'src/shared/interfaces/game.interface';
 import { BadRequestException, Injectable } from '@nestjs/common';
@@ -8,7 +9,6 @@ import {
   Player,
   GameState,
   GameType,
-  Position,
   Symbol,
   OpeningPhase,
 } from 'gomoku-shared-types/';
@@ -34,7 +34,6 @@ import { In, Repository } from 'typeorm';
 import { AnyGame, CustomGame, QuickGame, RankedGame } from '../game.class';
 import { ProfileIcon } from 'src/shared/icons';
 import { createRatingSystem } from './rating';
-import { GetGamesByUserIDResponseDTO } from 'src/shared/DTO/get-game-by-id.response.dto';
 
 @Injectable()
 export class GameService {
@@ -614,7 +613,7 @@ export class GameService {
 
   async getGamesByUserID(
     dto: GetGamesByUserIDDTO,
-  ): Promise<GetGamesByUserIDResponseDTO> {
+  ): Promise<GetGameByUserIDDTOResponse> {
     const gameProfiles = await this.playerGameProfileRepository.find({
       where: { userID: dto.userID },
       order: { id: 'DESC' },

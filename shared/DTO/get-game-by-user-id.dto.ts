@@ -1,6 +1,6 @@
-import { EndingType, GameType } from "shared/types";
+import { EndingType, GameType } from 'shared/types';
 
-export class GetGameByUserIDDTO {
+export class GetGamesByUserIDDTO {
   userID: number;
   skip: number;
   take: number;
