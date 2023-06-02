@@ -1,6 +1,6 @@
+import { GetGamesByUserIDDTO } from 'src/shared/DTO/get-games-by-user-id.dto';
 import { GetGameByIDResponseDTO } from 'src/shared/DTO/get-game-by-id.response.dto';
 import { ExpandedGame } from 'src/shared/interfaces/game.interface';
-import { ExpandedPlayerGameProfile } from 'src/shared/interfaces/playerGameProfile.interface';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
@@ -30,10 +30,11 @@ import { GameEntity } from 'src/models/game.entity';
 import { PlayerGameProfile } from 'src/models/playerGameProfile.entity';
 import { COIN_SPIN_DURATION } from 'src/shared/constants';
 import { UsersService } from 'src/users/users.service';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { AnyGame, CustomGame, QuickGame, RankedGame } from '../game.class';
 import { ProfileIcon } from 'src/shared/icons';
 import { createRatingSystem } from './rating';
+import { GetGamesByUserIDResponseDTO } from 'src/shared/DTO/get-game-by-id.response.dto';
 
 @Injectable()
 export class GameService {
@@ -444,6 +445,7 @@ export class GameService {
   }
 
   async savePlayerGameProfile(
+    gameID: number,
     player: Player,
     eloDiff?: number,
   ): Promise<PlayerGameProfile> {
@@ -459,6 +461,7 @@ export class GameService {
     }
 
     playerGameProfileEntity.timeLeft = player.timeLeft;
+    playerGameProfileEntity.gameID = gameID;
 
     return await this.playerGameProfileRepository.save(playerGameProfileEntity);
   }
@@ -478,6 +481,7 @@ export class GameService {
         game.winner ? game.winner.userID : 0,
       );
       playerOneProfile = await this.savePlayerGameProfile(
+        gameEntity.id,
         playerOne,
         elos[playerOne.userID],
       );
@@ -487,6 +491,7 @@ export class GameService {
       );
 
       playerTwoProfile = await this.savePlayerGameProfile(
+        gameEntity.id,
         playerTwo,
         elos[playerTwo.userID],
       );
@@ -495,8 +500,14 @@ export class GameService {
         elos[playerTwo.userID],
       );
     } else {
-      playerOneProfile = await this.savePlayerGameProfile(playerOne);
-      playerTwoProfile = await this.savePlayerGameProfile(playerTwo);
+      playerOneProfile = await this.savePlayerGameProfile(
+        gameEntity.id,
+        playerOne,
+      );
+      playerTwoProfile = await this.savePlayerGameProfile(
+        gameEntity.id,
+        playerTwo,
+      );
     }
 
     socketIDtoPlayerGameProfileID[playerOne.socketID] = playerOneProfile.id;
@@ -562,16 +573,10 @@ export class GameService {
     this.saveGame(game);
   }
 
-  async getGameByID(gameID: number): Promise<GetGameByIDResponseDTO> {
-    const game = await this.gameRepository.findOne({ where: { id: gameID } });
-    if (!game) throw new BadRequestException("Game doesn't exist");
-    const playerGameProfiles = await this.playerGameProfileRepository.findByIds(
-      game.playerGameProfileIDs,
-    );
-    if (playerGameProfiles.length !== 2)
-      throw new BadRequestException(
-        'Game profiles are corrupted (missing/overflowing)',
-      );
+  async expandGame(
+    game: GameEntity,
+    playerGameProfiles: PlayerGameProfile[],
+  ): Promise<ExpandedGame> {
     const expandedGame: ExpandedGame = {
       ...game,
       expandedPlayerGameProfiles: {},
@@ -589,7 +594,43 @@ export class GameService {
         };
       }
     }
-    return { game: expandedGame };
+
+    return expandedGame;
+  }
+
+  async getGameByID(gameID: number): Promise<GetGameByIDResponseDTO> {
+    const game = await this.gameRepository.findOne({ where: { id: gameID } });
+    if (!game) throw new BadRequestException("Game doesn't exist");
+    const playerGameProfiles = await this.playerGameProfileRepository.findByIds(
+      game.playerGameProfileIDs,
+    );
+    if (playerGameProfiles.length !== 2)
+      throw new BadRequestException(
+        'Game profiles are corrupted (missing/overflowing)',
+      );
+
+    return { game: await this.expandGame(game, playerGameProfiles) };
+  }
+
+  async getGamesByUserID(
+    dto: GetGamesByUserIDDTO,
+  ): Promise<GetGamesByUserIDResponseDTO> {
+    const gameProfiles = await this.playerGameProfileRepository.find({
+      where: { userID: dto.userID },
+      order: { id: 'DESC' },
+      skip: dto.skip,
+      take: dto.take,
+    });
+
+    const gameIDs = gameProfiles.map((gameProfile) => gameProfile.gameID);
+
+    const expandedGames: ExpandedGame[] = [];
+
+    for await (const gameID of gameIDs) {
+      expandedGames.push((await this.getGameByID(gameID)).game);
+    }
+
+    return { games: expandedGames };
   }
 
   /**

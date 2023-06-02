@@ -24,11 +24,10 @@ import { BuyIconDTO } from 'src/shared/DTO/buy-icon.dto';
 import { SelectIconDTO } from 'src/shared/DTO/select-icon.dto';
 import { SetGameboardDTO } from 'src/shared/DTO/set-gameboard.dto';
 import { SetColorsDTO } from 'src/shared/DTO/set-colors.dto';
-import { ExpandedGame } from 'src/shared/interfaces/game.interface';
 
 @Controller('/users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) { }
+  constructor(private readonly usersService: UsersService) {}
 
   @Post('/check-username')
   @UsePipes(new ValidationPipe())
@@ -37,14 +36,12 @@ export class UsersController {
     return !!user;
   }
 
-
   @Get('/profile/:id')
   async fetchUser(@Param('id') id: number): Promise<User> {
-
-    const { password, mailVerificationCode, socialID, ...user } = await this.usersService.findOneByID(id);
+    const { password, mailVerificationCode, socialID, ...user } =
+      await this.usersService.findOneByID(id);
     return user;
   }
-
 
   @Post('/generate-name')
   generateName(): string {

@@ -13,6 +13,9 @@ export class PlayerGameProfile {
   @Column()
   timeLeft: number;
 
+  @Column()
+  gameID: number;
+
   @CreateDateColumn()
   createdAt: Date;
 

@@ -1,7 +1,8 @@
-import { ProfileIcon } from "../icons";
+import { ProfileIcon } from '../icons';
 
 export interface PlayerGameProfile {
   id: number;
+  gameID: number;
   createdAt?: Date;
   userID?: number;
   timeLeft: number;

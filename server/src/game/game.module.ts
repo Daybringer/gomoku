@@ -9,6 +9,7 @@ import { GameController } from './game.controller';
 import { CustomRoomService } from './services/customRoom.service';
 import { GameService } from './services/game.service';
 import { SearchService } from './services/search.service';
+import { UsersService } from 'src/users/users.service';
 
 @Module({
   imports: [

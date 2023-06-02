@@ -8,8 +8,9 @@ import { ExpandedGame } from "@/shared/interfaces/game.interface";
 import { reactive, onMounted, ref } from "vue";
 import BaseLoadingSpinner from "@/components/BaseLoadingSpinner.vue";
 import { RepositoryFactory } from "@/repositories/RepositoryFactory";
+import { EndingType, GameType } from "@/shared/types";
 const gameRepository = RepositoryFactory.getGameRepository;
-defineProps<{ userID: number }>();
+const props = defineProps<{ userID: number }>();
 const games: ExpandedGame[] = reactive([]);
 const matchesAreLoaded = ref(false);
 
@@ -18,10 +19,20 @@ onMounted(() => {
 });
 function fetchMatches() {
   gameRepository
-    .getGameByID(1)
+    .getGamesByUserIDDTO({
+      userID: props.userID,
+      skip: 0,
+      take: 5,
+      constraints: {
+        allowedEndingTypes: undefined,
+        allowedGameTypes: undefined,
+        amIWinner: undefined,
+      },
+    })
     .then((res) => {
-      console.log(res.data.game);
-      games.push(res.data.game);
+      res.data.games.forEach((game) => {
+        games.push(game);
+      });
       matchesAreLoaded.value = true;
     })
     .catch((err) => {
