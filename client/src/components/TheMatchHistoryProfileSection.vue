@@ -4,31 +4,43 @@ import BaseHighHeadline from "./BaseHighHeadline.vue";
 import MatchRecord from "./MatchRecord.vue";
 import MatchRecordsContainer from "./MatchRecordsContainer.vue";
 import BaseButton from "./BaseButton.vue";
-import { exampleGame1 } from "@/dummy_data/matches";
 import { ExpandedGame } from "@/shared/interfaces/game.interface";
-import { onBeforeMount } from "vue";
-
+import { reactive, onMounted, ref } from "vue";
+import BaseLoadingSpinner from "@/components/BaseLoadingSpinner.vue";
+import { RepositoryFactory } from "@/repositories/RepositoryFactory";
+const gameRepository = RepositoryFactory.getGameRepository;
 defineProps<{ userID: number }>();
+const games: ExpandedGame[] = reactive([]);
+const matchesAreLoaded = ref(false);
 
-//TODO implement pulling matches from user's profile
-onBeforeMount(async () => {
+onMounted(() => {
   fetchMatches();
 });
-
-async function fetchMatches() {
-  lastMatches.push(exampleGame1);
-  lastMatches.push(exampleGame1);
-  lastMatches.push(exampleGame1);
-  lastMatches.push(exampleGame1);
+function fetchMatches() {
+  gameRepository
+    .getGameByID(1)
+    .then((res) => {
+      console.log(res.data.game);
+      games.push(res.data.game);
+      matchesAreLoaded.value = true;
+    })
+    .catch((err) => {
+      console.error(err);
+    });
 }
-const lastMatches: ExpandedGame[] = [];
 </script>
 <template>
   <ProfileSection id="MatchHistory">
     <BaseHighHeadline>Match history</BaseHighHeadline>
     <MatchRecordsContainer>
       <!-- Displaying few loaded matches -->
-      <MatchRecord v-for="match in lastMatches" :key="match.id" :game="match" />
+      <MatchRecord
+        :userID="userID"
+        v-for="game in games"
+        :key="game.id"
+        :game="game"
+      />
+      <BaseLoadingSpinner v-show="!matchesAreLoaded" />
       <!-- All matches link -->
       <RouterLink :to="'/profile/' + userID + '/match-history'">
         <BaseButton> All matches </BaseButton>

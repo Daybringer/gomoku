@@ -7,18 +7,18 @@
       class="grid grid-cols-11 items-center flex-1 gap-2 md:gap-0 mb-2 md:pr-2 md:mb-0"
     >
       <ProfileLink
-        :logged="true"
-        :username="game.me.username"
-        :userID="game.me.id"
-        :profile-icon="game.me.profileIcon"
+        :userID="pOneGameProfile.userID!"
+        :logged="!!pOneGameProfile.userID"
+        :username="pOneGameProfile.username!"
+        :profile-icon="pOneGameProfile.profileIcon!"
         class="col-span-5"
       />
       <p class="text-lg text-center">VS</p>
       <ProfileLink
-        :userID="game.opponent.id"
-        :logged="game.opponent.logged"
-        :username="game.opponent.username"
-        :profile-icon="game.opponent.profileIcon"
+        :userID="pTwoGameProfile.userID!"
+        :logged="!!pTwoGameProfile.userID"
+        :username="pTwoGameProfile.username!"
+        :profile-icon="pTwoGameProfile.profileIcon!"
         class="col-span-5"
       />
     </div>
@@ -26,7 +26,7 @@
       <ResultIcon
         class="col-span-1"
         :tie="game.typeOfWin === EndingType.Tie"
-        :win="game.win"
+        :win="game.winnerGameProfileID == ownGameProfileID"
       />
       <GameTypeIcon class="col-span-1" :gameType="game.type" />
       <div>{{ eloGain }}</div>
@@ -43,16 +43,34 @@ import ResultIcon from "./MatchRecordResultIcon.vue";
 import GameTypeIcon from "./MatchRecordGameTypeIcon.vue";
 // TS
 import { EndingType, GameType } from "@/shared/types";
-import { computed, defineProps } from "vue";
+import { computed, defineProps, ref } from "vue";
 import { ExpandedGame } from "@/shared/interfaces/game.interface";
 
 const props = defineProps<{
   game: ExpandedGame;
+  userID: number;
 }>();
 
+const [pOneID, pTwoID] = [
+  ...Object.keys(props.game.expandedPlayerGameProfiles).map((val) => {
+    return Number(val);
+  }),
+];
+const [pOneGameProfile, pTwoGameProfile] = [
+  props.game.expandedPlayerGameProfiles[pOneID],
+  props.game.expandedPlayerGameProfiles[pTwoID],
+];
+
+const ownGameProfileID = ref(
+  props.game.expandedPlayerGameProfiles[pOneID].userID === props.userID
+    ? props.game.expandedPlayerGameProfiles[pOneID].id
+    : props.game.expandedPlayerGameProfiles[pTwoID].id
+);
+
 const eloGain = computed(() => {
-  const elo = props.game.me.delta;
-  if (props.game.type === GameType.Ranked) {
+  const elo =
+    props.game.expandedPlayerGameProfiles[ownGameProfileID.value].eloDelta;
+  if (props.game.type === GameType.Ranked && elo) {
     if (elo > 0) {
       return `+${elo}`;
     }
@@ -62,7 +80,7 @@ const eloGain = computed(() => {
 });
 
 const humanDate = computed(() => {
-  const date = new Date(props.game.dateString);
+  const date = new Date(props.game.createdAt);
   return `${date.getDate()}.${date.getMonth()}.${date.getFullYear()}`;
 });
 </script>

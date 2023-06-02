@@ -1,13 +1,13 @@
-import { ProfileIcon } from "../icons";
 import { GameType, EndingType, Turn } from "../types";
+import { ExpandedPlayerGameProfile } from "./playerGameProfile.interface";
 
 // Propagate
 export interface Game {
   id: number;
-  playerGameProfilesIDs: number[];
+  playerGameProfileIDs: number[];
   createdAt: Date;
   type: GameType;
-  winnerGameProfileID: number;
+  winnerGameProfileID?: number;
   typeOfWin: EndingType;
   finalState: number[][];
   turnHistory: Turn[];
@@ -17,21 +17,6 @@ export interface Game {
 }
 
 export interface ExpandedGame extends Game {
-  dateString: string;
-  me: {
-    id: number;
-    username: string;
-    profileIcon: ProfileIcon;
-    remainingTime: number;
-    delta: number;
-  };
-  opponent: {
-    logged: boolean;
-    id: number;
-    profileIcon: ProfileIcon;
-    username: string;
-    remainingTime: number;
-    delta: number;
-  };
-  win: boolean;
+  // PlayergGameProfileID to PlayerGameProfile
+  expandedPlayerGameProfiles: Record<number, ExpandedPlayerGameProfile>;
 }

@@ -10,14 +10,14 @@ export class PlayerGameProfile {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
+  @Column()
+  timeLeft: number;
+
   @CreateDateColumn()
-  createdAt?: Date;
+  createdAt: Date;
 
   @Column({ default: null, nullable: true })
   userID?: number;
-
-  @Column()
-  timeLeft: number;
 
   @Column({ nullable: true })
   eloDelta?: number;

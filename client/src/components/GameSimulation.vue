@@ -1,6 +1,6 @@
 <template>
   <canvas
-    class="absolute h-full w-full z-10 opacity-90"
+    class="absolute h-full w-full z-10 opacity-80"
     id="simulationCanvas"
     ref="simulationCanvas"
   ></canvas>
@@ -16,6 +16,7 @@ const gameSimulation = new GameSimulation({
   primaryColor: store.user.playerColor,
   secondaryColor: store.user.enemyColor,
   gridColor: "#808080",
+  // gridColor: "#000000",
   cellSize: 35,
 });
 

@@ -157,7 +157,7 @@
   </view-base-fixed-height>
 </template>
 <script lang="ts">
-import { exampleGame1 } from "@/dummy_data/matches";
+// import { exampleGame1 } from "@/dummy_data/matches";
 import { defineComponent } from "vue";
 // Components
 import ViewBaseFixedHeight from "@/components/ViewBaseFixedHeight.vue";
@@ -240,7 +240,7 @@ export default defineComponent({
       setTimeout(() => {
         this.loading = false;
         for (let x = 0; x < 5; x++) {
-          this.matches.push(exampleGame1);
+          // this.matches.push(exampleGame1);
         }
       }, 3000);
     },

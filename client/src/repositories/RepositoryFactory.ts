@@ -1,14 +1,16 @@
 import usersRepository from "./usersRepository";
 import authRepository from "./authRepository";
+import gameRepository from "./gameRepository";
 
 const repositories = {
   users: usersRepository,
-  auth: authRepository
+  auth: authRepository,
+  games: gameRepository
 };
 
 export const RepositoryFactory = {
-  // TODO not flexible way, v podstatě potlačuje princip Factories -_-
   // get: (name: string) => repositories[name],
   getUserRepository: repositories["users"],
-  getAuthRepository: repositories["auth"]
+  getAuthRepository: repositories["auth"],
+  getGameRepository: repositories["games"]
 };

@@ -1,4 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { GetGameByIDResponseDTO } from 'src/shared/DTO/get-game-by-id.response.dto';
+import { ExpandedGame } from 'src/shared/interfaces/game.interface';
+import { ExpandedPlayerGameProfile } from 'src/shared/interfaces/playerGameProfile.interface';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   EndingType,
@@ -557,6 +560,36 @@ export class GameService {
     game.winner = game.getOtherPlayer(disconecteeSocket.id);
 
     this.saveGame(game);
+  }
+
+  async getGameByID(gameID: number): Promise<GetGameByIDResponseDTO> {
+    const game = await this.gameRepository.findOne({ where: { id: gameID } });
+    if (!game) throw new BadRequestException("Game doesn't exist");
+    const playerGameProfiles = await this.playerGameProfileRepository.findByIds(
+      game.playerGameProfileIDs,
+    );
+    if (playerGameProfiles.length !== 2)
+      throw new BadRequestException(
+        'Game profiles are corrupted (missing/overflowing)',
+      );
+    const expandedGame: ExpandedGame = {
+      ...game,
+      expandedPlayerGameProfiles: {},
+    };
+
+    for await (const profile of playerGameProfiles) {
+      expandedGame.expandedPlayerGameProfiles[profile.id] = { ...profile };
+      // If User was logged
+      if (profile.userID) {
+        const user = await this.usersService.findOneByID(profile.userID);
+        expandedGame.expandedPlayerGameProfiles[profile.id] = {
+          ...profile,
+          username: user.username,
+          profileIcon: user.selectedIcon,
+        };
+      }
+    }
+    return { game: expandedGame };
   }
 
   /**

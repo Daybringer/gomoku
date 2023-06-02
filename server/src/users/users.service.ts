@@ -41,8 +41,6 @@ export class UsersService {
     return this.userRepository.save(newUser);
   }
 
-  // took me 3 hours xd
-  // TODO capitalize every word
   generateRandomName(): string {
     const randLetter = String.fromCharCode(97 + Math.floor(Math.random() * 26));
     const chosenAdj: string =

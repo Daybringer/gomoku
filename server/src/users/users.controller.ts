@@ -24,6 +24,7 @@ import { BuyIconDTO } from 'src/shared/DTO/buy-icon.dto';
 import { SelectIconDTO } from 'src/shared/DTO/select-icon.dto';
 import { SetGameboardDTO } from 'src/shared/DTO/set-gameboard.dto';
 import { SetColorsDTO } from 'src/shared/DTO/set-colors.dto';
+import { ExpandedGame } from 'src/shared/interfaces/game.interface';
 
 @Controller('/users')
 export class UsersController {
@@ -43,6 +44,7 @@ export class UsersController {
     const { password, mailVerificationCode, socialID, ...user } = await this.usersService.findOneByID(id);
     return user;
   }
+
 
   @Post('/generate-name')
   generateName(): string {
