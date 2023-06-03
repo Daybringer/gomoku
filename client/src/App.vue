@@ -24,7 +24,7 @@
 import { io, Socket } from "socket.io-client";
 import { SocketIOEvents, UpdateActiveUsersDTO } from "@/shared/socketIO";
 import { useStore } from "@/store/store";
-import { ref, reactive, onMounted, onBeforeUnmount } from "vue";
+import { ref, reactive, onMounted, onBeforeUnmount, onBeforeMount } from "vue";
 import Navbar from "@/components/TheNavbar.vue";
 import BaseToast from "./components/BaseToast.vue";
 import { useNotificationsStore } from "./store/notifications";
@@ -52,6 +52,14 @@ onMounted(() => {
       onlineUsers.value = updateActiveUsersDTO.activeUsers;
     }
   );
+});
+
+onBeforeMount(() => {
+  if (store.darkModeToggled) {
+    document.documentElement.classList.add("dark");
+  } else {
+    document.documentElement.classList.remove("dark");
+  }
 });
 
 onBeforeUnmount(() => {

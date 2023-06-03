@@ -1,63 +1,60 @@
 <template>
-  <nav id="navbar" class="w-full bg-gray-800 sticky top-0 z-50 ">
+  <nav id="navbar" class="w-full bg-gray-800 sticky top-0 z-50">
     <div class="max-w-full mx-auto px-2 md:px-6 xl:px-8">
       <div class="relative flex items-center justify-between h-16">
         <div class="absolute inset-y-0 left-0 flex items-center xl:hidden">
-          <hamburger-button
+          <HamburgerButton
             :isActive="burgerDropdownIsToggled"
             @click="burgerToggle"
-          ></hamburger-button>
+          ></HamburgerButton>
         </div>
         <div
           class="flex-1 flex items-center justify-center xl:items-stretch xl:justify-start"
         >
           <div class="flex-shrink-0">
-            <router-link
-              to="/#home"
-              class="focus:outline-none focus:opacity-75"
-            >
+            <RouterLink to="/#home" class="focus:outline-none focus:opacity-75">
               <img
-                class="h-6 w-auto align-middle inline sm:h-8 stroke-current  hover:opacity-75"
+                class="h-6 w-auto align-middle inline sm:h-8 stroke-current hover:opacity-75"
                 src="@/assets/logo.svg"
                 alt="Playgomoku logo"
               />
-            </router-link>
+            </RouterLink>
           </div>
           <div class="hidden xl:block xl:ml-6">
             <div class="flex">
-              <navbar-navigation-link
+              <NavbarNavigationLink
                 :active="activeIntersection === 'home' && isHomePage"
                 :to="'/search?type=quick'"
                 :type="'primary'"
-                >Play</navbar-navigation-link
+                >Play</NavbarNavigationLink
               >
 
-              <navbar-navigation-link
+              <NavbarNavigationLink
                 :active="activeIntersection === 'matches' && isHomePage"
                 :to="'/#matches'"
                 :type="'secondary'"
-                >Matches</navbar-navigation-link
+                >Matches</NavbarNavigationLink
               >
 
-              <navbar-navigation-link
+              <NavbarNavigationLink
                 :active="activeIntersection === 'rules' && isHomePage"
                 :to="'/#rules'"
                 :type="'secondary'"
-                >Rules</navbar-navigation-link
+                >Rules</NavbarNavigationLink
               >
 
-              <navbar-navigation-link
+              <NavbarNavigationLink
                 :active="activeIntersection === 'origins' && isHomePage"
                 :to="'/#origins'"
                 :type="'secondary'"
-                >Origins</navbar-navigation-link
+                >Origins</NavbarNavigationLink
               >
 
-              <navbar-navigation-link
+              <NavbarNavigationLink
                 :active="activeIntersection === 'contact' && isHomePage"
                 :to="'/#contact'"
                 :type="'secondary'"
-                >Contact</navbar-navigation-link
+                >Contact</NavbarNavigationLink
               >
             </div>
           </div>
@@ -72,13 +69,13 @@
             <input
               id="toogleA"
               type="checkbox"
-              v-model="darkModeToggled"
+              v-model="store.darkModeToggled"
               class="hidden"
             />
             <!-- line -->
             <div
               class="toggle__line w-16 bg-gray-300 dark:bg-gray-400 rounded-full shadow-inner"
-              style="height:1.90rem;"
+              style="height: 1.9rem"
             ></div>
             <!-- dot -->
             <div
@@ -86,7 +83,7 @@
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="flex-1 h-7 fill-current  stroke-current"
+                class="flex-1 h-7 fill-current stroke-current"
                 viewBox="0 0 24 24"
                 stroke-width="0"
                 stroke="#000000"
@@ -110,7 +107,7 @@
             <div>
               <button
                 v-show="logged"
-                class="flex text-sm border-2  border-transparent rounded-full p-1 bg-gray-100 focus:outline-none focus:border-gomoku-blue transition duration-150 ease-in-out"
+                class="flex text-sm border-2 border-transparent rounded-full p-1 bg-gray-100 focus:outline-none focus:border-gomoku-blue transition duration-150 ease-in-out"
                 id="user-menu"
                 aria-label="User menu"
                 aria-haspopup="true"
@@ -118,7 +115,7 @@
               >
                 <img
                   v-show="store.userLoaded"
-                  class=" h-7"
+                  class="h-7"
                   alt="user_icon"
                   :src="getSvgURL(store.user.selectedIcon)"
                 />
@@ -136,7 +133,7 @@
                 Sign in
               </button>
             </div>
-            <transition
+            <Transition
               enter-active-class="transition ease-out duration-100 transform"
               enter-class="opacity-0 scale-95"
               enter-to-class="opacity-100 scale-100"
@@ -146,8 +143,7 @@
             >
               <div
                 v-show="profileDropdownIsToggled"
-                class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg
-              "
+                class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg"
               >
                 <div
                   class="py-1 rounded-md bg-white shadow-xs"
@@ -165,13 +161,13 @@
                   <a
                     href="#"
                     @click.prevent="logout"
-                    class="block px-4 py-2 text-sm leading-5  text-gray-700 hover:bg-gray-300 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
+                    class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-300 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
                     role="menuitem"
                     >Sign out</a
                   >
                 </div>
               </div>
-            </transition>
+            </Transition>
           </div>
         </div>
       </div>
@@ -187,31 +183,31 @@
       :class="burgerDropdownIsToggled ? 'block' : 'hidden'"
     >
       <div class="px-2 pt-2 pb-3 z-50" id="navbarDropdown">
-        <router-link
+        <RouterLink
           v-show="!logged"
           to="/login"
           class="inline-block w-auto px-4 py-2 text-base bg-gomoku-blue hover:bg-gomoku-blue-dark text-gray-800 shadow-lg font-semibold border-transparent rounded focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
-          >Sign in</router-link
+          >Sign in</RouterLink
         >
-        <mobile-navbar-link
+        <MobileNavbarLink
           :to="'/#matches'"
           :active="activeIntersection === 'matches' && isHomePage"
-          >Matches</mobile-navbar-link
+          >Matches</MobileNavbarLink
         >
-        <mobile-navbar-link
+        <MobileNavbarLink
           :to="'/#rules'"
           :active="activeIntersection === 'rules' && isHomePage"
-          >Rules</mobile-navbar-link
+          >Rules</MobileNavbarLink
         >
-        <mobile-navbar-link
+        <MobileNavbarLink
           :to="'/#origins'"
           :active="activeIntersection === 'origins' && isHomePage"
-          >Origins</mobile-navbar-link
+          >Origins</MobileNavbarLink
         >
-        <mobile-navbar-link
+        <MobileNavbarLink
           :to="'/#contact'"
           :active="activeIntersection === 'contact' && isHomePage"
-          >Contact</mobile-navbar-link
+          >Contact</MobileNavbarLink
         >
 
         <button
@@ -224,13 +220,13 @@
             <input
               id="toogleA"
               type="checkbox"
-              v-model="darkModeToggled"
+              v-model="store.darkModeToggled"
               class="hidden"
             />
             <!-- line -->
             <div
               class="toggle__line w-16 bg-gray-300 dark:bg-gray-400 rounded-full shadow-inner"
-              style="height:1.90rem;"
+              style="height: 1.9rem"
             ></div>
             <!-- dot -->
             <div
@@ -238,7 +234,7 @@
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="flex-1 h-7 fill-current  stroke-current"
+                class="flex-1 h-7 fill-current stroke-current"
                 viewBox="0 0 24 24"
                 stroke-width="0"
                 stroke="#000000"
@@ -259,7 +255,7 @@
   </nav>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 // Components
 import HamburgerButton from "@/components/HamburgerButton.vue";
 import NavbarNavigationLink from "./NavbarNavigationLink.vue";
@@ -269,84 +265,57 @@ import MobileNavbarLink from "./MobileNavbarLink.vue";
 import { useStore } from "@/store/store";
 
 // Utility
-import { defineComponent, ref, reactive } from "vue";
+import { ref, reactive } from "vue";
+import router from "@/router";
+import { computed } from "@vue/reactivity";
 
-export default defineComponent({
-  name: "Navbar",
-  props: { activeIntersection: String },
-  components: {
-    HamburgerButton,
-    NavbarNavigationLink,
-    MobileNavbarLink,
-  },
-  data() {
-    return {
-      burgerDropdownIsToggled: false,
-      profileDropdownIsToggled: false,
-      activeLink: "",
-      navbarScroledStyle: "top",
-      isActive: false,
-      darkModeToggled: false,
-    };
-  },
-  watch: {
-    darkModeToggled() {
-      if (this.darkModeToggled) {
-        document.querySelector("body")?.classList.add("dark");
-      } else {
-        document.querySelector("body")?.classList.remove("dark");
-      }
-    },
-  },
-  setup() {
-    const store = useStore();
-    return { store };
-  },
-  methods: {
-    getSvgURL(svgName: string) {
-      return require(`../assets/svg/profile_icons/${svgName}.svg`);
-    },
-    logout() {
-      //@ts-ignore
-      this.$gAuth.signOut();
-      this.closeProfile();
-      const store = useStore();
-      store.logout();
-      this.$router.push("/");
-    },
-    pushAndCloseDropdown(path: string) {
-      if (this.profileDropdownIsToggled) this.profileToggle();
-      this.$router.push(path);
-    },
-    toggleDarkMode() {
-      console.log("toggled");
-      this.darkModeToggled = !this.darkModeToggled;
-    },
-    burgerToggle() {
-      this.burgerDropdownIsToggled = !this.burgerDropdownIsToggled;
-    },
-    profileToggle() {
-      this.profileDropdownIsToggled = !this.profileDropdownIsToggled;
-    },
-    routerLinkToLogin() {
-      this.$router.push("/login");
-    },
-    closeProfile() {
-      if (this.profileDropdownIsToggled) {
-        this.profileToggle();
-      }
-    },
-  },
-  computed: {
-    isHomePage(): boolean {
-      if (this.$router.currentRoute.value.path === "/") return true;
-      return false;
-    },
-    logged(): boolean {
-      const store = useStore();
-      return store.isAuthenticated;
-    },
-  },
+defineProps<{ activeIntersection: string }>();
+
+const burgerDropdownIsToggled = ref(false);
+const profileDropdownIsToggled = ref(false);
+const store = reactive(useStore());
+function getSvgURL(svgName: string) {
+  return require(`../assets/svg/profile_icons/${svgName}.svg`);
+}
+function logout() {
+  //@ts-ignore
+  this.$gAuth.signOut();
+  closeProfile();
+  const store = useStore();
+  store.logout();
+  router.push("/");
+}
+function pushAndCloseDropdown(path: string) {
+  if (profileDropdownIsToggled.value) profileToggle();
+  router.push(path);
+}
+function toggleDarkMode() {
+  store.toggleDarkMode();
+  if (store.darkModeToggled) {
+    document.documentElement.classList.add("dark");
+  } else {
+    document.documentElement.classList.remove("dark");
+  }
+}
+function burgerToggle() {
+  burgerDropdownIsToggled.value = !burgerDropdownIsToggled.value;
+}
+function profileToggle() {
+  profileDropdownIsToggled.value = !profileDropdownIsToggled.value;
+}
+function routerLinkToLogin() {
+  router.push("/login");
+}
+function closeProfile() {
+  if (profileDropdownIsToggled.value) {
+    profileToggle();
+  }
+}
+const isHomePage = computed(() => {
+  return router.currentRoute.value.path === "/";
+});
+const logged = computed(() => {
+  return store.isAuthenticated;
 });
 </script>
 

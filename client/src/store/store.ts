@@ -51,10 +51,19 @@ function getLocalUser(): User | null {
   }
 }
 
+function isDarkModePreffered(): boolean {
+  return (
+    localStorage.getItem("theme") === "dark" ||
+    (!("theme" in localStorage) &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches)
+  );
+}
+
 export const useStore = defineStore("store", {
   state: () => ({
     user: getLocalUser() || userBase(),
     userLoaded: false,
+    darkModeToggled: isDarkModePreffered(),
     token: localStorage.getItem("access-token") || "",
     googleIDToken: "",
     refreshToken: "",
@@ -68,11 +77,20 @@ export const useStore = defineStore("store", {
     },
   },
   actions: {
+    toggleDarkMode(): void {
+      if (isDarkModePreffered()) {
+        localStorage.setItem("theme", "light");
+        this.darkModeToggled = false;
+      } else {
+        localStorage.setItem("theme", "dark");
+        this.darkModeToggled = true;
+      }
+    },
     /**
      * Warning: Owerwrites original data.
      * @returns
      * Deeply copies source user to destination user.\n\n
-     * 
+     *
      */
     copyUser(src: User, dest: User): void {
       console.log("BEFORE", src, dest);
@@ -82,7 +100,7 @@ export const useStore = defineStore("store", {
         } else {
           dest[key] = src[key];
         }
-      })
+      });
       console.log("AFTER", src, dest);
     },
     async register(user: {
