@@ -56,7 +56,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/profile/:id",
     component: () => import("../views/UserProfile.vue"),
-    meta: { requiresAuth: false, },
+    meta: { requiresAuth: false },
   },
   {
     path: "/profile/:id/match-history",
@@ -104,6 +104,10 @@ const router = createRouter({
         // 4rem
         top: 16 * 4,
       };
+    } else {
+      if (savedPosition) {
+        return { top: savedPosition.top };
+      }
     }
   },
 });
