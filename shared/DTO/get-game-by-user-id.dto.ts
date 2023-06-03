@@ -1,4 +1,4 @@
-import { EndingType, GameType } from 'shared/types';
+import { EndingType, GameType } from '../types';
 
 export class GetGamesByUserIDDTO {
   userID: number;

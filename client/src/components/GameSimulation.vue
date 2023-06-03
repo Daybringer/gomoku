@@ -16,7 +16,6 @@ const gameSimulation = new GameSimulation({
   primaryColor: store.user.playerColor,
   secondaryColor: store.user.enemyColor,
   gridColor: "#808080",
-  // gridColor: "#000000",
   cellSize: 35,
 });
 

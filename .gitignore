@@ -12,6 +12,7 @@ shared/node_modules
 .DS_Store
 server/node_modules
 server/dist
+.tsbuildinfo
 #Client
 client/node_modules
 # local env files

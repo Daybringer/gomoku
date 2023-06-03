@@ -13,11 +13,11 @@ export class PlayerGameProfile {
   @Column()
   timeLeft: number;
 
-  @Column()
-  gameID: number;
-
   @CreateDateColumn()
   createdAt: Date;
+
+  @Column({ default: null, nullable: true })
+  gameID?: number;
 
   @Column({ default: null, nullable: true })
   userID?: number;

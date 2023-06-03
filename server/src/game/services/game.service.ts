@@ -471,7 +471,8 @@ export class GameService {
     const socketIDtoPlayerGameProfileID: { [socketID: string]: number } = {};
 
     const [playerOne, playerTwo] = game.players;
-    let playerOneProfile, playerTwoProfile;
+    let playerOneProfile: PlayerGameProfile,
+      playerTwoProfile: PlayerGameProfile;
     if (game.gameType === GameType.Ranked) {
       const elos = await this.calcElo(
         playerOne.userID,
@@ -480,7 +481,7 @@ export class GameService {
         game.winner ? game.winner.userID : 0,
       );
       playerOneProfile = await this.savePlayerGameProfile(
-        gameEntity.id,
+        0,
         playerOne,
         elos[playerOne.userID],
       );
@@ -490,7 +491,7 @@ export class GameService {
       );
 
       playerTwoProfile = await this.savePlayerGameProfile(
-        gameEntity.id,
+        0,
         playerTwo,
         elos[playerTwo.userID],
       );
@@ -550,7 +551,15 @@ export class GameService {
       }
     });
 
-    return this.gameRepository.save(gameEntity);
+    const savedGameEntity = await this.gameRepository.save(gameEntity);
+
+    this.playerGameProfileRepository.update(playerOneProfile.id, {
+      gameID: savedGameEntity.id,
+    });
+    this.playerGameProfileRepository.update(playerTwoProfile.id, {
+      gameID: savedGameEntity.id,
+    });
+    return savedGameEntity;
   }
 
   async endGame(game: AnyGame, gameEnding: EndingType, winner?: Player) {
