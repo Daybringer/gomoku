@@ -8,6 +8,7 @@ export interface Game {
   createdAt: Date;
   type: GameType;
   winnerGameProfileID?: number;
+  // TODO missing time limit
   typeOfWin: EndingType;
   finalState: number[][];
   turnHistory: Turn[];

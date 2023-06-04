@@ -1,0 +1,78 @@
+<template>
+  <ViewBaseResponsive>
+    <BaseHighHeadline>Match overview</BaseHighHeadline>
+    <BaseLoadingSpinner v-if="!gameFetched" />
+    <div class="xl:w-60 w-full flex-1 flex flex-col gap-6" v-if="gameFetched">
+      <Container>
+        <ContainerSection>
+          <MatchOverviewGeneral
+            v-for="game in games"
+            :winnerID="game.winnerGameProfileID"
+            :players="profileDict"
+            :endingType="game.typeOfWin"
+            :gameType="game.type"
+            :timeLimit="150"
+            :date="game.createdAt"
+          ></MatchOverviewGeneral>
+          text
+        </ContainerSection>
+      </Container>
+      <BaseHighHeadline>Board rewind</BaseHighHeadline>
+      <Container>
+        <ContainerSection>
+          <MatchOverviewBoardRewind></MatchOverviewBoardRewind>
+        </ContainerSection>
+      </Container>
+    </div>
+  </ViewBaseResponsive>
+</template>
+<script setup lang="ts">
+import BaseHighHeadline from "@/components/BaseHighHeadline.vue";
+import BaseLoadingSpinner from "@/components/BaseLoadingSpinner.vue";
+import Container from "@/components/Container.vue";
+import ContainerSection from "@/components/ContainerSection.vue";
+import MatchOverviewBoardRewind from "@/components/MatchOverviewBoardRewind.vue";
+import MatchOverviewGeneral from "@/components/MatchOverviewGeneral.vue";
+import ViewBaseResponsive from "@/components/ViewBaseResponsive.vue";
+import gameRepository from "@/repositories/gameRepository";
+import router from "@/router";
+import { ExpandedGame } from "@/shared/interfaces/game.interface";
+import { ExpandedPlayerGameProfile } from "@/shared/interfaces/playerGameProfile.interface";
+import { NotificationType, useNotificationsStore } from "@/store/notifications";
+import { reactive, ref } from "vue";
+import { useRoute } from "vue-router";
+const gameIDParam = useRoute().params.id;
+const gameID = Number(gameIDParam);
+if (isNaN(gameID)) {
+  console.log("here");
+  notifyGameNonexistent();
+  router.push("/");
+}
+
+const games: ExpandedGame[] = reactive([]);
+const gameFetched = ref(false);
+const profileDict: Record<number, ExpandedPlayerGameProfile> = {};
+gameRepository
+  .getGameByID(gameID)
+  .then((res) => {
+    const game = res.data.game;
+    console.log(game);
+    profileDict[game.playerGameProfileIDs[0]] =
+      game.expandedPlayerGameProfiles[game.playerGameProfileIDs[0]];
+    profileDict[game.playerGameProfileIDs[1]] =
+      game.expandedPlayerGameProfiles[game.playerGameProfileIDs[1]];
+    gameFetched.value = true;
+  })
+  .catch((err) => {
+    console.log(err);
+    notifyGameNonexistent();
+    router.push("/");
+  });
+
+function notifyGameNonexistent() {
+  useNotificationsStore().createNotification(
+    NotificationType.Error,
+    "Game doesn't exist."
+  );
+}
+</script>

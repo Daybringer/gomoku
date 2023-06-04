@@ -17,6 +17,7 @@ import CreateCustom from "../views/CreateCustom.vue";
 import CustomWaitingRoom from "../views/CustomWaitingRoom.vue";
 // Pinia
 import { useStore } from "@/store/store";
+import MatchOverviewVue from "@/views/MatchOverview.vue";
 
 declare module "vue-router" {
   interface RouteMeta {
@@ -82,6 +83,10 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/game",
     component: Game,
+  },
+  {
+    path: "/game/:id",
+    component: MatchOverviewVue,
   },
   {
     path: "/search",
