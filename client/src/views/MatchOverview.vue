@@ -7,6 +7,7 @@
         <ContainerSection>
           <MatchOverviewGeneral
             v-for="game in games"
+            :key="game.id"
             :winnerID="game.winnerGameProfileID"
             :players="profileDict"
             :endingType="game.typeOfWin"
@@ -14,13 +15,16 @@
             :timeLimit="150"
             :date="game.createdAt"
           ></MatchOverviewGeneral>
-          text
         </ContainerSection>
       </Container>
       <BaseHighHeadline>Board rewind</BaseHighHeadline>
       <Container>
         <ContainerSection>
-          <MatchOverviewBoardRewind></MatchOverviewBoardRewind>
+          <MatchOverviewBoardRewind
+            v-for="game in games"
+            :key="game.id"
+            :game="game"
+          ></MatchOverviewBoardRewind>
         </ContainerSection>
       </Container>
     </div>
@@ -44,7 +48,6 @@ import { useRoute } from "vue-router";
 const gameIDParam = useRoute().params.id;
 const gameID = Number(gameIDParam);
 if (isNaN(gameID)) {
-  console.log("here");
   notifyGameNonexistent();
   router.push("/");
 }
@@ -56,12 +59,12 @@ gameRepository
   .getGameByID(gameID)
   .then((res) => {
     const game = res.data.game;
-    console.log(game);
     profileDict[game.playerGameProfileIDs[0]] =
       game.expandedPlayerGameProfiles[game.playerGameProfileIDs[0]];
     profileDict[game.playerGameProfileIDs[1]] =
       game.expandedPlayerGameProfiles[game.playerGameProfileIDs[1]];
     gameFetched.value = true;
+    games.push(game);
   })
   .catch((err) => {
     console.log(err);
