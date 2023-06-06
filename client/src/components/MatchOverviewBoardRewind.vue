@@ -11,7 +11,7 @@
     <div class="square flex">
       <Gameboard
         ref="gameContainer"
-        class="rounded-xl border-gray-300 dark:border-gray-400 border-4 overflow-hidden"
+        class="rounded-xl border-gray-300 dark:border-gray-600 border-4 overflow-hidden"
         :cross-color="store.user.enemyColor"
         :circle-color="store.user.playerColor"
         :turn-history="leftStack"

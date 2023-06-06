@@ -1,50 +1,40 @@
 <template>
-  <view-base-fixed-height>
+  <ViewBaseResponsive>
     <!-- Background top overlay -->
     <div class="absolute top-16 w-full h-2/6 bg-gray-800 z-0"></div>
     <!-- Main div -->
     <div
       ref="container"
-      class="xl:w-80 w-full overflow-hidden rounded-lg top-0 min-h-full custom-shadow bg-gray-600 z-10 flex xl:flex-row flex-col shadow-2xl"
+      class="xl:w-80 overflow-hidden rounded-lg top-0 custom-shadow bg-gray-600 z-10 flex xl:flex-row flex-col shadow-2xl"
     >
-      <!-- Game container -->
-      <div
-        ref="gameContainer"
-        class="dark:bg-gray-700 w-0 grid-template-15 relative"
-      >
-        <!-- Cell grid -->
-        <div
-          v-for="cellID in genArray"
-          :key="cellID"
-          :id="String(cellID)"
-          class="bg-white dark:bg-gray-500 cursor-pointer relative"
-          :class="
-            lastPositionID == cellID && round !== 0 ? 'currPositionOutline' : ''
-          "
-          @click="gameClick(cellID)"
-          @mouseenter="placeHoverStone(cellID)"
-          @mouseleave="removeHoverStone(cellID)"
-        ></div>
+      <div class="square flex relative">
+        <Gameboard
+          :turn-history="turnHistory"
+          :cross-color="myColor"
+          :circle-color="enemyColor"
+          :board-size="15"
+          :lines-width="3"
+          :last-outline-color="'#363636'"
+          :last-outline-width="3"
+          :interactive="currentPlayer === me"
+          @game-click="(turn) => emit('gameClick', turn)"
+        >
+        </Gameboard>
         <!-- Coinflip overlay -->
         <div
-          class="absolute z-20 flex place-items-center justify-center h-full w-full bg-gray-100 dark:bg-gray-700"
+          class="absolute z-20 h-full w-full flex place-items-center justify-center bg-gray-100 dark:bg-gray-700"
           v-if="isWaitingOrCoinflip"
         >
-          <!-- Coin -->
-          <div id="coin" :class="coinSide" v-if="isGameStateCoinflip">
-            <!-- heads -->
-            <div class="side-a" :style="`background-color:${myColor};`"></div>
-            <!-- tails -->
-            <div
-              class="side-b"
-              :style="`background-color:${enemyColor};`"
-            ></div>
-          </div>
+          <Coinflip
+            :heads-color="myColor"
+            :tails-color="enemyColor"
+            :is-heads="currentPlayer === me"
+          ></Coinflip>
         </div>
 
         <!-- After game overlay -->
-        <the-after-game-overlay
-          v-show="isGameStateEnded"
+        <TheAfterGameOverlay
+          v-show="gameState === GameState.Ended"
           :amIWinner="amIWinner"
           :endingType="endingType"
           :myElo="myElo"
@@ -62,7 +52,7 @@
         ref="chatContainer"
         class="flex-1 min-h-0 min-w-0 w-full flex flex-col p-4 relative"
       >
-        <transition>
+        <Transition>
           <div
             v-if="
               slideNotification.enemyChoose ||
@@ -75,7 +65,7 @@
             <div
               class="flex justify-center place-items-center rounded-lg flex-1 h-full bg-gray-100"
             >
-              <transition name="slidetop">
+              <Transition name="slidetop">
                 <div
                   class="flex-1 flex flex-row justify-around place-items-center"
                   v-if="slideNotification.choose"
@@ -86,7 +76,7 @@
                       @click="$emit('pickGameStone', 1)"
                       class="border-2 p-1 border-gray-700 dark:border-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-xl"
                     >
-                      <game-stone-circle
+                      <GameStoneCircle
                         class="h-8 w-8"
                         :style="`color:${
                           mySymbol === 'circle' ? myColor : enemyColor
@@ -97,7 +87,7 @@
                       @click="$emit('pickGameStone', 2)"
                       class="border-2 p-1 border-gray-700 dark:border-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-xl"
                     >
-                      <game-stone-cross
+                      <GameStoneCross
                         class="h-8 w-8"
                         :style="`color:${
                           mySymbol === 'cross' ? myColor : enemyColor
@@ -106,47 +96,47 @@
                     </button>
                   </div>
                 </div>
-              </transition>
-              <transition name="slidetop">
+              </Transition>
+              <Transition name="slidetop">
                 <p class="text-lg" v-if="slideNotification.enemyChoose">
                   Opponent is choosing their symbol
                 </p>
-              </transition>
-              <transition name="slidetop">
+              </Transition>
+              <Transition name="slidetop">
                 <p class="text-lg" v-if="slideNotification.enemyPlace">
                   Enemy is placing 3 first stones
                 </p>
-              </transition>
-              <transition name="slidetop">
+              </Transition>
+              <Transition name="slidetop">
                 <p class="text-lg" v-if="slideNotification.place">
                   Place 3 first stones
                 </p>
-              </transition>
+              </Transition>
             </div>
           </div>
-        </transition>
+        </Transition>
         <!-- Social Blades -->
         <div class="flex flex-col">
-          <social-blade
+          <SocialBlade
             :player="me"
             :symbol="mySymbol"
             :symbolColor="myColor"
             :hasTimeLimit="hasTimeLimit"
             :isActive="currentPlayer.socketID === me.socketID"
-          ></social-blade>
+          ></SocialBlade>
           <div
             class="m-auto my-3 text-3xl text-white font-semibold md:block hidden"
           >
             VS
           </div>
           <div class="md:hidden block my-2"></div>
-          <social-blade
+          <SocialBlade
             :player="enemy"
             :symbol="enemySymbol"
             :symbolColor="enemyColor"
             :hasTimeLimit="hasTimeLimit"
             :isActive="currentPlayer.socketID === enemy.socketID"
-          ></social-blade>
+          ></SocialBlade>
         </div>
         <!-- Chat container -->
         <div
@@ -158,8 +148,8 @@
             :class="muted ? 'bg-red-500' : 'bg-gray-500 dark:bg-gray-300'"
             @click="muted = !muted"
           >
-            <no-microphone-icon v-show="muted" class="h-6 stroke-current" />
-            <microphone-icon v-show="!muted" class="h-6 stroke-current" />
+            <NoMicrophoneIcon v-show="muted" class="h-6 stroke-current" />
+            <MicrophoneIcon v-show="!muted" class="h-6 stroke-current" />
           </button>
           <!-- Title -->
           <h3
@@ -176,14 +166,14 @@
             :class="muted ? 'overflow-hidden' : 'overflow-auto'"
             style="scroll-behavior: smooth"
           >
-            <chat-message
+            <ChatMessage
               v-for="message in messages"
               v-show="!muted"
               :text="message.text"
               :author="message.author"
               :key="message.text + message.author"
               :borderColorHEX="message.author === 'me' ? myColor : enemyColor"
-            ></chat-message>
+            ></ChatMessage>
             <!-- Muted overlay -->
             <div
               v-show="muted"
@@ -214,33 +204,20 @@
         </div>
       </div>
     </div>
-    <!-- Symbol origins -->
-    <div>
-      <game-stone-circle
-        id="svgCircleOrigin"
-        class="hidden"
-        :style="`color:${mySymbol === 'circle' ? myColor : enemyColor};`"
-      />
-      <game-stone-cross
-        id="svgCrossOrigin"
-        class="hidden"
-        :style="`color:${mySymbol === 'cross' ? myColor : enemyColor};`"
-      />
-    </div>
-  </view-base-fixed-height>
+  </ViewBaseResponsive>
 </template>
-<script lang="ts">
-import type { PropType } from "vue";
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import { ref, watch } from "vue";
 // Types
 import { GameState } from "@/utils/types.dt";
 // Howler
 import { Howl } from "howler";
 // Components
-import ViewBaseFixedHeight from "@/components/ViewBaseFixedHeight.vue";
 import TheAfterGameOverlay from "@/components/TheAfterGameOverlay.vue";
 import SocialBlade from "@/components/GameSocialBlade.vue";
 import ChatMessage from "@/components/GameChatMessage.vue";
+import Coinflip from "./Coinflip.vue";
+
 // SVGs
 import GameStoneCircle from "@/assets/svg/GameStoneCircle.vue";
 import GameStoneCross from "@/assets/svg/GameStoneCross.vue";
@@ -254,319 +231,181 @@ import {
   OpeningPhase,
   Player,
   Position,
+  Turn,
 } from "@/shared/types";
 import { Message } from "@/views/Game/Game.vue";
-
-export default defineComponent({
-  name: "GameBase",
-  components: {
-    ViewBaseFixedHeight,
-    // Components
-    TheAfterGameOverlay,
-    SocialBlade,
-    ChatMessage,
-    //SVGs
-    GameStoneCross,
-    GameStoneCircle,
-    MicrophoneIcon,
-    NoMicrophoneIcon,
-  },
-  props: {
-    // Player info
-    me: { type: Object as PropType<Player>, required: true },
-    enemy: { type: Object as PropType<Player>, required: true },
-    winner: { type: Object as PropType<Player>, required: true },
-    elos: { type: Object as PropType<Player>, required: true },
-    myColor: { type: String, required: true },
-    enemyColor: { type: String, required: true },
-    currentPlayer: { type: Object as PropType<Player>, required: true },
-    // General
-    hasTimeLimit: Boolean,
-    messages: { type: Array as PropType<Message[]>, required: true },
-    lastPositionID: Number,
-    round: { type: Number, required: true },
-    gameState: { type: Object as PropType<GameState>, required: true },
-    endingType: { type: Object as PropType<EndingType>, required: true },
-    openingPhase: { type: Object as PropType<OpeningPhase>, required: true },
-    opening: { type: Object as PropType<Opening>, required: true },
-    gameType: { type: Object as PropType<GameType>, required: true },
-    askingForRematch: { type: Number, required: true },
-    winningCombination: { type: Array as PropType<Position[]>, required: true },
-  },
-  emits: ["rematchCustom", "gameClick", "sendMessage", "pickGameStone"],
-  data(): {
-    chatInput: string;
-    muted: boolean;
-  } {
-    return {
-      chatInput: "",
-      muted: false,
-    };
-  },
-  computed: {
-    slideNotification() {
-      const notifications = {
-        place: false,
-        enemyPlace: false,
-        choose: false,
-        enemyChoose: false,
-      };
-      if (
-        this.opening === Opening.Swap1 &&
-        this.gameState === GameState.Running
-      ) {
-        if (this.openingPhase === OpeningPhase.Place3) {
-          if (this.currentPlayer.socketID === this.me.socketID) {
-            notifications.place = true;
-          } else {
-            notifications.enemyPlace = true;
-          }
-        } else if (this.openingPhase === OpeningPhase.PickGameStone) {
-          if (this.currentPlayer.socketID === this.me.socketID) {
-            notifications.choose = true;
-          } else {
-            notifications.enemyChoose = true;
-          }
-        }
-      }
-      return notifications;
-    },
-    coinSide(): string {
-      return this.me.socketID === this.currentPlayer.socketID
-        ? "heads"
-        : "tails";
-    },
-    mySymbol(): string {
-      if (this.isWaitingOrCoinflip) return "";
-      return this.me.playerSymbol === 1 ? "circle" : "cross";
-    },
-    enemySymbol(): string {
-      if (this.isWaitingOrCoinflip) return "";
-      return this.enemy.playerSymbol === 1 ? "circle" : "cross";
-    },
-    isWaitingOrCoinflip(): boolean {
-      return (
-        this.gameState === GameState.Waiting ||
-        this.gameState === GameState.Coinflip
-      );
-    },
-    isGameStateCoinflip(): boolean {
-      return this.gameState === GameState.Coinflip;
-    },
-    isGameStateEnded(): boolean {
-      return this.gameState === GameState.Ended;
-    },
-    isGameStateWaiting(): boolean {
-      return this.gameState === GameState.Waiting;
-    },
-    amIWinner(): boolean {
-      return this.winner.socketID === this.me.socketID;
-    },
-    myElo(): number {
-      if (this.me.logged) {
-        if (this.elos[this.me.userID]) return this.elos[this.me.userID];
-      }
-      return 0;
-    },
-    genArray(): number[] {
-      const array: number[] = [];
-
-      for (let i = 0; i < 225; i++) {
-        array.push(i);
-      }
-
-      return array;
-    },
-  },
-  watch: {
-    lastPositionID: function () {
-      this.placeStone(this.lastPositionID!);
-    },
-    gameState: function () {
-      if (this.gameState === GameState.Ended) {
-        const endingSFX = new Howl({
-          // TODO implement tie sound
-          src: [
-            `sounds/${
-              this.winner.socketID === this.me.socketID
-                ? "victory.mp3"
-                : "defeat.mp3"
-            }`,
-          ],
-          volume: 0.2,
-        });
-        endingSFX.play();
-      }
-    },
-    winningCombination: {
-      handler() {
-        this.winningCombination.forEach((position) => {
-          const [x, y] = position;
-
-          const parent = document.getElementById(String(x + y * 15));
-          if (parent) {
-            parent.style.outlineColor = "#e03135";
-            parent.style.outlineWidth = "2px";
-            parent.style.outlineOffset = "-1px";
-            parent.style.outlineStyle = "solid";
-          }
-        });
-      },
-      deep: true,
-    },
-    messages: {
-      handler() {
-        const messageSFX = new Howl({
-          src: [`sounds/message.mp3`],
-          volume: this.muted ? 0 : 1.5,
-        });
-        messageSFX.play();
-        const chatContainer = document.getElementById(
-          "chatContainer"
-        ) as HTMLElement;
-        setTimeout(() => {
-          chatContainer.scrollTop = chatContainer.scrollHeight;
-        }, 1);
-      },
-      deep: true,
-    },
-    openingPhase: function () {
-      if (
-        this.openingPhase === OpeningPhase.Done &&
-        this.opening === Opening.Swap1
-      ) {
-        const circles = Array.from(
-          document.getElementsByClassName(
-            "circle"
-          ) as HTMLCollectionOf<HTMLElement>
-        );
-        const crosses = Array.from(
-          document.getElementsByClassName(
-            "cross"
-          ) as HTMLCollectionOf<HTMLElement>
-        );
-        if (this.me.playerSymbol === 1) {
-          circles.forEach((circle) => {
-            circle.style.color = this.myColor;
-          });
-          crosses.forEach((cross) => {
-            cross.style.color = this.enemyColor;
-          });
-        } else {
-          circles.forEach((circle) => {
-            circle.style.color = this.enemyColor;
-          });
-          crosses.forEach((cross) => {
-            cross.style.color = this.myColor;
-          });
-        }
-      }
-    },
-  },
-  methods: {
-    gameClick(id: number) {
-      const position = [id % 15, Math.floor(id / 15)];
-      this.$emit("gameClick", position);
-    },
-
-    placeStone(id: number) {
-      let node: HTMLElement | null;
-      if (this.round % 2 === 1) {
-        node = document.getElementById("svgCircleOrigin");
+import { computed } from "@vue/reactivity";
+import Gameboard from "./Gameboard.vue";
+import ViewBaseResponsive from "./ViewBaseResponsive.vue";
+const props = defineProps<{
+  me: Player;
+  enemy: Player;
+  winner: Player;
+  elos: Player;
+  myColor: string;
+  enemyColor: string;
+  currentPlayer: Player;
+  hasTimeLimit: boolean;
+  messages: Message[];
+  turnHistory: Turn[];
+  round: number;
+  gameState: GameState;
+  endingType: EndingType;
+  openingPhase: OpeningPhase;
+  opening: Opening;
+  gameType: GameType;
+  askingForRematch: number;
+  winningCombination: Position[];
+}>();
+const emit = defineEmits([
+  "rematchCustom",
+  "gameClick",
+  "sendMessage",
+  "pickGameStone",
+]);
+const chatInput = ref("");
+const muted = ref(false);
+const slideNotification = computed(() => {
+  const notifications = {
+    place: false,
+    enemyPlace: false,
+    choose: false,
+    enemyChoose: false,
+  };
+  if (
+    props.opening === Opening.Swap1 &&
+    props.gameState === GameState.Running
+  ) {
+    if (props.openingPhase === OpeningPhase.Place3) {
+      if (props.currentPlayer.socketID === props.me.socketID) {
+        notifications.place = true;
       } else {
-        node = document.getElementById("svgCrossOrigin");
+        notifications.enemyPlace = true;
       }
-      const clone = node?.cloneNode(true) as HTMLElement;
-
-      if (this.round % 2 === 1) {
-        clone.classList.add("circle");
+    } else if (props.openingPhase === OpeningPhase.PickGameStone) {
+      if (props.currentPlayer.socketID === props.me.socketID) {
+        notifications.choose = true;
       } else {
-        clone.classList.add("cross");
+        notifications.enemyChoose = true;
       }
-
-      clone.id = `${id}symbol`;
-      clone.classList.remove("hidden");
-      clone.classList.add("svgCC");
-
-      document.getElementById(String(id))?.appendChild(clone);
-
-      const stonePlacedSoundEffect = new Howl({
-        src: ["sounds/click1.ogg"],
-        volume: 0.8,
-      });
-      stonePlacedSoundEffect.play();
-    },
-    placeHoverStone(id: number) {
-      if (this.currentPlayer.socketID !== this.me.socketID) {
-        return;
-      }
-      const parent = document.getElementById(String(id));
-      if (parent) {
-        if (parent.children.length > 0) {
-          return;
-        }
-      }
-
-      let node: HTMLElement | null;
-
-      // assuming next round, hence the +1 on rounds
-      if ((this.round + 1) % 2 === 1) {
-        node = document.getElementById("svgCircleOrigin");
-      } else {
-        node = document.getElementById("svgCrossOrigin");
-      }
-      const clone = node?.cloneNode(true) as HTMLElement;
-
-      if ((this.round + 1) % 2 === 1) {
-        clone.classList.add("circle");
-      } else {
-        clone.classList.add("cross");
-      }
-
-      clone.id = `${id}symbol`;
-      clone.classList.remove("hidden");
-      clone.classList.add("svgCC");
-      clone.classList.add("svgCCHover");
-
-      parent?.appendChild(clone);
-    },
-    removeHoverStone(id: number) {
-      const parent = document.getElementById(String(id));
-      const hoverChildren = parent?.getElementsByClassName("svgCCHover");
-      if (hoverChildren) {
-        hoverChildren[0].remove();
-      }
-    },
-
-    sendMessage() {
-      this.chatInput = this.chatInput.trim();
-      if (this.chatInput) {
-        this.$emit("sendMessage", this.chatInput);
-        this.chatInput = "";
-      }
-    },
-    // "SQUARING" the game container window
-    equalizeGameContDimensions() {
-      const container = this.$refs.container as HTMLElement;
-      const gameContainer = this.$refs.gameContainer as HTMLElement;
-
-      const smallerDimension = Math.min(
-        container.clientHeight,
-        container.clientWidth
-      );
-
-      gameContainer.style.width = smallerDimension + "px";
-      gameContainer.style.height = smallerDimension + "px";
-    },
-  },
-  mounted() {
-    this.equalizeGameContDimensions();
-    window.addEventListener("resize", this.equalizeGameContDimensions);
-  },
-  unmounted() {
-    window.removeEventListener("resize", this.equalizeGameContDimensions);
-  },
+    }
+  }
+  return notifications;
 });
+
+const coinSide = computed(() => {
+  return props.me.socketID === props.currentPlayer.socketID ? "heads" : "tails";
+});
+const mySymbol = computed(() => {
+  if (isWaitingOrCoinflip.value) return "";
+  return props.me.playerSymbol === 1 ? "circle" : "cross";
+});
+const enemySymbol = computed(() => {
+  if (
+    props.gameState === GameState.Waiting ||
+    props.gameState === GameState.Coinflip
+  )
+    return "";
+  return props.enemy.playerSymbol === 1 ? "circle" : "cross";
+});
+const isWaitingOrCoinflip = computed(
+  () =>
+    props.gameState === GameState.Waiting ||
+    props.gameState === GameState.Coinflip
+);
+const amIWinner = computed(() => props.winner.socketID === props.me.socketID);
+const myElo = computed(() => {
+  if (props.me.logged) {
+    if (props.elos[props.me.userID]) return props.elos[props.me.userID];
+  }
+  return 0;
+});
+watch(
+  () => props.gameState,
+  (gameState) => {
+    if (gameState === GameState.Ended) {
+      const endingSFX = new Howl({
+        // TODO implement tie sound
+        src: [`sounds/${amIWinner ? "victory.mp3" : "defeat.mp3"}`],
+        volume: 0.2,
+      });
+      endingSFX.play();
+    }
+  }
+);
+watch(
+  () => props.winningCombination,
+  (combination) => {
+    combination.forEach((position) => {
+      const [x, y] = position;
+
+      const parent = document.getElementById(String(x + y * 15));
+      if (parent) {
+        parent.style.outlineColor = "#e03135";
+        parent.style.outlineWidth = "2px";
+        parent.style.outlineOffset = "-1px";
+        parent.style.outlineStyle = "solid";
+      }
+    });
+  },
+  { deep: true }
+);
+watch(
+  () => props.messages,
+  () => {
+    const messageSFX = new Howl({
+      src: [`sounds/message.mp3`],
+      volume: muted.value ? 0 : 1.5,
+    });
+    messageSFX.play();
+    const chatContainer = document.getElementById(
+      "chatContainer"
+    ) as HTMLElement;
+    setTimeout(() => {
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }, 1);
+  }
+);
+watch(
+  () => props.openingPhase,
+  (phase) => {
+    if (phase === OpeningPhase.Done && props.opening === Opening.Swap1) {
+      const circles = Array.from(
+        document.getElementsByClassName(
+          "circle"
+        ) as HTMLCollectionOf<HTMLElement>
+      );
+      const crosses = Array.from(
+        document.getElementsByClassName(
+          "cross"
+        ) as HTMLCollectionOf<HTMLElement>
+      );
+      if (props.me.playerSymbol === 1) {
+        circles.forEach((circle) => {
+          circle.style.color = props.myColor;
+        });
+        crosses.forEach((cross) => {
+          cross.style.color = props.enemyColor;
+        });
+      } else {
+        circles.forEach((circle) => {
+          circle.style.color = props.enemyColor;
+        });
+        crosses.forEach((cross) => {
+          cross.style.color = props.myColor;
+        });
+      }
+    }
+  }
+);
+
+function sendMessage() {
+  chatInput.value = chatInput.value.trim();
+  if (chatInput.value) {
+    emit("sendMessage", chatInput.value);
+    chatInput.value = "";
+  }
+}
 </script>
 <style scoped>
 .custom-shadow {
@@ -579,27 +418,6 @@ export default defineComponent({
   background-repeat: repeat;
 }
 
-.svgCC {
-  width: 85%;
-  position: absolute;
-  display: block !important;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  -webkit-animation: opacityIn 0.5s forwards;
-  animation: opacityIn 0.5s forwards;
-  opacity: 1;
-}
-
-.svgCCHover {
-  opacity: 0.3 !important;
-}
-
-.currPositionOutline {
-  outline: #363636 solid 4px;
-  z-index: 10;
-}
-
 .absolute-center {
   position: absolute;
   left: 50%;
@@ -607,92 +425,23 @@ export default defineComponent({
   transform: translate(-50%, -50%);
 }
 
-.grid-template-15 {
-  display: grid;
-  row-gap: 2px;
-  column-gap: 2px;
-  grid-template-rows: repeat(15, minmax(0, 1fr));
-  grid-template-columns: repeat(15, minmax(0, 1fr));
-}
-
-/* Coinflip styles */
-#coin {
-  width: 100px;
-  height: 100px;
-  cursor: default;
-}
-
-@media only screen and (min-width: 768px) {
-  #coin {
-    width: 200px;
-    height: 200px;
+/* md */
+@media (max-width: 768px) {
+  .square {
+    width: 95vw;
+    height: 95vw;
   }
 }
-
-#coin div {
-  width: 100%;
-  height: 100%;
-  -webkit-border-radius: 50%;
-  -moz-border-radius: 50%;
-  border-radius: 50%;
-  -webkit-box-shadow: inset 0 0 45px rgba(255, 255, 255, 0.3),
-    0 12px 20px -10px rgba(0, 0, 0, 0.4);
-  -moz-box-shadow: inset 0 0 45px rgba(255, 255, 255, 0.3),
-    0 12px 20px -10px rgba(0, 0, 0, 0.4);
-  box-shadow: inset 0 0 45px rgba(255, 255, 255, 0.3),
-    0 12px 20px -10px rgba(0, 0, 0, 0.4);
-}
-
-#coin {
-  transition: -webkit-transform 1s ease-in;
-  transform-style: preserve-3d;
-  -webkit-transform-style: preserve-3d;
-}
-#coin div {
-  position: absolute;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-}
-.side-a {
-  z-index: 100;
-}
-.side-b {
-  transform: rotateY(-180deg);
-}
-#coin.heads {
-  -webkit-animation: flipHeads 3s ease-in-out forwards;
-  -moz-animation: flipHeads 3s ease-in-out forwards;
-  -o-animation: flipHeads 3s ease-in-out forwards;
-  animation: flipHeads 3s ease-in-out forwards;
-}
-#coin.tails {
-  -webkit-animation: flipTails 3s ease-in-out forwards;
-  -moz-animation: flipTails 3s ease-in-out forwards;
-  -o-animation: flipTails 3s ease-in-out forwards;
-  animation: flipTails 3s ease-in-out forwards;
-}
-@keyframes flipHeads {
-  from {
-    -webkit-transform: rotateY(0);
-    -moz-transform: rotateY(0);
-    transform: rotateY(0);
-  }
-  to {
-    -webkit-transform: rotateY(1800deg);
-    -moz-transform: rotateY(1800deg);
-    transform: rotateY(1800deg);
+@media (min-width: 768px) and (max-width: 1280px) {
+  .square {
+    width: 80vw;
+    height: 80vw;
   }
 }
-@keyframes flipTails {
-  from {
-    -webkit-transform: rotateY(0);
-    -moz-transform: rotateY(0);
-    transform: rotateY(0);
-  }
-  to {
-    -webkit-transform: rotateY(1980deg);
-    -moz-transform: rotateY(1980deg);
-    transform: rotateY(1980deg);
+@media (min-width: 1280px) {
+  .square {
+    width: 85vh;
+    height: 85vh;
   }
 }
 </style>

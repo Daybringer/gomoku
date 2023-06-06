@@ -7,11 +7,11 @@
     :hasTimeLimit="hasTimeLimit"
     :gameState="gameState"
     :elos="elos"
+    :turnHistory="turnHistory"
     :endingType="endingType"
     :winner="winner"
     :opening="opening"
     :openingPhase="openingPhase"
-    :lastPositionID="lastPositionID"
     :myColor="store.user.playerColor"
     :enemyColor="store.user.enemyColor"
     :messages="messages"
@@ -37,6 +37,7 @@ import {
   Opening,
   OpeningPhase,
   EndingType,
+  Turn,
 } from "@/shared/types";
 import {
   AskForRematchDTO,
@@ -86,11 +87,11 @@ export default defineComponent({
     enemy: Player;
     currentPlayer: Player;
     chatInput: string;
-    lastPositionID: number;
     round: number;
     gameState: GameState;
     endingType: EndingType;
     winner: Player;
+    turnHistory: Turn[];
     elos: Record<number, number>;
     messages: Array<Message>;
     boardSize: number;
@@ -104,8 +105,8 @@ export default defineComponent({
       enemy: basePlayer(),
       hasTimeLimit: false,
       currentPlayer: basePlayer(),
+      turnHistory: [],
       chatInput: "",
-      lastPositionID: 0,
       round: 0,
       gameState: GameState.Waiting,
       endingType: EndingType.Tie,
@@ -258,7 +259,7 @@ export default defineComponent({
       const { position, currentPlayer } = stonePlacedDTO;
       this.currentPlayer = currentPlayer;
       this.round++;
-      this.lastPositionID = position[1] * this.boardSize + position[0];
+      this.turnHistory.push(position);
     });
 
     socket.on(SocketIOEvents.GameEnded, (dto: GameEndedDTO) => {

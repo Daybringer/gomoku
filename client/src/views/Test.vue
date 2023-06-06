@@ -5,6 +5,7 @@ import Gameboard from "@/components/Gameboard.vue";
 import { useStore } from "@/store/store";
 import { reactive } from "vue";
 import { Turn } from "@/shared/types";
+import Coinflip from "@/components/Coinflip.vue";
 const userStore = useStore();
 function createNotification(mode: number) {
   const store = useNotificationsStore();
@@ -71,6 +72,11 @@ function gameClick(turn: Turn) {
         @game-click="gameClick"
       ></Gameboard>
     </div>
+    <Coinflip
+      :heads-color="userStore.user.playerColor"
+      :tails-color="userStore.user.enemyColor"
+      :is-heads="true"
+    ></Coinflip>
   </ViewBaseFixedHeight>
 </template>
 <style scoped></style>
