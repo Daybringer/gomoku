@@ -50,6 +50,7 @@ const props = defineProps<{
   boardSize: number;
   linesWidth: number;
   lastOutlineWidth: number;
+  interactive: boolean;
   lastOutlineColor: string;
 }>();
 const emit = defineEmits<{
@@ -116,7 +117,8 @@ function cellOpacity(cellID: number, isCircle: boolean) {
   }
   if (
     hoveredCell.value === cellID &&
-    cellDict.value[cellID] === Symbol.NotTaken
+    cellDict.value[cellID] === Symbol.NotTaken &&
+    props.interactive
   ) {
     if (madeTurns.value % 2 === 0 && isCircle) return "0.3";
     if (madeTurns.value % 2 === 1 && !isCircle) return "0.3";

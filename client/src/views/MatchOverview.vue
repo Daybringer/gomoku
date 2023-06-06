@@ -19,7 +19,7 @@
       </Container>
       <BaseHighHeadline>Board rewind</BaseHighHeadline>
       <Container>
-        <ContainerSection>
+        <ContainerSection class="place-items-center justify-center">
           <MatchOverviewBoardRewind
             v-for="game in games"
             :key="game.id"
