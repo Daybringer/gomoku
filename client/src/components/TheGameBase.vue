@@ -596,7 +596,7 @@ export default defineComponent({
 }
 
 .currPositionOutline {
-  outline: rgb(54, 54, 54) solid 4px;
+  outline: #363636 solid 4px;
   z-index: 10;
 }
 
