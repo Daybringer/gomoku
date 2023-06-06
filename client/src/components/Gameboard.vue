@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="flex-1 bg-gray-600 dark:bg-gray-700 w-0 relative"
-    :style="gridTemplate"
-  >
+  <div class="flex-1 bg-gray-600 dark:bg-gray-700" :style="gridTemplate">
     <!-- Cell grid -->
     <div
       v-for="cellID in generateCellIDs()"

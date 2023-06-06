@@ -1,18 +1,27 @@
 <template>
-  <div ref="container" class="flex square">
-    <button @click="stepBack">L</button>
-    <button @click="stepForward">R</button>
-    <Gameboard
-      ref="gameContainer"
-      :cross-color="store.user.enemyColor"
-      :circle-color="store.user.playerColor"
-      :turn-history="leftStack"
-      :lines-width="2"
-      :board-size="15"
-      :interactive="false"
-      :last-outline-width="4"
-      :last-outline-color="'#363636'"
-    ></Gameboard>
+  <div class="flex flex-col gap-8 py-6">
+    <div class="flex flex-row justify-evenly">
+      <BaseButton @click="stepBack">
+        <ChevronsDownIcon class="h-12 transform rotate-90" />
+      </BaseButton>
+      <BaseButton @click="stepForward">
+        <ChevronsDownIcon class="h-12 transform -rotate-90" />
+      </BaseButton>
+    </div>
+    <div class="square flex">
+      <Gameboard
+        ref="gameContainer"
+        class="rounded-xl border-gray-300 dark:border-gray-400 border-4 overflow-hidden"
+        :cross-color="store.user.enemyColor"
+        :circle-color="store.user.playerColor"
+        :turn-history="leftStack"
+        :lines-width="2"
+        :board-size="15"
+        :interactive="false"
+        :last-outline-width="4"
+        :last-outline-color="'#363636'"
+      />
+    </div>
   </div>
 </template>
 
@@ -22,6 +31,8 @@ import { useStore } from "@/store/store";
 import Gameboard from "./Gameboard.vue";
 import { Turn } from "@/shared/types";
 import { reactive } from "vue";
+import BaseButton from "./BaseButton.vue";
+import ChevronsDownIcon from "@/assets/svg/ChevronsDownIcon.vue";
 
 const store = useStore();
 
@@ -65,8 +76,8 @@ function stepForward() {
 }
 @media (min-width: 1280px) {
   .square {
-    width: 40vw;
-    height: 40vw;
+    width: 35vw;
+    height: 35vw;
   }
 }
 </style>

@@ -1,10 +1,10 @@
 <template>
   <ViewBaseResponsive>
-    <BaseHighHeadline>Match overview</BaseHighHeadline>
     <BaseLoadingSpinner v-if="!gameFetched" />
     <div class="xl:w-60 w-full flex-1 flex flex-col gap-6" v-if="gameFetched">
       <Container>
         <ContainerSection>
+          <BaseHighHeadline>Match overview</BaseHighHeadline>
           <MatchOverviewGeneral
             v-for="game in games"
             :key="game.id"
@@ -17,9 +17,9 @@
           ></MatchOverviewGeneral>
         </ContainerSection>
       </Container>
-      <BaseHighHeadline>Board rewind</BaseHighHeadline>
       <Container>
         <ContainerSection class="place-items-center justify-center">
+          <BaseHighHeadline>Board rewind</BaseHighHeadline>
           <MatchOverviewBoardRewind
             v-for="game in games"
             :key="game.id"
