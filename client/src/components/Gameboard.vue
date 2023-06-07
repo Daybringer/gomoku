@@ -6,11 +6,7 @@
       :key="cellID"
       :id="`${cellID}`"
       class="bg-white dark:bg-gray-500 cursor-pointer relative"
-      :style="`${
-        lastCellID === cellID
-          ? `z-index:10;outline:${lastOutlineColor} solid ${lastOutlineWidth}px;`
-          : ''
-      }`"
+      :style="lastCellID === cellID ? lastOutlineStyle : ''"
       @click="emit('gameClick', cellIDToTurn(cellID))"
       @mouseenter="hoveredCell = cellID"
       @mouseleave="hoveredCell = -1"
@@ -34,44 +30,50 @@
 </template>
 
 <script setup lang="ts">
-import { Turn } from "@/shared/types";
+import { Turn, Symbol } from "@/shared/types";
 import { computed, ref } from "vue";
 import GameStoneCircle from "@/assets/svg/GameStoneCircle.vue";
 import GameStoneCross from "@/assets/svg/GameStoneCross.vue";
 
 // Defines
-const props = defineProps<{
-  turnHistory: Turn[];
-  crossColor: string;
-  circleColor: string;
-  boardSize: number;
-  linesWidth: number;
-  lastOutlineWidth: number;
-  interactive: boolean;
-  lastOutlineColor: string;
-}>();
+const props = withDefaults(
+  defineProps<{
+    turnHistory: Turn[];
+    crossColor: string;
+    circleColor: string;
+    interactive: boolean;
+    winningCombination: Turn[];
+    boardSize?: number;
+    linesWidth?: number;
+    lastOutlineWidth?: number;
+    lastOutlineColor?: string;
+  }>(),
+  {
+    boardSize: 15,
+    linesWidth: 3,
+    lastOutlineColor: "#363636",
+    lastOutlineWidth: 5,
+  }
+);
+
+// const defaultProps = {
+// };
 const emit = defineEmits<{
   (e: "gameClick", position: Turn);
 }>();
 
-// ------ Refs ------
+// ------- Refs ------- \\
 const lastCellID = computed(() => {
   return madeTurns.value > 0
     ? turnToCellID(props.turnHistory[props.turnHistory.length - 1])
     : -1;
 });
-
 const madeTurns = computed(() => props.turnHistory.length);
 const hoveredCell = ref(-1);
 
-enum Symbol {
-  NotTaken,
-  Circle,
-  Cross,
-}
 const cellDict = computed(() => {
   const res: Record<number, Symbol> = {};
-  for (let i = 0; i < props.boardSize * props.boardSize; i++) {
+  for (let i = 0; i < Math.pow(props.boardSize, 2); i++) {
     res[i] = Symbol.NotTaken;
   }
   for (let i = 0; i < madeTurns.value; i++) {
@@ -80,7 +82,7 @@ const cellDict = computed(() => {
   }
   return res;
 });
-
+// ------- Style Refs ------- \\
 const gridTemplate = computed(() => {
   return `
   display: grid;
@@ -91,10 +93,14 @@ const gridTemplate = computed(() => {
   `;
 });
 
+const lastOutlineStyle = computed(() => {
+  return `z-index:10; outline:${props.lastOutlineWidth}px solid ${props.lastOutlineColor};`;
+});
+
 // ------ Functions ------ \\
 function generateCellIDs() {
   const array: number[] = [];
-  for (let i = 0; i < props.boardSize * props.boardSize; i++) {
+  for (let i = 0; i < Math.pow(props.boardSize, 2); i++) {
     array.push(i);
   }
   return array;

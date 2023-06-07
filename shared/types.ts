@@ -1,11 +1,20 @@
 import { User } from "./interfaces/user.interface";
 import { ProfileIcon } from "./icons";
 
+//TODO remove position and use Turn
 type Position = [number, number];
-/**1 is a circle; 2 is a cross; 0 represents an empty cell or undefined Symbol (Swaps)*/
-// TODO create enum instead of type
-type Symbol = 0 | 1 | 2;
+/**
+ * x,y position in this order
+ * X: column
+ * Y: row
+ */
+type Turn = [number, number];
 
+enum Symbol {
+  NotTaken,
+  Circle,
+  Cross,
+}
 /**
  * Has to have string literals, because enum values are compared with URL params
  */
@@ -82,13 +91,6 @@ interface AuthenticationPayload {
     refresh_token?: string;
   };
 }
-
-/**
- * x,y position in this order
- * X: column
- * Y: row
- */
-type Turn = [number, number];
 
 export {
   Position,

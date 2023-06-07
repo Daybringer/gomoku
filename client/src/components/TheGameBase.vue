@@ -10,13 +10,10 @@
       <div class="square flex relative">
         <Gameboard
           :turn-history="turnHistory"
-          :cross-color="myColor"
-          :circle-color="enemyColor"
-          :board-size="15"
-          :lines-width="3"
-          :last-outline-color="'#363636'"
-          :last-outline-width="3"
-          :interactive="currentPlayer === me"
+          :cross-color="me.playerSymbol === 2 ? myColor : enemyColor"
+          :circle-color="me.playerSymbol === 1 ? myColor : enemyColor"
+          :interactive="currentPlayer.socketID === me.socketID"
+          :winning-combination="winningCombination"
           @game-click="(turn) => emit('gameClick', turn)"
         >
         </Gameboard>
@@ -28,7 +25,7 @@
           <Coinflip
             :heads-color="myColor"
             :tails-color="enemyColor"
-            :is-heads="currentPlayer === me"
+            :is-heads="currentPlayer.socketID === me.socketID"
           ></Coinflip>
         </div>
 
