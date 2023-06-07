@@ -227,7 +227,6 @@ import {
   Opening,
   OpeningPhase,
   Player,
-  Position,
   Turn,
 } from "@/shared/types";
 import { Message } from "@/views/Game/Game.vue";
@@ -252,7 +251,7 @@ const props = defineProps<{
   opening: Opening;
   gameType: GameType;
   askingForRematch: number;
-  winningCombination: Position[];
+  winningCombination: Turn[];
 }>();
 const emit = defineEmits([
   "rematchCustom",
@@ -290,9 +289,6 @@ const slideNotification = computed(() => {
   return notifications;
 });
 
-const coinSide = computed(() => {
-  return props.me.socketID === props.currentPlayer.socketID ? "heads" : "tails";
-});
 const mySymbol = computed(() => {
   if (isWaitingOrCoinflip.value) return "";
   return props.me.playerSymbol === 1 ? "circle" : "cross";
@@ -329,23 +325,6 @@ watch(
       endingSFX.play();
     }
   }
-);
-watch(
-  () => props.winningCombination,
-  (combination) => {
-    combination.forEach((position) => {
-      const [x, y] = position;
-
-      const parent = document.getElementById(String(x + y * 15));
-      if (parent) {
-        parent.style.outlineColor = "#e03135";
-        parent.style.outlineWidth = "2px";
-        parent.style.outlineOffset = "-1px";
-        parent.style.outlineStyle = "solid";
-      }
-    });
-  },
-  { deep: true }
 );
 watch(
   () => props.messages,

@@ -6,19 +6,25 @@
       :key="cellID"
       :id="`${cellID}`"
       class="bg-white dark:bg-gray-500 cursor-pointer relative"
-      :style="lastCellID === cellID ? lastOutlineStyle : ''"
+      :style="
+        isCellInWinningCombination(cellID)
+          ? winningCombinationOutlineStyle
+          : lastCellID === cellID
+          ? lastOutlineStyle
+          : ''
+      "
       @click="emit('gameClick', cellIDToTurn(cellID))"
       @mouseenter="hoveredCell = cellID"
       @mouseleave="hoveredCell = -1"
     >
-      <game-stone-circle
+      <GameStoneCircle
         class="svgCC"
         :style="`color:${circleColor};opacity:${cellOpacity(
           cellID,
           true
         )} !important;`"
       />
-      <game-stone-cross
+      <GameStoneCross
         class="svgCC"
         :style="`color:${crossColor};opacity:${cellOpacity(
           cellID,
@@ -31,7 +37,7 @@
 
 <script setup lang="ts">
 import { Turn, Symbol } from "@/shared/types";
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import GameStoneCircle from "@/assets/svg/GameStoneCircle.vue";
 import GameStoneCross from "@/assets/svg/GameStoneCross.vue";
 
@@ -47,12 +53,14 @@ const props = withDefaults(
     linesWidth?: number;
     lastOutlineWidth?: number;
     lastOutlineColor?: string;
+    winningCombinationOutlineColor?: string;
   }>(),
   {
     boardSize: 15,
     linesWidth: 3,
     lastOutlineColor: "#363636",
     lastOutlineWidth: 5,
+    winningCombinationOutlineColor: "#ff2079",
   }
 );
 
@@ -96,8 +104,17 @@ const gridTemplate = computed(() => {
 const lastOutlineStyle = computed(() => {
   return `z-index:10; outline:${props.lastOutlineWidth}px solid ${props.lastOutlineColor};`;
 });
+const winningCombinationOutlineStyle = computed(() => {
+  return `z-index:10; outline:${props.lastOutlineWidth}px solid ${props.winningCombinationOutlineColor};`;
+});
 
 // ------ Functions ------ \\
+function isCellInWinningCombination(cellID: number) {
+  return props.winningCombination.some(
+    (val) =>
+      val[0] === cellIDToTurn(cellID)[0] && val[1] === cellIDToTurn(cellID)[1]
+  );
+}
 function generateCellIDs() {
   const array: number[] = [];
   for (let i = 0; i < Math.pow(props.boardSize, 2); i++) {
