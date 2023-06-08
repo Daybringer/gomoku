@@ -518,6 +518,12 @@ export class GameService {
     gameEntity.turnHistory = game.turns;
     gameEntity.typeOfWin = game.gameEnding;
     gameEntity.timeLimitInSeconds = game.timeLimitInSeconds;
+    if (
+      game.gameEnding === EndingType.Combination ||
+      game.gameEnding === EndingType.Tie
+    ) {
+      gameEntity.winningCombination = game.gameboard.getWinningCombination();
+    }
     // FIXME load normal values
     gameEntity.openingType = game.opening;
     gameEntity.hasTimeLimit = game.hasTimeLimit;
@@ -638,7 +644,6 @@ export class GameService {
     });
 
     const gameIDs = gameProfiles.map((gameProfile) => gameProfile.gameID);
-    Logger.log('GameIDS:', gameIDs);
 
     const expandedGames: ExpandedGame[] = [];
 

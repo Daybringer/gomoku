@@ -12,6 +12,11 @@
       <Gameboard
         ref="gameContainer"
         class="rounded-xl border-gray-300 dark:border-gray-600 border-4 overflow-hidden"
+        :winning-combination="
+          leftStack.length === game.turnHistory.length
+            ? game.winningCombination
+            : []
+        "
         :cross-color="store.user.enemyColor"
         :circle-color="store.user.playerColor"
         :turn-history="leftStack"

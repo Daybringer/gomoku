@@ -33,6 +33,9 @@ export class GameEntity {
   @Column({ default: null, nullable: true })
   winnerGameProfileID?: number;
 
+  @Column('int', { default: null, nullable: true, array: true })
+  winningCombination?: Turn[];
+
   @Column({ nullable: true })
   startingPlayerGameProfileID: number;
 

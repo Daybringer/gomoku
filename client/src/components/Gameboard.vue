@@ -40,6 +40,7 @@ import { Turn, Symbol } from "@/shared/types";
 import { computed, ref, watch } from "vue";
 import GameStoneCircle from "@/assets/svg/GameStoneCircle.vue";
 import GameStoneCross from "@/assets/svg/GameStoneCross.vue";
+import { propsToAttrMap } from "@vue/shared";
 
 // Defines
 const props = withDefaults(
@@ -48,7 +49,7 @@ const props = withDefaults(
     crossColor: string;
     circleColor: string;
     interactive: boolean;
-    winningCombination: Turn[];
+    winningCombination?: Turn[];
     boardSize?: number;
     linesWidth?: number;
     lastOutlineWidth?: number;
@@ -109,7 +110,8 @@ const winningCombinationOutlineStyle = computed(() => {
 });
 
 // ------ Functions ------ \\
-function isCellInWinningCombination(cellID: number) {
+function isCellInWinningCombination(cellID: number): boolean {
+  if (!props.winningCombination) return false;
   return props.winningCombination.some(
     (val) =>
       val[0] === cellIDToTurn(cellID)[0] && val[1] === cellIDToTurn(cellID)[1]
