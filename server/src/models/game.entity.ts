@@ -5,24 +5,18 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-import { GameType, EndingType, Turn } from '../shared/types';
+import { GameType, EndingType, Turn, Opening } from '../shared/types';
 
 @Entity()
 export class GameEntity {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
-  @Column('int', { array: true })
-  playerGameProfileIDs: number[];
-
-  @CreateDateColumn()
-  createdAt: Date;
-
   @Column({ type: 'enum', enum: GameType })
   type: GameType;
 
-  @Column({ default: null, nullable: true })
-  winnerGameProfileID?: number;
+  @CreateDateColumn()
+  createdAt: Date;
 
   @Column({ type: 'enum', enum: EndingType })
   typeOfWin: EndingType;
@@ -33,6 +27,12 @@ export class GameEntity {
   @Column('int', { array: true })
   turnHistory: Turn[];
 
+  @Column('int', { array: true })
+  playerGameProfileIDs: number[];
+
+  @Column({ default: null, nullable: true })
+  winnerGameProfileID?: number;
+
   @Column({ nullable: true })
   startingPlayerGameProfileID: number;
 
@@ -41,4 +41,23 @@ export class GameEntity {
 
   @Column({ nullable: true })
   afterSwap2StartingPlayerGameProfileID?: number;
+
+  // Settings
+  @Column()
+  openingType: Opening;
+
+  @Column()
+  timeLimitInSeconds: number;
+
+  @Column()
+  hasTimeLimit: boolean;
+
+  @Column()
+  doesOverlineCount: boolean;
+
+  @Column()
+  boardSize: number;
+
+  @Column()
+  winningLineSize: number;
 }

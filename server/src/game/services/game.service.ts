@@ -2,7 +2,7 @@ import { GetGameByUserIDDTOResponse } from 'src/shared/DTO/get-game-by-user-id.r
 import { GetGamesByUserIDDTO } from 'src/shared/DTO/get-game-by-user-id.dto';
 import { GetGameByIDResponseDTO } from 'src/shared/DTO/get-game-by-id.response.dto';
 import { ExpandedGame } from 'src/shared/interfaces/game.interface';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   EndingType,
@@ -517,6 +517,13 @@ export class GameService {
     gameEntity.finalState = game.gameboard.getBoard();
     gameEntity.turnHistory = game.turns;
     gameEntity.typeOfWin = game.gameEnding;
+    gameEntity.timeLimitInSeconds = game.timeLimitInSeconds;
+    // FIXME load normal values
+    gameEntity.openingType = game.opening;
+    gameEntity.hasTimeLimit = game.hasTimeLimit;
+    gameEntity.doesOverlineCount = true;
+    gameEntity.boardSize = 15;
+    gameEntity.winningLineSize = 5;
 
     if (game.gameEnding !== EndingType.Tie) {
       gameEntity.winnerGameProfileID =
@@ -631,6 +638,7 @@ export class GameService {
     });
 
     const gameIDs = gameProfiles.map((gameProfile) => gameProfile.gameID);
+    Logger.log('GameIDS:', gameIDs);
 
     const expandedGames: ExpandedGame[] = [];
 

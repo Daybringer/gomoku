@@ -122,6 +122,7 @@ class QuickGame extends Game {
     super();
     this.timeLimitInSeconds = 2 * 60;
     this.gameType = GameType.Quick;
+    this.opening = Opening.Standard;
     this.openingPhase = OpeningPhase.Done;
     this.gameboard = new GomokuBoard(15, 15, 5, true);
   }
