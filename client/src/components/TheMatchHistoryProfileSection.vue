@@ -8,7 +8,6 @@ import { ExpandedGame } from "@/shared/interfaces/game.interface";
 import { reactive, onMounted, ref } from "vue";
 import BaseLoadingSpinner from "@/components/BaseLoadingSpinner.vue";
 import { RepositoryFactory } from "@/repositories/RepositoryFactory";
-import { EndingType, GameType } from "@/shared/types";
 const gameRepository = RepositoryFactory.getGameRepository;
 const props = defineProps<{ userID: number }>();
 const games: ExpandedGame[] = reactive([]);

@@ -46,7 +46,7 @@ onBeforeMount(async () => {
     <div class="xl:w-60 flex-1 flex flex-col gap-12">
       <BaseLoadingSpinner
         class="absolute top-1/2 left-1/2 h-24 w-24"
-        v-if="!isUserLoaded"
+        v-show="!isUserLoaded"
       ></BaseLoadingSpinner>
       <DarkContainer v-show="isUserLoaded">
         <GeneralProfileSection
@@ -58,10 +58,10 @@ onBeforeMount(async () => {
 
       <DarkContainer v-show="isUserLoaded">
         <MatchHistoryProfileSection
-          :userID="areWeVisitingProfile ? visitedUser.id : store.user.id"
+          :userID="areWeVisitingProfile ? Number(userID) : store.user.id"
         ></MatchHistoryProfileSection>
       </DarkContainer>
-      <DarkContainer v-if="!areWeVisitingProfile" v-show="isUserLoaded">
+      <DarkContainer v-if="!areWeVisitingProfile">
         <CustomizationProfileSection></CustomizationProfileSection>
       </DarkContainer>
     </div>

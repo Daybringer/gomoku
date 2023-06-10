@@ -93,7 +93,6 @@ export const useStore = defineStore("store", {
      *
      */
     copyUser(src: User, dest: User): void {
-      console.log("BEFORE", src, dest);
       Object.keys(src).forEach((key) => {
         if (Array.isArray(src[key])) {
           dest[key] = [...src[key]];
@@ -101,7 +100,6 @@ export const useStore = defineStore("store", {
           dest[key] = src[key];
         }
       });
-      console.log("AFTER", src, dest);
     },
     async register(user: {
       username: string;
