@@ -11,6 +11,7 @@
             :winnerID="game.winnerGameProfileID"
             :players="profileDict"
             :endingType="game.typeOfWin"
+            :gameOpening="game.openingType"
             :gameType="game.type"
             :timeLimit="150"
             :date="game.createdAt"
