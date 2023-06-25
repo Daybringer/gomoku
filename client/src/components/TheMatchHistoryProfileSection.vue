@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import ProfileSection from "./ProfileSection.vue";
 import BaseHighHeadline from "./BaseHighHeadline.vue";
 import MatchRecord from "./MatchRecord.vue";
 import MatchRecordsContainer from "./MatchRecordsContainer.vue";
