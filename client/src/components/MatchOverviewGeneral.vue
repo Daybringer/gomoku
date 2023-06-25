@@ -33,7 +33,7 @@
       <p class="text-2xl md:text-3xl whitespace-nowrap">Time left</p>
       <p class="text-xl">{{ humanReadableTime(players[sID].timeLeft) }}</p>
     </div>
-    <div class="flex flex-col items-center gap-4">
+    <div class="flex flex-col md:flex-row justify-center items-center gap-2">
       <BaseInfoPill title="Match type">
         <MatchRecordGameTypeIcon class="p-2" :game-type="gameType" />
       </BaseInfoPill>
