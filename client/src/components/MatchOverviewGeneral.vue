@@ -1,6 +1,8 @@
 <template>
   <div class="flex flex-col gap-6 justify-center">
-    <div class="flex flex-row items-center justify-center gap-6">
+    <div
+      class="flex flex-col md:flex-row items-center justify-center gap-1 md:gap-4"
+    >
       <MatchRecordProfileLink
         :username="players[fID].username!"
         :logged="!!players[fID].userID"
@@ -15,7 +17,7 @@
         :userID="players[sID].userID"
       />
     </div>
-    <div class="flex flex-row items-center justify-center gap-12">
+    <div class="flex md:flex-row items-center justify-center gap-12">
       <MatchRecordResultIcon
         :win="players[fID].id === winnerID"
         :tie="endingType === EndingType.Tie"
@@ -28,7 +30,7 @@
     </div>
     <div class="flex flex-row items-center justify-center gap-12">
       <p class="text-xl">{{ humanReadableTime(players[fID].timeLeft) }}</p>
-      <p class="text-3xl">Time left</p>
+      <p class="text-2xl whitespace-nowrap">Time left</p>
       <p class="text-xl">{{ humanReadableTime(players[sID].timeLeft) }}</p>
     </div>
     <div class="flex flex-col items-center gap-4">
