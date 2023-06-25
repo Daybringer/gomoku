@@ -40,21 +40,19 @@ function fetchMatches() {
 }
 </script>
 <template>
-  <ProfileSection id="MatchHistory">
-    <BaseHighHeadline>Match history</BaseHighHeadline>
-    <MatchRecordsContainer>
-      <!-- Displaying few loaded matches -->
-      <MatchRecord
-        :userID="userID"
-        v-for="game in games"
-        :key="game.id"
-        :game="game"
-      />
-      <BaseLoadingSpinner v-show="!matchesAreLoaded" />
-      <!-- All matches link -->
-      <RouterLink :to="'/profile/' + userID + '/match-history'">
-        <BaseButton> All matches </BaseButton>
-      </RouterLink>
-    </MatchRecordsContainer>
-  </ProfileSection>
+  <BaseHighHeadline>Match history</BaseHighHeadline>
+  <MatchRecordsContainer>
+    <!-- Displaying few loaded matches -->
+    <MatchRecord
+      :userID="userID"
+      v-for="game in games"
+      :key="game.id"
+      :game="game"
+    />
+    <BaseLoadingSpinner v-show="!matchesAreLoaded" />
+    <!-- All matches link -->
+    <RouterLink :to="'/profile/' + userID + '/match-history'">
+      <BaseButton> All matches </BaseButton>
+    </RouterLink>
+  </MatchRecordsContainer>
 </template>

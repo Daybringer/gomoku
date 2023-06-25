@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-col flex-1 bg-gray-700 dark:bg-gray-900 rounded-3xl p-3"
+    class="bg-gray-100 dark:bg-gray-800 flex-1 flex flex-col rounded-2xl p-6"
   >
     <slot></slot>
   </div>

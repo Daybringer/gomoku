@@ -30,7 +30,7 @@
     </div>
     <div class="flex flex-row items-center justify-center gap-12">
       <p class="text-xl">{{ humanReadableTime(players[fID].timeLeft) }}</p>
-      <p class="text-2xl whitespace-nowrap">Time left</p>
+      <p class="text-2xl md:text-3xl whitespace-nowrap">Time left</p>
       <p class="text-xl">{{ humanReadableTime(players[sID].timeLeft) }}</p>
     </div>
     <div class="flex flex-col items-center gap-4">

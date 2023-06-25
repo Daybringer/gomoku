@@ -2,7 +2,6 @@
 import ProfileIconPicker from "@/components/ProfileIconPicker.vue";
 import BaseTooltipWithIcon from "@/components/BaseTooltipWithIcon.vue";
 import ProfileAchievement from "@/components/ProfileAchievement.vue";
-import ProfileSection from "./ProfileSection.vue";
 import ProfileRankRepresentation from "@/components/ProfileRankRepresentation.vue";
 import BaseMidHeadline from "./BaseMidHeadline.vue";
 import BaseButton from "./BaseButton.vue";
@@ -51,7 +50,7 @@ async function buyIcon(profileIcon: ProfileIcon) {
 }
 </script>
 <template>
-  <ProfileSection
+  <div
     class="flex-1 flex flex-col xl:grid gap-5 xl:gap-0 grid-cols-7 grid-rows-3"
     id="General"
   >
@@ -138,5 +137,5 @@ async function buyIcon(profileIcon: ProfileIcon) {
         <BaseButton class="mb-2">See all achievements</BaseButton>
       </RouterLink>
     </div>
-  </ProfileSection>
+  </div>
 </template>

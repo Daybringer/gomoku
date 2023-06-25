@@ -1,32 +1,28 @@
 <template>
   <ViewBaseResponsive>
     <BaseLoadingSpinner v-if="!gameFetched" />
-    <div class="xl:w-60 w-full flex-1 flex flex-col gap-6" v-if="gameFetched">
+    <div class="xl:w-50 w-full flex-1 flex flex-col gap-6" v-if="gameFetched">
       <Container>
-        <ContainerSection>
-          <BaseHighHeadline>Match overview</BaseHighHeadline>
-          <MatchOverviewGeneral
-            v-for="game in games"
-            :key="game.id"
-            :winnerID="game.winnerGameProfileID"
-            :players="profileDict"
-            :endingType="game.typeOfWin"
-            :gameOpening="game.openingType"
-            :gameType="game.type"
-            :timeLimit="150"
-            :date="game.createdAt"
-          ></MatchOverviewGeneral>
-        </ContainerSection>
+        <BaseHighHeadline>Match overview</BaseHighHeadline>
+        <MatchOverviewGeneral
+          v-for="game in games"
+          :key="game.id"
+          :winnerID="game.winnerGameProfileID"
+          :players="profileDict"
+          :endingType="game.typeOfWin"
+          :gameOpening="game.openingType"
+          :gameType="game.type"
+          :timeLimit="150"
+          :date="game.createdAt"
+        ></MatchOverviewGeneral>
       </Container>
-      <Container>
-        <ContainerSection class="place-items-center justify-center">
-          <BaseHighHeadline>Board rewind</BaseHighHeadline>
-          <MatchOverviewBoardRewind
-            v-for="game in games"
-            :key="game.id"
-            :game="game"
-          ></MatchOverviewBoardRewind>
-        </ContainerSection>
+      <Container class="items-center">
+        <BaseHighHeadline>Board rewind</BaseHighHeadline>
+        <MatchOverviewBoardRewind
+          v-for="game in games"
+          :key="game.id"
+          :game="game"
+        ></MatchOverviewBoardRewind>
       </Container>
     </div>
   </ViewBaseResponsive>
