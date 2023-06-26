@@ -275,7 +275,7 @@ const burgerDropdownIsToggled = ref(false);
 const profileDropdownIsToggled = ref(false);
 const store = reactive(useStore());
 function getSvgURL(svgName: string) {
-  return require(`../assets/svg/profile_icons/${svgName}.svg`);
+  return `../assets/svg/profile_icons/${svgName}.svg`;
 }
 function logout() {
   //@ts-ignore

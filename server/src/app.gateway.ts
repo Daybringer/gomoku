@@ -1,6 +1,7 @@
 import {
   OnGatewayConnection,
   OnGatewayDisconnect,
+  OnGatewayInit,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
@@ -30,13 +31,18 @@ import { EndingType, GameType } from 'gomoku-shared-types/';
 // Whole site things - current people online...
 @WebSocketGateway({ namespace: '/app' })
 export class GeneralGateway
-  implements OnGatewayConnection, OnGatewayDisconnect
+  implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit
 {
   constructor() {}
   @WebSocketServer() server: Server;
   currentlyOnline = 0;
 
+  afterInit(server: Server) {
+    console.log(server);
+  }
+
   handleConnection() {
+    console.log('Server WEBSOCKET HIT');
     this.currentlyOnline += 1;
     const updateActiveUsersDTO: UpdateActiveUsersDTO = {
       activeUsers: this.currentlyOnline,

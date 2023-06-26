@@ -2,5 +2,8 @@
   "dependencies": {
     "@types/socket.io": "^3.0.2",
     "class-validator": "^0.13.2"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.3.2"
   }
 }

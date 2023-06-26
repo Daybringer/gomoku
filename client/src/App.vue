@@ -45,7 +45,8 @@ const setIntersection = (intersectionName: string) => {
 };
 
 onMounted(() => {
-  socket = io("/app", { port: 3001 });
+  socket = io("/app", { port: 3000 });
+  console.log(socket);
   socket.on(
     SocketIOEvents.UpdateActiveUsers,
     (updateActiveUsersDTO: UpdateActiveUsersDTO) => {

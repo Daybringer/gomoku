@@ -4,11 +4,9 @@
   "private": false,
   "license": "MIT",
   "scripts": {
-    "serve": "vue-cli-service serve --skip-plugins @vue/cli-plugin-eslint",
-    "build": "vue-cli-service build --skip-plugins @vue/cli-plugin-eslint",
-    "test:unit": "vue-cli-service test:unit",
-    "test:e2e": "vue-cli-service test:e2e",
-    "lint": "vue-cli-service lint"
+    "serve": "vite preview",
+    "dev": "vite",
+    "build": "vite build"
   },
   "dependencies": {
     "@types/howler": "^2.2.4",
@@ -23,29 +21,24 @@
     "yup": "^0.32.8"
   },
   "devDependencies": {
-    "@babel/helper-compilation-targets": "^7.20.0",
-    "@tailwindcss/aspect-ratio": "^0.2.0",
-    "@tailwindcss/forms": "^0.2.1",
-    "@tailwindcss/postcss7-compat": "npm:@tailwindcss/postcss7-compat@^2.0.2",
+    "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@tailwindcss/forms": "^0.5.3",
     "@types/throttle-debounce": "^2.1.0",
     "@typescript-eslint/eslint-plugin": "^2.33.0",
     "@typescript-eslint/parser": "^2.33.0",
-    "@vue/cli-plugin-babel": "^5.0.8",
-    "@vue/cli-plugin-eslint": "^5.0.8",
-    "@vue/cli-plugin-router": "^5.0.8",
-    "@vue/cli-plugin-typescript": "^5.0.8",
-    "@vue/cli-service": "^5.0.8",
+    "@vitejs/plugin-vue": "^4.2.3",
     "@vue/compiler-sfc": "^3.0.0",
     "@vue/eslint-config-prettier": "^6.0.0",
     "@vue/eslint-config-typescript": "^5.0.2",
     "@vue/test-utils": "^2.0.0-0",
-    "autoprefixer": "^9.8.6",
+    "autoprefixer": "^10.4.14",
     "eslint": "^6.7.2",
     "eslint-plugin-prettier": "^3.1.3",
     "eslint-plugin-vue": "^7.4.0",
-    "postcss": "^7.0.35",
+    "postcss": "^8.4.24",
     "prettier": "^2.8.0",
-    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.2",
-    "typescript": "4.1.6"
+    "tailwindcss": "^3.3.2",
+    "typescript": "4.1.6",
+    "vite": "^4.3.9"
   }
 }

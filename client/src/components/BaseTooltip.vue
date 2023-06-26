@@ -17,28 +17,16 @@
     </transition>
   </div>
 </template>
-<script lang="ts">
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  name: "BaseTooltip",
-  props: {
-    content: String,
-  },
-  data() {
-    return {
-      tooltipActive: false,
-    };
-  },
-  methods: {
-    setTooltipActive(active: boolean) {
-      this.tooltipActive = active;
-    },
-    toggleTooltipActive() {
-      this.tooltipActive = !this.tooltipActive;
-    },
-  },
-});
+<script setup lang="ts">
+import { ref } from "vue";
+defineProps<{ content: string }>();
+const tooltipActive = ref(false);
+function setTooltipActive(active: boolean) {
+  tooltipActive.value = active;
+}
+function toggleTooltipActive() {
+  tooltipActive.value = !tooltipActive.value;
+}
 </script>
 <style scoped>
 .slide-enter-active,

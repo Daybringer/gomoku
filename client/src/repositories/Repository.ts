@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const baseDomain =
-  process.env.NODE_ENV === "development"
+  import.meta.env.NODE_ENV === "development"
     ? "http://localhost:3000"
     : "https://gomoku.vanata.dev";
 
