@@ -3,10 +3,12 @@
 </template>
 <script setup lang="ts">
 import { ProfileIcon } from "@/shared/icons";
-import { defineProps } from "vue";
+import { defineProps, computed } from "vue";
 const props = defineProps<{ profileIcon: ProfileIcon }>();
-const svgURL = new URL(
-  `../assets/svg/profile_icons/${props.profileIcon}.svg`,
-  import.meta.url
-).href;
+const svgURL = computed(() => {
+  return new URL(
+    `../assets/svg/profile_icons/${props.profileIcon}.svg`,
+    import.meta.url
+  ).href;
+});
 </script>
