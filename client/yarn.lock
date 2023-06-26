@@ -1063,6 +1063,11 @@ globals@^12.1.0:
   dependencies:
     type-fest "^0.8.1"
 
+gomoku-game@^0.0.7:
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/gomoku-game/-/gomoku-game-0.0.7.tgz#a9ec66768f28eacceb007a7e59982115bc3e6fa7"
+  integrity sha512-rTwacm/O8Qpppl5OiZbVcMvJsBs3jPIhWyQCzQZ8Tzem8ZXZJ+iwQivyR2MNh43kry3PZjjjIK3XDC+6s5kKhg==
+
 has-flag@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/has-flag/-/has-flag-3.0.0.tgz#b5d454dc2199ae225699f3467e5a07f3b955bafd"
