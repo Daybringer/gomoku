@@ -9,7 +9,7 @@
     class="border-gray-700 dark:border-gray-400 border-4 p-3 bg-gray-300 hover:bg-gray-400 dark:hover:bg-gray-500 dark:bg-gray-600 rounded-xl w-2/5 sm:w-1/4 xl:w-50 cursor-pointer"
     :class="disabled ? 'cursor-not-allowed' : ''"
   >
-    <img :src="getSvgURL(currentIcon)" :alt="currentIcon" />
+    <profile-icon-svg class="h-auto" :profileIcon="currentIcon" />
   </button>
 
   <!-- Select icon modal -->
@@ -49,11 +49,10 @@
           }
         "
       >
-        <img
+        <profile-icon-svg
+          :profileIcon="profileIcon"
           class="h-16 md:h-20"
           :class="!availableIcons.includes(profileIcon) ? 'opacity-50' : ''"
-          :src="getSvgURL(profileIcon)"
-          :alt="profileIcon"
         />
         <div
           v-show="!availableIcons.includes(profileIcon)"
@@ -82,10 +81,9 @@
       <hr
         class="w-1/3 border-2 rounded-sm border-gray-400 dark:border-gray-700 text-center"
       />
-      <img
+      <profile-icon-svg
         class="h-20 md:h-32 my-2 border-gray-700 border-4 p-1 md:p-3 bg-gray-300 rounded-lg"
-        :src="getSvgURL(currentBuyIcon)"
-        alt=""
+        :profileIcon="currentBuyIcon"
       />
       <p class="italic">
         {{ currentBuyIconRecord.description }}
@@ -134,6 +132,7 @@ import { ProfileIcon, profileIconRecords } from "@/shared/icons";
 import { defineProps, defineEmits, ref, watch } from "vue";
 // components
 import BaseModal from "@/components/BaseModal.vue";
+import ProfileIconSvg from "./ProfileIcon.vue";
 import BaseButton from "@/components/BaseButton.vue";
 import BaseMidHeadline from "@/components/BaseMidHeadline.vue";
 import LockIcon from "@/assets/svg/LockIcon.vue";
@@ -155,9 +154,6 @@ const currentBuyIcon = ref(ProfileIcon.defaultBoy);
 const currentBuyIconRecord = computed(
   () => profileIconRecords[currentBuyIcon.value]
 );
-function getSvgURL(profileIcon: ProfileIcon) {
-  return require(`../assets/svg/profile_icons/${profileIcon}.svg`);
-}
 watch(props.availableIcons, () => {
   console.log(props.availableIcons);
 });

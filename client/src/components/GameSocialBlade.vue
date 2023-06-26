@@ -8,6 +8,7 @@
       :style="`color:${symbolColor};`"
       v-show="symbol === 'cross'"
     />
+    import ProfileIcon from "./ProfileIcon.vue";
     <game-stone-circle
       class="h-8 w-8 mx-3"
       :style="`color:${symbolColor};`"
@@ -18,7 +19,7 @@
     <div
       class="flex-1 flex justify-center text-center text-xl text-gray-900 dark:text-gray-100"
     >
-      {{ hasTimeLimit ? humanReadableTime : "" }}
+      {{ hasTimeLimit ? humanReadableTime(player.timeLeft) : "" }}
       <infinity-icon class="h-8 self-center" v-show="!hasTimeLimit" />
     </div>
     <div class="flex-1 text-center text-xl text-gray-900 dark:text-gray-100">
@@ -36,11 +37,10 @@
             : 'cursor-default'
         "
       >
-        <img
-          class="m-auto h-12 p-1 w-auto align-middle"
-          alt="logged_user_icon"
+        <profile-icon
           v-show="player.logged"
-          :src="getSvgURL(player.profileIcon || 'defaultBoy')"
+          class="m-auto h-12 p-1 w-auto align-middle"
+          :profile-icon="player.profileIcon"
         />
         <anonym-icon
           v-show="!player.logged"
@@ -52,47 +52,22 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType } from "vue";
+<script setup lang="ts">
 import { Player } from "@/shared/types";
+import { humanReadableTime } from "@/utils/general";
 // SVGs
+import ProfileIcon from "./ProfileIcon.vue";
 import InfinityIcon from "@/assets/svg/InfinityIcon.vue";
 import AnonymIcon from "@/assets/svg/AnonymIcon.vue";
 import GameStoneCircle from "@/assets/svg/GameStoneCircle.vue";
 import GameStoneCross from "@/assets/svg/GameStoneCross.vue";
 import DotsIcon from "@/assets/svg/DotsIcon.vue";
 
-export default defineComponent({
-  name: "SocialBlade",
-  props: {
-    player: { type: Object as PropType<Player>, required: true },
-    symbol: String,
-    symbolColor: String,
-    hasTimeLimit: Boolean,
-    isActive: Boolean,
-  },
-  computed: {
-    humanReadableTime() {
-      const time = Math.floor(this.player.timeLeft / 1000);
-      const minutes = Math.floor(time / 60);
-      const seconds = time % 60;
-      return `${minutes}:${
-        seconds == 0 ? "00" : seconds < 10 ? "0" + seconds : seconds
-      }`;
-    },
-  },
-  components: {
-    AnonymIcon,
-    InfinityIcon,
-    GameStoneCircle,
-    GameStoneCross,
-    DotsIcon,
-  },
-  methods: {
-    getSvgURL(svgName: string) {
-      return require(`../assets/svg/profile_icons/${svgName}.svg`);
-    },
-  },
-});
+defineProps<{
+  player: Player;
+  symbol: string;
+  symbolColor: string;
+  hasTimeLimit: boolean;
+  isActive: boolean;
+}>();
 </script>
-<style scoped></style>

@@ -113,11 +113,9 @@
                 aria-haspopup="true"
                 @click="profileToggle"
               >
-                <img
-                  v-show="store.userLoaded"
+                <ProfileIcon
                   class="h-7"
-                  alt="user_icon"
-                  :src="getSvgURL(store.user.selectedIcon)"
+                  :profile-icon="store.user.selectedIcon"
                 />
                 <!--Placeholder to prevent box jumping-->
                 <div class="h-8 w-8" v-show="!store.userLoaded"></div>
@@ -268,15 +266,13 @@ import { useStore } from "@/store/store";
 import { ref, reactive } from "vue";
 import router from "@/router";
 import { computed } from "@vue/reactivity";
+import ProfileIcon from "./ProfileIcon.vue";
 
 defineProps<{ activeIntersection: string }>();
 
 const burgerDropdownIsToggled = ref(false);
 const profileDropdownIsToggled = ref(false);
 const store = reactive(useStore());
-function getSvgURL(svgName: string) {
-  return `../assets/svg/profile_icons/${svgName}.svg`;
-}
 function logout() {
   //@ts-ignore
   this.$gAuth.signOut();
