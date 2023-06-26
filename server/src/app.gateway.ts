@@ -29,20 +29,17 @@ import { CustomRoomService } from './game/services/customRoom.service';
 import { EndingType, GameType } from 'gomoku-shared-types/';
 
 // Whole site things - current people online...
-@WebSocketGateway({ namespace: '/app' })
+@WebSocketGateway({
+  namespace: '/app',
+})
 export class GeneralGateway
-  implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit
+  implements OnGatewayConnection, OnGatewayDisconnect
 {
   constructor() {}
   @WebSocketServer() server: Server;
   currentlyOnline = 0;
 
-  afterInit(server: Server) {
-    console.log(server);
-  }
-
   handleConnection() {
-    console.log('Server WEBSOCKET HIT');
     this.currentlyOnline += 1;
     const updateActiveUsersDTO: UpdateActiveUsersDTO = {
       activeUsers: this.currentlyOnline,

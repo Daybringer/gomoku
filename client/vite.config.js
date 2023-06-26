@@ -8,8 +8,16 @@ export default defineConfig({
   plugins: [vue()],
   build: { outDir: "../dist/public" },
   server: {
+    proxy: {
+      "/socket.io": {
+        target: "http://localhost:3000",
+        changeOrigin: true,
+        ws: true,
+      },
+    },
     port: 8080,
   },
+
   preview: {
     port: 8080,
   },
