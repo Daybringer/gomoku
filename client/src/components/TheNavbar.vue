@@ -274,8 +274,6 @@ const burgerDropdownIsToggled = ref(false);
 const profileDropdownIsToggled = ref(false);
 const store = reactive(useStore());
 function logout() {
-  //@ts-ignore
-  this.$gAuth.signOut();
   closeProfile();
   const store = useStore();
   store.logout();
