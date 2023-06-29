@@ -51,7 +51,7 @@
       >
         <profile-icon-svg
           :profileIcon="profileIcon"
-          class="h-16 md:h-20"
+          class="md:h-20 max-md:h-14"
           :class="!availableIcons.includes(profileIcon) ? 'opacity-50' : ''"
         />
         <div
@@ -82,7 +82,7 @@
         class="w-1/3 border-2 rounded-sm border-gray-400 dark:border-gray-700 text-center"
       />
       <profile-icon-svg
-        class="h-20 md:h-32 my-2 border-gray-700 border-4 p-1 md:p-3 bg-gray-300 rounded-lg"
+        class="max-md:h-24 md:h-32 my-2 border-gray-700 border-4 p-1 md:p-3 bg-gray-300 rounded-lg"
         :profileIcon="currentBuyIcon"
       />
       <p class="italic">
