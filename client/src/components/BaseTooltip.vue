@@ -3,7 +3,8 @@
     <div
       @mouseenter="setTooltipActive(true)"
       @mouseleave="setTooltipActive(false)"
-      @click="toggleTooltipActive"
+      @touchstart="setTooltipActive(!tooltipActive)"
+      ref="some"
     >
       <slot></slot>
     </div>
@@ -24,9 +25,7 @@ const tooltipActive = ref(false);
 function setTooltipActive(active: boolean) {
   tooltipActive.value = active;
 }
-function toggleTooltipActive() {
-  tooltipActive.value = !tooltipActive.value;
-}
+const some = ref();
 </script>
 <style scoped>
 .slide-enter-active,

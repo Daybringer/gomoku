@@ -7,19 +7,9 @@
     </div>
   </base-tooltip>
 </template>
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
 // components
 import BaseTooltip from "@/components/BaseTooltip.vue";
 import QuestionmarkIcon from "@/assets/svg/QuestionmarkIcon.vue";
-export default defineComponent({
-  props: { content: String },
-  components: { BaseTooltip, QuestionmarkIcon },
-  data(): {} {
-    return {};
-  },
-  computed: {},
-  methods: {},
-});
+defineProps<{ content: string }>();
 </script>
-<style scoped></style>
