@@ -13,7 +13,6 @@ import { useStore, userBase } from "@/store/store";
 import usersRepository from "@/repositories/usersRepository";
 import { NotificationType, useNotificationsStore } from "@/store/notifications";
 import router from "@/router";
-import ContainerSection from "@/components/ContainerSection.vue";
 
 const store = useStore();
 const userID = useRoute().params.id;

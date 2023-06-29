@@ -28,7 +28,6 @@ const props = defineProps<{
   username?: string;
   profileIcon?: ProfileIcon;
 }>();
-
 const link = computed(() => {
   return `/profile/${props.userId || ""}`;
 });

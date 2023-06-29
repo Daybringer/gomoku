@@ -7,14 +7,14 @@
         :username="players[fID].username!"
         :logged="!!players[fID].userID"
         :profile-icon="players[fID].profileIcon"
-        :userID="players[fID].userID"
+        :user-id="players[fID].userID"
       />
       <p class="text-3xl">VS</p>
       <BaseProfileLink
         :username="players[sID].username!"
         :logged="!!players[sID].userID"
         :profile-icon="players[sID].profileIcon"
-        :userID="players[sID].userID"
+        :user-id="players[sID].userID"
       />
     </div>
     <div class="flex md:flex-row items-center justify-center gap-12">

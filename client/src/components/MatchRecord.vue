@@ -8,14 +8,14 @@
     >
       <BaseProfileLink
         :logged="!!pOneGameProfile.userID"
-        :userID="pOneGameProfile.userID"
+        :user-id="pOneGameProfile.userID"
         :username="pOneGameProfile.username"
         :profile-icon="pOneGameProfile.profileIcon"
         class="col-span-5"
       />
       <p class="text-lg text-center">VS</p>
       <BaseProfileLink
-        :userID="pTwoGameProfile.userID"
+        :user-id="pTwoGameProfile.userID"
         :logged="!!pTwoGameProfile.userID"
         :username="pTwoGameProfile.username"
         :profile-icon="pTwoGameProfile.profileIcon"
