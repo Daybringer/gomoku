@@ -33,7 +33,9 @@
       <p class="text-2xl md:text-3xl whitespace-nowrap">Time left</p>
       <p class="text-xl">{{ humanReadableTime(players[sID].timeLeft) }}</p>
     </div>
-    <div class="flex flex-col md:flex-row justify-center items-center gap-2">
+    <div
+      class="flex flex-col md:flex-row justify-center items-center gap-2 flex-wrap"
+    >
       <BaseInfoPill title="Match type">
         <MatchRecordGameTypeIcon class="p-2" :game-type="gameType" />
       </BaseInfoPill>
@@ -46,6 +48,9 @@
       <BaseInfoPill title="Game Opening">
         {{ gameOpening }}
       </BaseInfoPill>
+      <BaseInfoPill title="Date">
+        {{ getDateTimeFromDate(String(date)) }}
+      </BaseInfoPill>
     </div>
   </div>
 </template>
@@ -53,7 +58,7 @@
 <script setup lang="ts">
 import { ExpandedPlayerGameProfile } from "@/shared/interfaces/playerGameProfile.interface";
 import { GameType, Opening } from "@/shared/types";
-import { humanReadableTime } from "@/utils/general";
+import { humanReadableTime, getDateTimeFromDate } from "@/utils/general";
 import { EndingType } from "@/shared/types";
 import BaseInfoPill from "@/components/BaseInfoPill.vue";
 import MatchRecordResultIcon from "./MatchRecordResultIcon.vue";

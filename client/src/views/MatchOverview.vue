@@ -31,7 +31,6 @@
 import BaseHighHeadline from "@/components/BaseHighHeadline.vue";
 import BaseLoadingSpinner from "@/components/BaseLoadingSpinner.vue";
 import Container from "@/components/Container.vue";
-import ContainerSection from "@/components/ContainerSection.vue";
 import MatchOverviewBoardRewind from "@/components/MatchOverviewBoardRewind.vue";
 import MatchOverviewGeneral from "@/components/MatchOverviewGeneral.vue";
 import ViewBaseResponsive from "@/components/ViewBaseResponsive.vue";

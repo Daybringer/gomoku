@@ -30,7 +30,9 @@
       />
       <GameTypeIcon class="col-span-1" :gameType="game.type" />
       <div>{{ eloGain }}</div>
-      <div class="text-lg col-span-2">{{ humanDate }}</div>
+      <div class="text-lg col-span-2">
+        {{ getDateFromDate(String(game.createdAt)) }}
+      </div>
       <GameLink :gameID="game.id" />
     </div>
   </div>
@@ -45,6 +47,7 @@ import GameTypeIcon from "./MatchRecordGameTypeIcon.vue";
 import { EndingType, GameType } from "@/shared/types";
 import { computed, defineProps, ref } from "vue";
 import { ExpandedGame } from "@/shared/interfaces/game.interface";
+import { getDateFromDate } from "@/utils/general";
 
 const props = defineProps<{
   game: ExpandedGame;
@@ -76,10 +79,5 @@ const eloGain = computed(() => {
     return `${elo}`;
   }
   return "--";
-});
-
-const humanDate = computed(() => {
-  const date = new Date(props.game.createdAt);
-  return `${date.getDate()}.${date.getMonth()}.${date.getFullYear()}`;
 });
 </script>

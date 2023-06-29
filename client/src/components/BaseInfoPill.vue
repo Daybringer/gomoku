@@ -4,7 +4,7 @@
       <div
         class="flex items-center rounded-l-md bg-gray-800 dark:bg-gray-900 text-lg text-white p-3"
       >
-        <span>
+        <span class="whitespace-nowrap">
           {{ title }}
         </span>
       </div>

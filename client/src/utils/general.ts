@@ -11,4 +11,16 @@ function humanReadableTime(timeInMS: number) {
   }`;
 }
 
-export { capitalize, humanReadableTime };
+function getDateTimeFromDate(dateString: string): string {
+  const date = new Date(dateString);
+  return `${date.getHours()}:${date.getMinutes()}  ${date.getDate()}.${
+    date.getMonth() + 1
+  }.${date.getFullYear()}`;
+}
+
+function getDateFromDate(dateString: string): string {
+  const date = new Date(dateString);
+  return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`;
+}
+
+export { capitalize, humanReadableTime, getDateFromDate, getDateTimeFromDate };
