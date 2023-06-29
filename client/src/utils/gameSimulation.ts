@@ -15,7 +15,7 @@ export default class GameSimulation {
   };
   //   Debouncing
   private debounceHandle = 0;
-  private debounceTime = 500; // ms
+  private debounceTime = 1000; // ms
   //   Loop
   private abort = false;
   private GamePlanCollection = new GamePlanCollection();
@@ -33,6 +33,7 @@ export default class GameSimulation {
     this.canvas = canvas;
     this.ctx = ctx;
     this.isInitialized = false;
+    this.debounceTime = 1001 * options.drawSpeed; // Ensures that debounce is higher than time between placed stones -> no more bugs with many interfering games
 
     this.options = options;
   }
@@ -80,9 +81,8 @@ export default class GameSimulation {
       // clearing canvas
       this.clearCanvas(this.canvas, this.ctx);
 
-      const fetchPromise = this.GamePlanCollection.fetchGamePlans(
-        "gamePlans.json"
-      );
+      const fetchPromise =
+        this.GamePlanCollection.fetchGamePlans("gamePlans.json");
 
       this.drawGrid();
 
@@ -124,12 +124,9 @@ export default class GameSimulation {
             parceledPositions
           )
         ) {
-          const parceledPositionOrder = gamePlans[
-            i
-          ].positionOrder.map((position) => [
-            +position[0] + origin[0],
-            +position[1] + origin[1],
-          ]);
+          const parceledPositionOrder = gamePlans[i].positionOrder.map(
+            (position) => [+position[0] + origin[0], +position[1] + origin[1]]
+          );
 
           gamePlans[i].positionOrder = parceledPositionOrder;
 
