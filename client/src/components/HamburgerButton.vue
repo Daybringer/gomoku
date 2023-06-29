@@ -4,22 +4,17 @@
     :class="activeClass"
     type="button"
   >
-    <span class="hamburger-box ">
-      <span class="hamburger-inner "></span>
+    <span class="hamburger-box">
+      <span class="hamburger-inner"></span>
     </span>
   </button>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-export default defineComponent({
-  name: "HamburgerButton",
-  props: { isActive: Boolean },
-  computed: {
-    activeClass(): string {
-      return this.$props.isActive ? "is-active" : "";
-    }
-  }
+<script setup lang="ts">
+import { computed } from "vue";
+const props = defineProps<{ isActive: boolean }>();
+const activeClass = computed(() => {
+  return props.isActive ? "is-active" : "";
 });
 </script>
 
