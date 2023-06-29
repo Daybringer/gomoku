@@ -3,14 +3,14 @@
     <div
       class="flex flex-col md:flex-row items-center justify-center gap-1 md:gap-4"
     >
-      <MatchRecordProfileLink
+      <BaseProfileLink
         :username="players[fID].username!"
         :logged="!!players[fID].userID"
         :profile-icon="players[fID].profileIcon"
         :userID="players[fID].userID"
       />
       <p class="text-3xl">VS</p>
-      <MatchRecordProfileLink
+      <BaseProfileLink
         :username="players[sID].username!"
         :logged="!!players[sID].userID"
         :profile-icon="players[sID].profileIcon"
@@ -56,10 +56,10 @@ import { GameType, Opening } from "@/shared/types";
 import { humanReadableTime } from "@/utils/general";
 import { EndingType } from "@/shared/types";
 import BaseInfoPill from "@/components/BaseInfoPill.vue";
-import MatchRecordProfileLink from "./MatchRecordProfileLink.vue";
 import MatchRecordResultIcon from "./MatchRecordResultIcon.vue";
 import MatchRecordGameTypeIcon from "./MatchRecordGameTypeIcon.vue";
 import GameEndingTypeIcon from "./GameEndingTypeIcon.vue";
+import BaseProfileLink from "./BaseProfileLink.vue";
 
 const props = defineProps<{
   winnerID?: number;

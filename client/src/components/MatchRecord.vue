@@ -6,19 +6,19 @@
     <div
       class="grid grid-cols-11 items-center flex-1 gap-2 md:gap-0 mb-2 md:pr-2 md:mb-0"
     >
-      <ProfileLink
-        :userID="pOneGameProfile.userID!"
+      <BaseProfileLink
         :logged="!!pOneGameProfile.userID"
-        :username="pOneGameProfile.username!"
-        :profile-icon="pOneGameProfile.profileIcon!"
+        :userID="pOneGameProfile.userID"
+        :username="pOneGameProfile.username"
+        :profile-icon="pOneGameProfile.profileIcon"
         class="col-span-5"
       />
       <p class="text-lg text-center">VS</p>
-      <ProfileLink
-        :userID="pTwoGameProfile.userID!"
+      <BaseProfileLink
+        :userID="pTwoGameProfile.userID"
         :logged="!!pTwoGameProfile.userID"
-        :username="pTwoGameProfile.username!"
-        :profile-icon="pTwoGameProfile.profileIcon!"
+        :username="pTwoGameProfile.username"
+        :profile-icon="pTwoGameProfile.profileIcon"
         class="col-span-5"
       />
     </div>
@@ -37,7 +37,7 @@
 </template>
 <script setup lang="ts">
 //Components
-import ProfileLink from "./MatchRecordProfileLink.vue";
+import BaseProfileLink from "./BaseProfileLink.vue";
 import GameLink from "@/components/MatchRecordGameLink.vue";
 import ResultIcon from "./MatchRecordResultIcon.vue";
 import GameTypeIcon from "./MatchRecordGameTypeIcon.vue";
@@ -50,7 +50,6 @@ const props = defineProps<{
   game: ExpandedGame;
   userID: number;
 }>();
-
 const [pOneID, pTwoID] = [
   ...Object.keys(props.game.expandedPlayerGameProfiles).map((val) => {
     return Number(val);
