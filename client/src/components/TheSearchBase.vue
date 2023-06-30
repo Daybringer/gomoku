@@ -12,42 +12,30 @@
   </view-base>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 // Components
 import ViewBase from "@/components/ViewBaseFixedHeight.vue";
 import SwingAnimation from "@/assets/svg/SwingAnimation.vue";
-import { defineComponent } from "vue";
-export default defineComponent({
-  name: "SearchBase",
-  components: { ViewBase, SwingAnimation },
-  data() {
-    return {
-      interval: 0,
-      currentTime: 0,
-    };
-  },
-  computed: {
-    minutes(): number {
-      return Math.floor((this.currentTime % (1000 * 60 * 60)) / (1000 * 60));
-    },
-    seconds(): number {
-      return Math.floor((this.currentTime % (1000 * 60)) / 1000);
-    },
-    timeToShow(): string {
-      return `${this.minutes}:${this.seconds < 10 ? "0" : ""}${this.seconds}`;
-    },
-  },
-  methods: {
-    timeChange() {
-      this.currentTime += 1000;
-    },
-  },
-  mounted(): void {
-    this.interval = window.setInterval(this.timeChange, 1000);
-  },
-  beforeUnmount() {
-    clearInterval(this.interval);
-  },
+import { ref, computed, onMounted, onBeforeMount } from "vue";
+const interval = ref(0);
+const currentTime = ref();
+const minutes = computed(() => {
+  return Math.floor((currentTime.value % (1000 * 60 * 60)) / (1000 * 60));
+});
+const seconds = computed(() => {
+  return Math.floor((currentTime.value % (1000 * 60)) / 1000);
+});
+const timeToShow = computed(() => {
+  return `${minutes.value}:${seconds.value < 10 ? "0" : ""}${seconds.value}`;
+});
+function timeChange() {
+  currentTime.value += 1000;
+}
+onMounted(() => {
+  interval.value = window.setInterval(timeChange, 1000);
+});
+onBeforeMount(() => {
+  clearInterval(interval.value);
 });
 </script>
 
