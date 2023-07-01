@@ -92,6 +92,12 @@ interface AuthenticationPayload {
   };
 }
 
+interface GameConstraints {
+  allowedEndingTypes?: EndingType[];
+  allowedGameTypes?: GameType[];
+  allowedAmIWinner?: boolean[];
+}
+
 export {
   Position,
   SearchEvents,
@@ -108,4 +114,5 @@ export {
   Player,
   Time,
   Symbol,
+  GameConstraints,
 };

@@ -17,8 +17,8 @@ import router from "@/router";
 const store = useStore();
 const userID = useRoute().params.id;
 const areWeVisitingProfile = ref(userID !== undefined);
-let visitedUser = reactive(userBase());
-let isUserLoaded = ref(false);
+const visitedUser = reactive(userBase());
+const isUserLoaded = ref(false);
 
 onBeforeMount(async () => {
   if (areWeVisitingProfile.value) {

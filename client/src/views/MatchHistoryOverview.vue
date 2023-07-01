@@ -1,172 +1,145 @@
 <template>
-  <view-base-fixed-height>
+  <ViewBaseResponsive>
     <div class="h-full w-full flex flex-col rounded-lg text-center">
-      <base-bold-headline class="mb-4">Match history</base-bold-headline>
-      <hr class="m-3 border-2 rounded border-gray-500" />
+      <BaseHighHeadline>Match history</BaseHighHeadline>
+      <BaseHRDivider />
+      <BaseButton
+        @click="hideConstraints = !hideConstraints"
+        class="place-self-center px-16"
+        ><ChevronsDownIcon
+          :class="hideConstraints ? '' : 'rotate-180'"
+          class="h-8 transition-transform"
+        />
+      </BaseButton>
       <div
-        class="gap-4 my-6 flex flex-col place-items-center md:w-60 self-center justify-around md:flex-row rounded-lg"
+        class="gap-4 my-6 flex flex-col place-items-center md:w-60 self-center justify-around md:flex-row"
+        v-show="!hideConstraints"
       >
         <div class="flex flex-col gap-4">
-          <base-low-headline class="text-xl">Match types</base-low-headline>
+          <BaseLowHeadline>Match types</BaseLowHeadline>
           <div class="flex flex-row gap-6">
-            <base-tooltip :content="'Quick'">
-              <base-toggle-button
-                @toggle="
-                  () => {
-                    quickToggled = !quickToggled;
-                  }
-                "
-                :toggled="quickToggled"
+            <BaseTooltip content="Quick">
+              <BaseToggleButton
+                @toggle="toggled.type.quick = !toggled.type.quick"
+                :toggled="toggled.type.quick"
               >
                 <MatchQuickIcon />
-              </base-toggle-button>
-            </base-tooltip>
-            <base-tooltip :content="'Ranked'">
-              <base-toggle-button
-                @toggle="
-                  () => {
-                    rankedToggled = !rankedToggled;
-                  }
-                "
-                :toggled="rankedToggled"
+              </BaseToggleButton>
+            </BaseTooltip>
+            <BaseTooltip content="Ranked">
+              <BaseToggleButton
+                @toggle="toggled.type.ranked = !toggled.type.ranked"
+                :toggled="toggled.type.ranked"
               >
                 <MatchRankedIcon />
-              </base-toggle-button>
-            </base-tooltip>
-            <base-tooltip :content="'Custom'">
-              <base-toggle-button
-                @toggle="
-                  () => {
-                    customToggled = !customToggled;
-                  }
-                "
-                :toggled="customToggled"
+              </BaseToggleButton>
+            </BaseTooltip>
+            <BaseTooltip content="Custom">
+              <BaseToggleButton
+                @toggle="toggled.type.custom = !toggled.type.custom"
+                :toggled="toggled.type.custom"
               >
                 <MatchCustomIcon />
-              </base-toggle-button>
-            </base-tooltip>
+              </BaseToggleButton>
+            </BaseTooltip>
           </div>
         </div>
 
         <div class="flex flex-col gap-4">
-          <base-low-headline class="text-xl"
-            >Victory/Defeat/Tie</base-low-headline
-          >
+          <BaseLowHeadline>Victory/Defeat/Tie</BaseLowHeadline>
           <div class="flex flex-row gap-6">
-            <base-tooltip :content="'Victory'">
-              <base-toggle-button
-                @toggle="
-                  () => {
-                    victoryToggled = !victoryToggled;
-                  }
-                "
-                :toggled="victoryToggled"
+            <BaseTooltip content="Victory">
+              <BaseToggleButton
+                @toggle="toggled.result.victory = !toggled.result.victory"
+                :toggled="toggled.result.victory"
               >
                 <VictoryIcon class="text-yellow-400" />
-              </base-toggle-button>
-            </base-tooltip>
-            <base-tooltip :content="'Defeat'">
-              <base-toggle-button
-                @toggle="
-                  () => {
-                    defeatToggled = !defeatToggled;
-                  }
-                "
-                :toggled="defeatToggled"
+              </BaseToggleButton>
+            </BaseTooltip>
+            <BaseTooltip content="Defeat">
+              <BaseToggleButton
+                @toggle="toggled.result.defeat = !toggled.result.defeat"
+                :toggled="toggled.result.defeat"
               >
                 <LoseIcon class="text-red-500" />
-              </base-toggle-button>
-            </base-tooltip>
-            <base-tooltip :content="'Tie'">
-              <base-toggle-button
-                @toggle="
-                  () => {
-                    tieToggled = !tieToggled;
-                  }
-                "
-                :toggled="tieToggled"
+              </BaseToggleButton>
+            </BaseTooltip>
+            <BaseTooltip content="Tie">
+              <BaseToggleButton
+                @toggle="toggled.result.tie = !toggled.result.tie"
+                :toggled="toggled.result.tie"
               >
                 <TieIcon />
-              </base-toggle-button>
-            </base-tooltip>
+              </BaseToggleButton>
+            </BaseTooltip>
           </div>
         </div>
         <div class="flex flex-col gap-4">
-          <base-low-headline class="text-xl">Ending type</base-low-headline>
+          <BaseLowHeadline>Ending type</BaseLowHeadline>
           <div class="flex flex-row gap-6">
-            <base-tooltip :content="'Combination'">
-              <base-toggle-button
+            <BaseTooltip content="Combination">
+              <BaseToggleButton
                 @toggle="
-                  () => {
-                    combinationToggled = !combinationToggled;
-                  }
+                  toggled.ending.combination = !toggled.ending.combination
                 "
-                :toggled="combinationToggled"
+                :toggled="toggled.ending.combination"
               >
-                <five-combination-icon class="h-8" />
-              </base-toggle-button>
-            </base-tooltip>
-            <base-tooltip class="whitespace-nowrap" :content="'Time limit'">
-              <base-toggle-button
-                @toggle="
-                  () => {
-                    timeToggled = !timeToggled;
-                  }
-                "
-                :toggled="timeToggled"
+                <FiveCombinationIcon class="h-8" />
+              </BaseToggleButton>
+            </BaseTooltip>
+            <BaseTooltip content="Time limit">
+              <BaseToggleButton
+                @toggle="toggled.ending.timeout = !toggled.ending.timeout"
+                :toggled="toggled.ending.timeout"
               >
-                <hourglass-icon class="h-8" />
-              </base-toggle-button>
-            </base-tooltip>
-            <base-tooltip :content="'Disconnect'">
-              <base-toggle-button
-                @toggle="
-                  () => {
-                    disconnectToggled = !disconnectToggled;
-                  }
-                "
-                :toggled="disconnectToggled"
+                <HourglassIcon class="h-8" />
+              </BaseToggleButton>
+            </BaseTooltip>
+            <BaseTooltip content="Disconnect">
+              <BaseToggleButton
+                @toggle="toggled.ending.disconnect = !toggled.ending.disconnect"
+                :toggled="toggled.ending.disconnect"
               >
-                <no-wifi-icon class="h-8" />
-              </base-toggle-button>
-            </base-tooltip>
+                <NoWifiIcon class="h-8" />
+              </BaseToggleButton>
+            </BaseTooltip>
           </div>
         </div>
       </div>
-      <base-button @click="search" class="my-4 w-50 self-center"
-        >Search</base-button
+      <BaseButton @click="search" class="my-4 w-50 self-center"
+        >Search</BaseButton
       >
-      <hr class="mx-3 mt-1 border-2 rounded border-gray-500" />
+      <BaseHRDivider />
       <div class="pt-4 flex flex-1 md:w-80 self-center overflow-y-auto">
         <MatchRecordsContainer>
-          <profile-match-blade
-            v-for="match in matches"
-            :key="match.id"
-            :game="match"
-          ></profile-match-blade>
-          <base-loading-spinner v-show="loading" />
+          <MatchRecord
+            v-for="game in games"
+            :key="game.id"
+            :game="game"
+            :user-id="1"
+          />
+          <BaseLoadingSpinner v-show="loading" />
           <p
             class="italic text-2xl text-gray-600 dark:text-gray-300"
-            v-show="!loading && matches.length == 0"
+            v-show="!loading && games.length == 0"
           >
-            None found. Go and find some
+            None found. Go and play some.
           </p>
         </MatchRecordsContainer>
       </div>
     </div>
-  </view-base-fixed-height>
+  </ViewBaseResponsive>
 </template>
-<script lang="ts">
-// import { exampleGame1 } from "@/dummy_data/matches";
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import { Ref, ref, reactive } from "vue";
 // Components
-import ViewBaseFixedHeight from "@/components/ViewBaseFixedHeight.vue";
 import BaseLowHeadline from "@/components/BaseLowHeadline.vue";
 import BaseHighHeadline from "@/components/BaseHighHeadline.vue";
 import BaseButton from "@/components/BaseButton.vue";
+import BaseHRDivider from "@/components/BaseHRDivider.vue";
 import BaseToggleButton from "@/components/BaseToggleButton.vue";
-import ProfileMatchBlade from "@/components/MatchRecord.vue";
 import MatchRecordsContainer from "@/components/MatchRecordsContainer.vue";
+import MatchRecord from "@/components/MatchRecord.vue";
 import BaseLoadingSpinner from "@/components/BaseLoadingSpinner.vue";
 import BaseTooltip from "@/components/BaseTooltip.vue";
 // Icons
@@ -179,75 +152,74 @@ import TieIcon from "@/assets/svg/TieIcon.vue";
 import FiveCombinationIcon from "@/assets/svg/FiveCombinationIcon.vue";
 import NoWifiIcon from "@/assets/svg/NoWifiIcon.vue";
 import HourglassIcon from "@/assets/svg/HourglassIcon.vue";
-//types
 import { ExpandedGame } from "@/shared/interfaces/game.interface";
-import { EndingType } from "@/shared/types";
-export default defineComponent({
-  name: "MatchHistoryOverview",
-  props: {},
-  components: {
-    ViewBaseFixedHeight,
-    BaseLowHeadline,
-    BaseHighHeadline,
-    BaseButton,
-    BaseToggleButton,
-    MatchQuickIcon,
-    MatchRankedIcon,
-    MatchCustomIcon,
-    VictoryIcon,
-    LoseIcon,
-    TieIcon,
-    BaseTooltip,
-    ProfileMatchBlade,
-    MatchRecordsContainer,
-    BaseLoadingSpinner,
-    FiveCombinationIcon,
-    NoWifiIcon,
-    HourglassIcon,
+import ViewBaseResponsive from "@/components/ViewBaseResponsive.vue";
+import ChevronsDownIcon from "@/assets/svg/ChevronsDownIcon.vue";
+import { GetGamesByUserIDDTO } from "@/shared/DTO/get-game-by-user-id.dto";
+import gameRepository from "@/repositories/gameRepository";
+import { useRoute } from "vue-router";
+import { EndingType, GameConstraints, GameType } from "@/shared/types";
+
+const loading = ref(false);
+const games: Ref<ExpandedGame[]> = ref([]);
+const hideConstraints = ref(false);
+const toggled = reactive({
+  type: {
+    quick: true,
+    ranked: true,
+    custom: true,
   },
-  data(): {
-    loading: boolean;
-    quickToggled: boolean;
-    rankedToggled: boolean;
-    customToggled: boolean;
-    victoryToggled: boolean;
-    defeatToggled: boolean;
-    tieToggled: boolean;
-    combinationToggled: boolean;
-    timeToggled: boolean;
-    disconnectToggled: boolean;
-    matches: ExpandedGame[];
-  } {
-    return {
-      loading: false,
-      matches: [],
-      quickToggled: true,
-      rankedToggled: true,
-      customToggled: true,
-      victoryToggled: true,
-      defeatToggled: true,
-      tieToggled: true,
-      combinationToggled: true,
-      timeToggled: true,
-      disconnectToggled: true,
-    };
+  result: {
+    victory: true,
+    defeat: true,
+    tie: true,
   },
-  computed: {},
-  methods: {
-    search() {
-      this.matches = [];
-      this.loading = true;
-      setTimeout(() => {
-        this.loading = false;
-        for (let x = 0; x < 5; x++) {
-          // this.matches.push(exampleGame1);
-        }
-      }, 3000);
-    },
-    isTie(typeOfWin: any): boolean {
-      return typeOfWin === EndingType.Tie;
-    },
+  ending: {
+    timeout: true,
+    disconnect: true,
+    combination: true,
   },
 });
+
+const userID = Number(useRoute().params.id);
+
+function search(removeOld: boolean) {
+  if (removeOld) {
+    games.value = [];
+  }
+  loading.value = true;
+
+  const constraints: GameConstraints = {};
+
+  if (toggled.type.quick) constraints.allowedGameTypes?.push(GameType.Quick);
+  if (toggled.type.ranked) constraints.allowedGameTypes?.push(GameType.Ranked);
+  if (toggled.type.custom) constraints.allowedGameTypes?.push(GameType.Custom);
+
+  if (toggled.result.victory) constraints.allowedAmIWinner?.push(true);
+  if (toggled.result.defeat) constraints.allowedAmIWinner?.push(false);
+  if (toggled.result.tie) constraints.allowedEndingTypes?.push(EndingType.Tie);
+
+  if (toggled.ending.combination)
+    constraints.allowedEndingTypes?.push(EndingType.Combination);
+  if (toggled.ending.disconnect)
+    constraints.allowedEndingTypes?.push(EndingType.Surrender);
+  if (toggled.ending.timeout)
+    constraints.allowedEndingTypes?.push(EndingType.Time);
+
+  const dto: GetGamesByUserIDDTO = {
+    userID,
+    take: 15,
+    skip: games.value.length,
+    constraints: constraints,
+  };
+  gameRepository
+    .getGamesByUserIDDTO(dto)
+    .then((res) => {
+      res.data.games.forEach((game) => {
+        games.value.push(game);
+      });
+      loading.value = false;
+    })
+    .catch(() => {});
+}
 </script>
-<style scoped></style>

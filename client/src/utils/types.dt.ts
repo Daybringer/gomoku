@@ -20,5 +20,4 @@ enum GameState {
   Ended = "ended",
 }
 
-
 export { Options, GamePlan, GameState };

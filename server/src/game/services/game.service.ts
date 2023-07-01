@@ -636,6 +636,9 @@ export class GameService {
   async getGamesByUserID(
     dto: GetGamesByUserIDDTO,
   ): Promise<GetGameByUserIDDTOResponse> {
+    const constraints = dto.constraints;
+
+    // TODO fix this with relations
     const gameProfiles = await this.playerGameProfileRepository.find({
       where: { userID: dto.userID },
       order: { id: 'DESC' },

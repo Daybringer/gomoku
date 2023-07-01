@@ -51,7 +51,7 @@ import { getDateFromDate } from "@/utils/general";
 
 const props = defineProps<{
   game: ExpandedGame;
-  userID: number;
+  userId: number;
 }>();
 const [pOneID, pTwoID] = [
   ...Object.keys(props.game.expandedPlayerGameProfiles).map((val) => {
@@ -64,7 +64,7 @@ const [pOneGameProfile, pTwoGameProfile] = [
 ];
 
 const ownGameProfileID = ref(
-  props.game.expandedPlayerGameProfiles[pOneID].userID === props.userID
+  props.game.expandedPlayerGameProfiles[pOneID].userID === props.userId
     ? props.game.expandedPlayerGameProfiles[pOneID].id
     : props.game.expandedPlayerGameProfiles[pTwoID].id
 );
