@@ -4,13 +4,16 @@ import {
   CreateDateColumn,
   Column,
   PrimaryColumn,
+  OneToOne,
+  JoinColumn,
+  OneToMany,
 } from 'typeorm';
 
-import { GameBoard } from '../shared/types';
-
 import { LoginStrategy } from '../shared/types';
-import { ProfileIcon } from '../shared/icons';
 import { Achievement } from '../shared/achievements';
+import { UserStatisticsEntity } from './userStatistics.entity';
+import { UserSettingsEntity } from './userSettings.entity';
+import { PlayerGameProfileEntity } from './playerGameProfile.entity';
 
 @Entity()
 export class UserEntity {
@@ -26,74 +29,50 @@ export class UserEntity {
   @PrimaryColumn({ unique: true })
   email: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, default: null })
   password?: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, default: null })
   mailVerificationCode?: string;
 
   @CreateDateColumn()
-  createdAt?: Date;
+  createdAt: Date;
 
   @Column({ default: false })
-  admin?: boolean;
+  admin: boolean;
 
   @Column({ default: false })
-  premium?: boolean;
+  premium: boolean;
 
   @Column({ type: 'enum', enum: LoginStrategy })
   strategy: LoginStrategy;
 
   @Column({ default: false })
-  verified?: boolean;
+  verified: boolean;
 
   @Column({ default: 1000 })
-  elo?: number;
+  elo: number;
 
   @Column({ default: 0 })
   credit: number;
 
   @Column({ default: 0 })
-  nameChangeTokens?: number;
+  nameChangeTokens: number;
 
   @Column({ type: 'enum', array: true, enum: Achievement, default: [] })
   achievements: Achievement[];
 
-  @Column({ default: '#00b3fe' })
-  playerColor: string;
+  @OneToOne(() => UserStatisticsEntity, (statistics) => statistics.user)
+  @JoinColumn()
+  statistics: UserStatisticsEntity;
 
-  @Column({ default: '#ff2079' })
-  enemyColor: string;
+  @OneToOne(() => UserSettingsEntity, (settings) => settings.user)
+  @JoinColumn()
+  settings: UserSettingsEntity;
 
-  @Column({ type: 'enum', enum: GameBoard, default: GameBoard.Standard })
-  gameBoard: GameBoard;
-
-  @Column({ type: 'enum', enum: ProfileIcon, default: ProfileIcon.defaultBoy })
-  selectedIcon: ProfileIcon;
-
-  @Column({
-    type: 'enum',
-    array: true,
-    enum: ProfileIcon,
-    default: [ProfileIcon.defaultBoy],
-  })
-  availableIcons: ProfileIcon[];
-
-  @Column({ default: 0 })
-  rankedWon: number;
-
-  @Column({ default: 0 })
-  rankedLost: number;
-
-  @Column({ default: 0 })
-  rankedTied: number;
-
-  @Column({ default: 0 })
-  quickWon: number;
-
-  @Column({ default: 0 })
-  quickLost: number;
-
-  @Column({ default: 0 })
-  quickTied: number;
+  @OneToMany(
+    () => PlayerGameProfileEntity,
+    (playerGameProfile) => playerGameProfile.user,
+  )
+  playerGameProfiles: PlayerGameProfileEntity[];
 }

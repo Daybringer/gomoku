@@ -1,6 +1,7 @@
-import { GameBoard, LoginStrategy } from "../types";
+import { LoginStrategy } from "../types";
 import { Achievement } from "../achievements";
-import { ProfileIcon } from "../icons";
+import { UserStatistics } from "./userStatistics.interface";
+import { UserSettings } from "./userSettings.interface";
 
 export interface User {
   id: number;
@@ -9,24 +10,15 @@ export interface User {
   email: string;
   password?: string;
   mailVerificationCode?: string;
-  createdAt?: Date;
-  admin?: boolean;
-  premium?: boolean;
+  createdAt: Date;
+  admin: boolean;
+  premium: boolean;
   strategy: LoginStrategy;
-  verified?: boolean;
-  elo?: number;
+  verified: boolean;
+  elo: number;
   credit: number;
-  nameChangeTokens?: number;
+  nameChangeTokens: number;
   achievements: Achievement[];
-  playerColor: string;
-  enemyColor: string;
-  gameBoard: GameBoard;
-  selectedIcon: ProfileIcon;
-  availableIcons: ProfileIcon[];
-  rankedWon: number;
-  rankedLost: number;
-  rankedTied: number;
-  quickWon: number;
-  quickLost: number;
-  quickTied: number;
+  settings: UserSettings;
+  statistics: UserStatistics;
 }

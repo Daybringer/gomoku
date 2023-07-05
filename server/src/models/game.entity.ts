@@ -2,65 +2,55 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-import { GameType, EndingType, Turn, Opening } from '../shared/types';
+import { GameType, EndingType, Turn } from '../shared/types';
+import { PlayerGameProfileEntity } from './playerGameProfile.entity';
+import { GameSettingsEntity } from './gameSettings.entity';
 
 @Entity()
 export class GameEntity {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
-  @Column({ type: 'enum', enum: GameType })
-  type: GameType;
-
   @CreateDateColumn()
   createdAt: Date;
+
+  @Column({ type: 'enum', enum: GameType })
+  type: GameType;
 
   @Column({ type: 'enum', enum: EndingType })
   typeOfWin: EndingType;
 
   @Column('int', { array: true })
-  finalState: number[][];
-
-  @Column('int', { array: true })
   turnHistory: Turn[];
-
-  @Column('int', { array: true })
-  playerGameProfileIDs: number[];
-
-  @Column({ default: null, nullable: true })
-  winnerGameProfileID?: number;
 
   @Column('int', { default: null, nullable: true, array: true })
   winningCombination?: Turn[];
 
-  @Column({ nullable: true })
-  startingPlayerGameProfileID: number;
+  @OneToMany(
+    () => PlayerGameProfileEntity,
+    (playerGameProfile) => playerGameProfile.game,
+  )
+  playerGameProfiles: PlayerGameProfileEntity[];
 
-  @Column({ nullable: true })
-  afterSwap1StartingPlayerGameProfileID?: number;
+  @OneToOne(() => PlayerGameProfileEntity)
+  @JoinColumn()
+  winner?: PlayerGameProfileEntity;
 
-  @Column({ nullable: true })
-  afterSwap2StartingPlayerGameProfileID?: number;
+  @OneToOne(() => PlayerGameProfileEntity)
+  @JoinColumn()
+  startingPlayer: PlayerGameProfileEntity;
 
-  // Settings
-  @Column()
-  openingType: Opening;
+  @OneToOne(() => PlayerGameProfileEntity)
+  @JoinColumn()
+  afterSwapStartingPlayer?: PlayerGameProfileEntity;
 
-  @Column()
-  timeLimitInSeconds: number;
-
-  @Column()
-  hasTimeLimit: boolean;
-
-  @Column()
-  doesOverlineCount: boolean;
-
-  @Column()
-  boardSize: number;
-
-  @Column()
-  winningLineSize: number;
+  @OneToOne(() => GameSettingsEntity)
+  @JoinColumn()
+  gameSettings: GameSettingsEntity;
 }

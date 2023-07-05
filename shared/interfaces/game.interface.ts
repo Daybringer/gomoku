@@ -1,30 +1,18 @@
-import { GameType, EndingType, Turn, Opening } from "../types";
-import { ExpandedPlayerGameProfile } from "./playerGameProfile.interface";
+import { GameType, EndingType, Turn } from "../types";
+import { GameSettings } from "./gameSettings.interface";
+import { PlayerGameProfile } from "./playerGameProfile.interface";
 
 // Propagate
 export interface Game {
   id: number;
-  type: GameType;
   createdAt: Date;
+  type: GameType;
   typeOfWin: EndingType;
-  finalState: number[][];
   turnHistory: Turn[];
-  playerGameProfileIDs: number[];
-  winnerGameProfileID?: number;
   winningCombination?: Turn[];
-  startingPlayerGameProfileID: number;
-  afterSwap1StartingPlayerGameProfileID?: number;
-  afterSwap2StartingPlayerGameProfileID?: number;
-  // Settings
-  openingType: Opening;
-  timeLimitInSeconds: number;
-  hasTimeLimit: boolean;
-  doesOverlineCount: boolean;
-  boardSize: number;
-  winningLineSize: number;
-}
-
-export interface ExpandedGame extends Game {
-  // PlayergGameProfileID to PlayerGameProfile
-  expandedPlayerGameProfiles: Record<number, ExpandedPlayerGameProfile>;
+  playerGameProfiles: PlayerGameProfile[];
+  winner?: PlayerGameProfile;
+  startingPlayer: PlayerGameProfile;
+  afterSwapStartingPlayer?: PlayerGameProfile;
+  gameSettings: GameSettings;
 }

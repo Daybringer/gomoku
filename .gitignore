@@ -1,6 +1,7 @@
 # dev-assets
 dev-assets
 node_modules
+new_server
 dist
 ./gameAnim.js
 
