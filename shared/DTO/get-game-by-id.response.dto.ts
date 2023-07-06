@@ -1,4 +1,5 @@
-import { ExpandedGame } from '../interfaces/game.interface';
+import { Game } from '../interfaces/game.interface';
+
 export class GetGameByIDResponseDTO {
-  readonly game: ExpandedGame;
+  readonly game: Game;
 }

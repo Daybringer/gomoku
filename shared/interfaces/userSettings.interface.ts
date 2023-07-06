@@ -1,6 +1,6 @@
-import { GameBoard } from "shared/types";
-import { User } from "./user.interface";
-import { ProfileIcon } from "shared/icons";
+import { GameBoard } from '../types';
+import { User } from './user.interface';
+import { ProfileIcon } from '../icons';
 
 export interface UserSettings {
   id: number;

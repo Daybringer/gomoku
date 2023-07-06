@@ -21,7 +21,7 @@ export class UsersService {
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
     private readonly tokenService: TokensService,
-  ) { }
+  ) {}
 
   async createLocal(
     username: string,
@@ -45,7 +45,7 @@ export class UsersService {
     const randLetter = String.fromCharCode(97 + Math.floor(Math.random() * 26));
     const chosenAdj: string =
       adjectives[randLetter][
-      Math.floor(Math.random() * adjectives[randLetter].length)
+        Math.floor(Math.random() * adjectives[randLetter].length)
       ];
     const chosenNoun: string =
       nouns[randLetter][Math.floor(Math.random() * nouns[randLetter].length)];
@@ -73,7 +73,9 @@ export class UsersService {
   }
 
   async findOneByUsername(username: string): Promise<UserEntity> {
-    return this.userRepository.findOne({ username });
+    const user = await this.userRepository.findOne({ username });
+    if (!user) throw "User with given username doesn't exist";
+    return user;
   }
 
   isVerificationTimedOut(user: UserEntity): boolean {
@@ -111,7 +113,9 @@ export class UsersService {
   }
 
   async findOneByEmail(email: string): Promise<UserEntity> {
-    return this.userRepository.findOne({ email });
+    const user = await this.userRepository.findOne({ email });
+    if (!user) throw "User wasn't found";
+    return user;
   }
 
   async findAll(): Promise<UserEntity[]> {
@@ -119,17 +123,25 @@ export class UsersService {
   }
 
   async findOneByID(id: number): Promise<UserEntity> {
-    return this.userRepository.findOne({ id });
+    const user = await this.userRepository.findOne({ id });
+    if (!user) throw "User wasn't found";
+    return user;
   }
 
   // FIXME very lazy and dangerous approach >> requires usernames without @
   async findByEmailOrUsername(usernameOrEmail: string): Promise<UserEntity> {
     if (usernameOrEmail.includes('@')) {
-      return this.userRepository.findOne({
+      const user = await this.userRepository.findOne({
         email: usernameOrEmail.toLowerCase(),
       });
+      if (!user) throw 'User not found';
+      return user;
     } else {
-      return this.userRepository.findOne({ username: usernameOrEmail });
+      const user = await this.userRepository.findOne({
+        username: usernameOrEmail,
+      });
+      if (!user) throw 'User not found';
+      return user;
     }
   }
 
@@ -142,11 +154,11 @@ export class UsersService {
     const profileIconRecord = profileIconRecords[icon];
     if (!profileIconRecord.purchasable)
       throw new BadRequestException('Icon is not purchasable');
-    if (user.availableIcons.includes(icon))
+    if (user.settings.availableIcons.includes(icon))
       throw new BadRequestException('Icon is already owned');
     if (user.credit >= profileIconRecord.price) {
       user.credit -= profileIconRecord.price;
-      user.availableIcons.push(icon);
+      user.settings.availableIcons.push(icon);
       return this.userRepository.save(user);
     } else {
       throw new BadRequestException('Not enough credit');
@@ -154,8 +166,8 @@ export class UsersService {
   }
 
   async selectIcon(user: UserEntity, icon: ProfileIcon) {
-    if (user.availableIcons.includes(icon)) {
-      user.selectedIcon = icon;
+    if (user.settings.availableIcons.includes(icon)) {
+      user.settings.selectedIcon = icon;
       return this.userRepository.save(user);
     } else {
       throw new BadRequestException('Icon is not available');
@@ -163,13 +175,13 @@ export class UsersService {
   }
 
   async setGameboard(user: UserEntity, gameboard: GameBoard) {
-    user.gameBoard = gameboard;
+    user.settings.gameBoard = gameboard;
     return this.userRepository.save(user);
   }
 
   async setColors(user: UserEntity, myColor: string, enemyColor: string) {
-    user.playerColor = myColor;
-    user.enemyColor = enemyColor;
+    user.settings.playerColor = myColor;
+    user.settings.opponentColor = enemyColor;
     return this.userRepository.save(user);
   }
 
@@ -183,24 +195,24 @@ export class UsersService {
   async addNewGameToStats(
     user: UserEntity,
     gameType: GameType,
-    won: boolean,
     tie: boolean,
+    won?: boolean,
   ) {
     if (gameType === GameType.Quick) {
       if (won) {
-        user.quickWon += 1;
+        user.statistics.quickWon += 1;
       } else if (tie) {
-        user.quickTied += 1;
+        user.statistics.quickTied += 1;
       } else {
-        user.quickLost += 1;
+        user.statistics.quickLost += 1;
       }
     } else if (gameType === GameType.Ranked) {
       if (won) {
-        user.quickLost += 1;
+        user.statistics.quickLost += 1;
       } else if (tie) {
-        user.quickTied += 1;
+        user.statistics.quickTied += 1;
       } else {
-        user.quickLost += 1;
+        user.statistics.quickLost += 1;
       }
     }
 

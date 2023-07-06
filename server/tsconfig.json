@@ -8,6 +8,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
+    // "strictNullChecks": true,
     "noImplicitAny": false,
     "target": "es2017",
     "sourceMap": true,

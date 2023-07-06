@@ -1,7 +1,8 @@
-import { LoginStrategy } from "../types";
-import { Achievement } from "../achievements";
-import { UserStatistics } from "./userStatistics.interface";
-import { UserSettings } from "./userSettings.interface";
+import { LoginStrategy } from '../types';
+import { Achievement } from '../achievements';
+import { UserStatistics } from './userStatistics.interface';
+import { UserSettings } from './userSettings.interface';
+import { PlayerGameProfile } from './playerGameProfile.interface';
 
 export interface User {
   id: number;
@@ -21,4 +22,5 @@ export interface User {
   achievements: Achievement[];
   settings: UserSettings;
   statistics: UserStatistics;
+  playerGameProfiles: PlayerGameProfile[];
 }

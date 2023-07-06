@@ -17,7 +17,7 @@ export class PlayerGameProfileEntity {
   createdAt: Date;
 
   @Column()
-  timeLeft?: number;
+  timeLeft: number;
 
   @Column({ nullable: true })
   eloDelta?: number;
@@ -26,5 +26,5 @@ export class PlayerGameProfileEntity {
   game: GameEntity;
 
   @ManyToOne(() => UserEntity, (user) => user.playerGameProfiles)
-  user: UserEntity;
+  user?: UserEntity;
 }

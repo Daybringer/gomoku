@@ -4,8 +4,6 @@ import { Socket } from 'socket.io';
 
 @Injectable()
 export class CustomRoomService {
-  constructor() {}
-
   customWaitingRooms: {
     [roomID: string]: {
       waitingPlayersSockets: Array<Socket>;

@@ -1,6 +1,6 @@
-import { GameType, EndingType, Turn } from "../types";
-import { GameSettings } from "./gameSettings.interface";
-import { PlayerGameProfile } from "./playerGameProfile.interface";
+import { GameType, EndingType, Turn } from '../types';
+import { GameSettings } from './gameSettings.interface';
+import { PlayerGameProfile } from './playerGameProfile.interface';
 
 // Propagate
 export interface Game {

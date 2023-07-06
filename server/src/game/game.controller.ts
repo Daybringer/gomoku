@@ -12,11 +12,13 @@ export class GameController {
   async getGameByUsserID(
     @Body() req: GetGamesByUserIDDTO,
   ): Promise<GetGameByUserIDDTOResponse> {
-    return this.gameService.getGamesByUserID(req);
+    // return this.gameService.getGamesByUserID(req);
+    throw '';
   }
 
   @Get('/:id')
   async fetchGame(@Param('id') id: number): Promise<GetGameByIDResponseDTO> {
-    return this.gameService.getGameByID(id);
+    // return this.gameService.getGameByID(id);
+    throw '';
   }
 }

@@ -71,12 +71,10 @@ abstract class Game {
    * Adds player if game is still not running and not full
    */
   addPlayer(player: Player): void {
-    if (this.isWaiting)
-      if (!this.isFull) {
-        this.players.push(player);
-      } else {
-        throw 'Game is already full';
-      }
+    if (!this.isWaiting) throw 'Game is already running/ended';
+    if (this.isFull) throw 'Game is already full';
+
+    this.players.push(player);
   }
 
   /**
@@ -94,8 +92,8 @@ abstract class Game {
     const startingPlayer = this.players[Math.round(Math.random())];
     this.startingPlayer = startingPlayer;
     this.currentPlayer = startingPlayer;
-    this.currentPlayer.playerSymbol = 1;
-    this.getNextPlayer.playerSymbol = 2;
+    this.currentPlayer.playerSymbol = Symbol.Circle;
+    this.getNextPlayer.playerSymbol = Symbol.Cross;
   }
 
   getOtherPlayer(socketID: string): Player {
@@ -132,9 +130,8 @@ class RankedGame extends Game {
   // eloDiff only applies on symmetrical ELO ranking (Zero sum game of loser/winners ELO gains/loses)
   eloDiff: number;
   playerUserIDs: [number, number];
-  constructor(playerUserIDs: [number, number]) {
+  constructor() {
     super();
-    this.playerUserIDs = playerUserIDs;
     this.timeLimitInSeconds = 3 * 60;
     this.gameType = GameType.Ranked;
     this.opening = Opening.Swap1;

@@ -1,7 +1,7 @@
+import { GameRoomService } from './game/services/gameRoom.service';
 import {
   OnGatewayConnection,
   OnGatewayDisconnect,
-  OnGatewayInit,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
@@ -40,7 +40,7 @@ export class GeneralGateway
   currentlyOnline = 0;
 
   handleConnection() {
-    this.currentlyOnline += 1;
+    this.currentlyOnline++;
     const updateActiveUsersDTO: UpdateActiveUsersDTO = {
       activeUsers: this.currentlyOnline,
     };
@@ -48,7 +48,7 @@ export class GeneralGateway
   }
 
   handleDisconnect() {
-    this.currentlyOnline -= 1;
+    this.currentlyOnline--;
     const updateActiveUsersDTO: UpdateActiveUsersDTO = {
       activeUsers: this.currentlyOnline,
     };
@@ -75,7 +75,7 @@ export class CreateCustomGateway {
 @WebSocketGateway({ namespace: '/custom/waiting' })
 export class CustomWaitingGateway implements OnGatewayDisconnect {
   constructor(
-    private gameService: GameService,
+    private gameRoomService: GameRoomService,
     private customRoomService: CustomRoomService,
   ) {}
   @WebSocketServer() server: Server;
@@ -89,7 +89,8 @@ export class CustomWaitingGateway implements OnGatewayDisconnect {
     this.customRoomService.joinCustomWaitingRoom(client, waitingRoomID);
 
     if (this.customRoomService.isCustomWaitingRoomFull(waitingRoomID)) {
-      const { roomID } = this.gameService.createCustomGame(
+      const { roomID } = this.gameRoomService.createGameRoom(
+        GameType.Custom,
         this.customRoomService.getGameSettings(waitingRoomID),
       );
       const sockets =
@@ -121,7 +122,7 @@ export class QuickSearchGateway
   implements OnGatewayConnection, OnGatewayDisconnect
 {
   constructor(
-    private gameService: GameService,
+    private gameRoomService: GameRoomService,
     private searchService: SearchService,
   ) {}
 
@@ -131,7 +132,7 @@ export class QuickSearchGateway
     this.searchService.joinQuickQueue(client.id);
     const matchedPlayers = this.searchService.tryMatchPlayersQuickQue();
     if (matchedPlayers !== null) {
-      const { roomID } = this.gameService.generateQuickGameRoom();
+      const { roomID } = this.gameRoomService.createGameRoom(GameType.Quick);
 
       this.server
         .to(String(matchedPlayers[0]))
@@ -151,6 +152,7 @@ export class QuickSearchGateway
 export class RankedSearchGateway implements OnGatewayDisconnect {
   constructor(
     private gameService: GameService,
+    private gameRoomService: GameRoomService,
     private searchService: SearchService,
   ) {}
 
@@ -164,10 +166,7 @@ export class RankedSearchGateway implements OnGatewayDisconnect {
     const matchedPlayers = this.searchService.tryMatchPlayersRankedQue();
     if (matchedPlayers !== null) {
       const [alice, bob] = matchedPlayers;
-      const { roomID } = this.gameService.generateRankedGameRoom([
-        alice.userID,
-        bob.userID,
-      ]);
+      const { roomID } = this.gameRoomService.createGameRoom(GameType.Ranked);
 
       this.server.to(bob.socketID).emit(SocketIOEvents.GameCreated, roomID);
       this.server.to(alice.socketID).emit(SocketIOEvents.GameCreated, roomID);
@@ -182,67 +181,43 @@ export class RankedSearchGateway implements OnGatewayDisconnect {
 // GAME
 @WebSocketGateway({ namespace: '/game' })
 export class GameGateway implements OnGatewayDisconnect {
-  constructor(private gameService: GameService) {}
+  constructor(private gameRoomService: GameRoomService) {}
 
   @WebSocketServer() server: Server;
 
   async handleDisconnect(client: Socket) {
-    const { game, roomID } = this.gameService.findGameBySocketID(client.id);
-    if (game) {
-      if (game.isRunning) {
-        this.gameService.endGameDisconnect(game, client);
-
-        const winner = game.getOtherPlayer(client.id);
-        let elos = {};
-
-        if (game.gameType === GameType.Ranked) {
-          elos = await this.gameService.calcElo(
-            game.players[0].userID,
-            game.players[1].userID,
-            false,
-            game.getOtherPlayer(client.id).userID,
-          );
-        }
-
-        const dto: GameEndedDTO = {
-          endingType: EndingType.Surrender,
-          winner: winner,
-          userIDToEloDiff: elos || {},
-        };
-        this.server.to(roomID).emit(SocketIOEvents.GameEnded, dto);
-      }
-    }
+    this.gameRoomService.handleGameDisconnect(this.server, client);
   }
 
   @SubscribeMessage(SocketIOEvents.ToServerSwapPickGameStone)
   handlePickGameStone(client: Socket, dto: ToServerSwapPickGameStoneDTO): void {
-    this.gameService
+    this.gameRoomService
       .handlePickGameStone(this.server, client, dto)
       .catch((err: string) => console.log(err));
   }
 
   @SubscribeMessage(SocketIOEvents.JoinGame)
   handleJoinGame(client: Socket, joinGameDTO: JoinGameDTO): void {
-    this.gameService
-      .handleJoinGame(this.server, client, joinGameDTO)
-      .catch((err: string) => console.log(err));
+    this.gameRoomService
+      .handleJoinGameRoom(this.server, client, joinGameDTO)
+      .catch();
   }
 
   @SubscribeMessage(SocketIOEvents.GameClick)
   hangleGameClick(client: Socket, gameClickDTO: GameClickDTO): void {
-    this.gameService
+    this.gameRoomService
       .handleGameClick(this.server, client, gameClickDTO)
-      .catch((err: string) => console.log(err));
+      .catch();
   }
 
   @SubscribeMessage(SocketIOEvents.SendMessage)
   handleSendMessage(socket: Socket, message: string): void {
-    this.gameService.handleSendMessage(this.server, socket, message);
+    this.gameRoomService.handleSendMessage(this.server, socket, message);
   }
 
   @SubscribeMessage(SocketIOEvents.AskForRematch)
   handleCustomAskForRematch(socket: Socket, dto: AskForRematchDTO): void {
-    this.gameService.handleCustomAskForRematch(
+    this.gameRoomService.handleCustomAskForRematch(
       this.server,
       socket,
       dto.oldRoomID,

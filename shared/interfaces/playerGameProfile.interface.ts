@@ -4,8 +4,8 @@ import { User } from "./user.interface";
 export interface PlayerGameProfile {
   id: number;
   createdAt: Date;
-  timeLeft?: number;
+  timeLeft: number;
   eloDelta?: number;
   game: Game;
-  user: User;
+  user?: User;
 }
