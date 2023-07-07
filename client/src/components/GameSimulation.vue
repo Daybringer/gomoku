@@ -13,8 +13,8 @@ const store = useStore();
 const gameSimulation = new GameSimulation({
   drawSpeed: 0.75,
   gridLineWidth: 1,
-  primaryColor: store.user.playerColor,
-  secondaryColor: store.user.enemyColor,
+  primaryColor: store.user.settings.playerColor,
+  secondaryColor: store.user.settings.opponentColor,
   gridColor: "#808080",
   cellSize: 35,
 });

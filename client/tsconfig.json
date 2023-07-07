@@ -5,11 +5,12 @@
     "strict": true,
     "jsx": "preserve",
     "importHelpers": true,
-    "moduleResolution": "node",
+    "moduleResolution": "Node",
     "skipLibCheck": true,
     "esModuleInterop": true,
     "noImplicitAny": false,
     "noImplicitThis": true,
+    "useDefineForClassFields": true,
     "strictPropertyInitialization": false,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
@@ -30,5 +31,6 @@
     "tests/**/*.tsx",
     "types.d.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
+  "references": [{ "path": "./tsconfig.node.json" }]
 }

@@ -21,7 +21,7 @@
 
     <!-- Current online users -->
     <div class="text-center bg-gray-800 text-gray-400 font-medium text-lg">
-      <p>{{ Number(this.activeUsers) + 1 }} people playing</p>
+      <p>{{ Number(activeUsers) + 1 }} people playing</p>
     </div>
     <div class="bg-gray-800 h-20 z-30 w-full m-auto"></div>
     <div
