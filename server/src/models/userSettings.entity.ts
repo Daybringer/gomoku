@@ -8,9 +8,6 @@ export class UserSettingsEntity {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
-  @OneToOne(() => UserEntity, (user) => user.settings)
-  user: UserEntity;
-
   @Column({ default: '#00b3fe' })
   playerColor: string;
 

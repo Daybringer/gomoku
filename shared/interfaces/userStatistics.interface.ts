@@ -2,7 +2,6 @@ import { User } from "./user.interface";
 
 export interface UserStatistics {
   id: number;
-  user: User;
   rankedWon: number;
   rankedLost: number;
   rankedTied: number;

@@ -186,6 +186,7 @@ export class GameGateway implements OnGatewayDisconnect {
   @WebSocketServer() server: Server;
 
   async handleDisconnect(client: Socket) {
+    console.log('disconnect');
     this.gameRoomService.handleGameDisconnect(this.server, client);
   }
 
@@ -198,6 +199,7 @@ export class GameGateway implements OnGatewayDisconnect {
 
   @SubscribeMessage(SocketIOEvents.JoinGame)
   handleJoinGame(client: Socket, joinGameDTO: JoinGameDTO): void {
+    console.log('joined');
     this.gameRoomService
       .handleJoinGameRoom(this.server, client, joinGameDTO)
       .catch();

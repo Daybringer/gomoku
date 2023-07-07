@@ -6,9 +6,6 @@ export class UserStatisticsEntity {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
-  @OneToOne(() => UserEntity, (user) => user.statistics)
-  user: UserEntity;
-
   @Column({ default: 0 })
   rankedWon: number;
 

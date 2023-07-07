@@ -54,6 +54,7 @@ export class GameRoomService {
 
     if (!room) {
       client.emit(SocketIOEvents.InvalidRoomID);
+      this.logger.debug("Room doesn't exist");
       return;
     }
 
@@ -65,23 +66,26 @@ export class GameRoomService {
     // Subscribing socket to SocketIO room
     client.join(roomID);
 
-    this.constructPlayer(client.id, room.timeLimitInSeconds, userID)
-      .then((player) => {
-        try {
-          room.addPlayer(player);
-        } catch (err) {
-          client.emit(SocketIOEvents.InvalidRoomID);
-          throw err;
-        }
-      })
-      .catch((err) => {
-        client.emit(SocketIOEvents.InvalidRoomID);
-        throw err;
-      });
+    const player = await this.constructPlayer(
+      client.id,
+      room.timeLimitInSeconds,
+      userID,
+    );
+    if (!player) {
+      client.emit(SocketIOEvents.InvalidRoomID);
+      this.logger.error("Player couldn't be constructed");
+    }
+    try {
+      room.addPlayer(player);
+    } catch (err) {
+      client.emit(SocketIOEvents.InvalidRoomID);
+      return;
+    }
 
     if (room.isFull && !room.isRunning) room.start();
 
     if (room.isRunning) {
+      this.logger.debug('Starting game');
       const gameStartedDTO = await this.constructGameStartedDTO(room);
       server.to(roomID).emit(SocketIOEvents.GameStarted, gameStartedDTO);
 
@@ -114,18 +118,20 @@ export class GameRoomService {
     switch (type) {
       case GameType.Quick:
         game = new QuickGame();
-        return { game, roomID };
+        break;
       case GameType.Ranked:
         game = new RankedGame();
-        return { game, roomID };
+        break;
       case GameType.Custom:
         game = new CustomGame(
           customSettings.hasTimeLimit,
           customSettings.timeLimitInSeconds,
           customSettings.opening,
         );
-        return { game, roomID };
+        break;
     }
+    this.gameRooms[roomID] = game;
+    return { game, roomID };
   }
 
   /**
@@ -263,7 +269,7 @@ export class GameRoomService {
   handleGameDisconnect(server: Server, disconecteeSocket: Socket) {
     const roomID = this.findRoomIDBySocketID(disconecteeSocket.id);
     const room = this.findGameRoom(roomID);
-    if (room === null) throw "Room doesn't exist";
+    if (room === null) return;
 
     this.endGame(
       server,
@@ -386,14 +392,8 @@ export class GameRoomService {
     if (gameEnding !== EndingType.Tie && winner) {
       game.winner = winner;
     }
+
     const gameEntity = await this.gameService.saveGame(game);
-    const userIDToEloDiff = {};
-    if (GameType.Ranked) {
-      userIDToEloDiff[gameEntity.playerGameProfiles[0].user.id] =
-        gameEntity.playerGameProfiles[0].eloDelta;
-      userIDToEloDiff[gameEntity.playerGameProfiles[1].user.id] =
-        gameEntity.playerGameProfiles[1].eloDelta;
-    }
     const gameEndedDTO: GameEndedDTO = {
       endingType: gameEnding,
       winner: winner || undefined,
@@ -402,7 +402,6 @@ export class GameRoomService {
         ? gameEntity.winningCombination
         : undefined,
     };
-
     server.to(roomID).emit(SocketIOEvents.GameEnded, gameEndedDTO);
   }
 }

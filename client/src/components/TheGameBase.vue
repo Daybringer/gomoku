@@ -34,7 +34,6 @@
           v-show="gameState === GameState.Ended"
           :amIWinner="amIWinner"
           :endingType="endingType"
-          :myElo="myElo"
           :gameType="gameType"
           :askingForRematch="askingForRematch"
           @rematchCustom="
@@ -237,7 +236,6 @@ const props = defineProps<{
   me: Player;
   enemy: Player;
   winner: Player;
-  elos: Player;
   myColor: string;
   enemyColor: string;
   currentPlayer: Player;
@@ -307,12 +305,12 @@ const isWaitingOrCoinflip = computed(
     props.gameState === GameState.Coinflip
 );
 const amIWinner = computed(() => props.winner.socketID === props.me.socketID);
-const myElo = computed(() => {
-  if (props.me.logged) {
-    if (props.elos[props.me.userID]) return props.elos[props.me.userID];
-  }
-  return 0;
-});
+// const myElo = computed(() => {
+//   if (props.me.logged) {
+//     if (props.elos[props.me.userID]) return props.elos[props.me.userID];
+//   }
+//   return 0;
+// });
 watch(
   () => props.gameState,
   (gameState) => {

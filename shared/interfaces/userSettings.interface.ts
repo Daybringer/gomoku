@@ -1,10 +1,9 @@
-import { GameBoard } from '../types';
-import { User } from './user.interface';
-import { ProfileIcon } from '../icons';
+import { GameBoard } from "../types";
+import { User } from "./user.interface";
+import { ProfileIcon } from "../icons";
 
 export interface UserSettings {
   id: number;
-  user: User;
   playerColor: string;
   opponentColor: string;
   gameBoard: GameBoard;

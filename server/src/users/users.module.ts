@@ -6,10 +6,18 @@ import { UserEntity } from '../models/user.entity';
 import { AuthModule } from 'src/auth/auth.module';
 import { PlayerGameProfileEntity } from 'src/models/playerGameProfile.entity';
 import { GameEntity } from 'src/models/game.entity';
+import { UserSettingsEntity } from 'src/models/userSettings.entity';
+import { UserStatisticsEntity } from 'src/models/userStatistics.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([UserEntity, PlayerGameProfileEntity, GameEntity]),
+    TypeOrmModule.forFeature([
+      UserEntity,
+      PlayerGameProfileEntity,
+      GameEntity,
+      UserSettingsEntity,
+      UserStatisticsEntity,
+    ]),
     forwardRef(() => AuthModule),
   ],
   controllers: [UsersController],

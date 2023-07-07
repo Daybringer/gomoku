@@ -28,17 +28,29 @@ export function userBase(): User {
     email: "",
     strategy: LoginStrategy.Local,
     achievements: [],
-    gameBoard: GameBoard.Standard,
-    playerColor: "#00b3fe",
-    enemyColor: "#ff2079",
-    selectedIcon: ProfileIcon.transparent,
-    availableIcons: [ProfileIcon.transparent],
-    quickLost: 0,
-    quickTied: 0,
-    quickWon: 0,
-    rankedLost: 0,
-    rankedTied: 0,
-    rankedWon: 0,
+    admin: false,
+    createdAt: new Date(),
+    nameChangeTokens: 0,
+    playerGameProfiles: [],
+    premium: false,
+    verified: false,
+    settings: {
+      id: 0,
+      gameBoard: GameBoard.Standard,
+      playerColor: "#00b3fe",
+      opponentColor: "#ff2079",
+      selectedIcon: ProfileIcon.transparent,
+      availableIcons: [ProfileIcon.transparent],
+    },
+    statistics: {
+      id: 0,
+      quickLost: 0,
+      quickTied: 0,
+      quickWon: 0,
+      rankedLost: 0,
+      rankedTied: 0,
+      rankedWon: 0,
+    },
   };
 }
 function getLocalUser(): User | null {
@@ -62,6 +74,7 @@ function isDarkModePreffered(): boolean {
 export const useStore = defineStore("store", {
   state: () => ({
     user: getLocalUser() || userBase(),
+    defaults: {},
     userLoaded: false,
     darkModeToggled: isDarkModePreffered(),
     token: localStorage.getItem("access-token") || "",

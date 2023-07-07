@@ -42,13 +42,13 @@
             Opponent has disconnected
           </h3>
           <!-- Elo gains  -->
-          <div
+          <!-- <div
             class="text-center border-4 border-opacity-80 px-6 xl:px-12 py-2 xl:text-2xl text-xl font-medium rounded-xl bg-gray-100 dark:bg-gray-600"
             :class="myElo > 0 ? 'border-green-500' : 'border-red-500'"
             v-if="myElo !== 0"
           >
             {{ eloGain }}
-          </div>
+          </div> -->
           <img
             v-show="!amIWinner"
             src="../assets/svg/lose.svg"
@@ -86,7 +86,6 @@ import ChevronsDownIcon from "@/assets/svg/ChevronsDownIcon.vue";
 export default defineComponent({
   name: "",
   props: {
-    myElo: { type: Number, required: true },
     amIWinner: { type: Boolean, required: true },
     endingType: { type: Object as PropType<EndingType>, required: true },
     gameType: { type: Object as PropType<GameType>, required: true },
@@ -115,11 +114,12 @@ export default defineComponent({
       return this.endingType === EndingType.Combination;
     },
     eloGain(): string {
-      if (this.myElo > 0) {
-        return `+${this.myElo} ELO`;
-      } else {
-        return `${this.myElo} ELO`;
-      }
+      // if (this.myElo > 0) {
+      //   return `+${this.myElo} ELO`;
+      // } else {
+      //   return `${this.myElo} ELO`;
+      // }
+      return "";
     },
     newGameURL(): string {
       return `search?type=${this.gameType || ""}`;

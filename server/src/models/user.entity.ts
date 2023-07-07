@@ -62,11 +62,11 @@ export class UserEntity {
   @Column({ type: 'enum', array: true, enum: Achievement, default: [] })
   achievements: Achievement[];
 
-  @OneToOne(() => UserStatisticsEntity, (statistics) => statistics.user)
+  @OneToOne(() => UserStatisticsEntity)
   @JoinColumn()
   statistics: UserStatisticsEntity;
 
-  @OneToOne(() => UserSettingsEntity, (settings) => settings.user)
+  @OneToOne(() => UserSettingsEntity)
   @JoinColumn()
   settings: UserSettingsEntity;
 

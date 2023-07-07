@@ -16,6 +16,8 @@ import { AnyGame } from '../game.class';
 import { PlayerGameProfile } from 'src/shared/interfaces/playerGameProfile.interface';
 import { Game } from 'src/shared/interfaces/game.interface';
 import createRatingSystem from './rating';
+import { GameSettingsEntity } from 'src/models/gameSettings.entity';
+import { GameSettings } from 'src/shared/interfaces/gameSettings.interface';
 
 @Injectable()
 export class GameService {
@@ -24,6 +26,8 @@ export class GameService {
     private readonly gameRepository: Repository<GameEntity>,
     @InjectRepository(PlayerGameProfileEntity)
     private readonly playerGameProfileRepository: Repository<PlayerGameProfile>,
+    @InjectRepository(GameSettingsEntity)
+    private readonly gameSettingsRepository: Repository<GameSettings>,
     private readonly usersService: UsersService,
   ) {}
 
@@ -102,12 +106,14 @@ export class GameService {
     if (game.gameEnding === EndingType.Combination)
       gameEntity.winningCombination = game.gameboard.getWinningCombination();
 
-    gameEntity.gameSettings.openingType = game.opening;
-    gameEntity.gameSettings.hasTimeLimit = game.hasTimeLimit;
-    gameEntity.gameSettings.doesOverlineCount = true;
-    gameEntity.gameSettings.boardSize = 15;
-    gameEntity.gameSettings.winningLineSize = 5;
-    gameEntity.gameSettings.timeLimitInSeconds = game.timeLimitInSeconds;
+    const settings = this.gameSettingsRepository.create();
+    settings.openingType = game.opening;
+    settings.hasTimeLimit = game.hasTimeLimit;
+    settings.doesOverlineCount = true;
+    settings.boardSize = 15;
+    settings.winningLineSize = 5;
+    settings.timeLimitInSeconds = game.timeLimitInSeconds;
+    gameEntity.gameSettings = await this.gameSettingsRepository.save(settings);
 
     if (game.gameEnding !== EndingType.Tie)
       gameEntity.winner = socketIDtoPlayerGameProfile[game.winner.socketID];

@@ -6,14 +6,13 @@
     :round="round"
     :hasTimeLimit="hasTimeLimit"
     :gameState="gameState"
-    :elos="elos"
     :turnHistory="turnHistory"
     :endingType="endingType"
     :winner="winner"
     :opening="opening"
     :openingPhase="openingPhase"
-    :myColor="store.user.playerColor"
-    :enemyColor="store.user.enemyColor"
+    :myColor="store.user.settings.playerColor"
+    :enemyColor="store.user.settings.playerColor"
     :messages="messages"
     :gameType="getGameTypeFromURL"
     :askingForRematch="askingForRematch"
@@ -67,8 +66,7 @@ import { ProfileIcon } from "@/shared/icons";
 const basePlayer = (): Player => {
   return {
     socketID: "",
-    userID: 0,
-    logged: false,
+    userID: undefined,
     profileIcon: ProfileIcon.defaultBoy,
     username: "-",
     timeLeft: 120000,
@@ -92,7 +90,6 @@ export default defineComponent({
     endingType: EndingType;
     winner: Player;
     turnHistory: Turn[];
-    elos: Record<number, number>;
     messages: Array<Message>;
     boardSize: number;
     openingPhase: OpeningPhase;
@@ -111,7 +108,6 @@ export default defineComponent({
       gameState: GameState.Waiting,
       endingType: EndingType.Tie,
       winner: basePlayer(),
-      elos: {},
       messages: [],
       boardSize: 15,
       openingPhase: OpeningPhase.Done,
@@ -161,8 +157,7 @@ export default defineComponent({
 
     const joinGameDTO: JoinGameDTO = {
       roomID: this.getRoomIDFromURL || "",
-      logged,
-      userID: this.store.user.id,
+      userID: logged ? this.store.user.id : undefined,
     };
     socket.emit(SocketIOEvents.JoinGame, joinGameDTO);
 
@@ -172,6 +167,7 @@ export default defineComponent({
     });
 
     socket.on(SocketIOEvents.GameStarted, (dto: GameStartedEventDTO) => {
+      console.log("GAME STARTED");
       const { hasTimeLimit, startingPlayer, players, opening } = dto;
       this.currentPlayer = startingPlayer;
       this.hasTimeLimit = hasTimeLimit;
@@ -265,7 +261,6 @@ export default defineComponent({
     socket.on(SocketIOEvents.GameEnded, (dto: GameEndedDTO) => {
       const { endingType, winner, userIDToEloDiff, winningCombination } = dto;
 
-      if (userIDToEloDiff) this.elos = userIDToEloDiff;
       if (winner) this.winner = winner;
       if (winningCombination) this.winningCombination = winningCombination;
 
