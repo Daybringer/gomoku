@@ -219,6 +219,6 @@ export class UsersService {
       }
     }
 
-    return this.userSettings.save(user.statistics);
+    return this.userStatistics.save(user.statistics);
   }
 }
