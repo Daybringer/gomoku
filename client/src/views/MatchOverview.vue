@@ -31,7 +31,6 @@ import ViewBaseResponsive from "@/components/ViewBaseResponsive.vue";
 import gameRepository from "@/repositories/gameRepository";
 import router from "@/router";
 import { Game } from "@/shared/interfaces/game.interface";
-import { PlayerGameProfile } from "@/shared/interfaces/playerGameProfile.interface";
 import { NotificationType, useNotificationsStore } from "@/store/notifications";
 import { reactive, ref } from "vue";
 import { useRoute } from "vue-router";
@@ -44,7 +43,6 @@ if (isNaN(gameID)) {
 
 const games: Game[] = reactive([]);
 const gameFetched = ref(false);
-const profileDict: Record<number, PlayerGameProfile> = {};
 gameRepository
   .getGameByID(gameID)
   .then((res) => {
@@ -53,7 +51,6 @@ gameRepository
     games.push(game);
   })
   .catch((err) => {
-    console.log(err);
     notifyGameNonexistent();
     router.push("/");
   });

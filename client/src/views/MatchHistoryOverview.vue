@@ -116,7 +116,7 @@
             v-for="game in games"
             :key="game.id"
             :game="game"
-            :user-id="1"
+            :user-id="userID"
           />
           <BaseLoadingSpinner v-show="loading" />
           <p
@@ -191,27 +191,42 @@ function search(removeOld: boolean) {
 
   const constraints: GameConstraints = {};
 
-  if (toggled.type.quick) constraints.allowedGameTypes?.push(GameType.Quick);
-  if (toggled.type.ranked) constraints.allowedGameTypes?.push(GameType.Ranked);
-  if (toggled.type.custom) constraints.allowedGameTypes?.push(GameType.Custom);
+  if (toggled.type.quick || toggled.type.custom || toggled.type.ranked) {
+    constraints.allowedGameTypes = [];
+    if (toggled.type.quick) constraints.allowedGameTypes.push(GameType.Quick);
+    if (toggled.type.ranked) constraints.allowedGameTypes.push(GameType.Ranked);
+    if (toggled.type.custom) constraints.allowedGameTypes.push(GameType.Custom);
+  }
 
-  if (toggled.result.victory) constraints.allowedAmIWinner?.push(true);
-  if (toggled.result.defeat) constraints.allowedAmIWinner?.push(false);
-  if (toggled.result.tie) constraints.allowedEndingTypes?.push(EndingType.Tie);
+  if (toggled.result.victory || toggled.result.defeat) {
+    constraints.allowedAmIWinner = [];
+    if (toggled.result.victory) constraints.allowedAmIWinner.push(true);
+    if (toggled.result.defeat) constraints.allowedAmIWinner.push(false);
+  }
 
-  if (toggled.ending.combination)
-    constraints.allowedEndingTypes?.push(EndingType.Combination);
-  if (toggled.ending.disconnect)
-    constraints.allowedEndingTypes?.push(EndingType.Surrender);
-  if (toggled.ending.timeout)
-    constraints.allowedEndingTypes?.push(EndingType.Time);
+  if (
+    toggled.ending.combination ||
+    toggled.ending.disconnect ||
+    toggled.ending.timeout ||
+    toggled.result.tie
+  ) {
+    constraints.allowedEndingTypes = [];
 
+    if (toggled.ending.combination)
+      constraints.allowedEndingTypes.push(EndingType.Combination);
+    if (toggled.ending.disconnect)
+      constraints.allowedEndingTypes.push(EndingType.Surrender);
+    if (toggled.ending.timeout)
+      constraints.allowedEndingTypes.push(EndingType.Time);
+    if (toggled.result.tie) constraints.allowedEndingTypes.push(EndingType.Tie);
+  }
+
+  console.log(constraints);
   const dto: GetGamesByUserIDDTO = {
     userID,
     take: 15,
     skip: games.value.length,
-    // constraints: constraints,
-    constraints: {},
+    constraints,
   };
   gameRepository
     .getGamesByUserIDDTO(dto)

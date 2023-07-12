@@ -8,7 +8,7 @@ import { EndingType, Player, GameType } from '../../shared/types';
 import { GameEntity } from 'src/models/game.entity';
 import { PlayerGameProfileEntity } from 'src/models/playerGameProfile.entity';
 import { UsersService } from 'src/users/users.service';
-import { Repository, createQueryBuilder } from 'typeorm';
+import { In, Repository, createQueryBuilder } from 'typeorm';
 import { AnyGame } from '../game.class';
 import { PlayerGameProfile } from 'src/shared/interfaces/playerGameProfile.interface';
 import { Game } from 'src/shared/interfaces/game.interface';
@@ -19,6 +19,7 @@ import { GetGamesByUserIDDTO } from 'src/shared/DTO/get-game-by-user-id.dto';
 import { GetGameByUserIDDTOResponse } from 'src/shared/DTO/get-game-by-user-id.response.dto';
 import { use } from 'passport';
 import { GetGameByIDResponseDTO } from 'src/shared/DTO/get-game-by-id.response.dto';
+import { GameConstraints } from '../../../../shared/types';
 
 @Injectable()
 export class GameService {
@@ -103,6 +104,8 @@ export class GameService {
     gameEntity.type = game.gameType;
     gameEntity.turnHistory = game.turns;
     gameEntity.typeOfWin = game.gameEnding;
+    gameEntity.startingPlayer =
+      socketIDtoPlayerGameProfile[game.startingPlayer.socketID];
 
     if (game.gameEnding === EndingType.Combination)
       gameEntity.winningCombination = game.gameboard.getWinningCombination();
@@ -185,7 +188,33 @@ export class GameService {
   async getGamesByUserID(
     dto: GetGamesByUserIDDTO,
   ): Promise<GetGameByUserIDDTOResponse> {
-    const constraints = dto.constraints;
+    const constraints: GameConstraints = {};
+    if (!dto.constraints.allowedAmIWinner) {
+      constraints.allowedAmIWinner = [true, false];
+    } else {
+      constraints.allowedAmIWinner = dto.constraints.allowedAmIWinner;
+    }
+
+    if (!dto.constraints.allowedEndingTypes) {
+      constraints.allowedEndingTypes = [
+        EndingType.Combination,
+        EndingType.Surrender,
+        EndingType.Tie,
+        EndingType.Time,
+      ];
+    } else {
+      constraints.allowedEndingTypes = dto.constraints.allowedEndingTypes;
+    }
+
+    if (!dto.constraints.allowedGameTypes) {
+      constraints.allowedGameTypes = [
+        GameType.Custom,
+        GameType.Quick,
+        GameType.Ranked,
+      ];
+    } else {
+      constraints.allowedGameTypes = dto.constraints.allowedGameTypes;
+    }
 
     // BUG Getting Table name specified more then once error when doing it pretty way
     // related SO question https://stackoverflow.com/questions/64138710/typeorm-table-name-specified-more-than-once
@@ -195,6 +224,10 @@ export class GameService {
         where: {
           user: {
             id: dto.userID,
+          },
+          game: {
+            type: In([...constraints.allowedGameTypes]),
+            typeOfWin: In([...constraints.allowedEndingTypes]),
           },
         },
         order: { id: 'DESC' },

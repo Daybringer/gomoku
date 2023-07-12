@@ -6,8 +6,8 @@
       }
     "
     :disabled="disabled"
-    class="border-gray-700 dark:border-gray-400 border-4 p-3 bg-gray-300 hover:bg-gray-400 dark:hover:bg-gray-500 dark:bg-gray-600 rounded-xl w-2/5 sm:w-1/4 xl:w-50 cursor-pointer"
-    :class="disabled ? 'cursor-not-allowed' : ''"
+    class="border-gray-700 dark:border-gray-400 border-4 p-3 bg-gray-300 hover:bg-gray-400 dark:hover:bg-gray-500 dark:bg-gray-600 rounded-xl w-2/5 sm:w-1/4 xl:w-50"
+    :class="disabled ? 'cursor-not-allowed' : 'cursor-pointer'"
   >
     <profile-icon-svg class="h-auto" :profileIcon="currentIcon" />
   </button>

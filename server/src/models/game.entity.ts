@@ -39,7 +39,7 @@ export class GameEntity {
   )
   playerGameProfiles: PlayerGameProfileEntity[];
 
-  @OneToOne(() => PlayerGameProfileEntity)
+  @OneToOne(() => PlayerGameProfileEntity, { eager: true })
   @JoinColumn()
   winner?: PlayerGameProfileEntity;
 

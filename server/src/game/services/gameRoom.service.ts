@@ -268,6 +268,7 @@ export class GameRoomService {
   handleGameDisconnect(server: Server, disconecteeSocket: Socket) {
     const roomID = this.findRoomIDBySocketID(disconecteeSocket.id);
     const room = this.findGameRoom(roomID);
+    console.log(room);
     if (room === null) return;
 
     this.endGame(
@@ -279,7 +280,7 @@ export class GameRoomService {
     );
   }
 
-  // ------------------- PRIVATE FUNCTIONS -------------------
+  // ------------------- PRIVATE FUNCTIONS -------------------`
 
   /**
    * Generates a room ID that doesn't conflict with any given room in *rooms* argument
@@ -308,9 +309,8 @@ export class GameRoomService {
 
     Object.keys(this.gameRooms).forEach((roomID) => {
       if (
-        this.gameRooms[roomID].players.some((player) => {
-          player.socketID === socketID;
-        })
+        this.gameRooms[roomID].players[0].socketID === socketID ||
+        this.gameRooms[roomID].players[1].socketID === socketID
       )
         foundRoomID = roomID;
     });
@@ -385,6 +385,8 @@ export class GameRoomService {
     gameEnding: EndingType,
     winner?: Player,
   ) {
+    delete this.gameRooms[roomID];
+
     clearInterval(game.calibrationIntervalHandle);
     game.setGameState(GameState.Ended);
     game.setGameEnding(gameEnding);
@@ -401,7 +403,6 @@ export class GameRoomService {
         ? gameEntity.winningCombination
         : undefined,
     };
-    console.log('GameEndedDTO:', gameEndedDTO);
     server.to(roomID).emit(SocketIOEvents.GameEnded, gameEndedDTO);
   }
 }

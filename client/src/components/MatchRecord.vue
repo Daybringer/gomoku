@@ -54,12 +54,10 @@ const props = defineProps<{
   game: Game;
   userId: number;
 }>();
-console.log(props.game.playerGameProfiles);
 const [pGameProfile, sGameProfile] = [...props.game.playerGameProfiles];
 
 const fUser = pGameProfile.user;
 const sUser = sGameProfile.user;
-console.log(fUser, sUser);
 
 const ownGameProfile = ref(
   fUser && fUser.id === props.userId ? pGameProfile : sGameProfile

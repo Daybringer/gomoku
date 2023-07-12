@@ -21,14 +21,9 @@ function fetchMatches() {
       userID: props.userID,
       skip: 0,
       take: 5,
-      constraints: {
-        allowedEndingTypes: undefined,
-        allowedGameTypes: undefined,
-        allowedAmIWinner: undefined,
-      },
+      constraints: {},
     })
     .then((res) => {
-      console.log(res.data);
       res.data.games.forEach((game) => {
         games.push(game);
       });
