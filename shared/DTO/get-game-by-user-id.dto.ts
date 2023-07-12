@@ -1,4 +1,4 @@
-import { GameConstraints } from "../types";
+import { GameConstraints } from '../types';
 
 export class GetGamesByUserIDDTO {
   userID: number;

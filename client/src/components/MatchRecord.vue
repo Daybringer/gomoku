@@ -7,14 +7,16 @@
       class="grid grid-cols-11 items-center flex-1 gap-2 md:gap-0 mb-2 md:pr-2 md:mb-0"
     >
       <BaseProfileLink
-        :is-logged="!!fUser"
+        class="col-span-5"
+        :is-logged="fUser === undefined"
         :profile-icon="fUser ? fUser.settings.selectedIcon : ProfileIcon.guest"
         :user-id="fUser ? fUser.id : undefined"
         :username="fUser ? fUser.username : 'Guest'"
       />
       <p class="text-lg text-center">VS</p>
       <BaseProfileLink
-        :is-logged="!!sUser"
+        class="col-span-5"
+        :is-logged="sUser !== undefined"
         :profile-icon="sUser ? sUser.settings.selectedIcon : ProfileIcon.guest"
         :user-id="sUser ? sUser.id : undefined"
         :username="sUser ? sUser.username : 'Guest'"
@@ -52,9 +54,12 @@ const props = defineProps<{
   game: Game;
   userId: number;
 }>();
+console.log(props.game.playerGameProfiles);
 const [pGameProfile, sGameProfile] = [...props.game.playerGameProfiles];
 
-const [fUser, sUser] = [pGameProfile.user, sGameProfile.user];
+const fUser = pGameProfile.user;
+const sUser = sGameProfile.user;
+console.log(fUser, sUser);
 
 const ownGameProfile = ref(
   fUser && fUser.id === props.userId ? pGameProfile : sGameProfile
@@ -62,7 +67,7 @@ const ownGameProfile = ref(
 
 const eloGain = computed(() => {
   const elo = ownGameProfile.value.eloDelta;
-  if (elo === undefined) return "--";
+  if (!elo) return "--";
 
   if (elo > 0) {
     return `+${elo}`;

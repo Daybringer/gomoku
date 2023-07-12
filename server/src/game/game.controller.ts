@@ -12,8 +12,7 @@ export class GameController {
   async getGameByUsserID(
     @Body() req: GetGamesByUserIDDTO,
   ): Promise<GetGameByUserIDDTOResponse> {
-    // return this.gameService.getGamesByUserID(req);
-    throw '';
+    return this.gameService.getGamesByUserID(req);
   }
 
   @Get('/:id')

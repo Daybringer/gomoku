@@ -38,6 +38,7 @@ import DotsIcon from "@/assets/svg/DotsIcon.vue";
 import BaseProfileLink from "./BaseProfileLink.vue";
 import { ProfileIcon } from "@/shared/icons";
 
+// TODO remove string symbol for enum
 defineProps<{
   player: Player;
   symbol: string;

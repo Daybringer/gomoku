@@ -1,16 +1,24 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EndingType, Player, GameType } from '../../shared/types';
 import { GameEntity } from 'src/models/game.entity';
 import { PlayerGameProfileEntity } from 'src/models/playerGameProfile.entity';
 import { UsersService } from 'src/users/users.service';
-import { Repository } from 'typeorm';
+import { Repository, createQueryBuilder } from 'typeorm';
 import { AnyGame } from '../game.class';
 import { PlayerGameProfile } from 'src/shared/interfaces/playerGameProfile.interface';
 import { Game } from 'src/shared/interfaces/game.interface';
 import createRatingSystem from './rating';
 import { GameSettingsEntity } from 'src/models/gameSettings.entity';
 import { GameSettings } from 'src/shared/interfaces/gameSettings.interface';
+import { GetGamesByUserIDDTO } from 'src/shared/DTO/get-game-by-user-id.dto';
+import { GetGameByUserIDDTOResponse } from 'src/shared/DTO/get-game-by-user-id.response.dto';
+import { use } from 'passport';
+import { GetGameByIDResponseDTO } from 'src/shared/DTO/get-game-by-id.response.dto';
 
 @Injectable()
 export class GameService {
@@ -153,41 +161,52 @@ export class GameService {
 
     return result;
   }
-  // async getGameByID(gameID: number): Promise<GetGameByIDResponseDTO> {
-  //   const game = await this.gameRepository.findOne({ where: { id: gameID } });
-  //   if (!game) throw new BadRequestException("Game doesn't exist");
-  //   const playerGameProfiles = await this.playerGameProfileRepository.findByIds(
-  //     game.playerGameProfileIDs,
-  //   );
-  //   if (playerGameProfiles.length !== 2)
-  //     throw new BadRequestException(
-  //       'Game profiles are corrupted (missing/overflowing)',
-  //     );
 
-  //   return { game: await this.expandGame(game, playerGameProfiles) };
-  // }
+  async getGameByID(gameID: number): Promise<GetGameByIDResponseDTO> {
+    const game = await this.gameRepository.findOne({
+      relations: ['playerGameProfiles'],
+      where: { id: gameID },
+    });
+    if (!game) throw new BadRequestException("Game doesn't exist");
+    const fProfile = await this.playerGameProfileRepository.findOne({
+      relations: ['user'],
+      where: { id: game.playerGameProfiles[0].id },
+    });
+    const sProfile = await this.playerGameProfileRepository.findOne({
+      relations: ['user'],
+      where: { id: game.playerGameProfiles[1].id },
+    });
+    game.playerGameProfiles[0] = fProfile;
+    game.playerGameProfiles[1] = sProfile;
 
-  // async getGamesByUserID(
-  //   dto: GetGamesByUserIDDTO,
-  // ): Promise<GetGameByUserIDDTOResponse> {
-  //   const constraints = dto.constraints;
+    return { game };
+  }
 
-  //   // TODO fix this with relations
-  //   const gameProfiles = await this.playerGameProfileRepository.find({
-  //     where: { userID: dto.userID },
-  //     order: { id: 'DESC' },
-  //     skip: dto.skip,
-  //     take: dto.take,
-  //   });
+  async getGamesByUserID(
+    dto: GetGamesByUserIDDTO,
+  ): Promise<GetGameByUserIDDTOResponse> {
+    const constraints = dto.constraints;
 
-  //   const gameIDs = gameProfiles.map((gameProfile) => gameProfile.gameID);
+    // BUG Getting Table name specified more then once error when doing it pretty way
+    // related SO question https://stackoverflow.com/questions/64138710/typeorm-table-name-specified-more-than-once
+    const games = (
+      await this.playerGameProfileRepository.find({
+        relations: ['game', 'user'],
+        where: {
+          user: {
+            id: dto.userID,
+          },
+        },
+        order: { id: 'DESC' },
+        skip: dto.skip,
+        take: dto.take,
+      })
+    ).map((profile) => profile.game);
 
-  //   const expandedGames: ExpandedGame[] = [];
+    const gamesWithUsers = (
+      await Promise.all(games.map((game) => this.getGameByID(game.id)))
+    ).map((dto) => dto.game);
 
-  //   for await (const gameID of gameIDs) {
-  //     expandedGames.push((await this.getGameByID(gameID)).game);
-  //   }
-
-  //   return { games: expandedGames };
-  // }
+    return { games: gamesWithUsers };
+  }
 }

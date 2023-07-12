@@ -28,6 +28,7 @@ function fetchMatches() {
       },
     })
     .then((res) => {
+      console.log(res.data);
       res.data.games.forEach((game) => {
         games.push(game);
       });
