@@ -386,7 +386,6 @@ export class GameRoomService {
     winner?: Player,
   ) {
     delete this.gameRooms[roomID];
-
     clearInterval(game.calibrationIntervalHandle);
     game.setGameState(GameState.Ended);
     game.setGameEnding(gameEnding);

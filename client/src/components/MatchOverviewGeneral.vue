@@ -19,12 +19,12 @@
     </div>
     <div class="flex md:flex-row items-center justify-center gap-12">
       <MatchRecordResultIcon
-        :win="(game.winner && fProfile.id === game.winner.id) || false"
+        :win="fProfile.isWinner"
         :tie="game.typeOfWin === EndingType.Tie"
       />
       <p class="text-3xl">Result</p>
       <MatchRecordResultIcon
-        :win="(game.winner && sProfile.id === game.winner.id) || false"
+        :win="sProfile.isWinner"
         :tie="game.typeOfWin === EndingType.Tie"
       />
     </div>

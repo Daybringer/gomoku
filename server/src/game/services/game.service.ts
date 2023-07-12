@@ -8,7 +8,7 @@ import { EndingType, Player, GameType } from '../../shared/types';
 import { GameEntity } from 'src/models/game.entity';
 import { PlayerGameProfileEntity } from 'src/models/playerGameProfile.entity';
 import { UsersService } from 'src/users/users.service';
-import { In, Repository, createQueryBuilder } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { AnyGame } from '../game.class';
 import { PlayerGameProfile } from 'src/shared/interfaces/playerGameProfile.interface';
 import { Game } from 'src/shared/interfaces/game.interface';
@@ -17,7 +17,6 @@ import { GameSettingsEntity } from 'src/models/gameSettings.entity';
 import { GameSettings } from 'src/shared/interfaces/gameSettings.interface';
 import { GetGamesByUserIDDTO } from 'src/shared/DTO/get-game-by-user-id.dto';
 import { GetGameByUserIDDTOResponse } from 'src/shared/DTO/get-game-by-user-id.response.dto';
-import { use } from 'passport';
 import { GetGameByIDResponseDTO } from 'src/shared/DTO/get-game-by-id.response.dto';
 import { GameConstraints } from '../../../../shared/types';
 
@@ -35,6 +34,7 @@ export class GameService {
 
   async savePlayerGameProfile(
     player: Player,
+    isWinner: boolean,
     eloDiff?: number,
   ): Promise<PlayerGameProfile> {
     const playerGameProfileEntity = this.playerGameProfileRepository.create();
@@ -47,6 +47,7 @@ export class GameService {
     if (eloDiff) {
       playerGameProfileEntity.eloDelta = eloDiff;
     }
+    playerGameProfileEntity.isWinner = isWinner;
 
     playerGameProfileEntity.timeLeft = player.timeLeft;
 
@@ -63,6 +64,7 @@ export class GameService {
     const [playerOne, playerTwo] = game.players;
     let playerOneProfile: PlayerGameProfile,
       playerTwoProfile: PlayerGameProfile;
+    // TODO implement ranked
     if (game.gameType === GameType.Ranked) {
       // Caculating elo deltas for each player
       if (!playerOne.userID || !playerTwo.userID)
@@ -78,6 +80,7 @@ export class GameService {
 
       playerOneProfile = await this.savePlayerGameProfile(
         playerOne,
+        game.winner.socketID === playerOne.socketID,
         elos[playerOne.userID],
       );
       await this.usersService.updateElo(
@@ -87,6 +90,7 @@ export class GameService {
 
       playerTwoProfile = await this.savePlayerGameProfile(
         playerTwo,
+        game.winner.socketID === playerTwo.socketID,
         elos[playerTwo.userID],
       );
       await this.usersService.updateElo(
@@ -94,8 +98,14 @@ export class GameService {
         elos[playerTwo.userID],
       );
     } else {
-      playerOneProfile = await this.savePlayerGameProfile(playerOne);
-      playerTwoProfile = await this.savePlayerGameProfile(playerTwo);
+      playerOneProfile = await this.savePlayerGameProfile(
+        playerOne,
+        game.winner.socketID === playerOne.socketID,
+      );
+      playerTwoProfile = await this.savePlayerGameProfile(
+        playerTwo,
+        game.winner.socketID === playerTwo.socketID,
+      );
     }
 
     socketIDtoPlayerGameProfile[playerOne.socketID] = playerOneProfile;
@@ -118,9 +128,6 @@ export class GameService {
     settings.winningLineSize = 5;
     settings.timeLimitInSeconds = game.timeLimitInSeconds;
     gameEntity.gameSettings = await this.gameSettingsRepository.save(settings);
-
-    if (game.gameEnding !== EndingType.Tie)
-      gameEntity.winner = socketIDtoPlayerGameProfile[game.winner.socketID];
 
     gameEntity.playerGameProfiles = [playerOneProfile, playerTwoProfile];
 
@@ -220,7 +227,7 @@ export class GameService {
     // related SO question https://stackoverflow.com/questions/64138710/typeorm-table-name-specified-more-than-once
     const games = (
       await this.playerGameProfileRepository.find({
-        relations: ['game', 'user'],
+        relations: ['user', 'game'],
         where: {
           user: {
             id: dto.userID,
@@ -235,6 +242,8 @@ export class GameService {
         take: dto.take,
       })
     ).map((profile) => profile.game);
+
+    console.log(games, dto.userID);
 
     const gamesWithUsers = (
       await Promise.all(games.map((game) => this.getGameByID(game.id)))

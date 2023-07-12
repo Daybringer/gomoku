@@ -22,6 +22,9 @@ export class PlayerGameProfileEntity {
   @Column({ nullable: true })
   eloDelta?: number;
 
+  @Column()
+  isWinner: boolean;
+
   @ManyToOne(() => GameEntity, (game) => game.playerGameProfiles)
   game: GameEntity;
 

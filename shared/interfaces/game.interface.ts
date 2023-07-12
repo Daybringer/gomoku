@@ -11,7 +11,6 @@ export interface Game {
   turnHistory: Turn[];
   winningCombination?: Turn[];
   playerGameProfiles: PlayerGameProfile[];
-  winner?: PlayerGameProfile;
   startingPlayer: PlayerGameProfile;
   afterSwapStartingPlayer?: PlayerGameProfile;
   gameSettings: GameSettings;

@@ -41,10 +41,6 @@ export class GameEntity {
 
   @OneToOne(() => PlayerGameProfileEntity, { eager: true })
   @JoinColumn()
-  winner?: PlayerGameProfileEntity;
-
-  @OneToOne(() => PlayerGameProfileEntity, { eager: true })
-  @JoinColumn()
   startingPlayer: PlayerGameProfileEntity;
 
   @OneToOne(() => PlayerGameProfileEntity, { eager: true })

@@ -26,7 +26,7 @@
       <ResultIcon
         class="col-span-1"
         :tie="game.typeOfWin === EndingType.Tie"
-        :win="amIWinner"
+        :win="ownGameProfile.isWinner"
       />
       <GameTypeIcon class="col-span-1" :gameType="game.type" />
       <div>{{ eloGain }}</div>
@@ -72,10 +72,4 @@ const eloGain = computed(() => {
   }
   return `${elo}`;
 });
-
-const amIWinner = computed(
-  () =>
-    (props.game.winner && props.game.winner.id === ownGameProfile.value.id) ||
-    false
-);
 </script>
