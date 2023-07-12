@@ -161,7 +161,8 @@ export class UsersService {
     if (user.credit >= profileIconRecord.price) {
       user.credit -= profileIconRecord.price;
       user.settings.availableIcons.push(icon);
-      return this.userRepository.save(user);
+      this.userRepository.save(user);
+      return this.userSettings.save(user.settings);
     } else {
       throw new BadRequestException('Not enough credit');
     }
@@ -170,7 +171,7 @@ export class UsersService {
   async selectIcon(user: UserEntity, icon: ProfileIcon) {
     if (user.settings.availableIcons.includes(icon)) {
       user.settings.selectedIcon = icon;
-      return this.userRepository.save(user);
+      return this.userSettings.save(user.settings);
     } else {
       throw new BadRequestException('Icon is not available');
     }
@@ -178,13 +179,13 @@ export class UsersService {
 
   async setGameboard(user: UserEntity, gameboard: GameBoard) {
     user.settings.gameBoard = gameboard;
-    return this.userRepository.save(user);
+    return this.userSettings.save(user.settings);
   }
 
   async setColors(user: UserEntity, myColor: string, enemyColor: string) {
     user.settings.playerColor = myColor;
     user.settings.opponentColor = enemyColor;
-    return this.userRepository.save(user);
+    return this.userSettings.save(user.settings);
   }
 
   async getLeaderboardPosition(user: UserEntity): Promise<number> {
@@ -218,6 +219,6 @@ export class UsersService {
       }
     }
 
-    return this.userRepository.save(user);
+    return this.userSettings.save(user.statistics);
   }
 }
