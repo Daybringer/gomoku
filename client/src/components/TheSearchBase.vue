@@ -5,7 +5,7 @@
         Searching
       </h1>
       <span class="text-gray-800 dark:text-gray-200 text-3xl">{{
-        timeToShow
+        humanReadableTime(currentTime)
       }}</span>
       <swing-animation />
     </div>
@@ -16,18 +16,10 @@
 // Components
 import ViewBase from "@/components/ViewBaseFixedHeight.vue";
 import SwingAnimation from "@/assets/svg/SwingAnimation.vue";
-import { ref, computed, onMounted, onBeforeMount } from "vue";
+import { ref, onMounted, onBeforeMount } from "vue";
+import { humanReadableTime } from "@/utils/general";
 const interval = ref(0);
-const currentTime = ref();
-const minutes = computed(() => {
-  return Math.floor((currentTime.value % (1000 * 60 * 60)) / (1000 * 60));
-});
-const seconds = computed(() => {
-  return Math.floor((currentTime.value % (1000 * 60)) / 1000);
-});
-const timeToShow = computed(() => {
-  return `${minutes.value}:${seconds.value < 10 ? "0" : ""}${seconds.value}`;
-});
+const currentTime = ref(0);
 function timeChange() {
   currentTime.value += 1000;
 }
