@@ -115,7 +115,7 @@
               >
                 <ProfileIcon
                   class="h-7"
-                  :profile-icon="store.user.selectedIcon"
+                  :profile-icon="store.user.settings.selectedIcon"
                 />
                 <!--Placeholder to prevent box jumping-->
                 <div class="h-8 w-8" v-show="!store.userLoaded"></div>

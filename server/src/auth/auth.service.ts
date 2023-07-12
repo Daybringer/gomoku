@@ -1,5 +1,6 @@
 import {
   Injectable,
+  Logger,
   NotAcceptableException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -28,6 +29,8 @@ export class AuthService {
     private readonly tokenService: TokensService,
     private readonly configService: ConfigService,
   ) {}
+
+  private readonly logger = new Logger(AuthService.name);
 
   async hashPassword(password: string): Promise<string> {
     return hash(password, 13);
@@ -159,37 +162,36 @@ export class AuthService {
 
   async loginGoogle(id_token: string): Promise<UserEntity> {
     const client = new OAuth2Client(this.configService.get('GOOGLE_CLIENT_ID'));
-    try {
-      const ticket = await client.verifyIdToken({ idToken: id_token });
-      const payload = ticket.getPayload();
-      const userID = ticket.getUserId();
-      const email = payload.email;
+    const ticket = await client.verifyIdToken({ idToken: id_token });
+    const payload = ticket.getPayload()!;
+    const userID = ticket.getUserId()!;
+    const email = payload.email!;
 
-      // checking whether user with given email exists
-      const user = await this.usersService.findOneByEmail(email);
+    // checking whether user with given email exists
+    const user = await this.usersService.findOneByEmail(email);
 
-      // user exists FLOW
-      if (user) {
-        if (user.strategy == LoginStrategy.Google) {
-          // Login
-          return user;
-        } else {
-          // Throw unauthorized error
-          throw new UnauthorizedException(
-            'Account with same email adress already exists and requires password to log in.',
-          );
-        }
+    console.log('User is here:', typeof user, user);
+    // user exists FLOW
+    if (user) {
+      if (user.strategy == LoginStrategy.Google) {
+        // Login
+        this.logger.debug(`Login in user with google account;`);
+        return user;
       } else {
-        // user DOESN'T exist FLOW
-        return this.registerGoogle(email, userID);
+        // Throw unauthorized error
+        throw new UnauthorizedException(
+          'Account with same email adress already exists and requires password to log in.',
+        );
       }
-    } catch (error) {
-      throw error;
+    } else {
+      // user DOESN'T exist FLOW
+      this.logger.debug('Registering user with google account!');
+      return this.registerGoogle(email, userID);
     }
-    return;
   }
 
   async registerGoogle(email: string, userID: string): Promise<UserEntity> {
+    this.logger.debug('Calling for a creation of a user with google account');
     return this.usersService.createGoogle(email, userID);
   }
 

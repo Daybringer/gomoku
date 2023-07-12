@@ -23,9 +23,9 @@ const notificationsStore = useNotificationsStore();
 
 // <---Functions--->
 async function setIcon(profileIcon: ProfileIcon) {
-  if (store.user.availableIcons.includes(profileIcon))
+  if (store.user.settings.availableIcons.includes(profileIcon))
     UsersRepository.selectIcon(profileIcon).then(() => {
-      store.user.selectedIcon = profileIcon;
+      store.user.settings.selectedIcon = profileIcon;
       store.saveLocalUser();
     });
 }
@@ -35,7 +35,7 @@ async function buyIcon(profileIcon: ProfileIcon) {
   if (store.user.credit >= price) {
     UsersRepository.buyIcon(profileIcon).then(() => {
       store.user.credit -= price;
-      store.user.availableIcons.push(profileIcon);
+      store.user.settings.availableIcons.push(profileIcon);
       notificationsStore.createNotification(
         NotificationType.Success,
         "Successfully bought icon."
@@ -79,8 +79,8 @@ async function buyIcon(profileIcon: ProfileIcon) {
       <!-- user profile icon -->
       <ProfileIconPicker
         :disabled="visitingProfile"
-        :currentIcon="user.selectedIcon"
-        :availableIcons="user.availableIcons"
+        :currentIcon="user.settings.selectedIcon"
+        :availableIcons="user.settings.availableIcons"
         @setIcon="setIcon"
         @buyIcon="buyIcon"
       />

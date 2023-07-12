@@ -2,7 +2,6 @@
   "compilerOptions": {
     "skipLibCheck": true,
     "module": "commonjs",
-    // "rootDir": "src",
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,

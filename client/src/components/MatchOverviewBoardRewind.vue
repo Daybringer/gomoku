@@ -17,8 +17,8 @@
             ? game.winningCombination
             : []
         "
-        :cross-color="store.user.enemyColor"
-        :circle-color="store.user.playerColor"
+        :cross-color="store.user.settings.opponentColor"
+        :circle-color="store.user.settings.playerColor"
         :turn-history="leftStack"
         :lines-width="2"
         :board-size="15"

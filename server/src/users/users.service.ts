@@ -1,18 +1,15 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { UserSettingsEntity } from './../models/userSettings.entity';
+import { UserStatisticsEntity } from './../models/userStatistics.entity';
+import { UserStatistics } from './../../../shared/interfaces/userStatistics.interface';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TokensService } from 'src/auth/token.service';
 import { AnyGame } from 'src/game/game.class';
 import { ProfileIcon, profileIconRecords } from 'src/shared/icons';
-import { User } from 'src/shared/interfaces/user.interface';
 import { MoreThan, Repository } from 'typeorm';
 
 import { UserEntity } from '../models/user.entity';
-import {
-  EndingType,
-  GameBoard,
-  GameType,
-  LoginStrategy,
-} from '../shared/types';
+import { GameBoard, GameType, LoginStrategy } from '../shared/types';
 
 import { adjectives, nouns } from './randomNameDict';
 @Injectable()
@@ -20,8 +17,13 @@ export class UsersService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+    @InjectRepository(UserStatisticsEntity)
+    private readonly userStatistics: Repository<UserStatisticsEntity>,
+    @InjectRepository(UserSettingsEntity)
+    private readonly userSettings: Repository<UserSettingsEntity>,
     private readonly tokenService: TokensService,
   ) {}
+  private readonly logger = new Logger(UsersService.name);
 
   async createLocal(
     username: string,
@@ -29,6 +31,10 @@ export class UsersService {
     password: string,
   ): Promise<UserEntity> {
     const newUser = new UserEntity();
+    newUser.statistics = await this.userStatistics.save(
+      new UserStatisticsEntity(),
+    );
+    newUser.settings = await this.userSettings.save(new UserSettingsEntity());
     newUser.username = username;
     newUser.email = email;
     newUser.password = password;
@@ -63,19 +69,22 @@ export class UsersService {
         this.generateRandomName() + String(Math.floor(Math.random() * 100));
       user = await this.findOneByUsername(randName);
     }
+    newUser.statistics = await this.userStatistics.save(
+      new UserStatisticsEntity(),
+    );
+    newUser.settings = await this.userSettings.save(new UserSettingsEntity());
     newUser.email = email;
     newUser.username = randName;
     newUser.socialID = gID;
     newUser.strategy = LoginStrategy.Google;
     newUser.nameChangeTokens = 1;
     newUser.verified = true;
+    console.log(newUser);
     return this.userRepository.save(newUser);
   }
 
-  async findOneByUsername(username: string): Promise<UserEntity> {
-    const user = await this.userRepository.findOne({ username });
-    if (!user) throw "User with given username doesn't exist";
-    return user;
+  async findOneByUsername(username: string): Promise<UserEntity | undefined> {
+    return this.userRepository.findOne({ username });
   }
 
   isVerificationTimedOut(user: UserEntity): boolean {
@@ -99,6 +108,7 @@ export class UsersService {
 
   async updateElo(userID: number, eloDiff: number) {
     const user = await this.findOneByID(userID);
+    if (!user) throw "Couldn't update elo. User wasn't found";
     user.elo += eloDiff;
     return this.userRepository.save(user);
   }
@@ -112,40 +122,32 @@ export class UsersService {
     return this.userRepository.delete({ id });
   }
 
-  async findOneByEmail(email: string): Promise<UserEntity> {
-    const user = await this.userRepository.findOne({ email });
-    if (!user) throw "User wasn't found";
-    return user;
+  async findOneByEmail(email: string): Promise<UserEntity | undefined> {
+    return this.userRepository.findOne({ email });
   }
 
   async findAll(): Promise<UserEntity[]> {
     return this.userRepository.find();
   }
 
-  async findOneByID(id: number): Promise<UserEntity> {
-    const user = await this.userRepository.findOne({ id });
-    if (!user) throw "User wasn't found";
-    return user;
+  async findOneByID(id: number): Promise<UserEntity | undefined> {
+    return this.userRepository.findOne({ id });
   }
 
-  // FIXME very lazy and dangerous approach >> requires usernames without @
-  async findByEmailOrUsername(usernameOrEmail: string): Promise<UserEntity> {
+  async findByEmailOrUsername(
+    usernameOrEmail: string,
+  ): Promise<UserEntity | undefined> {
     if (usernameOrEmail.includes('@')) {
-      const user = await this.userRepository.findOne({
+      return this.userRepository.findOne({
         email: usernameOrEmail.toLowerCase(),
       });
-      if (!user) throw 'User not found';
-      return user;
     } else {
-      const user = await this.userRepository.findOne({
+      return this.userRepository.findOne({
         username: usernameOrEmail,
       });
-      if (!user) throw 'User not found';
-      return user;
     }
   }
 
-  // TODO might isolate achievement logic to achievements themselves or at least separate this function to a single file
   async checkAchievements(user: UserEntity, game: AnyGame) {
     console.log('Checking and updating achievements');
   }

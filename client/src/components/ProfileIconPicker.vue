@@ -129,7 +129,7 @@
 </template>
 <script setup lang="ts">
 import { ProfileIcon, profileIconRecords } from "@/shared/icons";
-import { defineProps, defineEmits, ref, watch } from "vue";
+import { ref, watch } from "vue";
 // components
 import BaseModal from "@/components/BaseModal.vue";
 import ProfileIconSvg from "./ProfileIcon.vue";

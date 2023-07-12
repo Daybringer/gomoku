@@ -45,7 +45,7 @@
 </template>
 <script setup lang="ts">
 //Components
-import { defineProps, ref } from "vue";
+import { ref } from "vue";
 import BaseModal from "@/components/BaseModal.vue";
 import ColorPickerIcon from "@/assets/svg/ColorPickerIcon.vue";
 import HighHeadline from "./BaseHighHeadline.vue";

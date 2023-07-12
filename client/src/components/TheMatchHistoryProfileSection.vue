@@ -3,13 +3,13 @@ import BaseHighHeadline from "./BaseHighHeadline.vue";
 import MatchRecord from "./MatchRecord.vue";
 import MatchRecordsContainer from "./MatchRecordsContainer.vue";
 import BaseButton from "./BaseButton.vue";
-import { ExpandedGame } from "@/shared/interfaces/game.interface";
 import { reactive, onMounted, ref } from "vue";
 import BaseLoadingSpinner from "@/components/BaseLoadingSpinner.vue";
 import { RepositoryFactory } from "@/repositories/RepositoryFactory";
+import { Game } from "@/shared/interfaces/game.interface";
 const gameRepository = RepositoryFactory.getGameRepository;
 const props = defineProps<{ userID: number }>();
-const games: ExpandedGame[] = reactive([]);
+const games: Game[] = reactive([]);
 const matchesAreLoaded = ref(false);
 
 onMounted(() => {
@@ -24,7 +24,7 @@ function fetchMatches() {
       constraints: {
         allowedEndingTypes: undefined,
         allowedGameTypes: undefined,
-        amIWinner: undefined,
+        allowedAmIWinner: undefined,
       },
     })
     .then((res) => {
@@ -43,7 +43,7 @@ function fetchMatches() {
   <MatchRecordsContainer>
     <!-- Displaying few loaded matches -->
     <MatchRecord
-      :userID="userID"
+      :user-id="userID"
       v-for="game in games"
       :key="game.id"
       :game="game"

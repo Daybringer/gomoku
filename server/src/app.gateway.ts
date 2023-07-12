@@ -26,7 +26,7 @@ import {
   AskForRematchDTO,
 } from './shared/socketIO';
 import { CustomRoomService } from './game/services/customRoom.service';
-import { EndingType, GameType } from 'gomoku-shared-types/';
+import { GameType } from './shared/types';
 
 // Whole site things - current people online...
 @WebSocketGateway({

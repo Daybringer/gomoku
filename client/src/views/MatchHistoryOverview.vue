@@ -152,16 +152,16 @@ import TieIcon from "@/assets/svg/TieIcon.vue";
 import FiveCombinationIcon from "@/assets/svg/FiveCombinationIcon.vue";
 import NoWifiIcon from "@/assets/svg/NoWifiIcon.vue";
 import HourglassIcon from "@/assets/svg/HourglassIcon.vue";
-import { ExpandedGame } from "@/shared/interfaces/game.interface";
 import ViewBaseResponsive from "@/components/ViewBaseResponsive.vue";
 import ChevronsDownIcon from "@/assets/svg/ChevronsDownIcon.vue";
 import { GetGamesByUserIDDTO } from "@/shared/DTO/get-game-by-user-id.dto";
 import gameRepository from "@/repositories/gameRepository";
 import { useRoute } from "vue-router";
 import { EndingType, GameConstraints, GameType } from "@/shared/types";
+import { Game } from "@/shared/interfaces/game.interface";
 
 const loading = ref(false);
-const games: Ref<ExpandedGame[]> = ref([]);
+const games: Ref<Game[]> = ref([]);
 const hideConstraints = ref(false);
 const toggled = reactive({
   type: {

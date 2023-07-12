@@ -16,7 +16,6 @@ import { ConfigModule } from '@nestjs/config';
 import { GameModule } from './game/game.module';
 
 require('dotenv').config();
-// Just squezing some comment for prod
 @Module({
   imports: [
     TypeOrmModule.forRoot({

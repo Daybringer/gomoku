@@ -20,9 +20,8 @@
     </div>
     <BaseProfileLink
       class="hover:dark:bg-gray-800"
-      :logged="player.logged"
-      :force-show-username="true"
-      :profile-icon="player.profileIcon"
+      :is-logged="!!player.userID"
+      :profile-icon="player.userID ? player.profileIcon : ProfileIcon.guest"
       :user-id="player.userID"
       :username="player.username"
     />
@@ -37,6 +36,7 @@ import GameStoneCircle from "@/assets/svg/GameStoneCircle.vue";
 import GameStoneCross from "@/assets/svg/GameStoneCross.vue";
 import DotsIcon from "@/assets/svg/DotsIcon.vue";
 import BaseProfileLink from "./BaseProfileLink.vue";
+import { ProfileIcon } from "@/shared/icons";
 
 defineProps<{
   player: Player;

@@ -35,6 +35,7 @@ export class GameEntity {
   @OneToMany(
     () => PlayerGameProfileEntity,
     (playerGameProfile) => playerGameProfile.game,
+    { eager: true },
   )
   playerGameProfiles: PlayerGameProfileEntity[];
 
@@ -42,15 +43,15 @@ export class GameEntity {
   @JoinColumn()
   winner?: PlayerGameProfileEntity;
 
-  @OneToOne(() => PlayerGameProfileEntity)
+  @OneToOne(() => PlayerGameProfileEntity, { eager: true })
   @JoinColumn()
   startingPlayer: PlayerGameProfileEntity;
 
-  @OneToOne(() => PlayerGameProfileEntity)
+  @OneToOne(() => PlayerGameProfileEntity, { eager: true })
   @JoinColumn()
   afterSwapStartingPlayer?: PlayerGameProfileEntity;
 
-  @OneToOne(() => GameSettingsEntity)
+  @OneToOne(() => GameSettingsEntity, { eager: true })
   @JoinColumn()
   gameSettings: GameSettingsEntity;
 }

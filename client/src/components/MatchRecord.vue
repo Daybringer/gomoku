@@ -7,26 +7,24 @@
       class="grid grid-cols-11 items-center flex-1 gap-2 md:gap-0 mb-2 md:pr-2 md:mb-0"
     >
       <BaseProfileLink
-        :logged="!!pOneGameProfile.userID"
-        :user-id="pOneGameProfile.userID"
-        :username="pOneGameProfile.username"
-        :profile-icon="pOneGameProfile.profileIcon"
-        class="col-span-5"
+        :is-logged="!!fUser"
+        :profile-icon="fUser ? fUser.settings.selectedIcon : ProfileIcon.guest"
+        :user-id="fUser ? fUser.id : undefined"
+        :username="fUser ? fUser.username : 'Guest'"
       />
       <p class="text-lg text-center">VS</p>
       <BaseProfileLink
-        :user-id="pTwoGameProfile.userID"
-        :logged="!!pTwoGameProfile.userID"
-        :username="pTwoGameProfile.username"
-        :profile-icon="pTwoGameProfile.profileIcon"
-        class="col-span-5"
+        :is-logged="!!sUser"
+        :profile-icon="sUser ? sUser.settings.selectedIcon : ProfileIcon.guest"
+        :user-id="sUser ? sUser.id : undefined"
+        :username="sUser ? sUser.username : 'Guest'"
       />
     </div>
     <div class="grid grid-flow-col-dense items-center justify-around gap-2">
       <ResultIcon
         class="col-span-1"
         :tie="game.typeOfWin === EndingType.Tie"
-        :win="game.winnerGameProfileID == ownGameProfileID"
+        :win="amIWinner"
       />
       <GameTypeIcon class="col-span-1" :gameType="game.type" />
       <div>{{ eloGain }}</div>
@@ -44,40 +42,37 @@ import GameLink from "@/components/MatchRecordGameLink.vue";
 import ResultIcon from "./MatchRecordResultIcon.vue";
 import GameTypeIcon from "./MatchRecordGameTypeIcon.vue";
 // TS
-import { EndingType, GameType } from "@/shared/types";
-import { computed, defineProps, ref } from "vue";
-import { ExpandedGame } from "@/shared/interfaces/game.interface";
+import { EndingType } from "@/shared/types";
+import { computed, ref } from "vue";
+import { Game } from "@/shared/interfaces/game.interface";
 import { getDateFromDate } from "@/utils/general";
+import { ProfileIcon } from "@/shared/icons";
 
 const props = defineProps<{
-  game: ExpandedGame;
+  game: Game;
   userId: number;
 }>();
-const [pOneID, pTwoID] = [
-  ...Object.keys(props.game.expandedPlayerGameProfiles).map((val) => {
-    return Number(val);
-  }),
-];
-const [pOneGameProfile, pTwoGameProfile] = [
-  props.game.expandedPlayerGameProfiles[pOneID],
-  props.game.expandedPlayerGameProfiles[pTwoID],
-];
+const [pGameProfile, sGameProfile] = [...props.game.playerGameProfiles];
 
-const ownGameProfileID = ref(
-  props.game.expandedPlayerGameProfiles[pOneID].userID === props.userId
-    ? props.game.expandedPlayerGameProfiles[pOneID].id
-    : props.game.expandedPlayerGameProfiles[pTwoID].id
+const [fUser, sUser] = [pGameProfile.user, sGameProfile.user];
+
+const ownGameProfile = ref(
+  fUser && fUser.id === props.userId ? pGameProfile : sGameProfile
 );
 
 const eloGain = computed(() => {
-  const elo =
-    props.game.expandedPlayerGameProfiles[ownGameProfileID.value].eloDelta;
-  if (props.game.type === GameType.Ranked && elo) {
-    if (elo > 0) {
-      return `+${elo}`;
-    }
-    return `${elo}`;
+  const elo = ownGameProfile.value.eloDelta;
+  if (elo === undefined) return "--";
+
+  if (elo > 0) {
+    return `+${elo}`;
   }
-  return "--";
+  return `${elo}`;
 });
+
+const amIWinner = computed(
+  () =>
+    (props.game.winner && props.game.winner.id === ownGameProfile.value.id) ||
+    false
+);
 </script>

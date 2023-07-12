@@ -4,60 +4,58 @@
       class="flex flex-col md:flex-row items-center justify-center gap-1 md:gap-4"
     >
       <BaseProfileLink
-        :username="players[fID].username!"
-        :logged="!!players[fID].userID"
-        :profile-icon="players[fID].profileIcon"
-        :user-id="players[fID].userID"
+        :is-logged="!!fUser"
+        :profile-icon="fUser ? fUser.settings.selectedIcon : ProfileIcon.guest"
+        :user-id="fUser ? fUser.id : undefined"
+        :username="fUser ? fUser.username : 'Guest'"
       />
       <p class="text-3xl">VS</p>
       <BaseProfileLink
-        :username="players[sID].username!"
-        :logged="!!players[sID].userID"
-        :profile-icon="players[sID].profileIcon"
-        :user-id="players[sID].userID"
+        :is-logged="!!sUser"
+        :profile-icon="sUser ? sUser.settings.selectedIcon : ProfileIcon.guest"
+        :user-id="sUser ? sUser.id : undefined"
+        :username="sUser ? sUser.username : 'Guest'"
       />
     </div>
     <div class="flex md:flex-row items-center justify-center gap-12">
       <MatchRecordResultIcon
-        :win="players[fID].id === winnerID"
-        :tie="endingType === EndingType.Tie"
+        :win="(game.winner && fProfile.id === game.winner.id) || false"
+        :tie="game.typeOfWin === EndingType.Tie"
       />
       <p class="text-3xl">Result</p>
       <MatchRecordResultIcon
-        :win="players[sID].id === winnerID"
-        :tie="endingType === EndingType.Tie"
+        :win="(game.winner && sProfile.id === game.winner.id) || false"
+        :tie="game.typeOfWin === EndingType.Tie"
       />
     </div>
     <div class="flex flex-row items-center justify-center gap-12">
-      <p class="text-xl">{{ humanReadableTime(players[fID].timeLeft) }}</p>
+      <p class="text-xl">{{ humanReadableTime(fProfile.timeLeft) }}</p>
       <p class="text-2xl md:text-3xl whitespace-nowrap">Time left</p>
-      <p class="text-xl">{{ humanReadableTime(players[sID].timeLeft) }}</p>
+      <p class="text-xl">{{ humanReadableTime(sProfile.timeLeft) }}</p>
     </div>
     <div
       class="flex flex-col md:flex-row justify-center items-center gap-2 flex-wrap"
     >
       <BaseInfoPill title="Match type">
-        <MatchRecordGameTypeIcon class="p-2" :game-type="gameType" />
+        <MatchRecordGameTypeIcon class="p-2" :game-type="game.type" />
       </BaseInfoPill>
       <BaseInfoPill title="Time limit">{{
-        humanReadableTime(timeLimit * 1000)
+        humanReadableTime((game.gameSettings.timeLimitInSeconds || 0) * 1000)
       }}</BaseInfoPill>
       <BaseInfoPill title="Game ending">
-        <GameEndingTypeIcon :game-ending="endingType" />
+        <GameEndingTypeIcon :game-ending="game.typeOfWin" />
       </BaseInfoPill>
       <BaseInfoPill title="Game Opening">
-        {{ gameOpening }}
+        {{ game.gameSettings.openingType }}
       </BaseInfoPill>
       <BaseInfoPill title="Date">
-        {{ getDateTimeFromDate(String(date)) }}
+        {{ getDateTimeFromDate(String(game.createdAt)) }}
       </BaseInfoPill>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ExpandedPlayerGameProfile } from "@/shared/interfaces/playerGameProfile.interface";
-import { GameType, Opening } from "@/shared/types";
 import { humanReadableTime, getDateTimeFromDate } from "@/utils/general";
 import { EndingType } from "@/shared/types";
 import BaseInfoPill from "@/components/BaseInfoPill.vue";
@@ -65,16 +63,13 @@ import MatchRecordResultIcon from "./MatchRecordResultIcon.vue";
 import MatchRecordGameTypeIcon from "./MatchRecordGameTypeIcon.vue";
 import GameEndingTypeIcon from "./GameEndingTypeIcon.vue";
 import BaseProfileLink from "./BaseProfileLink.vue";
+import { Game } from "@/shared/interfaces/game.interface";
+import { ProfileIcon } from "@/shared/icons";
 
 const props = defineProps<{
-  winnerID?: number;
-  players: Record<number, ExpandedPlayerGameProfile>;
-  gameType: GameType;
-  gameOpening: Opening;
-  endingType: EndingType;
-  timeLimit: number;
-  date: Date;
+  game: Game;
 }>();
 
-const [fID, sID] = Object.keys(props.players).map(Number);
+const [fProfile, sProfile] = [...props.game.playerGameProfiles];
+const [fUser, sUser] = [fProfile.user, sProfile.user];
 </script>

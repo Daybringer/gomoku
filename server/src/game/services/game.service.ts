@@ -1,13 +1,6 @@
-import { GetGameByUserIDDTOResponse } from 'src/shared/DTO/get-game-by-user-id.response.dto';
-import { GetGamesByUserIDDTO } from 'src/shared/DTO/get-game-by-user-id.dto';
-import { GetGameByIDResponseDTO } from 'src/shared/DTO/get-game-by-id.response.dto';
-import {
-  BadRequestException,
-  Injectable,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EndingType, Player, GameType } from 'gomoku-shared-types/';
+import { EndingType, Player, GameType } from '../../shared/types';
 import { GameEntity } from 'src/models/game.entity';
 import { PlayerGameProfileEntity } from 'src/models/playerGameProfile.entity';
 import { UsersService } from 'src/users/users.service';

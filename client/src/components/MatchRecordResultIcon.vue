@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineProps } from "vue";
+import { computed } from "vue";
 import LoseIcon from "@/assets/svg/LoseIcon.vue";
 import VictoryIcon from "@/assets/svg/VictoryIcon.vue";
 import TieIcon from "@/assets/svg/TieIcon.vue";

@@ -14,19 +14,22 @@ import UsersRepository from "@/repositories/usersRepository";
 const store = useStore();
 async function setGameBoard(gameBoard: GameBoard) {
   UsersRepository.setGameboard(gameBoard).then(() => {
-    store.user.gameBoard = gameBoard;
+    store.user.settings.gameBoard = gameBoard;
     store.saveLocalUser();
   });
 }
 
 function setColor(isMyColor: boolean, color: string) {
   if (isMyColor) {
-    store.user.playerColor = color;
+    store.user.settings.playerColor = color;
   } else {
-    store.user.enemyColor = color;
+    store.user.settings.opponentColor = color;
   }
   store.saveLocalUser();
-  UsersRepository.setColors(store.user.playerColor!, store.user.enemyColor!);
+  UsersRepository.setColors(
+    store.user.settings.playerColor!,
+    store.user.settings.opponentColor!
+  );
 }
 </script>
 <template>
@@ -42,26 +45,26 @@ function setColor(isMyColor: boolean, color: string) {
           <ProfileBoardPicker
             @setBoard="setGameBoard"
             :type="GameBoard.Standard"
-            :current="store.user.gameBoard"
-            :player-color="store.user.playerColor"
-            :opponent-color="store.user.enemyColor"
+            :current="store.user.settings.gameBoard"
+            :player-color="store.user.settings.playerColor"
+            :opponent-color="store.user.settings.opponentColor"
           />
         </div>
         <div class="flex flex-col">
           <ProfileBoardPicker
             @setBoard="setGameBoard"
             :type="GameBoard.Classic"
-            :player-color="store.user.playerColor"
-            :opponent-color="store.user.enemyColor"
-            :current="store.user.gameBoard"
+            :player-color="store.user.settings.playerColor"
+            :opponent-color="store.user.settings.opponentColor"
+            :current="store.user.settings.gameBoard"
           />
         </div>
         <div class="flex flex-col">
           <ProfileBoardPicker
             @setBoard="setGameBoard"
-            :current="store.user.gameBoard"
-            :player-color="store.user.playerColor"
-            :opponent-color="store.user.enemyColor"
+            :current="store.user.settings.gameBoard"
+            :player-color="store.user.settings.playerColor"
+            :opponent-color="store.user.settings.opponentColor"
             :type="GameBoard.Modern"
           />
         </div>
@@ -74,7 +77,7 @@ function setColor(isMyColor: boolean, color: string) {
         <div class="flex flex-col items-center">
           <BaseLowHeadline>Your color</BaseLowHeadline>
           <ProfileColorPicker
-            :currentColor="store.user.playerColor"
+            :currentColor="store.user.settings.playerColor"
             :isMyColor="true"
             @setColor="setColor"
           />
@@ -82,7 +85,7 @@ function setColor(isMyColor: boolean, color: string) {
         <div class="flex flex-col items-center">
           <BaseLowHeadline>Enemy's color</BaseLowHeadline>
           <ProfileColorPicker
-            :currentColor="store.user.enemyColor"
+            :currentColor="store.user.settings.opponentColor"
             :isMyColor="false"
             @setColor="setColor"
           />

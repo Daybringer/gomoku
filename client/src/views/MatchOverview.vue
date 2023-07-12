@@ -10,7 +10,7 @@
           :winnerID="game.winnerGameProfileID"
           :players="profileDict"
           :endingType="game.typeOfWin"
-          :gameOpening="game.openingType"
+          :gameOpening="game.gameSettings.openingType"
           :gameType="game.type"
           :timeLimit="150"
           :date="game.createdAt"
@@ -36,8 +36,8 @@ import MatchOverviewGeneral from "@/components/MatchOverviewGeneral.vue";
 import ViewBaseResponsive from "@/components/ViewBaseResponsive.vue";
 import gameRepository from "@/repositories/gameRepository";
 import router from "@/router";
-import { ExpandedGame } from "@/shared/interfaces/game.interface";
-import { ExpandedPlayerGameProfile } from "@/shared/interfaces/playerGameProfile.interface";
+import { Game } from "@/shared/interfaces/game.interface";
+import { PlayerGameProfile } from "@/shared/interfaces/playerGameProfile.interface";
 import { NotificationType, useNotificationsStore } from "@/store/notifications";
 import { reactive, ref } from "vue";
 import { useRoute } from "vue-router";
@@ -48,17 +48,13 @@ if (isNaN(gameID)) {
   router.push("/");
 }
 
-const games: ExpandedGame[] = reactive([]);
+const games: Game[] = reactive([]);
 const gameFetched = ref(false);
-const profileDict: Record<number, ExpandedPlayerGameProfile> = {};
+const profileDict: Record<number, PlayerGameProfile> = {};
 gameRepository
   .getGameByID(gameID)
   .then((res) => {
     const game = res.data.game;
-    profileDict[game.playerGameProfileIDs[0]] =
-      game.expandedPlayerGameProfiles[game.playerGameProfileIDs[0]];
-    profileDict[game.playerGameProfileIDs[1]] =
-      game.expandedPlayerGameProfiles[game.playerGameProfileIDs[1]];
     gameFetched.value = true;
     games.push(game);
   })

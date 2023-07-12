@@ -3,7 +3,7 @@
 </template>
 <script setup lang="ts">
 import { ProfileIcon } from "@/shared/icons";
-import { defineProps, computed } from "vue";
+import { computed } from "vue";
 const props = defineProps<{ profileIcon: ProfileIcon }>();
 const svgURL = computed(() => {
   return new URL(

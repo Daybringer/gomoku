@@ -12,7 +12,7 @@
     :opening="opening"
     :openingPhase="openingPhase"
     :myColor="store.user.settings.playerColor"
-    :enemyColor="store.user.settings.playerColor"
+    :enemyColor="store.user.settings.opponentColor"
     :messages="messages"
     :gameType="getGameTypeFromURL"
     :askingForRematch="askingForRematch"

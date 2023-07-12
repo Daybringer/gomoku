@@ -30,7 +30,6 @@ import { ProfileIcon } from 'src/shared/icons';
 import { UsersService } from 'src/users/users.service';
 import { COIN_SPIN_DURATION } from 'src/shared/constants';
 import { GameService } from './game.service';
-import { GameEntity } from 'src/models/game.entity';
 
 @Injectable()
 export class GameRoomService {
@@ -402,6 +401,7 @@ export class GameRoomService {
         ? gameEntity.winningCombination
         : undefined,
     };
+    console.log('GameEndedDTO:', gameEndedDTO);
     server.to(roomID).emit(SocketIOEvents.GameEnded, gameEndedDTO);
   }
 }

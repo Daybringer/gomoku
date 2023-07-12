@@ -17,6 +17,7 @@ import { SignUpDTO } from './dto/sign-up.dto';
 import { LogInDTO } from './dto/log-in.dto';
 import { UserEntity } from 'src/models/user.entity';
 import { AuthGuard } from '@nestjs/passport';
+import { Logger } from '@nestjs/common';
 
 // @Types
 import { AuthenticationPayload } from '../shared/types';
@@ -27,6 +28,7 @@ export class AuthController {
     private readonly authService: AuthService,
     private tokensService: TokensService,
   ) {}
+  private readonly logger = new Logger(AuthController.name);
 
   // Local
   @Post('register')
