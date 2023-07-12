@@ -195,34 +195,7 @@ export class GameService {
   async getGamesByUserID(
     dto: GetGamesByUserIDDTO,
   ): Promise<GetGameByUserIDDTOResponse> {
-    const constraints: GameConstraints = {};
-    if (!dto.constraints.allowedAmIWinner) {
-      constraints.allowedAmIWinner = [true, false];
-    } else {
-      constraints.allowedAmIWinner = dto.constraints.allowedAmIWinner;
-    }
-
-    if (!dto.constraints.allowedEndingTypes) {
-      constraints.allowedEndingTypes = [
-        EndingType.Combination,
-        EndingType.Surrender,
-        EndingType.Tie,
-        EndingType.Time,
-      ];
-    } else {
-      constraints.allowedEndingTypes = dto.constraints.allowedEndingTypes;
-    }
-
-    if (!dto.constraints.allowedGameTypes) {
-      constraints.allowedGameTypes = [
-        GameType.Custom,
-        GameType.Quick,
-        GameType.Ranked,
-      ];
-    } else {
-      constraints.allowedGameTypes = dto.constraints.allowedGameTypes;
-    }
-
+    // should just relations;['game.gamePlayerProfiles','game.gamePlayerProfiles.user'], but -->>
     // BUG Getting Table name specified more then once error when doing it pretty way
     // related SO question https://stackoverflow.com/questions/64138710/typeorm-table-name-specified-more-than-once
     const games = (
@@ -232,9 +205,10 @@ export class GameService {
           user: {
             id: dto.userID,
           },
+          isWinner: In([...dto.constraints.allowedAmIWinner]),
           game: {
-            type: In([...constraints.allowedGameTypes]),
-            typeOfWin: In([...constraints.allowedEndingTypes]),
+            type: In([...dto.constraints.allowedGameTypes]),
+            typeOfWin: In([...dto.constraints.allowedEndingTypes]),
           },
         },
         order: { id: 'DESC' },
@@ -242,8 +216,6 @@ export class GameService {
         take: dto.take,
       })
     ).map((profile) => profile.game);
-
-    console.log(games, dto.userID);
 
     const gamesWithUsers = (
       await Promise.all(games.map((game) => this.getGameByID(game.id)))

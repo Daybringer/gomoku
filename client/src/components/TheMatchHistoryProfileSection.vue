@@ -7,6 +7,7 @@ import { reactive, onMounted, ref } from "vue";
 import BaseLoadingSpinner from "@/components/BaseLoadingSpinner.vue";
 import { RepositoryFactory } from "@/repositories/RepositoryFactory";
 import { Game } from "@/shared/interfaces/game.interface";
+import { EndingType, GameType } from "@/shared/types";
 const gameRepository = RepositoryFactory.getGameRepository;
 const props = defineProps<{ userID: number }>();
 const games: Game[] = reactive([]);
@@ -21,7 +22,16 @@ function fetchMatches() {
       userID: props.userID,
       skip: 0,
       take: 5,
-      constraints: {},
+      constraints: {
+        allowedAmIWinner: [true, false],
+        allowedEndingTypes: [
+          EndingType.Combination,
+          EndingType.Surrender,
+          EndingType.Tie,
+          EndingType.Time,
+        ],
+        allowedGameTypes: [GameType.Custom, GameType.Ranked, GameType.Quick],
+      },
     })
     .then((res) => {
       res.data.games.forEach((game) => {
