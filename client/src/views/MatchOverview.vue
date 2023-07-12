@@ -7,13 +7,7 @@
         <MatchOverviewGeneral
           v-for="game in games"
           :key="game.id"
-          :winnerID="game.winnerGameProfileID"
-          :players="profileDict"
-          :endingType="game.typeOfWin"
-          :gameOpening="game.gameSettings.openingType"
-          :gameType="game.type"
-          :timeLimit="150"
-          :date="game.createdAt"
+          :game="game"
         ></MatchOverviewGeneral>
       </Container>
       <Container class="items-center">

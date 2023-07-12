@@ -17,7 +17,6 @@ export class GameController {
 
   @Get('/:id')
   async fetchGame(@Param('id') id: number): Promise<GetGameByIDResponseDTO> {
-    // return this.gameService.getGameByID(id);
-    throw '';
+    return this.gameService.getGameByID(id);
   }
 }

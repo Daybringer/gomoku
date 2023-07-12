@@ -210,7 +210,8 @@ function search(removeOld: boolean) {
     userID,
     take: 15,
     skip: games.value.length,
-    constraints: constraints,
+    // constraints: constraints,
+    constraints: {},
   };
   gameRepository
     .getGamesByUserIDDTO(dto)
