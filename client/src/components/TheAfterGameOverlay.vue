@@ -10,45 +10,39 @@
 
     <transition name="bounce" :css="true" type="animation" v-show="isShown">
       <div
-        class="absolute z-20 flex p-6 xl:p-12 flex-col h-full w-full bg-gray-100 dark:bg-gray-800"
+        class="absolute z-20 flex p-6 xl:p-12 h-full w-full bg-gray-800"
         :class="
           isShown
-            ? !isTie
-              ? amIWinner
-                ? 'victory-background'
-                : 'defeat-background'
-              : 'tie-background'
+            ? amIWinner
+              ? 'victory-background'
+              : 'defeat-background'
             : 'minimizeAfterGameModal'
         "
       >
         <div
-          class="w-full h-full rounded-lg p-4 bg-white dark:bg-gray-700 shadow-2xl flex relative justify-start place-items-center flex-col md:gap-6 gap-2"
+          class="w-full h-full rounded-lg p-4 bg-white dark:bg-gray-700 shadow-2xl flex relative justify-between place-items-center flex-col"
         >
           <button
-            class="absolute top-3 left-3 p-1 rounded-full bg-gray-200 dark:bg-gray-300 text-gray-900 focus:outline-none"
+            class="absolute top-3 left-3 p-1 rounded-full bg-gray-200 text-gray-800"
             @click="isShown = false"
           >
-            <cross-icon class="h-8" />
+            <cross-icon class="h-6 sm:h-8" />
           </button>
-          <h1
-            class="w-full text-center text-5xl px-4 2xl:py-4 xl:text-7xl font-medium text-gomoku-blue"
-          >
-            {{ amIWinner ? "Victory!" : "Defeat!" }}
-          </h1>
-          <h3
-            v-show="hasEndedByDisconnect"
-            class="w-full text-center text-gray-800 xl:text-2xl text-lg"
-          >
-            Opponent has disconnected
-          </h3>
-          <!-- Elo gains  -->
-          <!-- <div
+          <div>
+            <base-high-headline class="text-gomoku-blue">
+              {{ amIWinner ? "Victory!" : "Defeat!" }}
+            </base-high-headline>
+            <base-low-headline v-show="endingType === EndingType.Surrender">
+              Opponent has disconnected
+            </base-low-headline>
+          </div>
+          <div
+            v-show="elo"
             class="text-center border-4 border-opacity-80 px-6 xl:px-12 py-2 xl:text-2xl text-xl font-medium rounded-xl bg-gray-100 dark:bg-gray-600"
-            :class="myElo > 0 ? 'border-green-500' : 'border-red-500'"
-            v-if="myElo !== 0"
+            :class="elo! > 0 ? 'border-green-500' : 'border-red-500'"
           >
             {{ eloGain }}
-          </div> -->
+          </div>
           <img
             v-show="!amIWinner"
             src="../assets/svg/lose.svg"
@@ -62,98 +56,61 @@
             alt=""
           />
           <base-button
-            class="text-xl w-full text-gray-50 font-medium mt-auto"
-            :class="
-              askedForRematch
-                ? 'bg-gray-400 dark:bg-gray-500'
-                : 'bg-gomoku-blue dark:bg-gomoku-blue'
-            "
+            v-if="gameType !== GameType.Custom"
+            class="w-full"
             @click="playAgain"
-            >{{ askedForRematch ? "Waiting for opponent" : newGameButtonText }}
+            >Play again
+          </base-button>
+          <base-button
+            v-if="gameType === GameType.Custom"
+            class="w-full"
+            @click="$emit('askForCustomRematch'), (askedForRematch = true)"
+            >{{
+              askedForRematch ? "Waiting for opponent" : "Remake custom game"
+            }}
           </base-button>
         </div>
       </div>
     </transition>
   </div>
 </template>
-<script lang="ts">
+<script setup lang="ts">
 import { EndingType, GameType } from "@/shared/types";
-import { defineComponent, PropType } from "vue";
+import { ref, computed, watch } from "vue";
 import BaseButton from "@/components/BaseButton.vue";
 // SVGs
 import CrossIcon from "@/assets/svg/CrossIcon.vue";
 import ChevronsDownIcon from "@/assets/svg/ChevronsDownIcon.vue";
-export default defineComponent({
-  name: "",
-  props: {
-    amIWinner: { type: Boolean, required: true },
-    endingType: { type: Object as PropType<EndingType>, required: true },
-    gameType: { type: Object as PropType<GameType>, required: true },
-    askingForRematch: { type: Number, required: true },
-  },
-  emits: ["rematchCustom"],
-  components: {
-    CrossIcon,
-    ChevronsDownIcon,
-    BaseButton,
-  },
-  data(): { isShown: boolean; askedForRematch: boolean } {
-    return { isShown: false, askedForRematch: false };
-  },
-  computed: {
-    isTie(): boolean {
-      return this.endingType === EndingType.Tie;
-    },
-    hasEndedByDisconnect(): boolean {
-      return this.endingType === EndingType.Surrender;
-    },
-    hasEndedByTimeLimit(): boolean {
-      return this.endingType === EndingType.Time;
-    },
-    hasEndedByCombination(): boolean {
-      return this.endingType === EndingType.Combination;
-    },
-    eloGain(): string {
-      // if (this.myElo > 0) {
-      //   return `+${this.myElo} ELO`;
-      // } else {
-      //   return `${this.myElo} ELO`;
-      // }
-      return "";
-    },
-    newGameURL(): string {
-      return `search?type=${this.gameType || ""}`;
-    },
-    newGameButtonText(): string {
-      if (this.gameType === GameType.Custom) {
-        return "Rematch game";
-      } else {
-        return "Search new game";
-      }
-    },
-  },
-  methods: {
-    playAgain() {
-      if (this.gameType === GameType.Custom) {
-        if (!this.askedForRematch) {
-          this.$emit("rematchCustom");
-          this.askedForRematch = true;
-        }
-      } else {
-        this.$router.push(this.newGameURL);
-      }
-    },
-  },
-  watch: {
-    endingType: {
-      handler() {
-        this.isShown = true;
-      },
-      deep: true,
-    },
-  },
-  // mounted() {},
+import router from "@/router";
+import BaseHighHeadline from "./BaseHighHeadline.vue";
+import BaseLowHeadline from "./BaseLowHeadline.vue";
+import BaseMidHeadline from "./BaseMidHeadline.vue";
+const props = defineProps<{
+  amIWinner: boolean;
+  endingType: EndingType;
+  gameType: GameType;
+  elo?: number;
+}>();
+defineEmits(["askForCustomRematch"]);
+const isShown = ref(false);
+const askedForRematch = ref(false);
+const eloGain = computed(() => {
+  if (!props.elo) return "";
+  if (props.elo > 0) {
+    return `Gained ${props.elo} ELO`;
+  } else {
+    return `Lost ${props.elo} ELO`;
+  }
 });
+function playAgain() {
+  router.push(`search?type=${props.gameType}`);
+}
+watch(
+  () => props.endingType,
+  () => {
+    isShown.value = true;
+  }
+);
 </script>
 <style scoped>
 .victory-background {

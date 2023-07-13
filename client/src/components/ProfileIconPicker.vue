@@ -74,7 +74,7 @@
     "
   >
     <div class="flex-1 flex flex-col gap-1 items-center">
-      <base-mid-headline class="dark:text-gray-800">
+      <base-mid-headline>
         {{ currentBuyIconRecord.iconFullName }}
       </base-mid-headline>
       <h4></h4>

@@ -2,6 +2,7 @@
   <GameBase
     :me="me"
     :enemy="enemy"
+    :eloGain="100"
     :currentPlayer="currentPlayer"
     :round="round"
     :hasTimeLimit="hasTimeLimit"

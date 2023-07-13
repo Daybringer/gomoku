@@ -32,15 +32,11 @@
         <!-- After game overlay -->
         <TheAfterGameOverlay
           v-show="gameState === GameState.Ended"
-          :amIWinner="amIWinner"
-          :endingType="endingType"
-          :gameType="gameType"
-          :askingForRematch="askingForRematch"
-          @rematchCustom="
-            () => {
-              $emit('rematchCustom');
-            }
-          "
+          :am-i-winner="amIWinner"
+          :ending-type="endingType"
+          :game-type="gameType"
+          :elo="eloGain"
+          @ask-for-custom-rematch="emit('rematchCustom')"
         />
       </div>
       <!-- Socials container -->
@@ -250,6 +246,7 @@ const props = defineProps<{
   gameType: GameType;
   askingForRematch: number;
   winningCombination: Turn[];
+  eloGain?: number;
 }>();
 const emit = defineEmits([
   "rematchCustom",
@@ -305,12 +302,6 @@ const isWaitingOrCoinflip = computed(
     props.gameState === GameState.Coinflip
 );
 const amIWinner = computed(() => props.winner.socketID === props.me.socketID);
-// const myElo = computed(() => {
-//   if (props.me.logged) {
-//     if (props.elos[props.me.userID]) return props.elos[props.me.userID];
-//   }
-//   return 0;
-// });
 watch(
   () => props.gameState,
   (gameState) => {
