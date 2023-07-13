@@ -4,7 +4,6 @@ import { GamePlan, Options } from "./types.dt";
 export default class GameSimulation {
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
-  private isInitialized: boolean;
   private options: {
     drawSpeed: number;
     gridLineWidth: number; // in pixels
@@ -32,7 +31,6 @@ export default class GameSimulation {
     }) as CanvasRenderingContext2D;
     this.canvas = canvas;
     this.ctx = ctx;
-    this.isInitialized = false;
     this.debounceTime = 1001 * options.drawSpeed; // Ensures that debounce is higher than time between placed stones -> no more bugs with many interfering games
 
     this.options = options;
@@ -44,7 +42,6 @@ export default class GameSimulation {
 
     this.canvas = canvas;
     this.ctx = ctx;
-    this.isInitialized = true;
 
     this.resizeHandle();
 
@@ -57,6 +54,7 @@ export default class GameSimulation {
   }
 
   private _debounceResize = () => {
+    this.clearCanvas(this.ctx);
     clearTimeout(this.debounceHandle);
 
     this.abort = true;
@@ -79,7 +77,7 @@ export default class GameSimulation {
   private async simulationLoop() {
     while (!this.abort) {
       // clearing canvas
-      this.clearCanvas(this.canvas, this.ctx);
+      this.clearCanvas(this.ctx);
 
       const fetchPromise =
         this.GamePlanCollection.fetchGamePlans("gamePlans.json");
@@ -196,11 +194,10 @@ export default class GameSimulation {
     }
   }
 
-  private clearCanvas(
-    canvas: HTMLCanvasElement,
-    ctx: CanvasRenderingContext2D
-  ) {
-    ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+  private clearCanvas(ctx: CanvasRenderingContext2D) {
+    // ctx.canvas.width and height cometimes cause not proper erasing on first erase (propably due to smalle screen size then it was)
+    // only happens when transformation of canvas: bigger->smaller
+    ctx.clearRect(0, 0, 50000, 50000);
   }
 
   private wait = (delay) =>
