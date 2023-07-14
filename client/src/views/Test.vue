@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import ViewBaseFixedHeight from "@/components/ViewBaseFixedHeight.vue";
+import TheMatchesIndexSection from "@/components/TheMatchesIndexSection.vue";
 import { NotificationType, useNotificationsStore } from "@/store/notifications";
 import Gameboard from "@/components/Gameboard.vue";
 import { useStore } from "@/store/store";
@@ -78,5 +79,5 @@ function gameClick(turn: Turn) {
       :is-heads="true"
     ></Coinflip>
   </ViewBaseFixedHeight>
+  <TheMatchesIndexSection></TheMatchesIndexSection>
 </template>
-<style scoped></style>

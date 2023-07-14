@@ -43,65 +43,7 @@
       <game-simulation></game-simulation>
     </div>
   </div>
-  <!-- Matces -->
-  <div
-    ref="matches"
-    id="matches"
-    class="w-full min-height-screen-calc flex bg-gray-200 dark:bg-gray-700 flex-col scroll-margin-navbar"
-  >
-    <intersection-observer @intersect="intersectionCrossed('matches')" />
-    <h2
-      class="text-5xl my-6 md:mt-8 2xl:mt-12 text-gray-800 dark:text-gray-200 font-semibold w-full text-center"
-    >
-      Matches
-    </h2>
-    <div
-      class="mx-auto mb-auto md:mt-16 2xl:mt-32 w-80 md:w-60 gap-8 grid grid-cols-1 md:grid-cols-2 z-40"
-    >
-      <div class="flex">
-        <div
-          class="m-auto transform hover:scale-105 transition-transform ease-in duration-75"
-        >
-          <router-link
-            to="/search?type=quick"
-            class="focus:outline-none focus:opacity-75"
-          >
-            quick
-          </router-link>
-        </div>
-      </div>
-      <div class="flex">
-        <div
-          class="m-auto transform hover:scale-105 transition-transform ease-in duration-75"
-        >
-          <router-link
-            to="/search?type=ranked"
-            class="focus:outline-none focus:opacity-75"
-          >
-            ranked
-          </router-link>
-        </div>
-      </div>
-      <div class="flex">
-        <div
-          class="m-auto transform hover:scale-105 transition-transform ease-in duration-75"
-        >
-          <router-link to="/custom" class="focus:outline-none focus:opacity-75">
-            custom
-          </router-link>
-        </div>
-      </div>
-      <div class="flex">
-        <div
-          class="m-auto transform hover:scale-105 transition-transform ease-in duration-75"
-        >
-          <router-link to="/ai" class="focus:outline-none focus:opacity-75">
-            ai
-          </router-link>
-        </div>
-      </div>
-    </div>
-  </div>
+  <the-matches-index-section id="matches" ref="matches" />
   <!-- Rules -->
   <div
     id="rules"
@@ -415,11 +357,17 @@
 <script lang="ts">
 import { defineComponent, reactive, computed, toRefs } from "vue";
 import IntersectionObserver from "@/components/IntersectionObserver.vue";
+import TheMatchesIndexSection from "@/components/TheMatchesIndexSection.vue";
 import RuleSection from "../components/AppRuleSection.vue";
 import GameSimulation from "@/components/GameSimulation.vue";
 export default defineComponent({
   name: "Home",
-  components: { RuleSection, IntersectionObserver, GameSimulation },
+  components: {
+    RuleSection,
+    IntersectionObserver,
+    GameSimulation,
+    TheMatchesIndexSection,
+  },
   props: {
     logged: Boolean,
     activeUsers: Number,
