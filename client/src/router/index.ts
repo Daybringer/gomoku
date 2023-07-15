@@ -72,6 +72,7 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("../views/Test.vue"),
   },
   { path: "/ai", component: () => import("../views/TestAI.vue") },
+  { path: "/campaign", component: () => import("../views/Campaign.vue") },
   {
     path: "/custom",
     component: CreateCustom,

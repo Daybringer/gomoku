@@ -63,8 +63,8 @@ function gameClick(turn: Turn) {
     <div class="h-96 w-96 flex">
       <Gameboard
         :turnHistory="turns"
-        :crossColor="userStore.user.enemyColor"
-        :circleColor="userStore.user.playerColor"
+        :crossColor="userStore.user.settings.opponentColor"
+        :circleColor="userStore.user.settings.playerColor"
         :boardSize="15"
         :interactive="true"
         :lines-width="2"
@@ -74,8 +74,8 @@ function gameClick(turn: Turn) {
       ></Gameboard>
     </div>
     <Coinflip
-      :heads-color="userStore.user.playerColor"
-      :tails-color="userStore.user.enemyColor"
+      :heads-color="userStore.user.settings.playerColor"
+      :tails-color="userStore.user.settings.opponentColor"
       :is-heads="true"
     ></Coinflip>
   </ViewBaseFixedHeight>
