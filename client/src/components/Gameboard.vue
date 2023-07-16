@@ -14,9 +14,9 @@
           : ''
       "
       @click="
-        hoveredCell === cellID
-          ? emit('gameClick', cellIDToTurn(cellID))
-          : (hoveredCell = cellID)
+        clickedCell === cellID
+          ? (emit('gameClick', cellIDToTurn(cellID)), (clickedCell = -1))
+          : (clickedCell = cellID)
       "
       @mouseenter="hoveredCell = cellID"
       @mouseleave="hoveredCell = -1"
@@ -82,6 +82,7 @@ const lastCellID = computed(() => {
 });
 const madeTurns = computed(() => props.turnHistory.length);
 const hoveredCell = ref(-1);
+const clickedCell = ref(-1);
 
 const cellDict = computed(() => {
   const res: Record<number, Symbol> = {};
@@ -140,6 +141,16 @@ function cellOpacity(cellID: number, isCircle: boolean) {
   if (cellDict.value[cellID] === Symbol.Cross && !isCircle) {
     return "1";
   }
+  if (
+    clickedCell.value !== -1 &&
+    props.interactive &&
+    cellDict.value[cellID] === Symbol.NotTaken &&
+    clickedCell.value === cellID
+  ) {
+    if (madeTurns.value % 2 === 0 && isCircle) return "0.5";
+    if (madeTurns.value % 2 === 1 && !isCircle) return "0.5";
+  }
+
   if (
     hoveredCell.value === cellID &&
     cellDict.value[cellID] === Symbol.NotTaken &&
