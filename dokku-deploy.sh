@@ -8,11 +8,11 @@ shopt -s extglob
 set -o errexit # preventing the removal of whole directory
 # better way might be throwing errors https://www.redhat.com/sysadmin/bash-error-handling
 
-cd server 
+cd server
 
 yarn install --ignore-engines
 
-yarn build-less
+yarn build-new
 
 cd ..
 
@@ -34,6 +34,5 @@ cd client
 yarn install --ignore-engines
 
 yarn build
-
 
 

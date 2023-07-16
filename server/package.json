@@ -8,6 +8,7 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build-less": "nest build",
+    "build-new": "rimraf dist && nest build && cd dist && rm -rf shared && mv server/src/* ./ && rmdir server/src && rmdir server && cd ..",
     "dev": "rimraf dist && nest build && cd dist && rm -rf shared && mv server/src/* ./ && rmdir server/src && rmdir server && cd .. && nest start",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "node main",
