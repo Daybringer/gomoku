@@ -7,6 +7,7 @@ import {
   Symbol,
 } from 'src/shared/types';
 import {
+  BadRequestException,
   Injectable,
   InternalServerErrorException,
   Logger,
@@ -147,11 +148,12 @@ export class GameRoomService {
     const { roomID, position } = gameClickDTO;
     const room = this.findGameRoom(roomID);
 
-    if (!room) throw 'Game not found';
+    if (!room) throw new BadRequestException('Game not found');
     if (!(room.currentPlayer.socketID === client.id))
-      throw "It's not players turn";
-    if (!room.isRunning) throw 'Game is not running';
-    if (!room.isPositionEmpty(position)) throw 'Position is not empty';
+      throw new BadRequestException("It's not players turn");
+    if (!room.isRunning) throw new BadRequestException('Game is not running');
+    if (!room.isPositionEmpty(position))
+      throw new BadRequestException('Position is not empty');
 
     if (room.openingPhase === OpeningPhase.Place3 && room.round < 3) {
       // SWAP1 first phase - player is placing three game stones

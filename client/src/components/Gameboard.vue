@@ -13,7 +13,11 @@
           ? lastOutlineStyle
           : ''
       "
-      @click="emit('gameClick', cellIDToTurn(cellID))"
+      @click="
+        hoveredCell === cellID
+          ? emit('gameClick', cellIDToTurn(cellID))
+          : (hoveredCell = cellID)
+      "
       @mouseenter="hoveredCell = cellID"
       @mouseleave="hoveredCell = -1"
     >
@@ -40,7 +44,6 @@ import { Turn, Symbol } from "@/shared/types";
 import { computed, ref, watch } from "vue";
 import GameStoneCircle from "@/assets/svg/GameStoneCircle.vue";
 import GameStoneCross from "@/assets/svg/GameStoneCross.vue";
-import { propsToAttrMap } from "@vue/shared";
 
 // Defines
 const props = withDefaults(

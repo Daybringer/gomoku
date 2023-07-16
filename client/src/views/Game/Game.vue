@@ -124,11 +124,13 @@ export default defineComponent({
   },
   methods: {
     gameClick(position: Position): void {
-      const gameClickDTO: GameClickDTO = {
-        roomID: this.getRoomIDFromURL || "",
-        position: position,
-      };
-      socket.emit(SocketIOEvents.GameClick, gameClickDTO);
+      if (this.currentPlayer.socketID === this.me.socketID) {
+        const gameClickDTO: GameClickDTO = {
+          roomID: this.getRoomIDFromURL || "",
+          position: position,
+        };
+        socket.emit(SocketIOEvents.GameClick, gameClickDTO);
+      }
     },
     sendMessage(message: string) {
       const messageObj = { author: "me", text: message };
