@@ -1,4 +1,3 @@
-import TheMatchesIndexSection from "@/components/TheMatchesIndexSection.vue";
 import GamePlanCollection from "./gamePlanCollection";
 import { GamePlan, Options } from "./types.dt";
 
@@ -13,8 +12,8 @@ export default class GameSimulation {
     secondaryColor: string;
     gridColor: string;
   };
-  //   Debouncing
   private oldWidth = 0;
+  //   Debouncing
   private debounceHandle = 0;
   private debounceTime = 1000; // ms
   //   Loop
@@ -44,7 +43,6 @@ export default class GameSimulation {
 
     this.canvas = canvas;
     this.ctx = ctx;
-    this.oldWidth = this.canvas.width;
 
     this.resizeHandle();
 
@@ -57,17 +55,16 @@ export default class GameSimulation {
   }
 
   private _debounceResize = () => {
-    if (this.oldWidth !== this.canvas.width) {
-      this.clearCanvas(this.ctx);
-      this.oldWidth = this.canvas.width;
-    }
     clearTimeout(this.debounceHandle);
 
-    this.abort = true;
+    if (this.oldWidth !== this.canvas.clientWidth) {
+      this.clearCanvas(this.ctx);
+      this.abort = true;
 
-    this.debounceHandle = window.setTimeout(() => {
-      this.resizeHandle();
-    }, this.debounceTime);
+      this.debounceHandle = window.setTimeout(() => {
+        this.resizeHandle();
+      }, this.debounceTime);
+    }
   };
 
   private resizeHandle() {
@@ -75,6 +72,7 @@ export default class GameSimulation {
       ?.clientWidth as number;
     this.canvas.height = document.getElementById("mainCard")
       ?.clientHeight as number;
+    this.oldWidth = this.canvas.clientWidth;
 
     this.abort = false;
     this.simulationLoop();
