@@ -199,7 +199,7 @@
   </ViewBaseResponsive>
 </template>
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 // Types
 import { GameState } from "@/utils/types.dt";
 // Howler
@@ -307,13 +307,20 @@ watch(
   (gameState) => {
     if (gameState === GameState.Ended) {
       const endingSFX = new Howl({
-        // TODO implement tie sound
         src: [`sounds/${amIWinner ? "victory.mp3" : "defeat.mp3"}`],
         volume: 0.2,
       });
       endingSFX.play();
     }
   }
+);
+watch(
+  () => props.turnHistory,
+  () => {
+    const stonePlaced = new Howl({ src: ["sounds/click1.ogg"], volume: 1 });
+    stonePlaced.play();
+  },
+  { deep: true }
 );
 watch(
   () => props.messages,
@@ -371,6 +378,11 @@ function sendMessage() {
     chatInput.value = "";
   }
 }
+
+onMounted(() => {
+  const gameFound = new Howl({ src: ["sounds/game_found.mp3"], volume: 1 });
+  gameFound.play();
+});
 </script>
 <style scoped>
 .custom-shadow {
