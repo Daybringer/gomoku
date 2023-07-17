@@ -87,9 +87,9 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
-body * {
-  @apply transition-colors duration-200;
-}
+/* body * {
+  @apply transition-colors duration-0;
+} */
 
 a {
   text-decoration: none !important;
