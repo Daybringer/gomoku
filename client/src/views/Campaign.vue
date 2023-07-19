@@ -345,14 +345,17 @@ enum IDs {
   leaves3 = "#leaves3",
   warrior1 = "#warrior1",
   warrior2 = "#warrior2",
-  warriorArm1 = "warriorArm1",
-  warriorArm2 = "warriorArm2",
+  warriorArm1 = "#warrior1Arm",
+  warriorArm2 = "#warriorArm2",
   man1 = "#man1",
   man2 = "#man2",
   flowerDecorationR1 = "#flowerDecorationR1",
   flowerDecorationR2 = "#flowerDecorationR2",
   flowerDecorationL1 = "#flowerDecorationL1",
   flowerDecorationL2 = "#flowerDecorationL2",
+  boardCage = "#boardCage",
+  hidingWoman = "#hidingWoman",
+  castle = "#castle",
 }
 
 function addListenersToInteractibles(svgRoot: Element) {
@@ -585,42 +588,76 @@ onMounted(() => {
     });
   // Hiker
 
-  const hiker = svg.find(IDs.hiker)[0];
-  hiker.css("cursor", "pointer");
-  const hikerPos = [hiker.x(), hiker.y()];
+  svg
+    .find(IDs.hiker)[0]
+    .css("cursor", "pointer")
+    .click(function () {
+      //@ts-ignore
+      this.animate(300)
+        .transform({ translate: [1, -1], rotate: -5 }, true)
+        .animate(300)
+        .transform({ translate: [2, -0.8], rotate: 15 }, true)
+        .animate(300)
+        .transform({ translate: [2, -2], rotate: -15 }, true)
+        .animate(300)
+        .transform({ translate: [2, -1], rotate: 25 }, true)
+        .animate(300)
+        .transform({ translate: [2, -2], rotate: -35 }, true)
+        .animate(300)
+        .transform({ translate: [1, -2], rotate: 5 }, true)
+        .animate(300)
+        .transform({ translate: [6, -3], rotate: 45 }, true)
+        .animate(300)
+        .transform({ flip: "x" }, true)
+        .animate(800)
+        .ease("-")
+        .transform({ translate: [-16, -5], rotate: -360 }, true)
+        .animate(400)
+        .ease("-")
+        .transform({ translate: [0.15, 16.65], rotate: -43 }, true);
+    });
 
-  hiker.click(function () {
-    //@ts-ignore
-    this.animate(3000)
-      .transform({ translate: [8.8, -7] }, true)
+  const warrior1 = svg.find(IDs.warrior1)[0].click(() => {
+    warrior1
+      .css("cursor", "pointer")
+      .animate(320)
+      .ease("-")
+      .transform({ translateX: 7 }, true);
+    svg
+      .find(IDs.warriorArm1)[0]
       .animate(200)
-      .transform({ rotate: -5 }, true)
-      .animate(1000)
-      .transform({ translate: [2.5, -3] }, true)
-      .animate(200)
-      .transform({ rotate: 5 }, true)
-      .animate(500)
-      .transform({ translate: [3, -1.5], rotate: 35 }, true)
-      .animate(300)
-      .transform({ translateY: -5 }, true)
-      .ease(">")
-      .animate(300)
-      .transform({ translateY: 5 }, true)
-      .ease("<")
-      .animate(100, 800)
-      .transform({ flip: "x" }, true)
-      .animate(1000, 500)
-      .transform({ translate: [-3, 1.5], rotate: -45 }, true)
-      .animate(1000, 500)
-      .transform({ translate: [-3, 4] }, true)
-      .animate(1000, 500)
-      .transform({ translate: [-7, 6], rotate: 15 }, true)
-      .animate(400)
-      .transform({ translateX: -2, rotate: -18 }, true);
+      .ease("-")
+      .transform({ rotate: -50, origin: "center right" }, true)
+      .animate(140)
+      .ease("-")
+      .transform({ rotate: 50, origin: "center right" }, true);
+    warrior1
+      .css("cursor", "pointer")
+      .animate(300, 1000)
+      .ease("-")
+      .transform({ translateX: -7 }, true);
   });
 
-  const warrior1 = svg.find(IDs.warrior1)[0];
-  warrior1.css("cursor", "pointer");
+  const warrior2 = svg.find(IDs.warrior2)[0].click(() => {
+    warrior2
+      .css("cursor", "pointer")
+      .animate(320)
+      .ease("-")
+      .transform({ translateX: -7 }, true);
+    svg
+      .find(IDs.warriorArm2)[0]
+      .animate(200)
+      .ease("-")
+      .transform({ rotate: 50, origin: "center right" }, true)
+      .animate(140)
+      .ease("-")
+      .transform({ rotate: -50, origin: "center right" }, true);
+    warrior2
+      .css("cursor", "pointer")
+      .animate(300, 1000)
+      .ease("-")
+      .transform({ translateX: 7 }, true);
+  });
 
   svg
     .find(IDs.rotateFlower1)[0]
@@ -699,5 +736,47 @@ onMounted(() => {
     .animate(1400)
     .transform({ rotate: 10, origin: "top" }, true)
     .loop(undefined, true);
+
+  svg
+    .find(IDs.man1)[0]
+    .css("cursor", "pointer")
+    .click(function () {
+      //@ts-ignore
+      this.animate(1000).opacity(0.1).animate(1000).opacity(1);
+    });
+
+  svg
+    .find(IDs.man2)[0]
+    .css("cursor", "pointer")
+    .click(function () {
+      //@ts-ignore
+      this.animate(1000).opacity(0.1).animate(1000).opacity(1);
+    });
+
+  svg
+    .find(IDs.castle)[0]
+    .css("cursor", "pointer")
+    .click(function () {
+      svg
+        .find(IDs.hidingWoman)[0]
+        .animate(1000)
+        .transform({ translate: [7, -4] }, true)
+        .loop(2, true);
+    });
+  svg
+    .find(IDs.boardCage)[0]
+    .css("cursor", "pointer")
+    .click(function () {
+      //@ts-ignore
+      //@ts-ignore
+      this.animate(5)
+        .transform({ rotate: -20 }, true)
+        .animate(100)
+        .ease("-")
+        .transform({ rotate: 40 }, true)
+        .loop(20, true)
+        .animate(40)
+        .transform({ rotate: 20 }, true);
+    });
 });
 </script>
