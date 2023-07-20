@@ -40,10 +40,7 @@
         />
       </div>
       <!-- Socials container -->
-      <div
-        ref="chatContainer"
-        class="flex-1 min-h-0 min-w-0 w-full flex flex-col p-4 relative"
-      >
+      <div ref="chatContainer" class="flex-1 flex flex-col p-4 gap-4 relative">
         <Transition>
           <div
             v-if="
@@ -131,69 +128,12 @@
           ></SocialBlade>
         </div>
         <!-- Chat container -->
-        <div
-          class="bg-white dark:bg-gray-500 xl:min-h-0 min-h-50vh flex-1 overflow-hidden rounded-lg mb-2 mt-10 p-4 flex relative flex-col"
-        >
-          <!-- Mute Button -->
-          <button
-            class="absolute p-1 top-0 right-0 rounded-bl-lg hover:bg-red-500 focus:outline-none text-white dark:text-gray-600"
-            :class="muted ? 'bg-red-500' : 'bg-gray-500 dark:bg-gray-300'"
-            @click="muted = !muted"
-          >
-            <NoMicrophoneIcon v-show="muted" class="h-6 stroke-current" />
-            <MicrophoneIcon v-show="!muted" class="h-6 stroke-current" />
-          </button>
-          <!-- Title -->
-          <h3
-            class="m-auto font-medium text-3xl text-gray-900 dark:text-gray-100"
-          >
-            Chat
-          </h3>
-          <!-- Divider -->
-          <hr class="my-2 border-2 rounded-full border-gray-700" />
-          <!-- Messages container -->
-          <div
-            id="chatContainer"
-            class="flex-grow flex flex-col space-y-2 pt-2 mb-2 h-0 relative"
-            :class="muted ? 'overflow-hidden' : 'overflow-auto'"
-            style="scroll-behavior: smooth"
-          >
-            <ChatMessage
-              v-for="message in messages"
-              v-show="!muted"
-              :text="message.text"
-              :author="message.author"
-              :key="message.text + message.author"
-              :borderColorHEX="message.author === 'me' ? myColor : enemyColor"
-            ></ChatMessage>
-            <!-- Muted overlay -->
-            <div
-              v-show="muted"
-              class="w-90 h-90 absolute-center flex place-items-center justify-center font-medium text-gray-100 text-lg bg-gray-600 rounded-xl"
-            >
-              Muted
-            </div>
-          </div>
-          <!-- Input container -->
-          <div
-            v-show="!muted"
-            class="w-full rounded-full min-h-12 border-4 xl:px-8 p-2 px-4 border-gray-700 gap-x-4 flex flex-wrap flex-row overflow-hidden justify-between"
-          >
-            <input
-              class="h-full bg-transparent placeholder-gray-400 dark:placeholder-gray-400 w-auto flex-1 p-0 border-0 border-b-2 border-gray-500 dark:border-gray-300 text-gray-900 dark:text-gray-50 text-lg float-left focus:border-gomoku-blue focus:ring-transparent"
-              type="text"
-              v-model="chatInput"
-              placeholder="Write a message"
-              @keyup.enter="sendMessage"
-            />
-            <button
-              @click="sendMessage"
-              class="w-12 xl:ml-4 focus:outline-none focus:text-gray-700 text-gray-900 dark:text-gray-100 text-lg font-medium float-right"
-            >
-              Send
-            </button>
-          </div>
-        </div>
+        <GameChat
+          class="min-h-50vh"
+          :messages="messages"
+          :my-color="myColor"
+          :opponent-color="enemyColor"
+        />
       </div>
     </div>
   </ViewBaseResponsive>
@@ -207,24 +147,22 @@ import { Howl } from "howler";
 // Components
 import TheAfterGameOverlay from "@/components/TheAfterGameOverlay.vue";
 import SocialBlade from "@/components/GameSocialBlade.vue";
-import ChatMessage from "@/components/GameChatMessage.vue";
 import Coinflip from "./Coinflip.vue";
+import GameChat from "./GameChat.vue";
 
 // SVGs
 import GameStoneCircle from "@/assets/svg/GameStoneCircle.vue";
 import GameStoneCross from "@/assets/svg/GameStoneCross.vue";
-import NoMicrophoneIcon from "@/assets/svg/NoMicrophoneIcon.vue";
-import MicrophoneIcon from "@/assets/svg/MicrophoneIcon.vue";
 // Utils
 import {
   EndingType,
+  GameChatMessage,
   GameType,
   Opening,
   OpeningPhase,
   Player,
   Turn,
 } from "@/shared/types";
-import { Message } from "@/views/Game/Game.vue";
 import { computed } from "@vue/reactivity";
 import Gameboard from "./Gameboard.vue";
 import ViewBaseResponsive from "./ViewBaseResponsive.vue";
@@ -236,7 +174,7 @@ const props = defineProps<{
   enemyColor: string;
   currentPlayer: Player;
   hasTimeLimit: boolean;
-  messages: Message[];
+  messages: GameChatMessage[];
   turnHistory: Turn[];
   round: number;
   gameState: GameState;

@@ -97,6 +97,8 @@ interface GameConstraints {
   allowedAmIWinner: boolean[];
 }
 
+export type GameChatMessage = { author: "me" | "opponent"; message: string };
+
 export {
   Position,
   SearchEvents,

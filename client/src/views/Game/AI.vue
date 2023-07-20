@@ -1,17 +1,13 @@
 <template>
-  <div>some</div>
-  <BaseButton
-    @click="
-      () => {
-        campaign.iterate();
-        router.back();
-      }
-    "
-  ></BaseButton>
+  <ViewBaseResponsive>
+    <div class="flex-1 w-full md:w-50 flex">
+      <GameChat :messages="[]" :my-color="'red'" :opponent-color="'blue'" />
+    </div>
+  </ViewBaseResponsive>
 </template>
 <script setup lang="ts">
-import BaseButton from "@/components/BaseButton.vue";
-import router from "@/router";
+import GameChat from "@/components/GameChat.vue";
+import ViewBaseResponsive from "@/components/ViewBaseResponsive.vue";
 import { useCampaignStore } from "@/store/campaign";
 
 const campaign = useCampaignStore();

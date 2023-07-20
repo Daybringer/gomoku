@@ -1,37 +1,19 @@
 <template>
   <div class="w-full">
     <div
-      class="border-2 rounded-2xl break-words break-all p-y-2 px-4"
+      class="border-2 rounded-lg text-lg break-words break-all px-2"
       :class="author === 'me' ? 'float-right' : 'float-left'"
-      :style="`border-color:${borderColorHEX};`"
+      :style="`border-color:${borderColor};`"
     >
       {{ text }}
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  name: "ChatMessage",
-  props: {
-    text: {
-      type: String,
-      required: true
-    },
-    borderColorHEX: String,
-    author: {
-      type: String,
-      required: true,
-      validate: (author: string) => ["me", "opponent"].indexOf(author) !== -1
-    },
-    authorNickname: {
-      type: String
-    }
-  },
-  data() {
-    return {};
-  }
-});
+<script setup lang="ts">
+defineProps<{
+  text: string;
+  borderColor: string;
+  author: "me" | "opponent";
+}>();
 </script>

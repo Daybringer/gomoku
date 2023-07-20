@@ -14,7 +14,7 @@
     :openingPhase="openingPhase"
     :myColor="store.user.settings.playerColor"
     :enemyColor="store.user.settings.opponentColor"
-    :messages="messages"
+    :messages="[]"
     :gameType="getGameTypeFromURL"
     :askingForRematch="askingForRematch"
     :winningCombination="winningCombination"
