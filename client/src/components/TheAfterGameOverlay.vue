@@ -84,7 +84,6 @@ import ChevronsDownIcon from "@/assets/svg/ChevronsDownIcon.vue";
 import router from "@/router";
 import BaseHighHeadline from "./BaseHighHeadline.vue";
 import BaseLowHeadline from "./BaseLowHeadline.vue";
-import BaseMidHeadline from "./BaseMidHeadline.vue";
 const props = defineProps<{
   amIWinner: boolean;
   endingType: EndingType;
@@ -92,7 +91,7 @@ const props = defineProps<{
   elo?: number;
 }>();
 defineEmits(["askForCustomRematch"]);
-const isShown = ref(false);
+const isShown = ref(true);
 const askedForRematch = ref(false);
 const eloGain = computed(() => {
   if (!props.elo) return "";
@@ -105,12 +104,6 @@ const eloGain = computed(() => {
 function playAgain() {
   router.push(`search?type=${props.gameType}`);
 }
-watch(
-  () => props.endingType,
-  () => {
-    isShown.value = true;
-  }
-);
 </script>
 <style scoped>
 .victory-background {

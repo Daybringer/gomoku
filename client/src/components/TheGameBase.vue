@@ -5,7 +5,7 @@
     <!-- Main div -->
     <div
       ref="container"
-      class="xl:w-80 overflow-hidden rounded-lg top-0 custom-shadow bg-gray-600 z-10 flex xl:flex-row flex-col shadow-2xl"
+      class="xl:w-80 overflow-hidden rounded-lg bg-gray-700 z-10 flex xl:flex-row flex-col shadow-2xl"
     >
       <div class="square flex relative">
         <Gameboard
@@ -40,7 +40,10 @@
         />
       </div>
       <!-- Socials container -->
-      <div ref="chatContainer" class="flex-1 flex flex-col p-4 gap-4 relative">
+      <div
+        ref="chatContainer"
+        class="flex-1 min-h-0 min-w-0 w-full flex flex-col p-4 gap-4 relative"
+      >
         <Transition>
           <div
             v-if="
@@ -112,24 +115,25 @@
             :symbolColor="myColor"
             :hasTimeLimit="hasTimeLimit"
             :isActive="currentPlayer.socketID === me.socketID"
-          ></SocialBlade>
-          <div
-            class="m-auto my-3 text-3xl text-white font-semibold md:block hidden"
+          />
+          <p
+            class="text-center my-3 text-3xl text-white font-semibold md:block hidden"
           >
             VS
-          </div>
+          </p>
           <div class="md:hidden block my-2"></div>
           <SocialBlade
-            :player="enemy"
+            :player="opponent"
             :symbol="enemySymbol"
             :symbolColor="enemyColor"
             :hasTimeLimit="hasTimeLimit"
-            :isActive="currentPlayer.socketID === enemy.socketID"
-          ></SocialBlade>
+            :isActive="currentPlayer.socketID === opponent.socketID"
+          />
         </div>
         <!-- Chat container -->
         <GameChat
-          class="min-h-50vh"
+          class="min-h-0 flex-1 overflow-hidden"
+          @send-message="sendMessage"
           :messages="messages"
           :my-color="myColor"
           :opponent-color="enemyColor"
@@ -168,7 +172,7 @@ import Gameboard from "./Gameboard.vue";
 import ViewBaseResponsive from "./ViewBaseResponsive.vue";
 const props = defineProps<{
   me: Player;
-  enemy: Player;
+  opponent: Player;
   winner: Player;
   myColor: string;
   enemyColor: string;
@@ -176,13 +180,11 @@ const props = defineProps<{
   hasTimeLimit: boolean;
   messages: GameChatMessage[];
   turnHistory: Turn[];
-  round: number;
   gameState: GameState;
   endingType: EndingType;
   openingPhase: OpeningPhase;
   opening: Opening;
   gameType: GameType;
-  askingForRematch: number;
   winningCombination: Turn[];
   eloGain?: number;
 }>();
@@ -192,7 +194,6 @@ const emit = defineEmits([
   "sendMessage",
   "pickGameStone",
 ]);
-const chatInput = ref("");
 const muted = ref(false);
 const slideNotification = computed(() => {
   const notifications = {
@@ -232,7 +233,7 @@ const enemySymbol = computed(() => {
     props.gameState === GameState.Coinflip
   )
     return "";
-  return props.enemy.playerSymbol === 1 ? "circle" : "cross";
+  return props.opponent.playerSymbol === 1 ? "circle" : "cross";
 });
 const isWaitingOrCoinflip = computed(
   () =>
@@ -274,7 +275,8 @@ watch(
     setTimeout(() => {
       chatContainer.scrollTop = chatContainer.scrollHeight;
     }, 1);
-  }
+  },
+  { deep: true }
 );
 watch(
   () => props.openingPhase,
@@ -309,12 +311,8 @@ watch(
   }
 );
 
-function sendMessage() {
-  chatInput.value = chatInput.value.trim();
-  if (chatInput.value) {
-    emit("sendMessage", chatInput.value);
-    chatInput.value = "";
-  }
+function sendMessage(message: string) {
+  emit("sendMessage", message);
 }
 
 onMounted(() => {
@@ -323,21 +321,10 @@ onMounted(() => {
 });
 </script>
 <style scoped>
-.custom-shadow {
-  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.75);
-}
-
 .fancy-background {
   /* background-image: url("../assets/svg/flowers.svg"); */
   background-image: url("data:image/svg+xml,<svg id='patternId' width='100%' height='100%' xmlns='http://www.w3.org/2000/svg'><defs><pattern id='a' patternUnits='userSpaceOnUse' width='30' height='40' patternTransform='scale(1) rotate(0)'><rect x='0' y='0' width='100%' height='100%' fill='hsla(0, 0%, 100%, 0)'/><path d='M1.624 19.09l6.597-1.595a.503.503 0 11.238.98L2.145 20l6.314 1.526a.504.504 0 01-.238.98l-6.597-1.595 3.426 3.426a3.813 3.813 0 005.386 0l1.1-1.1a4.584 4.584 0 000-6.475l-1.1-1.099a3.814 3.814 0 00-5.386 0zM-.911 18.377l-1.595-6.597a.504.504 0 11.98-.237L0 17.856l1.526-6.313a.503.503 0 11.98.237L.911 18.377l3.426-3.426a3.813 3.813 0 000-5.386l-1.1-1.099A4.548 4.548 0 000 7.125a4.547 4.547 0 00-3.238 1.341l-1.099 1.099a3.813 3.813 0 000 5.386zM-11.535 16.763a4.584 4.584 0 000 6.476l1.1 1.099a3.813 3.813 0 005.385 0l3.426-3.426-6.597 1.595a.501.501 0 01-.609-.371.504.504 0 01.372-.609l6.313-1.526-6.313-1.526a.504.504 0 11.237-.98l6.597 1.595-3.426-3.426a3.796 3.796 0 00-2.693-1.113c-.975 0-1.95.37-2.693 1.113zM.911 21.625l1.595 6.597a.504.504 0 11-.98.237L0 22.146l-1.526 6.313a.505.505 0 01-.98-.237l1.595-6.597-3.426 3.426a3.813 3.813 0 000 5.386l1.1 1.099a4.584 4.584 0 006.475 0l1.099-1.099a3.813 3.813 0 000-5.386zM31.624 19.09l6.597-1.595a.503.503 0 11.238.98L32.145 20l6.314 1.526a.504.504 0 01-.238.98l-6.597-1.595 3.426 3.426a3.813 3.813 0 005.386 0l1.1-1.1a4.584 4.584 0 000-6.475l-1.1-1.099a3.814 3.814 0 00-5.386 0zM29.089 18.377l-1.595-6.597a.504.504 0 11.98-.237L30 17.856l1.526-6.313a.503.503 0 11.98.237l-1.595 6.597 3.426-3.426a3.813 3.813 0 000-5.386l-1.1-1.099A4.548 4.548 0 0030 7.125a4.547 4.547 0 00-3.238 1.341l-1.099 1.099a3.813 3.813 0 000 5.386zM18.465 16.763a4.584 4.584 0 000 6.476l1.1 1.099a3.813 3.813 0 005.385 0l3.426-3.426-6.597 1.595a.501.501 0 01-.609-.371.504.504 0 01.372-.609l6.313-1.526-6.313-1.526a.504.504 0 11.237-.98l6.597 1.595-3.426-3.426a3.796 3.796 0 00-2.693-1.113c-.975 0-1.95.37-2.693 1.113zM30.911 21.625l1.595 6.597a.504.504 0 11-.98.237L30 22.146l-1.526 6.313a.505.505 0 01-.98-.237l1.595-6.597-3.426 3.426a3.813 3.813 0 000 5.386l1.1 1.099a4.584 4.584 0 006.475 0l1.099-1.099a3.813 3.813 0 000-5.386zM16.624 39.09l6.597-1.595a.503.503 0 11.238.98L17.145 40l6.314 1.526a.504.504 0 01-.238.98l-6.597-1.595 3.426 3.426a3.813 3.813 0 005.386 0l1.1-1.1a4.584 4.584 0 000-6.475l-1.1-1.099a3.814 3.814 0 00-5.386 0zM14.089 38.377l-1.595-6.597a.504.504 0 11.98-.237L15 37.856l1.526-6.313a.503.503 0 11.98.237l-1.595 6.597 3.426-3.426a3.813 3.813 0 000-5.386l-1.1-1.099A4.548 4.548 0 0015 27.125a4.547 4.547 0 00-3.238 1.341l-1.099 1.099a3.813 3.813 0 000 5.386zM3.465 36.763a4.584 4.584 0 000 6.476l1.1 1.099a3.813 3.813 0 005.385 0l3.426-3.426-6.597 1.595a.501.501 0 01-.609-.371.504.504 0 01.372-.609l6.313-1.526-6.313-1.526a.504.504 0 11.237-.98l6.597 1.595-3.426-3.426a3.796 3.796 0 00-2.693-1.113c-.975 0-1.95.37-2.693 1.113zM15.911 41.625l1.595 6.597a.504.504 0 11-.98.237L15 42.146l-1.526 6.313a.505.505 0 01-.98-.237l1.595-6.597-3.426 3.426a3.813 3.813 0 000 5.386l1.1 1.1a4.584 4.584 0 006.475 0l1.099-1.1a3.813 3.813 0 000-5.386zM16.624-.91l6.597-1.595a.503.503 0 11.238.98L17.145 0l6.314 1.526a.504.504 0 01-.238.98L16.624.912l3.426 3.426a3.813 3.813 0 005.386 0l1.1-1.1a4.584 4.584 0 000-6.475l-1.1-1.099a3.814 3.814 0 00-5.386 0zM14.089-1.623L12.494-8.22a.504.504 0 11.98-.237L15-2.144l1.526-6.313a.503.503 0 11.98.237l-1.595 6.597 3.426-3.426a3.813 3.813 0 000-5.386l-1.1-1.099A4.548 4.548 0 0015-12.875a4.547 4.547 0 00-3.238 1.341l-1.099 1.099a3.813 3.813 0 000 5.386zM3.465-3.237a4.584 4.584 0 000 6.476l1.1 1.099a3.813 3.813 0 005.385 0L13.376.912 6.779 2.507a.501.501 0 01-.609-.371.504.504 0 01.372-.609L12.855.001 6.542-1.525a.504.504 0 11.237-.98L13.376-.91 9.95-4.336a3.796 3.796 0 00-2.693-1.113c-.975 0-1.95.37-2.693 1.113zM15.911 1.625l1.595 6.597a.504.504 0 11-.98.237L15 2.146 13.474 8.46a.505.505 0 01-.98-.237l1.595-6.597-3.426 3.426a3.813 3.813 0 000 5.386l1.1 1.099a4.584 4.584 0 006.475 0l1.099-1.099a3.813 3.813 0 000-5.386z'  stroke-width='1' stroke='none' fill='hsla(336, 100%, 56%, 1)'/></pattern></defs><rect width='800%' height='800%' transform='translate(0,0)' fill='url(%23a)'/></svg>");
   background-repeat: repeat;
-}
-
-.absolute-center {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
 }
 
 /* md */

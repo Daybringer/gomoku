@@ -1,10 +1,9 @@
 <template>
   <GameBase
     :me="me"
-    :enemy="enemy"
+    :opponent="opponent"
     :eloGain="100"
     :currentPlayer="currentPlayer"
-    :round="round"
     :hasTimeLimit="hasTimeLimit"
     :gameState="gameState"
     :turnHistory="turnHistory"
@@ -14,17 +13,16 @@
     :openingPhase="openingPhase"
     :myColor="store.user.settings.playerColor"
     :enemyColor="store.user.settings.opponentColor"
-    :messages="[]"
-    :gameType="getGameTypeFromURL"
-    :askingForRematch="askingForRematch"
+    :messages="messages"
+    :gameType="gameType"
     :winningCombination="winningCombination"
     @gameClick="gameClick"
     @sendMessage="sendMessage"
-    @pickGameStone="pickGameStone"
-    @rematchCustom="rematchCustom"
+    @pickGameStone="() => {}"
+    @rematchCustom="() => {}"
   />
 </template>
-<script lang="ts">
+<script setup lang="ts">
 // Types
 import { GameState } from "@/utils/types.dt";
 import { COIN_SPIN_DURATION } from "@/shared/constants";
@@ -33,11 +31,11 @@ import {
   Position,
   GameType,
   Player,
-  Symbol,
   Opening,
   OpeningPhase,
   EndingType,
   Turn,
+  GameChatMessage,
 } from "@/shared/types";
 import {
   AskForRematchDTO,
@@ -61,9 +59,11 @@ import GameBase from "@/components/TheGameBase.vue";
 // Pinia
 import { useStore } from "@/store/store";
 // Utils
-import { defineComponent } from "vue";
+import { computed, ref, Ref, onUnmounted, onMounted } from "vue";
 import { io, Socket } from "socket.io-client";
 import { ProfileIcon } from "@/shared/icons";
+import router from "@/router";
+import { NotificationType, useNotificationsStore } from "@/store/notifications";
 const basePlayer = (): Player => {
   return {
     socketID: "",
@@ -75,243 +75,210 @@ const basePlayer = (): Player => {
   };
 };
 
-export type Message = Record<string, string>;
+const hasTimeLimit = ref(false);
+const me = ref(basePlayer());
+const opponent = ref(basePlayer());
+const currentPlayer = ref(basePlayer());
+const winner = ref(basePlayer());
+const eloDiff = ref(0);
+const messages: Ref<GameChatMessage[]> = ref([]);
+const turnHistory: Ref<Turn[]> = ref([]);
+const winningCombination: Ref<Turn[]> = ref([]);
+const gameState = ref(GameState.Waiting);
+const endingType = ref(EndingType.Combination);
+const openingPhase = ref(OpeningPhase.Done);
+const opening = ref(Opening.Standard);
+// TODO implement pulling of game settings
+const settings = ref({});
 
-export default defineComponent({
-  name: "Game",
-  components: { GameBase },
-  data(): {
-    hasTimeLimit: boolean;
-    me: Player;
-    enemy: Player;
-    currentPlayer: Player;
-    chatInput: string;
-    round: number;
-    gameState: GameState;
-    endingType: EndingType;
-    winner: Player;
-    turnHistory: Turn[];
-    messages: Array<Message>;
-    boardSize: number;
-    openingPhase: OpeningPhase;
-    opening: Opening;
-    askingForRematch: number;
-    winningCombination: Array<Position>;
-  } {
-    return {
-      me: basePlayer(),
-      enemy: basePlayer(),
-      hasTimeLimit: false,
-      currentPlayer: basePlayer(),
-      turnHistory: [],
-      chatInput: "",
-      round: 0,
-      gameState: GameState.Waiting,
-      endingType: EndingType.Tie,
-      winner: basePlayer(),
-      messages: [],
-      boardSize: 15,
-      openingPhase: OpeningPhase.Done,
-      opening: Opening.Standard,
-      askingForRematch: 0,
-      winningCombination: [],
+const store = useStore();
+const notificationStore = useNotificationsStore();
+
+function gameClick(position: Position): void {
+  if (currentPlayer.value.socketID === me.value.socketID) {
+    const gameClickDTO: GameClickDTO = {
+      roomID: roomID.value || "",
+      position: position,
     };
-  },
-  setup() {
-    const store = useStore();
+    socket.emit(SocketIOEvents.GameClick, gameClickDTO);
+  }
+}
+function sendMessage(message: string) {
+  const messageObj: GameChatMessage = { author: "me", message };
+  messages.value.push(messageObj);
+  socket.emit(SocketIOEvents.SendMessage, message);
+}
+// function pickGameStone(gameStone: Symbol) {
+//   const dto: ToServerSwapPickGameStoneDTO = {
+//     roomID: this.getRoomIDFromURL as string,
+//     pickedSymbol: gameStone,
+//   };
+//   socket.emit(SocketIOEvents.ToServerSwapPickGameStone, dto);
+// }
+// function rematchCustom() {
+//   const askForRematchDTO: AskForRematchDTO = {
+//     oldRoomID: this.roomID,
+//     createCustomDTO: this.constructSettingsDTO,
+//   };
+//   socket.emit(SocketIOEvents.AskForRematch, askForRematchDTO);
+// }
 
-    return { store };
-  },
-  methods: {
-    gameClick(position: Position): void {
-      if (this.currentPlayer.socketID === this.me.socketID) {
-        const gameClickDTO: GameClickDTO = {
-          roomID: this.getRoomIDFromURL || "",
-          position: position,
-        };
-        socket.emit(SocketIOEvents.GameClick, gameClickDTO);
-      }
-    },
-    sendMessage(message: string) {
-      const messageObj = { author: "me", text: message };
-      this.messages.push(messageObj);
-      socket.emit(SocketIOEvents.SendMessage, message);
-    },
-    pickGameStone(gameStone: Symbol) {
-      const dto: ToServerSwapPickGameStoneDTO = {
-        roomID: this.getRoomIDFromURL as string,
-        pickedSymbol: gameStone,
-      };
-      socket.emit(SocketIOEvents.ToServerSwapPickGameStone, dto);
-    },
-    rematchCustom() {
-      const askForRematchDTO: AskForRematchDTO = {
-        oldRoomID: this.roomID,
-        createCustomDTO: this.constructSettingsDTO,
-      };
-      socket.emit(SocketIOEvents.AskForRematch, askForRematchDTO);
-    },
-  },
-  async mounted() {
-    socket = io("/game", { port: "3001" });
-    const logged = this.store.isAuthenticated;
+onMounted(() => {
+  socket = io("/game", { port: "3001" });
+  if (!gameType.value) router.push("/");
 
-    if (!this.getGameTypeFromURL) this.$router.push("/");
+  const joinGameDTO: JoinGameDTO = {
+    roomID: roomID.value || "",
+    userID: isLogged.value ? store.user.id : undefined,
+  };
+  socket.emit(SocketIOEvents.JoinGame, joinGameDTO);
 
-    const joinGameDTO: JoinGameDTO = {
-      roomID: this.getRoomIDFromURL || "",
-      userID: logged ? this.store.user.id : undefined,
-    };
-    socket.emit(SocketIOEvents.JoinGame, joinGameDTO);
+  // ------- SOCKET.IO HANDLERS ------- \\
 
-    socket.on(SocketIOEvents.InvalidRoomID, () => {
-      // TODO show some notification
-      this.$router.push("/");
-    });
+  socket.on(SocketIOEvents.InvalidRoomID, () => {
+    notificationStore.createNotification(
+      NotificationType.Error,
+      "Invalid game room ID"
+    );
+    router.push("/");
+  });
 
-    socket.on(SocketIOEvents.GameStarted, (dto: GameStartedEventDTO) => {
-      console.log("GAME STARTED");
-      const { hasTimeLimit, startingPlayer, players, opening } = dto;
-      this.currentPlayer = startingPlayer;
-      this.hasTimeLimit = hasTimeLimit;
+  socket.on(SocketIOEvents.GameStarted, (dto: GameStartedEventDTO) => {
+    // TODO add settings to GameStarted
+    const { startingPlayer, players } = dto;
+    currentPlayer.value = startingPlayer;
+    hasTimeLimit.value = dto.hasTimeLimit;
+    opening.value = dto.opening;
 
-      this.opening = opening;
-      if (opening === Opening.Standard) {
-        this.openingPhase = OpeningPhase.Done;
+    if (opening.value !== Opening.Standard)
+      openingPhase.value = OpeningPhase.Place3;
+
+    if (players[0].socketID === socket.id) {
+      me.value = players[0];
+      opponent.value = players[1];
+    } else {
+      me.value = players[1];
+      opponent.value = players[0];
+    }
+    gameState.value = GameState.Coinflip;
+
+    setTimeout(() => {
+      if (gameState.value === GameState.Coinflip)
+        gameState.value = GameState.Running;
+    }, COIN_SPIN_DURATION);
+  });
+
+  socket.on(SocketIOEvents.TimeCalibration, (dto: TimeCalibrationDTO) => {
+    const [foo, bar] = dto.players;
+    if (foo.socketID === socket.id) {
+      me.value.timeLeft = foo.timeLeft;
+      opponent.value.timeLeft = bar.timeLeft;
+    } else {
+      me.value.timeLeft = bar.timeLeft;
+      opponent.value.timeLeft = foo.timeLeft;
+    }
+  });
+
+  socket.on(SocketIOEvents.RecieveMessage, (message: string) => {
+    messages.value.push({ author: "opponent", message });
+  });
+
+  //TODO custom rematch
+  //   socket.on(
+  //     SocketIOEvents.RedirectToCustomRematch,
+  //     (newGameRoomID: string) => {
+  //       const dto = this.constructSettingsDTO;
+  //       this.$router.push(
+  //         `/game?type=custom&roomID=${newGameRoomID}&hasTimeLimit=${dto.hasTimeLimit}&timeLimitInSeconds=${dto.timeLimitInSeconds}&opening=${dto.opening}`
+  //       );
+  //     }
+  //   );
+
+  // ------- SWAP HANDLES ------- \\
+
+  socket.on(
+    SocketIOEvents.ToClientSwapPickGameStone,
+    (dto: ToClientSwapPickGameStoneDTO) => {
+      currentPlayer.value = dto.pickingPlayer;
+      openingPhase.value = OpeningPhase.PickGameStone;
+    }
+  );
+
+  socket.on(
+    SocketIOEvents.SwapGameStonePicked,
+    (dto: SwapGameStonePickedDTO) => {
+      const { players } = dto;
+      if (players[0].socketID === socket.id) {
+        me.value = players[0];
+        opponent.value = players[1];
       } else {
-        this.openingPhase = OpeningPhase.Place3;
+        me.value = players[1];
+        opponent.value = players[0];
       }
+      currentPlayer.value = dto.currentPlayer;
+      openingPhase.value = OpeningPhase.Done;
+    }
+  );
 
-      const [foo, bar] = players;
-      if (foo.socketID === socket.id) {
-        this.me = foo;
-        this.enemy = bar;
-      } else {
-        this.me = bar;
-        this.enemy = foo;
-      }
+  socket.on(SocketIOEvents.StonePlaced, (dto: StonePlacedDTO) => {
+    currentPlayer.value = dto.currentPlayer;
+    turnHistory.value.push(dto.position);
+  });
 
-      this.gameState = GameState.Coinflip;
+  socket.on(SocketIOEvents.GameEnded, (dto: GameEndedDTO) => {
+    // const { endingType, winner, userIDToEloDiff, winningCombination } = dto;
 
-      setTimeout(() => {
-        if (this.gameState === GameState.Coinflip) {
-          this.gameState = GameState.Running;
-        }
-      }, COIN_SPIN_DURATION);
-    });
+    if (dto.winner) winner.value = dto.winner;
+    if (dto.winningCombination)
+      winningCombination.value = dto.winningCombination;
+    if (dto.userIDToEloDiff)
+      eloDiff.value = dto.userIDToEloDiff[me.value.socketID];
 
-    socket.on(
-      SocketIOEvents.TimeCalibration,
-      (timeCalibrationDTO: TimeCalibrationDTO) => {
-        const [foo, bar] = timeCalibrationDTO.players;
-        if (foo.socketID === socket.id) {
-          this.me.timeLeft = foo.timeLeft;
-          this.enemy.timeLeft = bar.timeLeft;
-        } else {
-          this.me.timeLeft = bar.timeLeft;
-          this.enemy.timeLeft = foo.timeLeft;
-        }
-      }
-    );
+    endingType.value = dto.endingType;
+    gameState.value = GameState.Ended;
+  });
+});
 
-    socket.on(SocketIOEvents.RecieveMessage, (message: string) => {
-      this.messages.push({ author: "opponent", text: message });
-    });
-
-    socket.on(
-      SocketIOEvents.RedirectToCustomRematch,
-      (newGameRoomID: string) => {
-        const dto = this.constructSettingsDTO;
-        this.$router.push(
-          `/game?type=custom&roomID=${newGameRoomID}&hasTimeLimit=${dto.hasTimeLimit}&timeLimitInSeconds=${dto.timeLimitInSeconds}&opening=${dto.opening}`
-        );
-      }
-    );
-
-    socket.on(
-      SocketIOEvents.ToClientSwapPickGameStone,
-      (dto: ToClientSwapPickGameStoneDTO) => {
-        this.currentPlayer = dto.pickingPlayer;
-        this.openingPhase = OpeningPhase.PickGameStone;
-      }
-    );
-
-    socket.on(
-      SocketIOEvents.SwapGameStonePicked,
-      (dto: SwapGameStonePickedDTO) => {
-        const { currentPlayer, players } = dto;
-        const [foo, bar] = players;
-        if (foo.socketID === socket.id) {
-          this.me = foo;
-          this.enemy = bar;
-        } else {
-          this.enemy = foo;
-          this.me = bar;
-        }
-
-        this.currentPlayer = currentPlayer;
-        this.openingPhase = OpeningPhase.Done;
-      }
-    );
-
-    socket.on(SocketIOEvents.StonePlaced, (stonePlacedDTO: StonePlacedDTO) => {
-      const { position, currentPlayer } = stonePlacedDTO;
-      this.currentPlayer = currentPlayer;
-      this.round++;
-      this.turnHistory.push(position);
-    });
-
-    socket.on(SocketIOEvents.GameEnded, (dto: GameEndedDTO) => {
-      const { endingType, winner, userIDToEloDiff, winningCombination } = dto;
-
-      if (winner) this.winner = winner;
-      if (winningCombination) this.winningCombination = winningCombination;
-
-      this.endingType = endingType;
-      this.gameState = GameState.Ended;
-    });
-  },
-  computed: {
-    getURLParams() {
-      return new URLSearchParams(window.location.search);
-    },
-    getGameTypeFromURL(): GameType {
-      const type = this.getURLParams.get("type");
-      if (type == GameType.Quick) {
-        return GameType.Quick;
-      } else if (type == GameType.Ranked) {
-        return GameType.Ranked;
-      } else if (type == GameType.Custom) {
-        return GameType.Custom;
-      }
-      return GameType.Quick;
-    },
-    getRoomIDFromURL(): string | null {
-      return this.getURLParams.get("roomID");
-    },
-    roomID(): string {
-      return this.getURLParams.get("roomID") as string;
-    },
-    hasTimeLimit(): boolean {
-      return this.getURLParams.get("hasTimeLimit") === "true";
-    },
-    timeLimitInSeconds(): number {
-      return Number(this.getURLParams.get("timeLimitInSeconds"));
-    },
-    constructSettingsDTO(): CreateCustomDTO {
-      return {
-        hasTimeLimit: this.hasTimeLimit,
-        timeLimitInSeconds: this.timeLimitInSeconds,
-        opening: this.opening,
-      };
-    },
-    opening(): Opening {
-      return this.getURLParams.get("opening") as Opening;
-    },
-  },
-  beforeUnmount() {
-    socket.close();
-  },
+function getURLParams() {
+  return new URLSearchParams(window.location.search);
+}
+const isLogged = computed(() => store.isAuthenticated);
+const gameType = computed(() => {
+  const type = getURLParams().get("type");
+  if (type == GameType.Quick) {
+    return GameType.Quick;
+  } else if (type == GameType.Ranked) {
+    return GameType.Ranked;
+  } else if (type == GameType.Custom) {
+    return GameType.Custom;
+  }
+  return GameType.Quick;
+});
+//   getRoomIDFromURL(): string | null {
+//     return this.getURLParams.get("roomID");
+//   },
+const roomID = computed(() => {
+  return getURLParams().get("roomID");
+});
+//   hasTimeLimit(): boolean {
+//     return this.getURLParams.get("hasTimeLimit") === "true";
+//   },
+//   timeLimitInSeconds(): number {
+//     return Number(this.getURLParams.get("timeLimitInSeconds"));
+//   },
+//   constructSettingsDTO(): CreateCustomDTO {
+//     return {
+//       hasTimeLimit: this.hasTimeLimit,
+//       timeLimitInSeconds: this.timeLimitInSeconds,
+//       opening: this.opening,
+//     };
+//   },
+//   opening(): Opening {
+//     return this.getURLParams.get("opening") as Opening;
+//   },
+// },
+onUnmounted(() => {
+  socket.close();
 });
 </script>
 <style>
