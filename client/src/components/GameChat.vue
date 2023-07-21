@@ -1,7 +1,7 @@
 <template>
   <!-- Chat container -->
   <div
-    class="bg-gray-200 dark:bg-gray-500 flex-1 rounded-lg p-4 flex relative flex-col"
+    class="min-h-50vh bg-gray-200 dark:bg-gray-500 rounded-lg p-4 flex relative flex-col"
   >
     <!-- Mute Button -->
     <button
@@ -19,7 +19,7 @@
     <!-- Messages container -->
     <div
       id="chatContainer"
-      class="flex-1 flex flex-col space-y-2 pt-2 mb-2 h-0 relative"
+      class="flex-grow h-0 flex flex-col p-2 gap-2 overflow-scroll"
       v-show="!isMuted"
       style="scroll-behavior: smooth"
     >
@@ -46,7 +46,7 @@
       class="w-full bg-gray-100 dark:bg-gray-700 rounded-md shadow flex flex-col md:flex-row gap-2 p-4"
     >
       <input
-        class="h-full bg-transparent placeholder-gray-400 flex-1 p-0 border-0 border-b-2 border-gray-500 dark:border-gray-300 text-gray-900 dark:text-gray-50 text-lg float-left focus:border-gomoku-blue focus:ring-transparent"
+        class="h-full bg-transparent placeholder-gray-400 flex-1 p-0 border-0 border-b-2 border-gray-500 dark:border-gray-300 text-gray-900 dark:text-gray-50 text-lg float-left focus:border-gomoku-blue dark:focus:border-gomoku-blue focus:ring-transparent"
         type="text"
         v-model="message"
         placeholder="Write a message"
@@ -76,6 +76,10 @@ const emits = defineEmits<{
   (e: "sendMessage", message: string);
 }>();
 function sendMessage() {
-  emits("sendMessage", message.value);
+  message.value = message.value.trim();
+  if (message.value) {
+    emits("sendMessage", message.value);
+    message.value = "";
+  }
 }
 </script>
