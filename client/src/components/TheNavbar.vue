@@ -37,6 +37,13 @@
               >
 
               <NavbarNavigationLink
+                :active="activeIntersection === 'campaign' && isHomePage"
+                :to="'/#campaign'"
+                :type="'secondary'"
+                >Campaign</NavbarNavigationLink
+              >
+
+              <NavbarNavigationLink
                 :active="activeIntersection === 'rules' && isHomePage"
                 :to="'/#rules'"
                 :type="'secondary'"
@@ -191,6 +198,11 @@
           :to="'/#matches'"
           :active="activeIntersection === 'matches' && isHomePage"
           >Matches</MobileNavbarLink
+        >
+        <MobileNavbarLink
+          :to="'/#campaign'"
+          :active="activeIntersection === 'campaign' && isHomePage"
+          >Campaign</MobileNavbarLink
         >
         <MobileNavbarLink
           :to="'/#rules'"

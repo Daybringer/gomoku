@@ -6,7 +6,7 @@
     ref="home"
   >
     <div class="relative h-20 md:h-24 w-full bg-gray-800 text-center">
-      <intersection-observer @intersect="intersectionCrossed('home')" />
+      <IntersectionObserver @intersect="intersectionCrossed('home')" />
       <div class="m-auto top-0">
         <span class="text-gray-300 font-semibold md:text-xl italic"
           >Let's play</span
@@ -31,26 +31,42 @@
     >
       <!-- Play button -->
       <div class="m-auto z-20">
-        <router-link to="/search?type=quick">
+        <RouterLink to="/search?type=quick">
           <button
             class="border-gray-800 bg-white dark:bg-gray-800 dark:border-transparent border-4 text-gray-800 dark:text-gray-200 text-3xl font-bold py-4 px-28 rounded-lg hover:shadow-outline-gray focus:shadow-outline-gray focus:outline-none"
           >
             Play
           </button>
-        </router-link>
+        </RouterLink>
       </div>
       <!-- Gomoku game simulation canvas -->
-      <game-simulation></game-simulation>
+      <GameSimulation></GameSimulation>
     </div>
   </div>
-  <the-matches-index-section id="matches" ref="matches" />
+  <TheMatchesIndexSection id="matches" ref="matches" />
+  <!-- Campaign -->
+  <div
+    id="campaign"
+    class="flex justify-center items-center gap-12 pb-24 flex-col dark:text-gray-400 dark:fill-gray-300 text-gray-700 bg-gray-200 dark:bg-gray-700"
+  >
+    <IntersectionObserver @intersect="intersectionCrossed('campaign')" />
+    <SadManIntroDialog
+      class="w-2/3 xl:w-1/4"
+      alt="Old man asking for help (Start of campaign)"
+    />
+    <RouterLink class="w-1/2" to="/campaign">
+      <BaseButton class="w-full text-2xl py-4" :gomoku-blue="true"
+        >Start Campaign</BaseButton
+      >
+    </RouterLink>
+  </div>
   <!-- Rules -->
   <div
     id="rules"
     ref="rules"
     class="w-full min-height-screen-calc flex bg-gray-200 dark:bg-gray-700 flex-col scroll-margin-navbar"
   >
-    <intersection-observer @intersect="intersectionCrossed('rules')" />
+    <IntersectionObserver @intersect="intersectionCrossed('rules')" />
     <h2
       class="text-5xl my-6 md:mt-4 2xl:mt-4 text-gray-800 dark:text-gray-200 font-semibold w-full text-center"
     >
@@ -60,7 +76,7 @@
       class="w-90 xl:w-2/3 mt-4 p-4 py-8 flex flex-col mb-8 bg-gray-800 rounded-lg m-auto"
     >
       <!-- Basics -->
-      <rule-section
+      <RuleSection
         class=""
         :type="'section'"
         :toggleTarget="expanded.basics"
@@ -85,16 +101,16 @@
             technique called SWAP
           </li>
         </ul>
-      </rule-section>
+      </RuleSection>
       <!-- Game Types -->
-      <rule-section
+      <RuleSection
         class="mt-4"
         :type="'section'"
         :toggleTarget="expanded.gameTypes.self"
         targetHeading="Game Types"
       >
         <!-- Quick -->
-        <rule-section
+        <RuleSection
           :type="'subsection'"
           :toggleTarget="expanded.gameTypes.quick"
           :targetHeading="'Quick'"
@@ -106,9 +122,9 @@
             <li class="pb-3">Each player has a time limit of 5mins</li>
             <li class="pb-3">ELO doesn't matter, just have fun!</li>
           </ul>
-        </rule-section>
+        </RuleSection>
         <!-- Ranked -->
-        <rule-section
+        <RuleSection
           :type="'subsection'"
           :toggleTarget="expanded.gameTypes.ranked"
           :targetHeading="'Ranked'"
@@ -124,9 +140,9 @@
             <li class="pb-3">Winner's ELO increases, loser's decreases</li>
             <li class="pb-3">The game starts with SWAP1</li>
           </ul>
-        </rule-section>
+        </RuleSection>
         <!-- Custom -->
-        <rule-section
+        <RuleSection
           :type="'subsection'"
           :toggleTarget="expanded.gameTypes.custom"
           :targetHeading="'Custom'"
@@ -143,9 +159,9 @@
             </li>
             <li class="pb-3">ELO is not affected by the outcome of the game</li>
           </ul>
-        </rule-section>
+        </RuleSection>
         <!-- AI -->
-        <rule-section
+        <RuleSection
           :type="'subsection'"
           :toggleTarget="expanded.gameTypes.ai"
           :targetHeading="'AI'"
@@ -158,10 +174,10 @@
             <li class="pb-3">ELO is not affected by the outcome of the game</li>
             <li class="pb-3">Each game presents a unique challenge</li>
           </ul>
-        </rule-section>
-      </rule-section>
+        </RuleSection>
+      </RuleSection>
       <!-- SWAP1 -->
-      <rule-section
+      <RuleSection
         class="mt-4"
         :type="'section'"
         :toggleTarget="expanded.swap1"
@@ -185,9 +201,9 @@
             </button>
           </li>
         </ul>
-      </rule-section>
+      </RuleSection>
       <!-- SWAP2 -->
-      <rule-section
+      <RuleSection
         class="mt-4"
         :type="'section'"
         :toggleTarget="expanded.swap2"
@@ -206,7 +222,7 @@
             </ul>
           </li>
         </ul>
-      </rule-section>
+      </RuleSection>
     </div>
   </div>
   <!-- Origins -->
@@ -215,7 +231,7 @@
     id="origins"
     class="w-full min-height-screen-calc flex pb-8 bg-gray-200 dark:bg-gray-700 flex-col scroll-margin-navbar"
   >
-    <intersection-observer @intersect="intersectionCrossed('origins')" />
+    <IntersectionObserver @intersect="intersectionCrossed('origins')" />
     <h2
       class="text-5xl mt-4 md:mt-4 2xl:mt-4 text-gray-800 dark:text-gray-200 font-semibold w-full text-center"
     >
@@ -243,7 +259,7 @@
     id="contact"
     class="w-full bg-gomoku-black p-4 pb-2 flex flex-col scroll-margin-navbar"
   >
-    <intersection-observer @intersect="intersectionCrossed('contact')" />
+    <IntersectionObserver @intersect="intersectionCrossed('contact')" />
     <div
       class="text-gray-200 w-full m-auto text-center flex items-center flex-row justify-items-center justify-center pb-2"
     >
@@ -321,15 +337,15 @@
     <div
       class="text-gray-200 h-6 w-full m-auto text-center flex items-center flex-row justify-items-center justify-center pb-2 my-2"
     >
-      <router-link
+      <RouterLink
         to="/contact"
         class="mr-5 hover:text-gray-500 focus:text-gray-600 focus:outline-none"
-        >Contact</router-link
+        >Contact</RouterLink
       >
-      <router-link
+      <RouterLink
         to="/privacy"
         class="hover:text-gray-500 focus:text-gray-600 focus:outline-none"
-        >Privacy</router-link
+        >Privacy</RouterLink
       >
     </div>
     <div class="w-full h-6 flex-1 m-auto text-center">
@@ -354,51 +370,36 @@
     </div>
   </div>
 </template>
-<script lang="ts">
-import { defineComponent, reactive, computed, toRefs } from "vue";
+<script setup lang="ts">
+import { ref } from "vue";
 import IntersectionObserver from "@/components/IntersectionObserver.vue";
+import SadManIntroDialog from "@/assets/svg/SadManIntroDialog.vue";
 import TheMatchesIndexSection from "@/components/TheMatchesIndexSection.vue";
 import RuleSection from "../components/AppRuleSection.vue";
 import GameSimulation from "@/components/GameSimulation.vue";
-export default defineComponent({
-  name: "Home",
-  components: {
-    RuleSection,
-    IntersectionObserver,
-    GameSimulation,
-    TheMatchesIndexSection,
-  },
-  props: {
-    logged: Boolean,
-    activeUsers: Number,
-  },
-  setup(props, context) {
-    const state = reactive({
-      activeRule: "basics",
-      expanded: {
-        swap1: { toggled: false },
-        swap2: { toggled: false },
-        basics: { toggled: false },
-        gameTypes: {
-          self: { toggled: false },
-          quick: { toggled: false },
-          ranked: { toggled: false },
-          custom: { toggled: false },
-          ai: { toggled: false },
-        },
-      },
-    });
-
-    // Methods
-    const intersectionCrossed = (intersectionName: string) => {
-      context.emit("intersectionCrossed", intersectionName);
-    };
-    return {
-      ...toRefs(state),
-      intersectionCrossed,
-    };
+import BaseButton from "@/components/BaseButton.vue";
+defineProps<{ logged: boolean; activeUsers: number }>();
+const emit = defineEmits<{
+  (e: "intersectionCrossed", intersactionName: string);
+}>();
+const activeRule = ref("basics");
+const expanded = ref({
+  swap1: { toggled: false },
+  swap2: { toggled: false },
+  basics: { toggled: false },
+  gameTypes: {
+    self: { toggled: false },
+    quick: { toggled: false },
+    ranked: { toggled: false },
+    custom: { toggled: false },
+    ai: { toggled: false },
   },
 });
+
+// Methods
+const intersectionCrossed = (intersectionName: string) => {
+  emit("intersectionCrossed", intersectionName);
+};
 </script>
 <style>
 .shadow-box {

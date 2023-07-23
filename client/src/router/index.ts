@@ -118,6 +118,8 @@ const router = createRouter({
     } else {
       if (savedPosition) {
         return { top: savedPosition.top };
+      } else {
+        return { top: 0 };
       }
     }
   },
