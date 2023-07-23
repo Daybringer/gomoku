@@ -57,6 +57,7 @@
           />
           <base-button
             v-if="gameType !== GameType.Custom"
+            :gomoku-blue="true"
             class="w-full"
             @click="playAgain"
             >Play again
@@ -64,6 +65,7 @@
           <base-button
             v-if="gameType === GameType.Custom"
             class="w-full"
+            :gomoku-blue="true"
             @click="$emit('askForCustomRematch'), (askedForRematch = true)"
             >{{
               askedForRematch ? "Waiting for opponent" : "Remake custom game"

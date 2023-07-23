@@ -18,7 +18,7 @@
     :winningCombination="winningCombination"
     @gameClick="gameClick"
     @sendMessage="sendMessage"
-    @pickGameStone="() => {}"
+    @pickGameStone="pickGameStone"
     @rematchCustom="() => {}"
   />
 </template>
@@ -36,6 +36,7 @@ import {
   EndingType,
   Turn,
   GameChatMessage,
+  Symbol,
 } from "@/shared/types";
 import {
   AskForRematchDTO,
@@ -64,6 +65,10 @@ import { io, Socket } from "socket.io-client";
 import { ProfileIcon } from "@/shared/icons";
 import router from "@/router";
 import { NotificationType, useNotificationsStore } from "@/store/notifications";
+import {
+  GameSettings,
+  GameSettingsIdless,
+} from "@/shared/interfaces/gameSettings.interface";
 const basePlayer = (): Player => {
   return {
     socketID: "",
@@ -88,8 +93,7 @@ const gameState = ref(GameState.Waiting);
 const endingType = ref(EndingType.Combination);
 const openingPhase = ref(OpeningPhase.Done);
 const opening = ref(Opening.Standard);
-// TODO implement pulling of game settings
-const settings = ref({});
+const settings: Ref<GameSettingsIdless | null> = ref(null);
 
 const store = useStore();
 const notificationStore = useNotificationsStore();
@@ -108,20 +112,21 @@ function sendMessage(message: string) {
   messages.value.push(messageObj);
   socket.emit(SocketIOEvents.SendMessage, message);
 }
-// function pickGameStone(gameStone: Symbol) {
-//   const dto: ToServerSwapPickGameStoneDTO = {
-//     roomID: this.getRoomIDFromURL as string,
-//     pickedSymbol: gameStone,
-//   };
-//   socket.emit(SocketIOEvents.ToServerSwapPickGameStone, dto);
-// }
-// function rematchCustom() {
-//   const askForRematchDTO: AskForRematchDTO = {
-//     oldRoomID: this.roomID,
-//     createCustomDTO: this.constructSettingsDTO,
-//   };
-//   socket.emit(SocketIOEvents.AskForRematch, askForRematchDTO);
-// }
+function pickGameStone(gameStone: Symbol) {
+  const dto: ToServerSwapPickGameStoneDTO = {
+    roomID: roomID.value || "",
+    pickedSymbol: gameStone,
+  };
+  socket.emit(SocketIOEvents.ToServerSwapPickGameStone, dto);
+}
+
+function rematchCustom() {
+  // const askForRematchDTO: AskForRematchDTO = {
+  //   oldRoomID: this.roomID,
+  //   createCustomDTO: this.constructSettingsDTO,
+  // };
+  // socket.emit(SocketIOEvents.AskForRematch, askForRematchDTO);
+}
 
 onMounted(() => {
   socket = io("/game", { port: "3001" });

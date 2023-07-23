@@ -1,7 +1,10 @@
-import { Opening } from '../types';
+import { Opening } from "../types";
 
-export interface GameSettings {
+export interface GameSettings extends GameSettingsIdless {
   id: number;
+}
+
+export interface GameSettingsIdless {
   openingType: Opening;
   hasTimeLimit: boolean;
   timeLimitInSeconds?: number;

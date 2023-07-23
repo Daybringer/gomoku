@@ -14,6 +14,7 @@
           :circle-color="me.playerSymbol === 1 ? myColor : enemyColor"
           :interactive="currentPlayer.socketID === me.socketID"
           :winning-combination="winningCombination"
+          :lines-width="1"
           @game-click="(turn) => emit('gameClick', turn)"
         >
         </Gameboard>
@@ -36,7 +37,7 @@
           :ending-type="endingType"
           :game-type="gameType"
           :elo="eloGain"
-          @ask-for-custom-rematch="emit('rematchCustom')"
+          @ask-for-custom-rematch=""
         />
       </div>
       <!-- Socials container -->
@@ -188,12 +189,11 @@ const props = defineProps<{
   winningCombination: Turn[];
   eloGain?: number;
 }>();
-const emit = defineEmits([
-  "rematchCustom",
-  "gameClick",
-  "sendMessage",
-  "pickGameStone",
-]);
+const emit = defineEmits<{
+  (e: "sendMessage", message: string);
+  (e: "gameClick", turn: Turn);
+  (e: "pickGameStone");
+}>();
 const muted = ref(false);
 const slideNotification = computed(() => {
   const notifications = {
