@@ -1,10 +1,5 @@
 // Vue router
-import {
-  createRouter,
-  createWebHistory,
-  RouteParams,
-  RouteRecordRaw,
-} from "vue-router";
+import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 // Components
 import Home from "../views/Home.vue";
 import Login from "../views/Login.vue";

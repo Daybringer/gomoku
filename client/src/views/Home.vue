@@ -61,170 +61,8 @@
     </RouterLink>
   </div>
   <!-- Rules -->
-  <div
-    id="rules"
-    ref="rules"
-    class="w-full min-height-screen-calc flex bg-gray-200 dark:bg-gray-700 flex-col scroll-margin-navbar"
-  >
-    <IntersectionObserver @intersect="intersectionCrossed('rules')" />
-    <h2
-      class="text-5xl my-6 md:mt-4 2xl:mt-4 text-gray-800 dark:text-gray-200 font-semibold w-full text-center"
-    >
-      Rules
-    </h2>
-    <div
-      class="w-90 xl:w-2/3 mt-4 p-4 py-8 flex flex-col mb-8 bg-gray-800 rounded-lg m-auto"
-    >
-      <!-- Basics -->
-      <RuleSection
-        class=""
-        :type="'section'"
-        :toggleTarget="expanded.basics"
-        targetHeading="Basics"
-      >
-        <ul class="list-disc list-inside text-gray-300 font-normal p-3">
-          <li class="pb-3">Played on <b>15x15</b> gameboard</li>
-          <li class="pb-3">Players take turns</li>
-          <li class="pb-3">Total time measured using chess clock</li>
-          <li class="pb-3">
-            Player who makes an unbroken row of <b>5</b> stones in any direction
-            <b>wins</b> the game
-          </li>
 
-          <li class="pb-3">Starting player is determined by a coin flip</li>
-          <li class="pb-3">
-            Players alternate until somebody wins or the board is filled, in
-            which case the game is tied
-          </li>
-          <li class="pb-3">
-            Game either starts with a blank board or with a more advanced
-            technique called SWAP
-          </li>
-        </ul>
-      </RuleSection>
-      <!-- Game Types -->
-      <RuleSection
-        class="mt-4"
-        :type="'section'"
-        :toggleTarget="expanded.gameTypes.self"
-        targetHeading="Game Types"
-      >
-        <!-- Quick -->
-        <RuleSection
-          :type="'subsection'"
-          :toggleTarget="expanded.gameTypes.quick"
-          :targetHeading="'Quick'"
-        >
-          <ul
-            class="list-disc list-inside text-gray-300 font-normal p-3 text-left"
-          >
-            <li class="pb-3">Players don't have to be logged in</li>
-            <li class="pb-3">Each player has a time limit of 5mins</li>
-            <li class="pb-3">ELO doesn't matter, just have fun!</li>
-          </ul>
-        </RuleSection>
-        <!-- Ranked -->
-        <RuleSection
-          :type="'subsection'"
-          :toggleTarget="expanded.gameTypes.ranked"
-          :targetHeading="'Ranked'"
-        >
-          <ul
-            class="list-disc list-inside text-gray-300 font-normal p-3 text-left"
-          >
-            <li class="pb-3">Players have to be logged in</li>
-            <li class="pb-3">Each player has a time limit of 10mins</li>
-            <li class="pb-3">
-              Players of similar ELO are matched against each other
-            </li>
-            <li class="pb-3">Winner's ELO increases, loser's decreases</li>
-            <li class="pb-3">The game starts with SWAP1</li>
-          </ul>
-        </RuleSection>
-        <!-- Custom -->
-        <RuleSection
-          :type="'subsection'"
-          :toggleTarget="expanded.gameTypes.custom"
-          :targetHeading="'Custom'"
-        >
-          <ul
-            class="list-disc list-inside text-gray-300 font-normal p-3 text-left"
-          >
-            <li class="pb-3">
-              One player creates a game room and shares its link with an
-              opponent
-            </li>
-            <li class="pb-3">
-              It's up to the player to prescribe a time limit and a swap
-            </li>
-            <li class="pb-3">ELO is not affected by the outcome of the game</li>
-          </ul>
-        </RuleSection>
-        <!-- AI -->
-        <RuleSection
-          :type="'subsection'"
-          :toggleTarget="expanded.gameTypes.ai"
-          :targetHeading="'AI'"
-        >
-          <ul
-            class="list-disc list-inside text-gray-300 font-normal p-3 text-left"
-          >
-            <li class="pb-3">A player enters a game against a bot</li>
-            <li class="pb-3">The rules of the game will vary</li>
-            <li class="pb-3">ELO is not affected by the outcome of the game</li>
-            <li class="pb-3">Each game presents a unique challenge</li>
-          </ul>
-        </RuleSection>
-      </RuleSection>
-      <!-- SWAP1 -->
-      <RuleSection
-        class="mt-4"
-        :type="'section'"
-        :toggleTarget="expanded.swap1"
-        targetHeading="SWAP1"
-      >
-        <ul class="list-disc list-inside text-gray-300 font-normal p-3">
-          <li class="pb-3">Starting player is determined by a coin flip</li>
-          <li class="pb-3">
-            He then places 3 stones - 2 of one color and 1 of the other
-          </li>
-          <li class="pb-3">
-            The opponent chooses one of the colors, starting player is assigned
-            the other one
-          </li>
-          <li class="pb-3">The player with only 1 stone goes 1st</li>
-          <li class="list-none">
-            <button
-              class="border-gray-400 border-4 text-gray-200 text-base font-medium py-1 px-6 rounded-md focus:shadow-outline-white focus:outline-none hover:bg-gray-400 hover:text-gray-700"
-            >
-              Example
-            </button>
-          </li>
-        </ul>
-      </RuleSection>
-      <!-- SWAP2 -->
-      <RuleSection
-        class="mt-4"
-        :type="'section'"
-        :toggleTarget="expanded.swap2"
-        targetHeading="SWAP2"
-      >
-        <ul class="list-disc list-inside text-gray-300 font-normal p-3">
-          <li class="pb-3">
-            The game starts like SWAP1, but the opponent has
-            <b>3</b> choices
-            <ul class="list-disc list-inside text-gray-300 font-normal p-3">
-              <li class="pb-3">Play with the 2 placed stones and go 2nd</li>
-              <li class="pb-3">Play with the 1 placed stone and go 1st</li>
-              <li class="pb-3">
-                Place 2 more stones and let starting player choose his color
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </RuleSection>
-    </div>
-  </div>
+  <TheRulesIndexSection @intersection-crossed="intersectionCrossed('rules')" />
   <!-- Origins -->
   <div
     ref="origins"
@@ -375,26 +213,13 @@ import { ref } from "vue";
 import IntersectionObserver from "@/components/IntersectionObserver.vue";
 import SadManIntroDialog from "@/assets/svg/SadManIntroDialog.vue";
 import TheMatchesIndexSection from "@/components/TheMatchesIndexSection.vue";
-import RuleSection from "../components/AppRuleSection.vue";
 import GameSimulation from "@/components/GameSimulation.vue";
 import BaseButton from "@/components/BaseButton.vue";
+import TheRulesIndexSection from "@/components/TheRulesIndexSection.vue";
 defineProps<{ logged: boolean; activeUsers: number }>();
 const emit = defineEmits<{
   (e: "intersectionCrossed", intersactionName: string);
 }>();
-const activeRule = ref("basics");
-const expanded = ref({
-  swap1: { toggled: false },
-  swap2: { toggled: false },
-  basics: { toggled: false },
-  gameTypes: {
-    self: { toggled: false },
-    quick: { toggled: false },
-    ranked: { toggled: false },
-    custom: { toggled: false },
-    ai: { toggled: false },
-  },
-});
 
 // Methods
 const intersectionCrossed = (intersectionName: string) => {
@@ -402,42 +227,6 @@ const intersectionCrossed = (intersectionName: string) => {
 };
 </script>
 <style>
-.shadow-box {
-  box-shadow: 0px 0px 15px 30px rgba(255, 255, 255, 1);
-  -webkit-box-shadow: 0px 0px 15px 30px rgba(255, 255, 255, 1);
-  -moz-box-shadow: 0px 0px 15px 30px rgba(255, 255, 255, 1);
-}
-.scroll-margin-navbar {
-  scroll-margin-top: 4em;
-}
-
-.rounded-inner-div {
-  height: 90%;
-  width: 90%;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  border-radius: 0.65rem;
-}
-
-.rounded-inner-div-matches {
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
-
-@media (min-width: 640px) {
-  .rounded-inner-div-matches {
-    height: 85%;
-    width: 100%;
-    top: 30%;
-    border-radius: 2rem;
-  }
-  .rounded-inner-div {
-    border-radius: 2rem;
-  }
-}
-
 .bold-text {
   font-style: normal;
   font-weight: 700;
