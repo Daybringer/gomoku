@@ -45,21 +45,12 @@
   </div>
   <TheMatchesIndexSection id="matches" ref="matches" />
   <!-- Campaign -->
-  <div
+
+  <TheCampaignIndexSection
     id="campaign"
-    class="flex justify-center items-center gap-12 pb-24 flex-col dark:text-gray-400 dark:fill-gray-300 text-gray-700 bg-gray-200 dark:bg-gray-700"
-  >
-    <IntersectionObserver @intersect="intersectionCrossed('campaign')" />
-    <SadManIntroDialog
-      class="w-2/3 xl:w-1/4"
-      alt="Old man asking for help (Start of campaign)"
-    />
-    <RouterLink class="w-1/2" to="/campaign">
-      <BaseButton class="w-full text-2xl py-4" :gomoku-blue="true"
-        >Start Campaign</BaseButton
-      >
-    </RouterLink>
-  </div>
+    ref="campaign"
+    @intersect="intersectionCrossed('campaign')"
+  />
   <!-- Rules -->
 
   <TheRulesIndexSection @intersection-crossed="intersectionCrossed('rules')" />
@@ -216,6 +207,7 @@ import TheMatchesIndexSection from "@/components/TheMatchesIndexSection.vue";
 import GameSimulation from "@/components/GameSimulation.vue";
 import BaseButton from "@/components/BaseButton.vue";
 import TheRulesIndexSection from "@/components/TheRulesIndexSection.vue";
+import TheCampaignIndexSection from "@/components/TheCampaignIndexSection.vue";
 defineProps<{ logged: boolean; activeUsers: number }>();
 const emit = defineEmits<{
   (e: "intersectionCrossed", intersactionName: string);
