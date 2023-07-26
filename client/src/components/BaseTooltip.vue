@@ -30,11 +30,12 @@ const some = ref();
 <style scoped>
 .slide-enter-active,
 .slide-leave-active {
-  transition: all 0.5s ease;
+  transition: all 0.4s ease;
 }
 
 .slide-enter-from,
 .slide-leave-to {
+  opacity: 0;
   transform: translateY(-8px);
 }
 </style>
