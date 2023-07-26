@@ -166,6 +166,7 @@ import {
   Opening,
   OpeningPhase,
   Player,
+  Symbol,
   Turn,
 } from "@/shared/types";
 import { computed } from "@vue/reactivity";
@@ -192,7 +193,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: "sendMessage", message: string);
   (e: "gameClick", turn: Turn);
-  (e: "pickGameStone");
+  (e: "pickGameStone", gameStone: Symbol);
 }>();
 const muted = ref(false);
 const slideNotification = computed(() => {

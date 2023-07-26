@@ -151,6 +151,7 @@ class CustomGame extends Game {
     this.opening = opening;
     this.hasTimeLimit = hasTimeLimit;
     this.gameType = GameType.Custom;
+    this.gameboard = new GomokuBoard(15, 15, 5, true);
 
     if (this.opening === Opening.Swap1) {
       this.openingPhase = OpeningPhase.Place3;

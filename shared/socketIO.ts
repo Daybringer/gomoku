@@ -1,31 +1,32 @@
-import { EndingType, Opening, Player, Position, Symbol } from './types';
+import { GameSettingsIdless } from "../shared/interfaces/gameSettings.interface";
+import { EndingType, Opening, Player, Position, Symbol } from "./types";
 
 export enum SocketIOEvents {
   //Search
-  SearchRankedGame = 'searchRankedGame',
-  GameCreated = 'gameCreated',
+  SearchRankedGame = "searchRankedGame",
+  GameCreated = "gameCreated",
   //General
-  UpdateActiveUsers = 'updateActiveUsers',
-  JoinGame = 'joinGame',
-  InvalidRoomID = 'invalidRoomID',
-  GameStarted = 'gameStarted',
-  StonePlaced = 'stonePlaced',
-  GameClick = 'gameClick',
-  GameEnded = 'gameEnded',
-  TimeCalibration = 'timeCalibration',
-  SendMessage = 'sendMessage',
-  RecieveMessage = 'recieveMessage',
-  ToClientSwapPickGameStone = 'toClientSwapPickGameStone',
-  ToServerSwapPickGameStone = 'toServerSwapPickGameStone',
-  SwapGameStonePicked = 'gameStonePicked',
+  UpdateActiveUsers = "updateActiveUsers",
+  JoinGame = "joinGame",
+  InvalidRoomID = "invalidRoomID",
+  GameStarted = "gameStarted",
+  StonePlaced = "stonePlaced",
+  GameClick = "gameClick",
+  GameEnded = "gameEnded",
+  TimeCalibration = "timeCalibration",
+  SendMessage = "sendMessage",
+  RecieveMessage = "recieveMessage",
+  ToClientSwapPickGameStone = "toClientSwapPickGameStone",
+  ToServerSwapPickGameStone = "toServerSwapPickGameStone",
+  SwapGameStonePicked = "gameStonePicked",
   //Custom specials
-  CreateCustomWaiting = 'createCustomWaiting',
-  CustomWaitingCreated = 'customWaitingCreated',
-  CustomRoomJoined = 'customRoomJoined',
-  InvalidCustomRoom = 'invalidCustomRoom',
-  CustomRoomRedirectToGame = 'customRoomRedirectToGame',
-  AskForRematch = 'askForRematch',
-  RedirectToCustomRematch = 'redirectToCustomRematch',
+  CreateCustomWaiting = "createCustomWaiting",
+  CustomWaitingCreated = "customWaitingCreated",
+  CustomRoomJoined = "customRoomJoined",
+  InvalidCustomRoom = "invalidCustomRoom",
+  CustomRoomRedirectToGame = "customRoomRedirectToGame",
+  AskForRematch = "askForRematch",
+  RedirectToCustomRematch = "redirectToCustomRematch",
 }
 
 export class GameEndedDTO {
@@ -70,9 +71,7 @@ export class UpdateActiveUsersDTO {
   readonly activeUsers: number;
 }
 export class GameStartedEventDTO {
-  readonly timeLimitInSeconds: number;
-  readonly hasTimeLimit: boolean;
-  readonly opening: Opening;
+  readonly gameSettings: GameSettingsIdless;
   readonly startingPlayer: Player;
   readonly players: Player[];
 }
@@ -89,9 +88,7 @@ export class AskForRematchDTO {
 }
 
 export class CreateCustomDTO {
-  readonly hasTimeLimit: boolean;
-  readonly timeLimitInSeconds: number;
-  readonly opening: Opening;
+  readonly gameSettings: GameSettingsIdless;
 }
 
 export class CustomCreatedDTO {

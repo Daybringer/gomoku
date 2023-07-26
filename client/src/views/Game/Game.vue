@@ -152,8 +152,8 @@ onMounted(() => {
     // TODO add settings to GameStarted
     const { startingPlayer, players } = dto;
     currentPlayer.value = startingPlayer;
-    hasTimeLimit.value = dto.hasTimeLimit;
-    opening.value = dto.opening;
+    hasTimeLimit.value = dto.gameSettings.hasTimeLimit;
+    opening.value = dto.gameSettings.openingType;
 
     if (opening.value !== Opening.Standard)
       openingPhase.value = OpeningPhase.Place3;
@@ -265,23 +265,7 @@ const gameType = computed(() => {
 const roomID = computed(() => {
   return getURLParams().get("roomID");
 });
-//   hasTimeLimit(): boolean {
-//     return this.getURLParams.get("hasTimeLimit") === "true";
-//   },
-//   timeLimitInSeconds(): number {
-//     return Number(this.getURLParams.get("timeLimitInSeconds"));
-//   },
-//   constructSettingsDTO(): CreateCustomDTO {
-//     return {
-//       hasTimeLimit: this.hasTimeLimit,
-//       timeLimitInSeconds: this.timeLimitInSeconds,
-//       opening: this.opening,
-//     };
-//   },
-//   opening(): Opening {
-//     return this.getURLParams.get("opening") as Opening;
-//   },
-// },
+
 onUnmounted(() => {
   socket.close();
 });

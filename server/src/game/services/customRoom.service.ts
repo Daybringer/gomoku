@@ -1,3 +1,4 @@
+import { GameSettingsIdless } from '../../shared/interfaces/gameSettings.interface';
 import { Injectable } from '@nestjs/common';
 import { CreateCustomDTO, SocketIOEvents } from 'src/shared/socketIO';
 import { Socket } from 'socket.io';
@@ -7,7 +8,7 @@ export class CustomRoomService {
   customWaitingRooms: {
     [roomID: string]: {
       waitingPlayersSockets: Array<Socket>;
-      settings: CreateCustomDTO;
+      settings: GameSettingsIdless;
     };
   } = {};
 
@@ -40,26 +41,29 @@ export class CustomRoomService {
     const roomID = this.generateRoomID(this.customWaitingRooms);
     this.customWaitingRooms[roomID] = {
       waitingPlayersSockets: [],
-      settings: createCustomDTO,
+      settings: createCustomDTO.gameSettings,
     };
     return roomID;
   }
 
-  getGameSettings(roomID: string): CreateCustomDTO {
+  getGameSettings(roomID: string): GameSettingsIdless {
     return this.customWaitingRooms[roomID].settings;
   }
 
   joinCustomWaitingRoom(socket: Socket, roomID: string): void {
     if (this.customWaitingRooms[roomID]) {
-      this.customWaitingRooms[roomID].waitingPlayersSockets.push(socket);
+      if (!this.isCustomWaitingRoomFull(roomID)) {
+        this.customWaitingRooms[roomID].waitingPlayersSockets.push(socket);
+      } else {
+        socket.emit(SocketIOEvents.InvalidCustomRoom);
+      }
     } else {
       socket.emit(SocketIOEvents.InvalidCustomRoom);
-      throw 'Invalid room';
     }
   }
 
   isCustomWaitingRoomFull(roomID: string): boolean {
-    return this.customWaitingRooms[roomID].waitingPlayersSockets.length === 2;
+    return this.customWaitingRooms[roomID].waitingPlayersSockets.length >= 2;
   }
 
   getAllWaitingPlayersIDs(roomID: string): Socket[] {

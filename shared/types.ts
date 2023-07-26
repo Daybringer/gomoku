@@ -49,6 +49,7 @@ enum OpeningPhase {
   Done = "done",
 }
 
+// TODO remove this
 type Time = 3 | 5 | 10 | "infinite";
 
 interface Player {

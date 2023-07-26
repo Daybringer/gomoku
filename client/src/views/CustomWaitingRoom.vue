@@ -1,8 +1,8 @@
 <template>
-  <view-base-fixed-height>
+  <ViewBaseFixedHeight>
     <div class="flex-1 flex flex-col-reverse md:flex-row justify-center">
       <div class="flex-1 flex flex-col justify-center">
-        <swing-animation class="w-80 md:w-60 self-center md:self-end" />
+        <SwingAnimation class="w-80 md:w-60 self-center md:self-end" />
       </div>
       <div class="flex-1 flex justify-center place-items-center mb-20">
         <div class="flex flex-col gap-1 place-items-center">
@@ -22,22 +22,18 @@
               {{ roomID }}
             </span>
           </div>
-          <base-button
-            class="text-xl w-full text-gray-50 font-medium mt-5"
-            :class="
-              copyButtonText === 'Copied'
-                ? 'bg-gray-400 dark:bg-gray-500'
-                : 'bg-gomoku-blue dark:bg-gomoku-blue'
-            "
+          <BaseButton
+            class="w-full mt-5 text-xl"
+            :gomoku-blue="true"
             @click="copyToClipboard()"
-            >{{ copyButtonText }}<clipboard-icon class="pl-2 h-6"
-          /></base-button>
+            >{{ copyButtonText }}<ClipboardIcon class="pl-2 h-6"
+          /></BaseButton>
         </div>
       </div>
     </div>
-  </view-base-fixed-height>
+  </ViewBaseFixedHeight>
 </template>
-<script lang="ts">
+<script setup lang="ts">
 import io, { Socket } from "socket.io-client";
 let socket: Socket;
 
@@ -45,91 +41,49 @@ import ViewBaseFixedHeight from "@/components/ViewBaseFixedHeight.vue";
 import BaseButton from "@/components/BaseButton.vue";
 import ClipboardIcon from "@/assets/svg/ClipboardIcon.vue";
 import SwingAnimation from "@/assets/svg/SwingAnimation.vue";
-import { defineComponent } from "vue";
 import {
-  CreateCustomDTO,
   CustomRoomJoinedDTO,
   CustomRoomRedirectToGameDTO,
   SocketIOEvents,
 } from "@/shared/socketIO";
-import { Opening } from "@/shared/types";
+import { ref, computed, onMounted, onUnmounted } from "vue";
 import { NotificationType, useNotificationsStore } from "@/store/notifications";
-export default defineComponent({
-  name: "CustomWaitingRoom",
-  props: {},
-  components: {
-    ViewBaseFixedHeight,
-    BaseButton,
-    SwingAnimation,
-    ClipboardIcon,
-  },
-  data(): { copyButtonText: string } {
-    return {
-      copyButtonText: "Copy link",
-    };
-  },
-  computed: {
-    getURLParams() {
-      return new URLSearchParams(window.location.search);
-    },
-    roomID(): string {
-      return this.$route.params.roomID as string;
-    },
-    hasTimeLimit(): boolean {
-      return this.getURLParams.get("hasTimeLimit") === "true";
-    },
-    timeLimitInSeconds(): number {
-      return Number(this.getURLParams.get("timeLimitInSeconds"));
-    },
-    opening(): Opening {
-      return this.getURLParams.get("opening") as Opening;
-    },
-  },
-  methods: {
-    copyToClipboard(): void {
-      navigator.clipboard.writeText(window.location.href);
-      this.copyButtonText = "Copied";
-      this.notification.createNotification(
-        NotificationType.Success,
-        "Room ID has been successfuly copied"
-      );
-    },
-  },
-  setup() {
-    const notification = useNotificationsStore();
-    return { notification };
-  },
-  mounted() {
-    socket = io("/custom/waiting", { port: 3001 });
-    const customRoomJoinedDTO: CustomRoomJoinedDTO = {
-      waitingRoomID: this.roomID,
-    };
-    socket.emit(SocketIOEvents.CustomRoomJoined, customRoomJoinedDTO);
+import { useRoute } from "vue-router";
+import router from "@/router";
+const copyButtonText = ref("Copy link");
+const notification = useNotificationsStore();
+const roomID = computed(() => useRoute().params.roomID as string);
+function copyToClipboard(): void {
+  navigator.clipboard.writeText(window.location.href);
+  copyButtonText.value = "Copied";
+  useNotificationsStore().createNotification(
+    NotificationType.Success,
+    "Room ID has been successfuly copied"
+  );
+}
+onMounted(() => {
+  socket = io("/custom/waiting", { port: 3001 });
+  const customRoomJoinedDTO: CustomRoomJoinedDTO = {
+    waitingRoomID: roomID.value,
+  };
+  socket.emit(SocketIOEvents.CustomRoomJoined, customRoomJoinedDTO);
 
-    socket.on(SocketIOEvents.InvalidCustomRoom, () => {
-      this.notification.createNotification(
-        NotificationType.Error,
-        "Invalid custom room ID"
-      );
-      this.$router.push("/");
-    });
-
-    socket.on(
-      SocketIOEvents.CustomRoomRedirectToGame,
-      (customRoomRedirectToGameDTO: CustomRoomRedirectToGameDTO) => {
-        const createCustomDTO: CreateCustomDTO = {
-          hasTimeLimit: this.hasTimeLimit,
-          timeLimitInSeconds: this.timeLimitInSeconds,
-          opening: this.opening,
-        };
-        this.$router.push(
-          `/game?type=custom&roomID=${customRoomRedirectToGameDTO.roomID}&hasTimeLimit=${createCustomDTO.hasTimeLimit}&timeLimitInSeconds=${createCustomDTO.timeLimitInSeconds}&opening=${createCustomDTO.opening}`
-        );
-      }
+  socket.on(SocketIOEvents.InvalidCustomRoom, () => {
+    notification.createNotification(
+      NotificationType.Error,
+      "Invalid custom room ID"
     );
-  },
-  unmounted() {
-    socket.close();
-  },
+    router.push("/");
+  });
+
+  socket.on(
+    SocketIOEvents.CustomRoomRedirectToGame,
+    (customRoomRedirectToGameDTO: CustomRoomRedirectToGameDTO) => {
+      router.push(
+        `/game?type=custom&roomID=${customRoomRedirectToGameDTO.roomID}`
+      );
+    }
+  );
 });
+onUnmounted(() => socket.close());
 </script>

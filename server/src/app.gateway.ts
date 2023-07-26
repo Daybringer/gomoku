@@ -80,6 +80,7 @@ export class CustomWaitingGateway implements OnGatewayDisconnect {
   ) {}
   @WebSocketServer() server: Server;
 
+  // Waiting rooms
   @SubscribeMessage(SocketIOEvents.CustomRoomJoined)
   handleCustomRoomJoined(
     client: Socket,

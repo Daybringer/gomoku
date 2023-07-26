@@ -31,6 +31,7 @@ import { ProfileIcon } from 'src/shared/icons';
 import { UsersService } from 'src/users/users.service';
 import { COIN_SPIN_DURATION } from 'src/shared/constants';
 import { GameService } from './game.service';
+import { GameSettingsIdless } from 'src/shared/interfaces/gameSettings.interface';
 
 @Injectable()
 export class GameRoomService {
@@ -54,7 +55,6 @@ export class GameRoomService {
 
     if (!room) {
       client.emit(SocketIOEvents.InvalidRoomID);
-      this.logger.debug("Room doesn't exist");
       return;
     }
 
@@ -111,7 +111,7 @@ export class GameRoomService {
    */
   createGameRoom(
     type: GameType,
-    customSettings?: CreateCustomDTO,
+    customSettings?: GameSettingsIdless,
   ): { game: AnyGame; roomID: string } {
     const roomID = this.generateRoomID();
     let game: AnyGame;
@@ -126,7 +126,7 @@ export class GameRoomService {
         game = new CustomGame(
           customSettings.hasTimeLimit,
           customSettings.timeLimitInSeconds,
-          customSettings.opening,
+          customSettings.openingType,
         );
         break;
     }
@@ -349,10 +349,16 @@ export class GameRoomService {
    */
   private constructGameStartedDTO(game: AnyGame): GameStartedEventDTO {
     const gameStartedEventDTO: GameStartedEventDTO = {
-      timeLimitInSeconds: game.timeLimitInSeconds,
+      gameSettings: {
+        timeLimitInSeconds: game.timeLimitInSeconds,
+        hasTimeLimit: game.hasTimeLimit,
+        openingType: game.opening,
+        //TODO implement options here
+        boardSize: 15,
+        doesOverlineCount: true,
+        winningLineSize: 5,
+      },
       startingPlayer: game.startingPlayer,
-      opening: game.opening,
-      hasTimeLimit: game.hasTimeLimit,
       players: [],
     };
     game.players.forEach((player) => {
