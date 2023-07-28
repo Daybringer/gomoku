@@ -15,6 +15,7 @@
             <RouterLink to="/#home" class="focus:outline-none focus:opacity-75">
               <img
                 class="h-6 w-auto align-middle inline sm:h-8 stroke-current hover:opacity-75"
+                @click="burgerDropdownIsToggled = false"
                 src="@/assets/logo.svg"
                 alt="Playgomoku logo"
               />
@@ -196,26 +197,31 @@
         >
         <MobileNavbarLink
           :to="'/#matches'"
+          @click="burgerDropdownIsToggled = false"
           :active="activeIntersection === 'matches' && isHomePage"
           >Matches</MobileNavbarLink
         >
         <MobileNavbarLink
           :to="'/#campaign'"
+          @click="burgerDropdownIsToggled = false"
           :active="activeIntersection === 'campaign' && isHomePage"
           >Campaign</MobileNavbarLink
         >
         <MobileNavbarLink
           :to="'/#rules'"
+          @click="burgerDropdownIsToggled = false"
           :active="activeIntersection === 'rules' && isHomePage"
           >Rules</MobileNavbarLink
         >
         <MobileNavbarLink
           :to="'/#origins'"
+          @click="burgerDropdownIsToggled = false"
           :active="activeIntersection === 'origins' && isHomePage"
           >Origins</MobileNavbarLink
         >
         <MobileNavbarLink
           :to="'/#contact'"
+          @click="burgerDropdownIsToggled = false"
           :active="activeIntersection === 'contact' && isHomePage"
           >Contact</MobileNavbarLink
         >
