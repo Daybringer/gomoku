@@ -1,3 +1,4 @@
+import { SendMessageDTO } from 'src/shared/socketIO';
 import { GameRoomService } from './game/services/gameRoom.service';
 import {
   OnGatewayConnection,
@@ -216,8 +217,8 @@ export class GameGateway implements OnGatewayDisconnect {
   }
 
   @SubscribeMessage(SocketIOEvents.SendMessage)
-  handleSendMessage(socket: Socket, message: string): void {
-    this.gameRoomService.handleSendMessage(this.server, socket, message);
+  handleSendMessage(socket: Socket, dto: SendMessageDTO): void {
+    this.gameRoomService.handleSendMessage(dto.roomID, dto.message, socket);
   }
 
   @SubscribeMessage(SocketIOEvents.AskForRematch)

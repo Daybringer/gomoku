@@ -45,6 +45,7 @@ import {
   GameEndedDTO,
   GameStartedEventDTO,
   JoinGameDTO,
+  SendMessageDTO,
   SocketIOEvents,
   StonePlacedDTO,
   SwapGameStonePickedDTO,
@@ -110,7 +111,8 @@ function gameClick(position: Position): void {
 function sendMessage(message: string) {
   const messageObj: GameChatMessage = { author: "me", message };
   messages.value.push(messageObj);
-  socket.emit(SocketIOEvents.SendMessage, message);
+  const dto: SendMessageDTO = { message, roomID: roomID.value || "" };
+  socket.emit(SocketIOEvents.SendMessage, dto);
 }
 function pickGameStone(gameStone: Symbol) {
   const dto: ToServerSwapPickGameStoneDTO = {

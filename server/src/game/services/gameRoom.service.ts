@@ -212,9 +212,7 @@ export class GameRoomService {
     }
   }
 
-  handleSendMessage(server: Server, client: Socket, message: string) {
-    const roomID = this.findRoomIDBySocketID(client.id);
-    if (this.findGameRoom(roomID) === null) throw "Room doesn't exist";
+  handleSendMessage(roomID: string, message: string, client: Socket) {
     client.to(roomID).emit(SocketIOEvents.RecieveMessage, message);
   }
 

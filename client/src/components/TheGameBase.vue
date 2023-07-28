@@ -135,6 +135,8 @@
         <GameChat
           class="min-h-0 flex-1 overflow-hidden"
           @send-message="sendMessage"
+          @toggle-muted="muted = !muted"
+          :is-muted="muted"
           :messages="messages"
           :my-color="myColor"
           :opponent-color="enemyColor"
@@ -265,6 +267,7 @@ watch(
 watch(
   () => props.messages,
   () => {
+    if (muted.value) return;
     const messageSFX = new Howl({
       src: [`sounds/message.mp3`],
       volume: muted.value ? 0 : 1.5,

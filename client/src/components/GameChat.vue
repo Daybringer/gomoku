@@ -7,7 +7,7 @@
     <button
       class="absolute p-1 top-0 right-0 rounded-bl-lg hover:bg-red-500 text-white"
       :class="isMuted ? 'bg-red-500' : 'bg-gray-700'"
-      @click="isMuted = !isMuted"
+      @click="$emit('toggleMuted')"
     >
       <NoMicrophoneIcon v-show="isMuted" class="h-6 stroke-current" />
       <MicrophoneIcon v-show="!isMuted" class="h-6 stroke-current" />
@@ -66,14 +66,15 @@ import BaseHRDivider from "./BaseHRDivider.vue";
 import BaseButton from "./BaseButton.vue";
 import BaseMidHeadline from "./BaseMidHeadline.vue";
 const message = ref("");
-const isMuted = ref(false);
 defineProps<{
   messages: GameChatMessage[];
   myColor: string;
   opponentColor: string;
+  isMuted: boolean;
 }>();
 const emits = defineEmits<{
   (e: "sendMessage", message: string);
+  (e: "toggleMuted");
 }>();
 function sendMessage() {
   message.value = message.value.trim();

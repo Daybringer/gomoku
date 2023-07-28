@@ -43,6 +43,11 @@ export class ToClientSwapPickGameStoneDTO {
   readonly pickingPlayer: Player;
 }
 
+export class SendMessageDTO {
+  readonly roomID: string;
+  readonly message: string;
+}
+
 export class ToServerSwapPickGameStoneDTO {
   readonly roomID: string;
   readonly pickedSymbol: Symbol;
