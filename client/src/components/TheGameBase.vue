@@ -33,11 +33,12 @@
         <!-- After game overlay -->
         <TheAfterGameOverlay
           v-show="gameState === GameState.Ended"
+          :rematch-waiting-room-i-d="rematchWaitingRoomID"
           :am-i-winner="amIWinner"
           :ending-type="endingType"
           :game-type="gameType"
           :elo="eloGain"
-          @ask-for-custom-rematch=""
+          @ask-for-custom-rematch="emit('rematchCustom')"
         />
       </div>
       <!-- Socials container -->
@@ -174,6 +175,7 @@ import {
 import { computed } from "@vue/reactivity";
 import Gameboard from "./Gameboard.vue";
 import ViewBaseResponsive from "./ViewBaseResponsive.vue";
+import { string } from "yup";
 const props = defineProps<{
   me: Player;
   opponent: Player;
@@ -191,11 +193,13 @@ const props = defineProps<{
   gameType: GameType;
   winningCombination: Turn[];
   eloGain?: number;
+  rematchWaitingRoomID?: string;
 }>();
 const emit = defineEmits<{
   (e: "sendMessage", message: string);
   (e: "gameClick", turn: Turn);
   (e: "pickGameStone", gameStone: Symbol);
+  (e: "rematchCustom");
 }>();
 const muted = ref(false);
 const slideNotification = computed(() => {

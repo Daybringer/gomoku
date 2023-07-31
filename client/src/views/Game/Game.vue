@@ -4,22 +4,23 @@
     :opponent="opponent"
     :eloGain="100"
     :currentPlayer="currentPlayer"
-    :hasTimeLimit="hasTimeLimit"
+    :hasTimeLimit="settings.hasTimeLimit"
     :gameState="gameState"
     :turnHistory="turnHistory"
     :endingType="endingType"
     :winner="winner"
-    :opening="opening"
+    :opening="settings.openingType"
     :openingPhase="openingPhase"
     :myColor="store.user.settings.playerColor"
     :enemyColor="store.user.settings.opponentColor"
     :messages="messages"
     :gameType="gameType"
     :winningCombination="winningCombination"
+    :rematchWaitingRoomID="rematchWaitingRoomID"
     @gameClick="gameClick"
     @sendMessage="sendMessage"
     @pickGameStone="pickGameStone"
-    @rematchCustom="() => {}"
+    @rematchCustom="rematchCustom"
   />
 </template>
 <script setup lang="ts">
@@ -45,6 +46,7 @@ import {
   GameEndedDTO,
   GameStartedEventDTO,
   JoinGameDTO,
+  RedirectToCustomRematchDTO,
   SendMessageDTO,
   SocketIOEvents,
   StonePlacedDTO,
@@ -81,7 +83,6 @@ const basePlayer = (): Player => {
   };
 };
 
-const hasTimeLimit = ref(false);
 const me = ref(basePlayer());
 const opponent = ref(basePlayer());
 const currentPlayer = ref(basePlayer());
@@ -93,8 +94,15 @@ const winningCombination: Ref<Turn[]> = ref([]);
 const gameState = ref(GameState.Waiting);
 const endingType = ref(EndingType.Combination);
 const openingPhase = ref(OpeningPhase.Done);
-const opening = ref(Opening.Standard);
-const settings: Ref<GameSettingsIdless | null> = ref(null);
+const rematchWaitingRoomID: Ref<undefined | string> = ref(undefined);
+const settings: Ref<GameSettingsIdless> = ref({
+  boardSize: 15,
+  doesOverlineCount: true,
+  hasTimeLimit: true,
+  openingType: Opening.Standard,
+  winningLineSize: 5,
+  timeLimitInSeconds: 120,
+});
 
 const store = useStore();
 const notificationStore = useNotificationsStore();
@@ -123,11 +131,11 @@ function pickGameStone(gameStone: Symbol) {
 }
 
 function rematchCustom() {
-  // const askForRematchDTO: AskForRematchDTO = {
-  //   oldRoomID: this.roomID,
-  //   createCustomDTO: this.constructSettingsDTO,
-  // };
-  // socket.emit(SocketIOEvents.AskForRematch, askForRematchDTO);
+  const askForRematchDTO: AskForRematchDTO = {
+    oldRoomID: roomID.value || "",
+    settings: settings.value,
+  };
+  socket.emit(SocketIOEvents.AskForRematch, askForRematchDTO);
 }
 
 onMounted(() => {
@@ -151,13 +159,11 @@ onMounted(() => {
   });
 
   socket.on(SocketIOEvents.GameStarted, (dto: GameStartedEventDTO) => {
-    // TODO add settings to GameStarted
-    const { startingPlayer, players } = dto;
+    const { startingPlayer, players, gameSettings } = dto;
     currentPlayer.value = startingPlayer;
-    hasTimeLimit.value = dto.gameSettings.hasTimeLimit;
-    opening.value = dto.gameSettings.openingType;
+    settings.value = gameSettings;
 
-    if (opening.value !== Opening.Standard)
+    if (settings.value.openingType !== Opening.Standard)
       openingPhase.value = OpeningPhase.Place3;
 
     if (players[0].socketID === socket.id) {
@@ -190,16 +196,16 @@ onMounted(() => {
     messages.value.push({ author: "opponent", message });
   });
 
-  //TODO custom rematch
-  //   socket.on(
-  //     SocketIOEvents.RedirectToCustomRematch,
-  //     (newGameRoomID: string) => {
-  //       const dto = this.constructSettingsDTO;
-  //       this.$router.push(
-  //         `/game?type=custom&roomID=${newGameRoomID}&hasTimeLimit=${dto.hasTimeLimit}&timeLimitInSeconds=${dto.timeLimitInSeconds}&opening=${dto.opening}`
-  //       );
-  //     }
-  //   );
+  socket.on(
+    SocketIOEvents.RedirectToCustomRematch,
+    (dto: RedirectToCustomRematchDTO) => {
+      if (socket.id === dto.askeeSocketID) {
+        router.push(`/custom/${dto.waitingRoomID}`);
+      } else {
+        rematchWaitingRoomID.value = dto.waitingRoomID;
+      }
+    }
+  );
 
   // ------- SWAP HANDLES ------- \\
 
@@ -233,8 +239,6 @@ onMounted(() => {
   });
 
   socket.on(SocketIOEvents.GameEnded, (dto: GameEndedDTO) => {
-    // const { endingType, winner, userIDToEloDiff, winningCombination } = dto;
-
     if (dto.winner) winner.value = dto.winner;
     if (dto.winningCombination)
       winningCombination.value = dto.winningCombination;
@@ -261,9 +265,7 @@ const gameType = computed(() => {
   }
   return GameType.Quick;
 });
-//   getRoomIDFromURL(): string | null {
-//     return this.getURLParams.get("roomID");
-//   },
+
 const roomID = computed(() => {
   return getURLParams().get("roomID");
 });

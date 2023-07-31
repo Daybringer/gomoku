@@ -89,7 +89,12 @@ export class StonePlacedDTO {
 
 export class AskForRematchDTO {
   readonly oldRoomID: string;
-  readonly createCustomDTO: CreateCustomDTO;
+  readonly settings: GameSettingsIdless;
+}
+
+export class RedirectToCustomRematchDTO {
+  readonly askeeSocketID: string;
+  readonly waitingRoomID: string;
 }
 
 export class CreateCustomDTO {

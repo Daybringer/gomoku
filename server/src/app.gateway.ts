@@ -1,3 +1,4 @@
+import { RedirectToCustomRematchDTO } from './../../shared/socketIO';
 import { SendMessageDTO } from 'src/shared/socketIO';
 import { GameRoomService } from './game/services/gameRoom.service';
 import {
@@ -183,7 +184,10 @@ export class RankedSearchGateway implements OnGatewayDisconnect {
 // GAME
 @WebSocketGateway({ namespace: '/game' })
 export class GameGateway implements OnGatewayDisconnect {
-  constructor(private gameRoomService: GameRoomService) {}
+  constructor(
+    private gameRoomService: GameRoomService,
+    private customRoomService: CustomRoomService,
+  ) {}
 
   @WebSocketServer() server: Server;
 
@@ -223,11 +227,15 @@ export class GameGateway implements OnGatewayDisconnect {
 
   @SubscribeMessage(SocketIOEvents.AskForRematch)
   handleCustomAskForRematch(socket: Socket, dto: AskForRematchDTO): void {
-    this.gameRoomService.handleCustomAskForRematch(
-      this.server,
-      socket,
-      dto.oldRoomID,
-      dto.createCustomDTO,
-    );
+    const waitingRoomID = this.customRoomService.createCustomWaitingRoom({
+      gameSettings: dto.settings,
+    });
+    const rematchDTO: RedirectToCustomRematchDTO = {
+      askeeSocketID: socket.id,
+      waitingRoomID,
+    };
+    this.server
+      .to(dto.oldRoomID)
+      .emit(SocketIOEvents.RedirectToCustomRematch, rematchDTO);
   }
 }

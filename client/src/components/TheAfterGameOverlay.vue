@@ -5,10 +5,10 @@
       @click="isShown = true"
       class="absolute top-2 left-2 p-1 rounded-full bg-gray-200 text-gray-900 focus:outline-none"
     >
-      <chevrons-down-icon class="h-8 w-8 -rotate-45 transform" />
+      <ChevronsDownIcon class="h-8 w-8 -rotate-45 transform" />
     </button>
 
-    <transition name="bounce" :css="true" type="animation" v-show="isShown">
+    <Transition name="bounce" :css="true" type="animation" v-show="isShown">
       <div
         class="absolute z-20 flex p-6 xl:p-12 h-full w-full bg-gray-800"
         :class="
@@ -26,15 +26,15 @@
             class="absolute top-3 left-3 p-1 rounded-full bg-gray-200 text-gray-800"
             @click="isShown = false"
           >
-            <cross-icon class="h-6 sm:h-8" />
+            <CrossIcon class="h-6 sm:h-8" />
           </button>
           <div>
-            <base-high-headline class="text-gomoku-blue">
+            <BaseHighHeadline class="text-gomoku-blue">
               {{ amIWinner ? "Victory!" : "Defeat!" }}
-            </base-high-headline>
-            <base-low-headline v-show="endingType === EndingType.Surrender">
+            </BaseHighHeadline>
+            <BaseLowHeadline v-show="endingType === EndingType.Surrender">
               Opponent has disconnected
-            </base-low-headline>
+            </BaseLowHeadline>
           </div>
           <div
             v-show="elo"
@@ -55,30 +55,36 @@
             class="animation-bounce md:w-50 w-1/3 md:p-8 mt-4"
             alt=""
           />
-          <base-button
+          <BaseButton
             v-if="gameType !== GameType.Custom"
             :gomoku-blue="true"
             class="w-full"
             @click="playAgain"
             >Play again
-          </base-button>
-          <base-button
-            v-if="gameType === GameType.Custom"
+          </BaseButton>
+          <BaseButton
+            v-if="gameType === GameType.Custom && rematchWaitingRoomID"
             class="w-full"
             :gomoku-blue="true"
-            @click="$emit('askForCustomRematch'), (askedForRematch = true)"
-            >{{
-              askedForRematch ? "Waiting for opponent" : "Remake custom game"
-            }}
-          </base-button>
+            @click="router.push(`/custom/${rematchWaitingRoomID}`)"
+          >
+            Opponent asked for rematch. Join ->
+          </BaseButton>
+          <BaseButton
+            v-if="gameType === GameType.Custom && !rematchWaitingRoomID"
+            class="w-full"
+            :gomoku-blue="true"
+            @click="$emit('askForCustomRematch')"
+            >Remake game
+          </BaseButton>
         </div>
       </div>
-    </transition>
+    </Transition>
   </div>
 </template>
 <script setup lang="ts">
 import { EndingType, GameType } from "@/shared/types";
-import { ref, computed, watch } from "vue";
+import { ref, computed } from "vue";
 import BaseButton from "@/components/BaseButton.vue";
 // SVGs
 import CrossIcon from "@/assets/svg/CrossIcon.vue";
@@ -91,10 +97,10 @@ const props = defineProps<{
   endingType: EndingType;
   gameType: GameType;
   elo?: number;
+  rematchWaitingRoomID?: string;
 }>();
 defineEmits(["askForCustomRematch"]);
 const isShown = ref(true);
-const askedForRematch = ref(false);
 const eloGain = computed(() => {
   if (!props.elo) return "";
   if (props.elo > 0) {

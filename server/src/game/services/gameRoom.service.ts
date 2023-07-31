@@ -245,26 +245,6 @@ export class GameRoomService {
       .emit(SocketIOEvents.SwapGameStonePicked, swapGameStonePickedDTO);
   }
 
-  handleCustomAskForRematch(
-    server: Server,
-    client: Socket,
-    oldRoomID: string,
-    settings: CreateCustomDTO,
-  ) {
-    // TODO implement sensible rematch in custom games
-    console.log('rematch');
-    // if (oldRoomID in this.customRematch) {
-    //   this.customRematch[oldRoomID]++;
-    // } else {
-    //   this.customRematch[oldRoomID] = 1;
-    // }
-    // if (this.customRematch[oldRoomID] === 2) {
-    //   const { roomID } = this.createCustomGame(settings);
-    //   server.to(oldRoomID).emit(SocketIOEvents.RedirectToCustomRematch, roomID);
-    //   delete this.customRematch[oldRoomID];
-    // }
-  }
-
   handleGameDisconnect(server: Server, disconecteeSocket: Socket) {
     const roomID = this.findRoomIDBySocketID(disconecteeSocket.id);
     const room = this.findGameRoom(roomID);
