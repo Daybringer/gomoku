@@ -263,7 +263,7 @@ watch(
 watch(
   () => props.turnHistory,
   () => {
-    const stonePlaced = new Howl({ src: ["sounds/click1.ogg"], volume: 1 });
+    const stonePlaced = new Howl({ src: ["/sounds/click1.ogg"], volume: 1 });
     stonePlaced.play();
   },
   { deep: true }
@@ -273,7 +273,7 @@ watch(
   () => {
     if (muted.value) return;
     const messageSFX = new Howl({
-      src: [`sounds/message.mp3`],
+      src: [`/sounds/message.mp3`],
       volume: muted.value ? 0 : 1.5,
     });
     messageSFX.play();
@@ -324,7 +324,7 @@ function sendMessage(message: string) {
 }
 
 onMounted(() => {
-  const gameFound = new Howl({ src: ["sounds/game_found.mp3"], volume: 1 });
+  const gameFound = new Howl({ src: ["/sounds/game_found.mp3"], volume: 1 });
   gameFound.play();
 });
 </script>

@@ -24,7 +24,7 @@ export function userBase(): User {
     id: 0,
     elo: 1000,
     credit: 0,
-    username: "",
+    username: "Anonymous",
     email: "",
     strategy: LoginStrategy.Local,
     achievements: [],

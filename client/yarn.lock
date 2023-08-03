@@ -1266,10 +1266,10 @@ globby@^11.1.0:
     merge2 "^1.4.1"
     slash "^3.0.0"
 
-gomoku-game@^0.0.7:
-  version "0.0.7"
-  resolved "https://registry.yarnpkg.com/gomoku-game/-/gomoku-game-0.0.7.tgz#a9ec66768f28eacceb007a7e59982115bc3e6fa7"
-  integrity sha512-rTwacm/O8Qpppl5OiZbVcMvJsBs3jPIhWyQCzQZ8Tzem8ZXZJ+iwQivyR2MNh43kry3PZjjjIK3XDC+6s5kKhg==
+gomoku-game@^0.0.9:
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/gomoku-game/-/gomoku-game-0.0.9.tgz#0680c89bf0212d8795ae05aeb5d867c5a2e73216"
+  integrity sha512-HLCZhjvkTA+xtbnTD4TMcjGt4+CFSqeACAMovfns35x9zpq8X6aip67Kwapm1gcERpLg0r0/WR3RvQWN+ti9ww==
 
 graceful-fs@^4.1.6, graceful-fs@^4.2.0:
   version "4.2.11"
