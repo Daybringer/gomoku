@@ -112,18 +112,30 @@
         @close-modal="conversationModal.rules1 = false"
         :is-active="conversationModal.rules1"
       >
-        Some rules
-        <BaseButton
-          @click="
-            () => {
-              campaignStore.iterate();
-              setSVGStyles(rootSVG);
-              conversationModal.rules1 = false;
-            }
-          "
-          :gomoku-blue="true"
-          >Got it.</BaseButton
+        <div
+          class="flex-1 flex flex-col place-items-center justify-between gap-8"
         >
+          <iframe
+            class="h-full w-full"
+            src="https://www.youtube.com/embed/-KD743yNDHc?si=b-jT97-r_-G1No2y"
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+          ></iframe>
+          <BaseButton
+            @click="
+              () => {
+                campaignStore.iterate();
+                setSVGStyles(rootSVG);
+                conversationModal.rules1 = false;
+              }
+            "
+            class="w-full"
+            :gomoku-blue="true"
+            >Got it.</BaseButton
+          >
+        </div>
       </BaseModal>
       <!-- GEISHA CONVERSATION -->
       <BaseModal
