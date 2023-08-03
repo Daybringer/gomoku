@@ -14,7 +14,7 @@
       :myColor="userStore.user.settings.playerColor"
       :enemyColor="userStore.user.settings.opponentColor"
       :messages="messages"
-      :gameType="GameType.Custom"
+      :gameType="GameType.AI"
       :winningCombination="winningCombination"
       @gameClick="gameClick"
       @sendMessage="sendMessage"
@@ -101,12 +101,21 @@ const gomokuBoard = new GomokuBoard(
 
 const Engine = new Worker(new URL("../worker.js", import.meta.url));
 Engine.onmessage = (e) => {
-  console.log(gomokuBoard.getBoard());
-  console.log("Message from worker:", e.data);
   const x = e.data.bestmove.i;
   const y = e.data.bestmove.j;
-  console.log("Turn:", [x, y]);
   gameClick([y, x], true);
+};
+
+const engineTimeLimit = () => {
+  if (campaignStore.progress < 5) {
+    return 1000;
+  } else if (campaignStore.progress < 9) {
+    return 3000;
+  } else if (campaignStore.progress < 13) {
+    return 6000;
+  } else {
+    return 20000;
+  }
 };
 // ------- Game flow ------- \\
 function gameClick(turn: Turn, isComputerPlaying = false) {
@@ -123,7 +132,7 @@ function gameClick(turn: Turn, isComputerPlaying = false) {
     currentPlayer.value = ai.value;
     turnHistory.value.push(turn);
 
-    Engine.postMessage([gomokuBoard.getBoard(), "foo", 6000]);
+    Engine.postMessage([gomokuBoard.getBoard(), "foo", engineTimeLimit()]);
   } else {
     gomokuBoard.setStone(turn[0], turn[1], -1);
     currentPlayer.value = me.value;
@@ -133,8 +142,13 @@ function gameClick(turn: Turn, isComputerPlaying = false) {
   if (gomokuBoard.hasWon(!amIPlaying.value ? 1 : -1, turn[0], turn[1])) {
     winningCombination.value = gomokuBoard.getWinningCombination();
     gameState.value = GameState.Ended;
-    EndingType.Combination;
-    winner.value = !amIPlaying.value ? me.value : ai.value;
+    endingType.value = EndingType.Combination;
+    if (!amIPlaying.value) {
+      winner.value = me.value;
+      campaignStore.iterate();
+    } else {
+      winner.value = ai.value;
+    }
   } else {
     intervalRef.value = setInterval(() => {
       deductTime();
@@ -145,8 +159,18 @@ function sendMessage() {}
 function deductTime() {
   if (amIPlaying.value) {
     me.value.timeLeft -= 1000;
+    if (me.value.timeLeft <= 0) {
+      gameState.value = GameState.Ended;
+      endingType.value = EndingType.Time;
+      winner.value = ai.value;
+    }
   } else {
     ai.value.timeLeft -= 1000;
+    if (ai.value.timeLeft <= 0) {
+      gameState.value = GameState.Ended;
+      endingType.value = EndingType.Time;
+      winner.value = me.value;
+    }
   }
 }
 

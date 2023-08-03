@@ -56,11 +56,18 @@
             alt=""
           />
           <BaseButton
-            v-if="gameType !== GameType.Custom"
+            v-if="gameType === GameType.Quick || gameType === GameType.Ranked"
             :gomoku-blue="true"
             class="w-full"
             @click="playAgain"
             >Play again
+          </BaseButton>
+          <BaseButton
+            v-if="gameType === GameType.AI"
+            :gomoku-blue="true"
+            class="w-full"
+            @click="router.back()"
+            >To Campaign
           </BaseButton>
           <BaseButton
             v-if="gameType === GameType.Custom && rematchWaitingRoomID"
