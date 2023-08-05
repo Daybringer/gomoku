@@ -3,33 +3,18 @@
     style="padding-left: 0; padding-right: 0; padding-bottom: 0"
   >
     <BaseButton
-      @click="
-        () => {
-          campaignStore.setCampaignProgress(campaignStore.progress - 1);
-          setSVGStyles(rootSVG);
-        }
-      "
-      >Back</BaseButton
-    >
-    {{ progress }}
-    <BaseButton
+      :gomoku-blue="true"
+      class="mb-8 md:mt-4"
       @click="
         () => {
           campaignStore.setCampaignProgress(0);
           setSVGStyles(rootSVG);
         }
       "
-      >Reset</BaseButton
     >
-    <BaseButton
-      @click="
-        () => {
-          campaignStore.setCampaignProgress(campaignStore.progress + 1);
-          setSVGStyles(rootSVG);
-        }
-      "
-      >Forward</BaseButton
-    >
+      Reset ALL Progress
+    </BaseButton>
+
     <div class="w-full xl:w-1/2">
       <CampaignSvg />
       <!-- FIRST CONVERSATION -->
@@ -174,17 +159,17 @@
       >
         <div class="flex-1 flex flex-col justify-between gap-8">
           <CampaignStoryMessage svg="ninja">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque,
-            nostrum. Officiis vitae iste aliquid beatae saepe, eaque dolore iure
-            pariatur inventore quasi a nostrum perferendis id expedita illum
-            voluptatibus.
+            Surprise!!! I bet you didn't see me.
+            <br />
             <span class="italic text-gray-500"> Hi, hi, hi </span>
+            <br />
+            Now come and fight me!
           </CampaignStoryMessage>
           <CampaignStoryMessage svg="sad_man">
             TIP:
             <br />
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ipsa
-            deserunt incidunt facere expedita eius quo voluptas!
+            Be careful of Ninja's sneaky tactics. Try to play a little more
+            defensively.
           </CampaignStoryMessage>
           <CampaignStoryMessage svg="ninja">
             We will see
@@ -208,10 +193,10 @@
       >
         <div class="flex-1 flex flex-col justify-between gap-8">
           <CampaignStoryMessage svg="rokorubi">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nostrum
-            ipsam qui obcaecati nihil perferendis neque quibusdam dolores
-            repellendus doloremque facilis, illo corrupti. Sit repellendus
-            voluptatibus non iusto eos quas iste!
+            Oh, hello. I'm a cursed concubine of The Shogun.
+            <br />
+            Maybe if I defeat you he will pardon me and I can get my normal neck
+            back.
           </CampaignStoryMessage>
           <CampaignStoryMessage svg="sad_man">
             Aaah, get her.

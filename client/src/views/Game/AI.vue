@@ -108,9 +108,9 @@ Engine.onmessage = (e) => {
 
 const engineTimeLimit = () => {
   if (campaignStore.progress < 5) {
-    return 1000;
+    return 200;
   } else if (campaignStore.progress < 9) {
-    return 3000;
+    return 2000;
   } else if (campaignStore.progress < 13) {
     return 6000;
   } else {
