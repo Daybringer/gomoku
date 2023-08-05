@@ -20,7 +20,7 @@
         >
       </RouterLink>
       <SadManIntroDialog
-        class="w-full xl:w-2/3 text-current fill-current"
+        class="w-full xl:w-1/2 border-0 shadow-2xl bg-white dark:bg-gray-800 pt-12 mt-12 rounded-2xl text-current fill-current"
         alt="Old man asking for help (Start of campaign)"
       />
     </div>
