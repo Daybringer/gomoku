@@ -1,73 +1,107 @@
 <template>
-  <SearchBase />
+  <ViewBaseResponsive>
+    <div class="flex-1 flex flex-col place-items-center">
+      <BaseHighHeadline>Searching</BaseHighHeadline>
+      <span class="text-gray-800 dark:text-gray-200 text-3xl">{{
+        humanReadableTime(currentTime)
+      }}</span>
+      <SwingAnimation />
+    </div>
+  </ViewBaseResponsive>
 </template>
-<script lang="ts">
+<script setup lang="ts">
 // SocketIO
 import io, { Socket } from "socket.io-client";
-
-let socket: Socket;
 // Components
-import SearchBase from "@/components/TheSearchBase.vue";
+import SwingAnimation from "@/assets/svg/SwingAnimation.vue";
+import ViewBaseResponsive from "@/components/ViewBaseResponsive.vue";
 // Utils
-import { defineComponent } from "vue";
-import { GameType, SearchEvents } from "@/shared/types";
+import { humanReadableTime } from "@/utils/general";
+import { ref, onMounted, onUnmounted } from "vue";
+import { GameType } from "@/shared/types";
 import { useStore } from "@/store/store";
 import {
   SearchQuickGameDTO,
   SearchRankedGameDTO,
   SocketIOEvents,
 } from "@/shared/socketIO";
-export default defineComponent({
-  name: "App",
-  components: { SearchBase },
-  data() {
-    return {};
-  },
-  setup() {
-    const store = useStore();
-    return { store };
-  },
-  mounted() {
-    const urlParams = new URLSearchParams(window.location.search);
+import router from "@/router";
+import { NotificationType, useNotificationsStore } from "@/store/notifications";
+import BaseHighHeadline from "@/components/BaseHighHeadline.vue";
 
-    const gameType = urlParams.get("type");
+const store = useStore();
+let socket: Socket;
+const interval = ref(0);
+const currentTime = ref(0);
+function timeChange() {
+  currentTime.value += 1000;
+}
+onMounted(() => {
+  interval.value = window.setInterval(timeChange, 1000);
 
-    if (gameType === GameType.Quick) {
-      socket = io("/search/quick", { port: "3001" });
-      socket.emit(SocketIOEvents.SearchQuickGame, {
-        userID: this.store.isAuthenticated ? this.store.user.id : undefined,
-      } as SearchQuickGameDTO);
-      socket.on(SocketIOEvents.GameCreated, (roomID: string) => {
-        // Timeout for smoother experience (if player instantly finds game it jumps a lot)
-        setTimeout(() => {
-          this.$router.push({
-            path: "/game",
-            query: { type: GameType.Quick, roomID: roomID },
-          });
-        }, 1000);
-      });
-    } else if (gameType === GameType.Ranked) {
-      // TODO show notification
-      if (!this.store.isAuthenticated) this.$router.push("/login");
-      socket = io("/search/ranked", { port: "3001" });
-      const dto: SearchRankedGameDTO = { jwtToken: this.store.token };
-      socket.emit(SocketIOEvents.SearchRankedGame, dto);
-      socket.on(SocketIOEvents.GameCreated, (roomID: string) => {
-        setTimeout(() => {
-          this.$router.push({
+  const urlParams = new URLSearchParams(window.location.search);
+
+  const gameType = urlParams.get("type");
+
+  if (gameType === GameType.Quick) {
+    socket = io("/search/quick", { port: "3001" });
+    socket.emit(SocketIOEvents.SearchQuickGame, {
+      userID: store.isAuthenticated ? store.user.id : undefined,
+    } as SearchQuickGameDTO);
+    socket.on(SocketIOEvents.GameCreated, (roomID: string) => {
+      // Timeout for smoother experience (if a player instantly finds game it jumps a lot)
+      setTimeout(() => {
+        router.push({
+          path: "/game",
+          query: { type: GameType.Quick, roomID: roomID },
+        });
+      }, 1000);
+    });
+  } else if (gameType === GameType.Ranked) {
+    if (!store.isAuthenticated) {
+      useNotificationsStore().createNotification(
+        NotificationType.Error,
+        "You have to be LOGGED IN in order to play RANKED.",
+        true,
+        6
+      );
+      router.push("/login");
+    }
+    socket = io("/search/ranked", { port: "3001" });
+    const dto: SearchRankedGameDTO = { jwtToken: store.token };
+    socket.emit(SocketIOEvents.SearchRankedGame, dto);
+    socket.on(SocketIOEvents.GameCreated, (roomID: string) => {
+      setTimeout(
+        () =>
+          router.push({
             path: "/game",
             query: { type: GameType.Ranked, roomID: roomID },
-          });
-        }, 1000);
-      });
-    } else {
-      this.$router.push("/");
-    }
-  },
-  beforeUnmount() {
-    if (socket) {
-      socket.close();
-    }
-  },
+          }),
+        1000
+      );
+    });
+  } else {
+    router.push("/");
+  }
+});
+onUnmounted(() => {
+  clearInterval(interval.value);
+  if (socket) {
+    socket.close();
+  }
 });
 </script>
+<style scoped>
+.swing-animation {
+  width: 45vh;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
+  bottom: 3rem;
+}
+@media only screen and (min-width: 768px) {
+  .swing-animation {
+    width: 50vh;
+  }
+}
+</style>
