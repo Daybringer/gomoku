@@ -83,131 +83,15 @@
     </div>
   </div>
   <!-- Footer -->
-  <div
-    ref="contact"
-    id="contact"
-    class="w-full bg-gomoku-black p-4 pb-2 flex flex-col scroll-margin-navbar"
-  >
-    <IntersectionObserver @intersect="intersectionCrossed('contact')" />
-    <div
-      class="text-gray-200 w-full m-auto text-center flex items-center flex-row justify-items-center justify-center pb-2"
-    >
-      <a
-        href="https://github.com/Daybringer/gomoku"
-        target="_blank"
-        class="focus:outline-none focus:text-gray-700"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-8 stroke-current mr-5 hover:text-gray-500 focus:outline-none"
-          viewBox="0 0 24 24"
-          stroke-width="1.8"
-          fill="none"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-          <path
-            d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5"
-          />
-        </svg>
-      </a>
-      <a
-        href="https://discord.gg/ASYgt6j"
-        target="_blank"
-        class="focus:outline-none focus:text-gray-700"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-8 stroke-current hover:text-gray-500 focus:outline-none"
-          viewBox="0 0 24 24"
-          stroke-width="1.8"
-          fill="none"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-          <circle cx="9" cy="12" r="1" />
-          <circle cx="15" cy="12" r="1" />
-          <path d="M7.5 7.5c3.5-1 5.5-1 9 0" />
-          <path d="M7 16.5c3.5 1 6.5 1 10 0" />
-          <path
-            d="M15.5 17c0 1 1.5 3 2 3c1.5 0 2.833 -1.667 3.5 -3c.667 -1.667 .5 -5.833 -1.5 -11.5c-1.457 -1.015 -3 -1.34 -4.5 -1.5l-1 2.5"
-          />
-          <path
-            d="M8.5 17c0 1 -1.356 3 -1.832 3c-1.429 0 -2.698 -1.667 -3.333 -3c-.635 -1.667 -.476 -5.833 1.428 -11.5c1.388 -1.015 2.782 -1.34 4.237 -1.5l1 2.5"
-          />
-        </svg>
-      </a>
-      <a
-        href="https://play.google.com/store/apps"
-        target="_blank"
-        class="focus:outline-none focus:text-gray-700"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-8 stroke-current ml-5 hover:text-gray-500 focus:outline-none"
-          viewBox="0 0 24 24"
-          stroke-width="1.8"
-          stroke="#2c3e50"
-          fill="none"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-          <path
-            d="M4 3.71v16.58a0.7 .7 0 0 0 1.05 .606l14.622 -8.42a0.55 .55 0 0 0 0 -.953l-14.622 -8.419a0.7 .7 0 0 0 -1.05 .607z"
-          />
-          <line x1="15" y1="9" x2="4.5" y2="20.5" />
-          <line x1="4.5" y1="3.5" x2="15" y2="15" />
-        </svg>
-      </a>
-    </div>
-    <div
-      class="text-gray-200 h-6 w-full m-auto text-center flex items-center flex-row justify-items-center justify-center pb-2 my-2"
-    >
-      <RouterLink
-        to="/contact"
-        class="mr-5 hover:text-gray-500 focus:text-gray-600 focus:outline-none"
-        >Contact</RouterLink
-      >
-      <RouterLink
-        to="/privacy"
-        class="hover:text-gray-500 focus:text-gray-600 focus:outline-none"
-        >Privacy</RouterLink
-      >
-    </div>
-    <div class="w-full h-6 flex-1 m-auto text-center">
-      <span class="text-gray-200 text-base font-normal"
-        >Copyright (c) 2020
-        <a
-          href="https://daybringer.github.io/"
-          class="focus:text-gray-600 focus:outline-none hover:text-gray-500"
-          target="_blank"
-          >Vaňata
-        </a>
-        <span class="text-sm italic"
-          >licensed under
-          <a
-            href="https://github.com/Daybringer/gomoku/blob/master/LICENSE"
-            class="focus:text-gray-600 focus:outline-none not-italic hover:text-gray-500"
-            target="_blank"
-            >MIT</a
-          ></span
-        >
-      </span>
-    </div>
-  </div>
+  <TheFooter @intersection-crossed="intersectionCrossed('contact')" />
 </template>
 <script setup lang="ts">
-import { ref } from "vue";
 import IntersectionObserver from "@/components/IntersectionObserver.vue";
-import SadManIntroDialog from "@/assets/svg/SadManIntroDialog.vue";
 import TheMatchesIndexSection from "@/components/TheMatchesIndexSection.vue";
 import GameSimulation from "@/components/GameSimulation.vue";
-import BaseButton from "@/components/BaseButton.vue";
 import TheRulesIndexSection from "@/components/TheRulesIndexSection.vue";
 import TheCampaignIndexSection from "@/components/TheCampaignIndexSection.vue";
+import TheFooter from "@/components/TheFooter.vue";
 defineProps<{ logged: boolean; activeUsers: number }>();
 const emit = defineEmits<{
   (e: "intersectionCrossed", intersactionName: string);
