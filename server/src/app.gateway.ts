@@ -1,4 +1,7 @@
-import { RedirectToCustomRematchDTO } from './../../shared/socketIO';
+import {
+  RedirectToCustomRematchDTO,
+  SearchQuickGameDTO,
+} from 'src/shared/socketIO';
 import { SendMessageDTO } from 'src/shared/socketIO';
 import { GameRoomService } from './game/services/gameRoom.service';
 import {
@@ -121,9 +124,7 @@ export class CustomWaitingGateway implements OnGatewayDisconnect {
 
 // SEARCH
 @WebSocketGateway({ namespace: '/search/quick' })
-export class QuickSearchGateway
-  implements OnGatewayConnection, OnGatewayDisconnect
-{
+export class QuickSearchGateway implements OnGatewayDisconnect {
   constructor(
     private gameRoomService: GameRoomService,
     private searchService: SearchService,
@@ -131,12 +132,15 @@ export class QuickSearchGateway
 
   @WebSocketServer() server: Server;
 
-  handleConnection(client: Socket, ...args: any[]) {
-    this.searchService.joinQuickQueue(client.id);
-    const matchedPlayers = this.searchService.tryMatchPlayersQuickQue();
+  @SubscribeMessage(SocketIOEvents.SearchQuickGame)
+  searchQuickGame(client: Socket, dto: SearchQuickGameDTO): void {
+    this.searchService.joinQuickQueue(client.id, dto.userID);
+    const matchedPlayers = this.searchService.tryToMatchPlayersQuickQueue(
+      client.id,
+      dto.userID,
+    );
     if (matchedPlayers !== null) {
       const { roomID } = this.gameRoomService.createGameRoom(GameType.Quick);
-
       this.server
         .to(String(matchedPlayers[0]))
         .emit(SocketIOEvents.GameCreated, roomID);

@@ -12,7 +12,11 @@ import SearchBase from "@/components/TheSearchBase.vue";
 import { defineComponent } from "vue";
 import { GameType, SearchEvents } from "@/shared/types";
 import { useStore } from "@/store/store";
-import { SearchRankedGameDTO, SocketIOEvents } from "@/shared/socketIO";
+import {
+  SearchQuickGameDTO,
+  SearchRankedGameDTO,
+  SocketIOEvents,
+} from "@/shared/socketIO";
 export default defineComponent({
   name: "App",
   components: { SearchBase },
@@ -30,6 +34,9 @@ export default defineComponent({
 
     if (gameType === GameType.Quick) {
       socket = io("/search/quick", { port: "3001" });
+      socket.emit(SocketIOEvents.SearchQuickGame, {
+        userID: this.store.isAuthenticated ? this.store.user.id : undefined,
+      } as SearchQuickGameDTO);
       socket.on(SocketIOEvents.GameCreated, (roomID: string) => {
         // Timeout for smoother experience (if player instantly finds game it jumps a lot)
         setTimeout(() => {
