@@ -45,7 +45,7 @@ export class SearchService {
     const indexOfSocket = queue.findIndex(
       (member) => member.socketID === socketID,
     );
-    if (indexOfSocket) {
+    if (indexOfSocket != -1) {
       this.quickSearchQueue.splice(indexOfSocket, 1);
     }
   }
@@ -90,7 +90,10 @@ export class SearchService {
   }
 
   leaveQuickQueue(socketID: string) {
+    this.printQueues();
+    console.log('ID that left', socketID);
     this.removeSocketFromQueue(socketID, this.quickSearchQueue);
+    this.printQueues();
   }
 
   /**
@@ -114,5 +117,10 @@ export class SearchService {
     } else {
       return null;
     }
+  }
+
+  printQueues() {
+    console.log(this.quickSearchQueue);
+    console.log(this.rankedSearchQueue);
   }
 }
