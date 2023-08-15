@@ -1,14 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/users.service';
-interface RankedQueueMember {
+export interface RankedQueueMember {
   socketID: string;
   userID: number;
   elo: number;
+  searchIntervalID: ReturnType<typeof setTimeout> | null;
   // in ms
-  noOfSearchTries: number;
+  numberOfSearchAttempts: number;
 }
-interface QuickQueueMember {
+export interface QuickQueueMember {
   socketID: string;
   userID?: number;
 }
@@ -28,7 +29,13 @@ export class SearchService {
     const userID = payload.sub;
     const user = await this.usersService.findOneByID(userID);
     if (!user) throw 'User not found';
-    return { elo: user.elo, socketID, userID: user.id, noOfSearchTries: 0 };
+    return {
+      elo: user.elo,
+      socketID,
+      userID: user.id,
+      numberOfSearchAttempts: 1,
+      searchIntervalID: null,
+    };
   }
 
   private removeSocketFromQueue(
@@ -45,20 +52,36 @@ export class SearchService {
 
   joinRankedQueue(member: RankedQueueMember) {
     this.rankedSearchQueue.push(member);
+    console.log(this.rankedSearchQueue);
+    3;
   }
 
   leaveRankedQueue(socketID: string) {
     this.removeSocketFromQueue(socketID, this.rankedSearchQueue);
   }
 
-  tryMatchPlayersRankedQue(): [RankedQueueMember, RankedQueueMember] | null {
-    if (this.rankedSearchQueue.length >= 2) {
-      return this.rankedSearchQueue.splice(0, 2) as [
-        RankedQueueMember,
-        RankedQueueMember,
-      ];
+  tryToMatchPlayersRankedQueue(
+    member: RankedQueueMember,
+    eloToleranceBase: number,
+  ): [RankedQueueMember, RankedQueueMember] | null {
+    console.log('Tolerance:', eloToleranceBase * member.numberOfSearchAttempts);
+    const foundOpponent = this.rankedSearchQueue.find(
+      (opponent) =>
+        member.socketID !== opponent.socketID &&
+        opponent.userID !== member.userID &&
+        Math.abs(opponent.elo - member.elo) <=
+          eloToleranceBase * member.numberOfSearchAttempts,
+    );
+    if (foundOpponent) {
+      this.removeSocketFromQueue(member.socketID, this.rankedSearchQueue);
+      this.removeSocketFromQueue(
+        foundOpponent.socketID,
+        this.rankedSearchQueue,
+      );
+      return [member, foundOpponent];
+    } else {
+      return null;
     }
-    return null;
   }
 
   //Quick queue

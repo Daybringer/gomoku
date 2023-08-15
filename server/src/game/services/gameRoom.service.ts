@@ -248,8 +248,7 @@ export class GameRoomService {
   handleGameDisconnect(server: Server, disconecteeSocket: Socket) {
     const roomID = this.findRoomIDBySocketID(disconecteeSocket.id);
     const room = this.findGameRoom(roomID);
-    console.log(room);
-    if (room === null) return;
+    if (!room) return;
 
     this.endGame(
       server,

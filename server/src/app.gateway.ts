@@ -13,7 +13,10 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { GameService } from './game/services/game.service';
-import { SearchService } from './game/services/search.service';
+import {
+  SearchService,
+  RankedQueueMember,
+} from './game/services/search.service';
 
 // DTOs
 import {
@@ -32,6 +35,7 @@ import {
 } from './shared/socketIO';
 import { CustomRoomService } from './game/services/customRoom.service';
 import { GameType } from './shared/types';
+import { UnauthorizedException } from '@nestjs/common';
 
 // Whole site things - current people online...
 @WebSocketGateway({
@@ -167,17 +171,32 @@ export class RankedSearchGateway implements OnGatewayDisconnect {
 
   @SubscribeMessage(SocketIOEvents.SearchRankedGame)
   async searchRankedGame(client: Socket, dto: SearchRankedGameDTO) {
-    //TODO implement proper Ranked matchmaking
-    const member = await this.searchService.verifyJwt(client.id, dto.jwtToken);
-    this.searchService.joinRankedQueue(member);
-    const matchedPlayers = this.searchService.tryMatchPlayersRankedQue();
-    if (matchedPlayers !== null) {
-      const [alice, bob] = matchedPlayers;
-      const { roomID } = this.gameRoomService.createGameRoom(GameType.Ranked);
-
-      this.server.to(bob.socketID).emit(SocketIOEvents.GameCreated, roomID);
-      this.server.to(alice.socketID).emit(SocketIOEvents.GameCreated, roomID);
+    let member: RankedQueueMember;
+    try {
+      member = await this.searchService.verifyJwt(client.id, dto.jwtToken);
+    } catch (error) {
+      throw new UnauthorizedException(error);
     }
+    this.searchService.joinRankedQueue(member);
+    member.searchIntervalID = setInterval(() => {
+      const players = this.searchService.tryToMatchPlayersRankedQueue(
+        member,
+        10,
+      );
+      if (players) {
+        players[0].socketID;
+        clearInterval(member.searchIntervalID);
+        const { roomID } = this.gameRoomService.createGameRoom(GameType.Ranked);
+        this.server
+          .to(players[0].socketID)
+          .emit(SocketIOEvents.GameCreated, roomID);
+        this.server
+          .to(players[1].socketID)
+          .emit(SocketIOEvents.GameCreated, roomID);
+      } else {
+        member.numberOfSearchAttempts++;
+      }
+    }, 1000);
   }
 
   handleDisconnect(client: Socket) {
@@ -196,7 +215,7 @@ export class GameGateway implements OnGatewayDisconnect {
   @WebSocketServer() server: Server;
 
   async handleDisconnect(client: Socket) {
-    console.log('disconnect');
+    console.log('disconnect', client, client.id);
     this.gameRoomService.handleGameDisconnect(this.server, client);
   }
 
