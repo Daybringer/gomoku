@@ -7,6 +7,9 @@ export class UserStatisticsEntity {
   id: number;
 
   @Column({ default: 0 })
+  leaderboardPosition: number;
+
+  @Column({ default: 0 })
   rankedWon: number;
 
   @Column({ default: 0 })

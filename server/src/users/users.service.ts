@@ -1,6 +1,6 @@
-import { UserSettingsEntity } from './../models/userSettings.entity';
-import { UserStatisticsEntity } from './../models/userStatistics.entity';
-import { UserStatistics } from './../../../shared/interfaces/userStatistics.interface';
+import { UserSettingsEntity } from 'src/models/userSettings.entity';
+import { UserStatisticsEntity } from 'src/models/userStatistics.entity';
+import { Cron } from '@nestjs/schedule';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TokensService } from 'src/auth/token.service';
@@ -193,6 +193,17 @@ export class UsersService {
       where: { id: MoreThan(user.elo) },
     });
     return 1 + numberOfUsersWithHigherElo;
+  }
+
+  // Runs every hour
+  // Goes through every user ordered by elo and assigns his position
+  @Cron('0 * * * *')
+  async updateLeaderboardPositionsJob() {
+    const users = await this.userRepository.find({ order: { elo: 'DESC' } });
+    users.forEach((user, index) => {
+      user.statistics.leaderboardPosition = index + 1;
+      this.userStatistics.save(user.statistics);
+    });
   }
 
   async addNewGameToStats(

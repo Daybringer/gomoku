@@ -17,6 +17,7 @@ const achievementRecords: Record<
   AchievementKeys,
   { achievementFullName: string; description: string }
 > = {
+  // Campaign
   firstWin: {
     achievementFullName: "Start of something big",
     description: "Get a first win in Quick/Ranked",

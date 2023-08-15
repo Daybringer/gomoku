@@ -14,6 +14,7 @@ import {
 } from './app.gateway';
 import { ConfigModule } from '@nestjs/config';
 import { GameModule } from './game/game.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 require('dotenv').config();
 @Module({
@@ -24,6 +25,7 @@ require('dotenv').config();
       autoLoadEntities: true,
       synchronize: true,
     }),
+    ScheduleModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,
     }),
