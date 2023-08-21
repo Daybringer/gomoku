@@ -5,7 +5,7 @@
     <!-- Main div -->
     <div
       ref="container"
-      class="xl:w-80 overflow-hidden rounded-lg bg-gray-700 z-10 flex xl:flex-row flex-col shadow-2xl"
+      class="2xl:w-80 overflow-hidden rounded-lg bg-gray-700 z-10 flex 2xl:flex-row flex-col shadow-2xl"
     >
       <div class="square flex relative">
         <Gameboard
