@@ -1,22 +1,20 @@
 <template>
   <ViewBaseResponsive>
-    <BaseHighHeadline class="my-12">Leaderboard</BaseHighHeadline>
-    <div class="w-full gap-4 justify-center flex flex-row">
-      <div
-        class="w-1/3 p-2 border-4 border-gray-300 dark:border-gray-800 rounded-lg shadow-xl"
-      >
-        <BaseInput
-          :model-value="searchedName"
-          @update:model-value="(newValue) => (searchedName = newValue)"
-          @enter-pressed="fetchUsers"
-        />
-      </div>
+    <BaseHighHeadline class="md:my-12 my-6">Leaderboard</BaseHighHeadline>
+    <div class="w-full gap-4 justify-center flex md:flex-row flex-col">
+      <BaseInput
+        class="md:w-1/3 w-full"
+        :model-value="searchedName"
+        placeholder="Search by name"
+        @update:model-value="(newValue) => (searchedName = newValue)"
+        @enter-pressed="fetchUsers"
+      />
       <BaseButton @click="fetchUsers" class="px-6" :gomoku-blue="true"
         >Search</BaseButton
       >
     </div>
     <div
-      class="flex flex-col gap-4 w-50 mt-12 bg-gray-100 dark:bg-gray-800 shadow-xl p-6 rounded-xl"
+      class="flex flex-col gap-4 md:w-80 xl:w-50 w-full md:mt-12 mt-6 bg-gray-100 dark:bg-gray-800 shadow-xl p-6 rounded-xl"
     >
       <p v-show="users.length === 0" class="text-center text-2xl italic">
         There's nothing here.
