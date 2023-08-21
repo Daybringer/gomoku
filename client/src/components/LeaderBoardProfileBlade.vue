@@ -14,7 +14,7 @@
             : 'text-slate-800'
         "
       />
-      <p class="text-gray-100 font-medium absolute z-10">
+      <p class="text-gray-100 dark:text-gray-600 font-medium absolute z-10">
         #{{ user.statistics.leaderboardPosition }}
       </p>
     </div>
@@ -24,6 +24,7 @@
       :profile-icon="user.settings.selectedIcon"
       :user-id="user.id"
       :username="user.username"
+      :target-self="true"
     ></BaseProfileLink>
   </div>
 </template>

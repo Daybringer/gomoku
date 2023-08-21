@@ -65,7 +65,6 @@ async function buyIcon(profileIcon: ProfileIcon) {
         ><span class="text-lg">{{ user.elo }}</span>
       </p>
       <p>
-        <!-- TODO leaderboard position -->
         <span class="text-xl font-medium">Leaderboard: </span
         ><span class="text-lg">#{{ user.statistics.leaderboardPosition }}</span>
       </p>

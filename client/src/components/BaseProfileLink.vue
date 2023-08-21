@@ -1,6 +1,6 @@
 <template>
   <router-link
-    target="_blank"
+    :target="targetSelf ? '_self' : '_blank'"
     :to="isLogged ? link : ''"
     :is="isLogged ? 'span' : 'router-link'"
     :class="isLogged ? 'cursor-pointer' : 'cursor-not-allowed'"
@@ -19,6 +19,7 @@ const props = defineProps<{
   username: string;
   profileIcon: ProfileIcon;
   userId?: number;
+  targetSelf?: boolean;
 }>();
 const link = computed(() => {
   return `/profile/${props.userId || 0}`;
