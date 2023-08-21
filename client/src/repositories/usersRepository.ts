@@ -1,3 +1,5 @@
+import { GetUsersResponseDTO } from "../shared/DTO/get-users.response.dto";
+import { GetUsersDTO } from "../shared/DTO/get-users.dto";
 import Repository from "./Repository";
 import { User } from "../shared/interfaces/user.interface";
 import { BuyIconDTO } from "../shared/DTO/buy-icon.dto";
@@ -16,7 +18,10 @@ export default {
     return Repository.post(`${resource}/check-username`, { username });
   },
   getUserProfile(id: number) {
-    return Repository.get<User>(`${resource}/profile/${id}`)
+    return Repository.get<User>(`${resource}/profile/${id}`);
+  },
+  getUsers(dto: GetUsersDTO) {
+    return Repository.post<GetUsersResponseDTO>(`${resource}/`, dto);
   },
   getOwnUserProfile() {
     return Repository.get<User>(`${resource}/profile`);

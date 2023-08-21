@@ -1,3 +1,4 @@
+import { GetUsersDTO } from '../shared/DTO/get-users.dto';
 import { UserSettingsEntity } from 'src/models/userSettings.entity';
 import { UserStatisticsEntity } from 'src/models/userStatistics.entity';
 import { Cron } from '@nestjs/schedule';
@@ -6,12 +7,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { TokensService } from 'src/auth/token.service';
 import { AnyGame } from 'src/game/game.class';
 import { ProfileIcon, profileIconRecords } from 'src/shared/icons';
-import { MoreThan, Repository } from 'typeorm';
+import { Any, Like, MoreThan, Repository } from 'typeorm';
 
 import { UserEntity } from '../models/user.entity';
 import { GameBoard, GameType, LoginStrategy } from '../shared/types';
 
 import { adjectives, nouns } from './randomNameDict';
+import { User } from 'src/shared/interfaces/user.interface';
 @Injectable()
 export class UsersService {
   constructor(
@@ -128,6 +130,22 @@ export class UsersService {
 
   async findAll(): Promise<UserEntity[]> {
     return this.userRepository.find();
+  }
+
+  async find(dto: GetUsersDTO): Promise<User[]> {
+    if (dto.username) {
+      return this.userRepository.find({
+        skip: dto.skip,
+        take: dto.take,
+        order: { elo: 'DESC' },
+        where: { username: Like(`%${dto.username}%`) },
+      });
+    }
+    return this.userRepository.find({
+      skip: dto.skip,
+      take: dto.take,
+      order: { elo: 'DESC' },
+    });
   }
 
   async findOneByID(id: number): Promise<UserEntity | undefined> {

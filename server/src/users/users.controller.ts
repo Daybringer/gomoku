@@ -1,3 +1,5 @@
+import { GetUsersResponseDTO } from '../shared/DTO/get-users.response.dto';
+import { GetUsersDTO } from '../shared/DTO/get-users.dto';
 import {
   BadRequestException,
   Body,
@@ -41,6 +43,13 @@ export class UsersController {
     const { password, mailVerificationCode, socialID, ...user } =
       await this.usersService.findOneByID(id);
     return user;
+  }
+
+  @Post('/')
+  async fetchUsers(@Body() dto: GetUsersDTO) {
+    const users = await this.usersService.find(dto);
+    const responseDTO: GetUsersResponseDTO = { users };
+    return responseDTO;
   }
 
   @Post('/generate-name')

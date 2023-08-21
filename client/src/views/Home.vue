@@ -60,7 +60,6 @@
     @intersect="intersectionCrossed('campaign')"
   />
   <!-- Rules -->
-
   <TheRulesIndexSection @intersection-crossed="intersectionCrossed('rules')" />
   <!-- Origins -->
   <div

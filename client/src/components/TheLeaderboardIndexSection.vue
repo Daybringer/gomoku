@@ -4,9 +4,11 @@
     <BaseHighHeadline>Leaderboard</BaseHighHeadline>
 
     <div class="md:w-60 w-full flex flex-col gap-6 py-12">
-      <LeaderBoardProfileBlade :user="user" />
-      <LeaderBoardProfileBlade :user="user" />
-      <LeaderBoardProfileBlade :user="user" />
+      <LeaderBoardProfileBlade
+        v-for="topUser in topThreeUsers"
+        :key="topUser.username"
+        :user="topUser"
+      />
       <DotsIcon
         v-show="!amIInTopThree && isAuthenticated"
         class="h-8 rotate-90"
@@ -40,7 +42,9 @@ import LeaderBoardProfileBlade from "./LeaderBoardProfileBlade.vue";
 import IntersectionObserver from "./IntersectionObserver.vue";
 import BaseButton from "./BaseButton.vue";
 import DotsIcon from "@/assets/svg/DotsIcon.vue";
-import { computed } from "vue";
+import { Ref, computed, onMounted, ref } from "vue";
+import usersRepository from "@/repositories/usersRepository";
+import { User } from "@/shared/interfaces/user.interface";
 
 const { user, isAuthenticated } = storeToRefs(useStore());
 const amIInTopThree = computed(
@@ -52,4 +56,13 @@ const amIInTopThree = computed(
 const emit = defineEmits<{
   (e: "intersect");
 }>();
+const topThreeUsers: Ref<User[]> = ref([]);
+
+onMounted(() => {
+  usersRepository.getUsers({ skip: 0, take: 3 }).then((res) => {
+    res.data.users.forEach((fetchedUser) =>
+      topThreeUsers.value.push(fetchedUser)
+    );
+  });
+});
 </script>
