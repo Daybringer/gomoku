@@ -43,7 +43,11 @@
       <GameSimulation></GameSimulation>
     </div>
   </div>
-  <TheMatchesIndexSection id="matches" ref="matches" />
+  <TheMatchesIndexSection
+    id="matches"
+    ref="matches"
+    @intersect="intersectionCrossed('matches')"
+  />
   <TheLeaderboardIndexSection
     id="leaderboard"
     ref="leaderboard"

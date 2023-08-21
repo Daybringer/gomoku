@@ -1,5 +1,6 @@
 <template>
   <ViewBaseResponsive class="bg-gray-200">
+    <IntersectionObserver @intersect="emit('intersect')" />
     <div class="w-90 md:w-50 flex items-center flex-col gap-12 mt-12 mb-32">
       <RouterLink
         class="focus:scale-105 hover:scale-105 transition-transform"
@@ -97,4 +98,8 @@ import BaseInfoPill from "./BaseInfoPill.vue";
 import BaseMidHeadline from "./BaseMidHeadline.vue";
 import MatchRecordGameTypeIcon from "./MatchRecordGameTypeIcon.vue";
 import ViewBaseResponsive from "./ViewBaseResponsive.vue";
+import IntersectionObserver from "./IntersectionObserver.vue";
+const emit = defineEmits<{
+  (e: "intersect");
+}>();
 </script>
