@@ -44,8 +44,12 @@
     </div>
   </div>
   <TheMatchesIndexSection id="matches" ref="matches" />
+  <TheLeaderboardIndexSection
+    id="leaderboard"
+    ref="leaderboard"
+    @intersect="intersectionCrossed('leaderboard')"
+  />
   <!-- Campaign -->
-
   <TheCampaignIndexSection
     id="campaign"
     ref="campaign"
@@ -92,6 +96,7 @@ import GameSimulation from "@/components/GameSimulation.vue";
 import TheRulesIndexSection from "@/components/TheRulesIndexSection.vue";
 import TheCampaignIndexSection from "@/components/TheCampaignIndexSection.vue";
 import TheFooter from "@/components/TheFooter.vue";
+import TheLeaderboardIndexSection from "@/components/TheLeaderboardIndexSection.vue";
 defineProps<{ logged: boolean; activeUsers: number }>();
 const emit = defineEmits<{
   (e: "intersectionCrossed", intersactionName: string);

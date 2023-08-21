@@ -38,6 +38,13 @@
               >
 
               <NavbarNavigationLink
+                :active="activeIntersection === 'leaderboard' && isHomePage"
+                :to="'/#leaderboard'"
+                :type="'secondary'"
+                >Leaderboard</NavbarNavigationLink
+              >
+
+              <NavbarNavigationLink
                 :active="activeIntersection === 'campaign' && isHomePage"
                 :to="'/#campaign'"
                 :type="'secondary'"
@@ -200,6 +207,12 @@
           @click="burgerDropdownIsToggled = false"
           :active="activeIntersection === 'matches' && isHomePage"
           >Matches</MobileNavbarLink
+        >
+        <MobileNavbarLink
+          :to="'/#leaderboard'"
+          @click="burgerDropdownIsToggled = false"
+          :active="activeIntersection === 'leaderboard' && isHomePage"
+          >Leaderboard</MobileNavbarLink
         >
         <MobileNavbarLink
           :to="'/#campaign'"
