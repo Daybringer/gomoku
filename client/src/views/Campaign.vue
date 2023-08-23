@@ -3,7 +3,6 @@
     style="padding-left: 0; padding-right: 0; padding-bottom: 0"
   >
     <BaseButton
-      :gomoku-blue="true"
       class="mb-8 md:mt-4"
       @click="
         () => {
@@ -14,6 +13,14 @@
     >
       Reset ALL Progress
     </BaseButton>
+    <BaseButton
+      @click="toggleConstantAnimations"
+      :gomoku-blue="true"
+      class="mb-8"
+      >{{
+        !areConstantAnimationsRunning ? "Start animations" : "Stop animations"
+      }}</BaseButton
+    >
 
     <div class="w-full xl:w-1/2">
       <CampaignSvg />
@@ -304,7 +311,11 @@ const rootSVG: Ref<Element> = ref(SVG());
 
 const campaignStore = reactive(useCampaignStore());
 
-const forkFlipped = ref();
+const forkFlipped = ref(false);
+
+const areConstantAnimationsRunning = ref(false);
+
+const runners: Ref<Runner[]> = ref([]);
 
 const { progress } = storeToRefs(campaignStore);
 
@@ -503,55 +514,175 @@ function interactibleClick(
   }
 }
 
+function toggleConstantAnimations() {
+  if (areConstantAnimationsRunning.value) {
+    pauseConstantAnimations();
+  } else {
+    resumeConstantAnimations();
+  }
+  areConstantAnimationsRunning.value = !areConstantAnimationsRunning.value;
+}
+
+function setConstantAnimations() {
+  rootSVG.value = SVG("#svg5");
+  const svg = rootSVG.value;
+  // Flying fishes
+  runners.value.push(
+    svg
+      .find(IDs.fishRight2)[0]
+      .transform({ rotate: -5, origin: "right" }, true)
+      .animate(1400)
+      .transform({ rotate: 10, origin: "right" }, true)
+      .loop(undefined, true)
+  );
+  runners.value.push(
+    svg
+      .find(IDs.fishRight1)[0]
+      .transform({ rotate: -5, origin: "right" }, true)
+      .animate(1400)
+      .transform({ rotate: 10, origin: "right" }, true)
+      .loop(undefined, true)
+  );
+  runners.value.push(
+    svg
+      .find(IDs.fishRight3)[0]
+      .transform({ rotate: -5, origin: "right" }, true)
+      .animate(1400)
+      .transform({ rotate: 10, origin: "right" }, true)
+      .loop(undefined, true)
+  );
+  runners.value.push(
+    svg
+      .find(IDs.fishRight4)[0]
+      .transform({ rotate: -5, origin: "right" }, true)
+      .animate(1400)
+      .transform({ rotate: 10, origin: "right" }, true)
+      .loop(undefined, true)
+  );
+  runners.value.push(
+    svg
+      .find(IDs.fishLeft1)[0]
+      .transform({ rotate: -5, origin: "right" }, true)
+      .animate(1400)
+      .transform({ rotate: 10, origin: "right" }, true)
+      .loop(undefined, true)
+  );
+  runners.value.push(
+    svg
+      .find(IDs.fishLeft2)[0]
+      .transform({ rotate: -5, origin: "right" }, true)
+      .animate(1400)
+      .transform({ rotate: 10, origin: "right" }, true)
+      .loop(undefined, true)
+  );
+
+  // Top clouds
+  runners.value.push(
+    svg
+      .find(IDs.topClouds)[0]
+      .animate(2000)
+      .transform({ translateX: -3 }, true)
+      .loop(undefined, true)
+  );
+
+  runners.value.push(
+    svg
+      .find(IDs.rotateFlower1)[0]
+      .animate(3000)
+      .transform({ rotate: -360 }, true)
+      .loop(undefined, true, 600)
+  );
+  runners.value.push(
+    svg
+      .find(IDs.rotateFlower2)[0]
+      .animate(4000)
+      .transform({ rotate: 360 }, true)
+      .loop(undefined, true, 600)
+  );
+  runners.value.push(
+    svg
+      .find(IDs.rotateFlower3)[0]
+      .animate(3500)
+      .transform({ rotate: -360 }, true)
+      .loop(undefined, true, 600)
+  );
+
+  runners.value.push(
+    svg
+      .find(IDs.leaves1)[0]
+      .transform({ rotate: -5, origin: "bottom left" }, true)
+      .animate(1400)
+      .transform({ rotate: 10, origin: "bottom left" }, true)
+      .loop(undefined, true)
+  );
+  runners.value.push(
+    svg
+      .find(IDs.leaves2)[0]
+      .transform({ rotate: -5, origin: "bottom left" }, true)
+      .animate(1400)
+      .transform({ rotate: 10, origin: "bottom left" }, true)
+      .loop(undefined, true)
+  );
+  runners.value.push(
+    svg
+      .find(IDs.leaves3)[0]
+      .transform({ rotate: -5, origin: "bottom left" }, true)
+      .animate(1400)
+      .transform({ rotate: 10, origin: "bottom left" }, true)
+      .loop(undefined, true)
+  );
+
+  runners.value.push(
+    svg
+      .find(IDs.flowerDecorationL1)[0]
+      .transform({ rotate: -5, origin: "top" }, true)
+      .animate(1400)
+      .transform({ rotate: 10, origin: "top" }, true)
+      .loop(undefined, true)
+  );
+  runners.value.push(
+    svg
+      .find(IDs.flowerDecorationL2)[0]
+      .transform({ rotate: -5, origin: "top" }, true)
+      .animate(1400)
+      .transform({ rotate: 10, origin: "top" }, true)
+      .loop(undefined, true)
+  );
+  runners.value.push(
+    svg
+      .find(IDs.flowerDecorationR1)[0]
+      .transform({ rotate: -5, origin: "top" }, true)
+      .animate(1400)
+      .transform({ rotate: 10, origin: "top" }, true)
+      .loop(undefined, true)
+  );
+
+  runners.value.push(
+    svg
+      .find(IDs.flowerDecorationR2)[0]
+      .transform({ rotate: -5, origin: "top" }, true)
+      .animate(1400)
+      .transform({ rotate: 10, origin: "top" }, true)
+      .loop(undefined, true)
+  );
+}
+
+function pauseConstantAnimations() {
+  runners.value.forEach((runner) => {
+    runner.reset();
+    runner.unschedule();
+  });
+  runners.value = [];
+}
+function resumeConstantAnimations() {
+  if (runners.value.length === 0) setConstantAnimations();
+}
+
 onMounted(() => {
   rootSVG.value = SVG("#svg5");
   const svg = rootSVG.value;
   addListenersToInteractibles(svg);
   setSVGStyles(svg);
-  // Top clouds
-  const runner = new Runner();
-  svg
-    .find(IDs.topClouds)[0]
-    .animate(2000)
-    .transform({ translateX: -3 }, true)
-    .loop(undefined, true);
-  // Flying fishes
-  svg
-    .find(IDs.fishRight2)[0]
-    .transform({ rotate: -5, origin: "right" }, true)
-    .animate(1400)
-    .transform({ rotate: 10, origin: "right" }, true)
-    .loop(undefined, true);
-  svg
-    .find(IDs.fishRight1)[0]
-    .transform({ rotate: -5, origin: "right" }, true)
-    .animate(1400)
-    .transform({ rotate: 10, origin: "right" }, true)
-    .loop(undefined, true);
-  svg
-    .find(IDs.fishRight3)[0]
-    .transform({ rotate: -5, origin: "right" }, true)
-    .animate(1400)
-    .transform({ rotate: 10, origin: "right" }, true)
-    .loop(undefined, true);
-  svg
-    .find(IDs.fishRight4)[0]
-    .transform({ rotate: -5, origin: "right" }, true)
-    .animate(1400)
-    .transform({ rotate: 10, origin: "right" }, true)
-    .loop(undefined, true);
-  svg
-    .find(IDs.fishLeft1)[0]
-    .transform({ rotate: -5, origin: "right" }, true)
-    .animate(1400)
-    .transform({ rotate: 10, origin: "right" }, true)
-    .loop(undefined, true);
-  svg
-    .find(IDs.fishLeft2)[0]
-    .transform({ rotate: -5, origin: "right" }, true)
-    .animate(1400)
-    .transform({ rotate: 10, origin: "right" }, true)
-    .loop(undefined, true);
   // Garden fork
   svg
     .find(IDs.gardenFork1)[0]
@@ -656,22 +787,6 @@ onMounted(() => {
       .transform({ translateX: 7 }, true);
   });
 
-  svg
-    .find(IDs.rotateFlower1)[0]
-    .animate(3000)
-    .transform({ rotate: -360 }, true)
-    .loop(undefined, true, 600);
-  svg
-    .find(IDs.rotateFlower2)[0]
-    .animate(4000)
-    .transform({ rotate: 360 }, true)
-    .loop(undefined, true, 600);
-  svg
-    .find(IDs.rotateFlower3)[0]
-    .animate(3500)
-    .transform({ rotate: -360 }, true)
-    .loop(undefined, true, 600);
-
   // Geisha dancers
   svg
     .find(IDs.dancer1)[0]
@@ -687,52 +802,6 @@ onMounted(() => {
       //@ts-ignore
       this.animate(200).transform({ flip: "x" }, true).loop(10, true);
     });
-
-  //
-  svg
-    .find(IDs.leaves1)[0]
-    .transform({ rotate: -5, origin: "bottom left" }, true)
-    .animate(1400)
-    .transform({ rotate: 10, origin: "bottom left" }, true)
-    .loop(undefined, true);
-  svg
-    .find(IDs.leaves2)[0]
-    .transform({ rotate: -5, origin: "bottom left" }, true)
-    .animate(1400)
-    .transform({ rotate: 10, origin: "bottom left" }, true)
-    .loop(undefined, true);
-  svg
-    .find(IDs.leaves3)[0]
-    .transform({ rotate: -5, origin: "bottom left" }, true)
-    .animate(1400)
-    .transform({ rotate: 10, origin: "bottom left" }, true)
-    .loop(undefined, true);
-
-  svg
-    .find(IDs.flowerDecorationL1)[0]
-    .transform({ rotate: -5, origin: "top" }, true)
-    .animate(1400)
-    .transform({ rotate: 10, origin: "top" }, true)
-    .loop(undefined, true);
-  svg
-    .find(IDs.flowerDecorationL2)[0]
-    .transform({ rotate: -5, origin: "top" }, true)
-    .animate(1400)
-    .transform({ rotate: 10, origin: "top" }, true)
-    .loop(undefined, true);
-  svg
-    .find(IDs.flowerDecorationR1)[0]
-    .transform({ rotate: -5, origin: "top" }, true)
-    .animate(1400)
-    .transform({ rotate: 10, origin: "top" }, true)
-    .loop(undefined, true);
-
-  svg
-    .find(IDs.flowerDecorationR2)[0]
-    .transform({ rotate: -5, origin: "top" }, true)
-    .animate(1400)
-    .transform({ rotate: 10, origin: "top" }, true)
-    .loop(undefined, true);
 
   svg
     .find(IDs.man1)[0]
