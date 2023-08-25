@@ -28,6 +28,16 @@
           :lines-width="1"
           @game-click="(turn) => emit('gameClick', turn)"
         />
+        <GameboardClassic
+          v-if="selectedBoard === GameBoard.Classic"
+          :turn-history="turnHistory"
+          :cross-color="me.playerSymbol === 2 ? myColor : enemyColor"
+          :circle-color="me.playerSymbol === 1 ? myColor : enemyColor"
+          :interactive="currentPlayer.socketID === me.socketID"
+          :winning-combination="winningCombination"
+          :lines-width="1"
+          @game-click="(turn) => emit('gameClick', turn)"
+        />
         <!-- Coinflip overlay -->
         <div
           class="absolute z-20 h-full w-full flex place-items-center justify-center bg-gray-100 dark:bg-gray-700"
@@ -189,6 +199,7 @@ import ViewBaseResponsive from "./ViewBaseResponsive.vue";
 import { string } from "yup";
 import GameboardModern from "./GameboardModern.vue";
 import { useStore } from "@/store/store";
+import GameboardClassic from "./GameboardClassic.vue";
 const props = defineProps<{
   me: Player;
   opponent: Player;

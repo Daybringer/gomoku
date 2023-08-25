@@ -2,12 +2,11 @@
 import ViewBaseFixedHeight from "@/components/ViewBaseFixedHeight.vue";
 import TheMatchesIndexSection from "@/components/TheMatchesIndexSection.vue";
 import { NotificationType, useNotificationsStore } from "@/store/notifications";
-import Gameboard from "@/components/Gameboard.vue";
 import { useStore } from "@/store/store";
 import { reactive } from "vue";
 import { Turn } from "@/shared/types";
 import Coinflip from "@/components/Coinflip.vue";
-import GameboardModern from "@/components/GameboardModern.vue";
+import GameboardClassic from "@/components/GameboardClassic.vue";
 const userStore = useStore();
 function createNotification(mode: number) {
   const store = useNotificationsStore();
@@ -62,7 +61,7 @@ function gameClick(turn: Turn) {
       </button>
     </div>
     <div class="h-96 w-96 flex">
-      <GameboardModern
+      <GameboardClassic
         :turnHistory="turns"
         :crossColor="userStore.user.settings.opponentColor"
         :circleColor="userStore.user.settings.playerColor"

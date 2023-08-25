@@ -1,0 +1,20 @@
+<template>
+  <svg
+    class="fill-current"
+    version="1.1"
+    viewBox="0 0 11.9578 11.9578"
+    xml:space="preserve"
+    id="svg3645"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:svg="http://www.w3.org/2000/svg"
+  >
+    <circle
+      cx="5.9789"
+      cy="5.9789"
+      r="5.9789"
+      fill="currentColor"
+      stroke-width="0"
+      id="circle3641"
+    />
+  </svg>
+</template>
