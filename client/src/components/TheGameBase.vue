@@ -9,6 +9,7 @@
     >
       <div class="square flex relative">
         <Gameboard
+          v-if="selectedBoard === GameBoard.Standard"
           :turn-history="turnHistory"
           :cross-color="me.playerSymbol === 2 ? myColor : enemyColor"
           :circle-color="me.playerSymbol === 1 ? myColor : enemyColor"
@@ -16,8 +17,17 @@
           :winning-combination="winningCombination"
           :lines-width="1"
           @game-click="(turn) => emit('gameClick', turn)"
-        >
-        </Gameboard>
+        />
+        <GameboardModern
+          v-if="selectedBoard === GameBoard.Modern"
+          :turn-history="turnHistory"
+          :cross-color="me.playerSymbol === 2 ? myColor : enemyColor"
+          :circle-color="me.playerSymbol === 1 ? myColor : enemyColor"
+          :interactive="currentPlayer.socketID === me.socketID"
+          :winning-combination="winningCombination"
+          :lines-width="1"
+          @game-click="(turn) => emit('gameClick', turn)"
+        />
         <!-- Coinflip overlay -->
         <div
           class="absolute z-20 h-full w-full flex place-items-center justify-center bg-gray-100 dark:bg-gray-700"
@@ -147,7 +157,7 @@
   </ViewBaseResponsive>
 </template>
 <script setup lang="ts">
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref, toRefs, watch } from "vue";
 // Types
 import { GameState } from "@/utils/types.dt";
 // Howler
@@ -164,6 +174,7 @@ import GameStoneCross from "@/assets/svg/GameStoneCross.vue";
 // Utils
 import {
   EndingType,
+  GameBoard,
   GameChatMessage,
   GameType,
   Opening,
@@ -176,6 +187,8 @@ import { computed } from "@vue/reactivity";
 import Gameboard from "./Gameboard.vue";
 import ViewBaseResponsive from "./ViewBaseResponsive.vue";
 import { string } from "yup";
+import GameboardModern from "./GameboardModern.vue";
+import { useStore } from "@/store/store";
 const props = defineProps<{
   me: Player;
   opponent: Player;
@@ -202,6 +215,8 @@ const emit = defineEmits<{
   (e: "rematchCustom");
 }>();
 const muted = ref(false);
+const { user } = toRefs(useStore());
+const selectedBoard = ref(user.value.settings.gameBoard);
 const slideNotification = computed(() => {
   const notifications = {
     place: false,

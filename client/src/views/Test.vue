@@ -7,6 +7,7 @@ import { useStore } from "@/store/store";
 import { reactive } from "vue";
 import { Turn } from "@/shared/types";
 import Coinflip from "@/components/Coinflip.vue";
+import GameboardModern from "@/components/GameboardModern.vue";
 const userStore = useStore();
 function createNotification(mode: number) {
   const store = useNotificationsStore();
@@ -61,7 +62,7 @@ function gameClick(turn: Turn) {
       </button>
     </div>
     <div class="h-96 w-96 flex">
-      <Gameboard
+      <GameboardModern
         :turnHistory="turns"
         :crossColor="userStore.user.settings.opponentColor"
         :circleColor="userStore.user.settings.playerColor"
@@ -71,7 +72,7 @@ function gameClick(turn: Turn) {
         :last-outline-color="'#363636'"
         :last-outline-width="3"
         @game-click="gameClick"
-      ></Gameboard>
+      />
     </div>
     <Coinflip
       :heads-color="userStore.user.settings.playerColor"
