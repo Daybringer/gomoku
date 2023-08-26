@@ -43,8 +43,9 @@ export class MailService {
       to: email,
       subject: 'Gomoku - Email Verification',
       from: 'mail@vanata.dev',
-      text: `<h1>Email verification</h1><p>Confirm your email by visiting <br> ${link} <br> With regards Gomoku team</p>`,
-      html: `<h1>Email verification</h1><p>Confirm your email by visiting <br> ${link} <br> With regards Gomoku team</p>`,
+      text: 'some',
+      html: `<h1>Email verification</h1><p>Confirm your email by visiting <br> ${link} <br> With regards Gomoku team</p><br>
+      <i>If you think you shouldn't see this email. Feel safe to ignore it.</i>`,
     };
 
     return await this.send(mail);

@@ -198,6 +198,7 @@
       <div class="px-2 pt-2 pb-3 z-50" id="navbarDropdown">
         <RouterLink
           v-show="!logged"
+          @click="burgerDropdownIsToggled = false"
           to="/login"
           class="inline-block w-auto px-4 py-2 text-base bg-gomoku-blue hover:bg-gomoku-blue-dark text-gray-800 shadow-lg font-semibold border-transparent rounded focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
           >Sign in</RouterLink

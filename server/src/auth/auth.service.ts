@@ -105,11 +105,11 @@ export class AuthService {
                   email.toLowerCase(),
                   password,
                 );
-                // verification token is generated while creating user with createLocal method
-                // might be better to generate here and then save it to according user?
-                // const verificationToken =
-                //   await this.tokenService.generateVerificationToken(newUser);
-
+                console.log(
+                  newUser.email,
+                  newUser.username,
+                  newUser.mailVerificationCode,
+                );
                 this.mailService.sendVerificationEmail(
                   newUser.email,
                   newUser.username,
