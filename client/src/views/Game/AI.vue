@@ -79,7 +79,7 @@ const turnHistory: Ref<Turn[]> = ref([]);
 const winningCombination: Ref<Turn[]> = ref([]);
 const endingType = ref(EndingType.Combination);
 const messages: Ref<GameChatMessage[]> = ref([]);
-const winner = ref(ai);
+const winner = ref(ai.value);
 const settings: GameSettingsIdless = {
   boardSize: 15,
   doesOverlineCount: true,
