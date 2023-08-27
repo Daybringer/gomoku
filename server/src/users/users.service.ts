@@ -129,7 +129,7 @@ export class UsersService {
   }
 
   async findAll(): Promise<UserEntity[]> {
-    return this.userRepository.find();
+    return this.userRepository.find({ where: { verified: true } });
   }
 
   async find(dto: GetUsersDTO): Promise<User[]> {
@@ -138,12 +138,13 @@ export class UsersService {
         skip: dto.skip,
         take: dto.take,
         order: { elo: 'DESC' },
-        where: { username: Like(`%${dto.username}%`) },
+        where: { username: Like(`%${dto.username}%`), verified: true },
       });
     }
     return this.userRepository.find({
       skip: dto.skip,
       take: dto.take,
+      where: { verified: true },
       order: { elo: 'DESC' },
     });
   }
@@ -217,7 +218,10 @@ export class UsersService {
   // Goes through every user ordered by elo and assigns his position
   @Cron('0 * * * *')
   async updateLeaderboardPositionsJob() {
-    const users = await this.userRepository.find({ order: { elo: 'DESC' } });
+    const users = await this.userRepository.find({
+      order: { elo: 'DESC' },
+      where: { verified: true },
+    });
     users.forEach((user, index) => {
       user.statistics.leaderboardPosition = index + 1;
       this.userStatistics.save(user.statistics);
