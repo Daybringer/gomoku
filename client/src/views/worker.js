@@ -518,7 +518,6 @@ function iterative_mtdf(Board) {
     Rows - 1,
     Columns - 1,
   ]);
-  console.log(`Guess for best score: ${guess}`);
   bestmoves = BoardGenerator(restrictions, Board, 1);
   let move;
   let depth = 2;
@@ -530,10 +529,7 @@ function iterative_mtdf(Board) {
     }
     move = temp;
     Set_last_best(move);
-    console.log(depth);
-    console.log(move);
     const t11 = Date.now();
-    console.log((t11 - startTime) / 1000);
     if (Math.abs(move.score) > 1999900) {
       return move;
     }
@@ -685,7 +681,6 @@ function search() {
 onmessage = function (e) {
   const Board = e.data[0];
   MaximumTimeForMove = e.data[2];
-  console.log(e.data);
   if (Board) {
     GameBoard = Board;
     Rows = GameBoard.length;

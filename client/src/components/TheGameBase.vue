@@ -41,7 +41,7 @@
         <!-- Coinflip overlay -->
         <div
           class="absolute z-20 h-full w-full flex place-items-center justify-center bg-gray-100 dark:bg-gray-700"
-          v-if="isWaitingOrCoinflip"
+          v-show="isWaitingOrCoinflip"
         >
           <Coinflip
             :heads-color="myColor"

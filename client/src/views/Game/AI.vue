@@ -163,6 +163,7 @@ function deductTime() {
       gameState.value = GameState.Ended;
       endingType.value = EndingType.Time;
       winner.value = ai.value;
+      clearInterval(intervalRef.value);
     }
   } else {
     ai.value.timeLeft -= 1000;
@@ -170,6 +171,7 @@ function deductTime() {
       gameState.value = GameState.Ended;
       endingType.value = EndingType.Time;
       winner.value = me.value;
+      clearInterval(intervalRef.value);
     }
   }
 }
