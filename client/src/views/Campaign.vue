@@ -1,5 +1,6 @@
 <template>
   <ViewBaseResponsive
+    id="start"
     style="padding-left: 0; padding-right: 0; padding-bottom: 0"
   >
     <BaseButton

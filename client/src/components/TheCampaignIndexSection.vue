@@ -14,7 +14,7 @@
         <BaseSimpleInfoPill> 12 milestones to conquer</BaseSimpleInfoPill>
         <BaseSimpleInfoPill> Oscarworthy rich story </BaseSimpleInfoPill>
       </div>
-      <RouterLink class="w-full md:w-1/2" to="/campaign">
+      <RouterLink class="w-full md:w-1/2" to="/campaign#start">
         <BaseButton class="w-full text-2xl py-4" :gomoku-blue="true"
           >Start Campaign</BaseButton
         >
