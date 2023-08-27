@@ -210,7 +210,6 @@ function search(removeOld: boolean) {
     constraints.allowedEndingTypes.push(EndingType.Time);
   if (toggled.result.tie) constraints.allowedEndingTypes.push(EndingType.Tie);
 
-  console.log(constraints);
   const dto: GetGamesByUserIDDTO = {
     userID,
     take: 15,

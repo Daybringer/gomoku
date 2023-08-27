@@ -1,5 +1,6 @@
 <template>
   <div class="flex flex-col gap-6 justify-center">
+    <!-- PLAYER LINKS -->
     <div
       class="flex flex-col md:flex-row items-center justify-center gap-1 md:gap-4"
     >
@@ -17,6 +18,7 @@
         :username="sUser ? sUser.username : 'Guest'"
       />
     </div>
+    <!-- RESULT -->
     <div class="flex md:flex-row items-center justify-center gap-12">
       <MatchRecordResultIcon
         :win="fProfile.isWinner"
@@ -28,11 +30,32 @@
         :tie="game.typeOfWin === EndingType.Tie"
       />
     </div>
+    <!-- TIMES LEFT -->
     <div class="flex flex-row items-center justify-center gap-12">
-      <p class="text-xl">{{ humanReadableTime(fProfile.timeLeft) }}</p>
+      <p class="text-2xl">{{ humanReadableTime(fProfile.timeLeft) }}</p>
       <p class="text-2xl md:text-3xl whitespace-nowrap">Time left</p>
-      <p class="text-xl">{{ humanReadableTime(sProfile.timeLeft) }}</p>
+      <p class="text-2xl">{{ humanReadableTime(sProfile.timeLeft) }}</p>
     </div>
+    <!-- ELO DIFF -->
+    <div
+      v-if="fProfile.eloDelta && sProfile.eloDelta"
+      class="flex flex-row items-center justify-center gap-12"
+    >
+      <p
+        class="text-2xl"
+        :class="fProfile.eloDelta > 0 ? 'text-green-500' : 'text-red-500'"
+      >
+        {{ (fProfile.eloDelta > 0 ? "+" : "") + fProfile.eloDelta }}
+      </p>
+      <p class="text-2xl md:text-3xl whitespace-nowrap">ELO delta</p>
+      <p
+        class="text-2xl"
+        :class="sProfile.eloDelta > 0 ? 'text-green-500' : 'text-red-500'"
+      >
+        {{ (sProfile.eloDelta > 0 ? "+" : "") + sProfile.eloDelta }}
+      </p>
+    </div>
+    <!-- REST - INFO PILLS -->
     <div
       class="flex flex-col md:flex-row justify-center items-center gap-2 flex-wrap"
     >
@@ -57,7 +80,7 @@
 
 <script setup lang="ts">
 import { humanReadableTime, getDateTimeFromDate } from "@/utils/general";
-import { EndingType } from "@/shared/types";
+import { EndingType, GameType } from "@/shared/types";
 import BaseInfoPill from "@/components/BaseInfoPill.vue";
 import MatchRecordResultIcon from "./MatchRecordResultIcon.vue";
 import MatchRecordGameTypeIcon from "./MatchRecordGameTypeIcon.vue";
