@@ -19,7 +19,7 @@
     <!-- Messages container -->
     <div
       id="chatContainer"
-      class="flex-grow h-0 flex flex-col p-2 gap-2 overflow-scroll"
+      class="flex-grow h-0 flex flex-col p-2 gap-2 overflow-x-visible overflow-y-auto"
       v-show="!isMuted"
       style="scroll-behavior: smooth"
     >
