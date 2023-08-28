@@ -59,7 +59,7 @@
             v-if="gameType === GameType.Quick || gameType === GameType.Ranked"
             :gomoku-blue="true"
             class="w-full"
-            @click="playAgain"
+            @click="() => router.push(`/search?type=quick`)"
             >Play again
           </BaseButton>
           <BaseButton
@@ -116,9 +116,6 @@ const eloGain = computed(() => {
     return `Lost ${props.elo} ELO`;
   }
 });
-function playAgain() {
-  router.push(`search?type=${props.gameType}`);
-}
 </script>
 <style scoped>
 .victory-background {

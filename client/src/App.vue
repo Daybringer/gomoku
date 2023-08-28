@@ -2,7 +2,6 @@
   <Navbar id="navbar" :activeIntersection="activeIntersection"></Navbar>
   <!-- FIXME MIGHT Be careful of :key attribute, might cause higher response time (my insight) -->
 
-  <!-- :key="$route.fullPath" -->
   <RouterView
     :activeUsers="onlineUsers"
     class="min-height-screen-calc"

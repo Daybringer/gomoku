@@ -25,8 +25,8 @@
           v-show="isWaitingOrCoinflip"
         >
           <Coinflip
-            :heads-color="myColor"
-            :tails-color="enemyColor"
+            :heads-color="myComputedColor"
+            :tails-color="opponentComputedColor"
             :is-heads="currentPlayer.socketID === me.socketID"
           ></Coinflip>
         </div>
@@ -60,6 +60,7 @@
             <div
               class="flex justify-center place-items-center rounded-lg flex-1 h-full bg-gray-100"
             >
+              <!-- TODO isolate this to component -->
               <Transition name="slidetop">
                 <div
                   class="flex-1 flex flex-row justify-around place-items-center"
@@ -74,7 +75,7 @@
                       <GameStoneCircle
                         class="h-8 w-8"
                         :style="`color:${
-                          mySymbol === 'circle' ? myColor : enemyColor
+                          mySymbol === Symbol.Circle ? myColor : enemyColor
                         };`"
                       />
                     </button>
@@ -85,7 +86,7 @@
                       <GameStoneCross
                         class="h-8 w-8"
                         :style="`color:${
-                          mySymbol === 'cross' ? myColor : enemyColor
+                          mySymbol === Symbol.Cross ? myColor : enemyColor
                         };`"
                       />
                     </button>
@@ -115,9 +116,10 @@
           <SocialBlade
             :player="me"
             :symbol="mySymbol"
-            :symbolColor="myColor"
+            :symbolColor="myComputedColor"
             :hasTimeLimit="hasTimeLimit"
             :isActive="currentPlayer.socketID === me.socketID"
+            :is-classic="user.settings.gameBoard === GameBoard.Classic"
           />
           <p
             class="text-center my-3 text-3xl text-white font-semibold md:block hidden"
@@ -128,9 +130,10 @@
           <SocialBlade
             :player="opponent"
             :symbol="enemySymbol"
-            :symbolColor="enemyColor"
+            :symbolColor="opponentComputedColor"
             :hasTimeLimit="hasTimeLimit"
             :isActive="currentPlayer.socketID === opponent.socketID"
+            :is-classic="user.settings.gameBoard === GameBoard.Classic"
           />
         </div>
         <!-- Chat container -->
@@ -140,8 +143,8 @@
           @toggle-muted="muted = !muted"
           :is-muted="muted"
           :messages="messages"
-          :my-color="myColor"
-          :opponent-color="enemyColor"
+          :my-color="myComputedColor"
+          :opponent-color="opponentComputedColor"
         />
       </div>
     </div>
@@ -233,17 +236,28 @@ const slideNotification = computed(() => {
   return notifications;
 });
 
+const myComputedColor = computed(() => {
+  if (user.value.settings.gameBoard !== GameBoard.Classic) {
+    return props.myColor;
+  } else {
+    return "#fff9ca";
+  }
+});
+const opponentComputedColor = computed(() => {
+  if (user.value.settings.gameBoard !== GameBoard.Classic) {
+    return props.enemyColor;
+  } else {
+    return "#0e0e0e";
+  }
+});
+
 const mySymbol = computed(() => {
-  if (isWaitingOrCoinflip.value) return "";
-  return props.me.playerSymbol === 1 ? "circle" : "cross";
+  if (isWaitingOrCoinflip.value) return Symbol.NotTaken;
+  return props.me.playerSymbol === 1 ? Symbol.Circle : Symbol.Cross;
 });
 const enemySymbol = computed(() => {
-  if (
-    props.gameState === GameState.Waiting ||
-    props.gameState === GameState.Coinflip
-  )
-    return "";
-  return props.opponent.playerSymbol === 1 ? "circle" : "cross";
+  if (isWaitingOrCoinflip.value) return Symbol.NotTaken;
+  return props.opponent.playerSymbol === 1 ? Symbol.Circle : Symbol.Cross;
 });
 const isWaitingOrCoinflip = computed(
   () =>
