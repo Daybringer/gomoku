@@ -1,3 +1,4 @@
+import { GameEntity } from './../../models/game.entity';
 import {
   EndingType,
   GameState,
@@ -382,7 +383,10 @@ export class GameRoomService {
     const gameEndedDTO: GameEndedDTO = {
       endingType: gameEnding,
       winner: winner || undefined,
-      userIDToEloDiff: game.gameType === GameType.Ranked ? {} : undefined,
+      eloDelta:
+        game.gameType === GameType.Ranked
+          ? gameEntity.playerGameProfiles[0].eloDelta
+          : undefined,
       winningCombination: EndingType.Combination
         ? gameEntity.winningCombination
         : undefined,

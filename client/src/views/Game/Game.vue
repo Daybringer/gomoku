@@ -2,7 +2,7 @@
   <GameBase
     :me="me"
     :opponent="opponent"
-    :eloGain="100"
+    :eloGain="eloDiff"
     :currentPlayer="currentPlayer"
     :hasTimeLimit="settings.hasTimeLimit"
     :gameState="gameState"
@@ -11,8 +11,8 @@
     :winner="winner"
     :opening="settings.openingType"
     :openingPhase="openingPhase"
-    :myColor="store.user.settings.playerColor"
-    :enemyColor="store.user.settings.opponentColor"
+    :myColor="user.settings.playerColor"
+    :enemyColor="user.settings.opponentColor"
     :messages="messages"
     :gameType="gameType"
     :winningCombination="winningCombination"
@@ -72,6 +72,7 @@ import {
   GameSettings,
   GameSettingsIdless,
 } from "@/shared/interfaces/gameSettings.interface";
+import { storeToRefs } from "pinia";
 const basePlayer = (): Player => {
   return {
     socketID: "",
@@ -104,7 +105,7 @@ const settings: Ref<GameSettingsIdless> = ref({
   timeLimitInSeconds: 120,
 });
 
-const store = useStore();
+const { user, isAuthenticated } = storeToRefs(useStore());
 const notificationStore = useNotificationsStore();
 
 function gameClick(position: Position): void {
@@ -144,7 +145,7 @@ onMounted(() => {
 
   const joinGameDTO: JoinGameDTO = {
     roomID: roomID.value || "",
-    userID: isLogged.value ? store.user.id : undefined,
+    userID: isAuthenticated ? user.value.id : undefined,
   };
   socket.emit(SocketIOEvents.JoinGame, joinGameDTO);
 
@@ -242,8 +243,10 @@ onMounted(() => {
     if (dto.winner) winner.value = dto.winner;
     if (dto.winningCombination)
       winningCombination.value = dto.winningCombination;
-    if (dto.userIDToEloDiff)
-      eloDiff.value = dto.userIDToEloDiff[me.value.socketID];
+    if (dto.eloDelta) {
+      eloDiff.value = dto.eloDelta;
+      user.value.elo = user.value.elo + eloDiff.value;
+    }
 
     endingType.value = dto.endingType;
     gameState.value = GameState.Ended;
@@ -253,7 +256,6 @@ onMounted(() => {
 function getURLParams() {
   return new URLSearchParams(window.location.search);
 }
-const isLogged = computed(() => store.isAuthenticated);
 const gameType = computed(() => {
   const type = getURLParams().get("type");
   if (type == GameType.Quick) {

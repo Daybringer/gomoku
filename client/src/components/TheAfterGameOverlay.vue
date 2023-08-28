@@ -39,7 +39,7 @@
           <div
             v-show="elo"
             class="text-center border-4 border-opacity-80 px-6 xl:px-12 py-2 xl:text-2xl text-xl font-medium rounded-xl bg-gray-100 dark:bg-gray-600"
-            :class="elo! > 0 ? 'border-green-500' : 'border-red-500'"
+            :class="amIWinner ? 'border-green-500' : 'border-red-500'"
           >
             {{ eloGain }}
           </div>
@@ -110,10 +110,10 @@ defineEmits(["askForCustomRematch"]);
 const isShown = ref(true);
 const eloGain = computed(() => {
   if (!props.elo) return "";
-  if (props.elo > 0) {
+  if (props.amIWinner) {
     return `Gained ${props.elo} ELO`;
   } else {
-    return `Lost ${props.elo} ELO`;
+    return `Lost -${props.elo} ELO`;
   }
 });
 </script>

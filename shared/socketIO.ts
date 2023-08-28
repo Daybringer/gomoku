@@ -1,40 +1,40 @@
-import { GameSettingsIdless } from '../shared/interfaces/gameSettings.interface';
-import { EndingType, Opening, Player, Position, Symbol } from './types';
+import { GameSettingsIdless } from "../shared/interfaces/gameSettings.interface";
+import { EndingType, Opening, Player, Position, Symbol } from "./types";
 
 export enum SocketIOEvents {
   //Search
-  SearchRankedGame = 'searchRankedGame',
-  SearchQuickGame = 'searchQuickGame',
-  GameCreated = 'gameCreated',
+  SearchRankedGame = "searchRankedGame",
+  SearchQuickGame = "searchQuickGame",
+  GameCreated = "gameCreated",
   //General
-  UpdateActiveUsers = 'updateActiveUsers',
-  JoinGame = 'joinGame',
-  InvalidRoomID = 'invalidRoomID',
-  GameStarted = 'gameStarted',
-  StonePlaced = 'stonePlaced',
-  GameClick = 'gameClick',
-  GameEnded = 'gameEnded',
-  TimeCalibration = 'timeCalibration',
-  SendMessage = 'sendMessage',
-  RecieveMessage = 'recieveMessage',
-  ToClientSwapPickGameStone = 'toClientSwapPickGameStone',
-  ToServerSwapPickGameStone = 'toServerSwapPickGameStone',
-  SwapGameStonePicked = 'gameStonePicked',
+  UpdateActiveUsers = "updateActiveUsers",
+  JoinGame = "joinGame",
+  InvalidRoomID = "invalidRoomID",
+  GameStarted = "gameStarted",
+  StonePlaced = "stonePlaced",
+  GameClick = "gameClick",
+  GameEnded = "gameEnded",
+  TimeCalibration = "timeCalibration",
+  SendMessage = "sendMessage",
+  RecieveMessage = "recieveMessage",
+  ToClientSwapPickGameStone = "toClientSwapPickGameStone",
+  ToServerSwapPickGameStone = "toServerSwapPickGameStone",
+  SwapGameStonePicked = "gameStonePicked",
   //Custom specials
-  CreateCustomWaiting = 'createCustomWaiting',
-  CustomWaitingCreated = 'customWaitingCreated',
-  CustomRoomJoined = 'customRoomJoined',
-  InvalidCustomRoom = 'invalidCustomRoom',
-  CustomRoomRedirectToGame = 'customRoomRedirectToGame',
-  AskForRematch = 'askForRematch',
-  RedirectToCustomRematch = 'redirectToCustomRematch',
+  CreateCustomWaiting = "createCustomWaiting",
+  CustomWaitingCreated = "customWaitingCreated",
+  CustomRoomJoined = "customRoomJoined",
+  InvalidCustomRoom = "invalidCustomRoom",
+  CustomRoomRedirectToGame = "customRoomRedirectToGame",
+  AskForRematch = "askForRematch",
+  RedirectToCustomRematch = "redirectToCustomRematch",
 }
 
 export class GameEndedDTO {
   readonly endingType: EndingType;
   readonly winner?: Player;
   readonly winningCombination?: Array<[number, number]>;
-  readonly userIDToEloDiff?: Record<number, number>;
+  readonly eloDelta?: number;
 }
 
 export class SearchRankedGameDTO {

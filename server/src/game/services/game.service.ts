@@ -18,7 +18,6 @@ import { GameSettings } from 'src/shared/interfaces/gameSettings.interface';
 import { GetGamesByUserIDDTO } from 'src/shared/DTO/get-game-by-user-id.dto';
 import { GetGameByUserIDDTOResponse } from 'src/shared/DTO/get-game-by-user-id.response.dto';
 import { GetGameByIDResponseDTO } from 'src/shared/DTO/get-game-by-id.response.dto';
-import { GameConstraints } from '../../../../shared/types';
 
 @Injectable()
 export class GameService {
@@ -64,7 +63,6 @@ export class GameService {
     const [playerOne, playerTwo] = game.players;
     let playerOneProfile: PlayerGameProfile,
       playerTwoProfile: PlayerGameProfile;
-    // TODO implement ranked
     if (game.gameType === GameType.Ranked) {
       // Caculating elo deltas for each player
       if (!playerOne.userID || !playerTwo.userID)
