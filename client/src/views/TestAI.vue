@@ -3,6 +3,7 @@
     <BaseHighHeadline>AI Testing lab</BaseHighHeadline>
     <div class="border-4 border-red-400 h-96 w-96 flex">
       <Gameboard
+        :boardType="GameBoard.Standard"
         :boardSize="15"
         :circleColor="'green'"
         :crossColor="'red'"
@@ -18,7 +19,7 @@
 import ViewBaseResponsive from "@/components/ViewBaseResponsive.vue";
 import BaseHighHeadline from "@/components/BaseHighHeadline.vue";
 import Gameboard from "@/components/Gameboard.vue";
-import { Turn } from "@/shared/types";
+import { GameBoard, Turn } from "@/shared/types";
 import { reactive, ref, Ref } from "vue";
 
 const Engine = new Worker(new URL("./worker.js", import.meta.url));

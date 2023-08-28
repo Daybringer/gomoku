@@ -8,17 +8,19 @@
         <ChevronsDownIcon class="h-12 transform -rotate-90" />
       </BaseButton>
     </div>
-    <div class="square flex">
+    <div
+      class="square flex rounded-xl border-gray-300 dark:border-gray-600 border-4 overflow-hidden"
+    >
       <Gameboard
+        :board-type="user.settings.gameBoard"
         ref="gameContainer"
-        class="rounded-xl border-gray-300 dark:border-gray-600 border-4 overflow-hidden"
         :winning-combination="
           leftStack.length === game.turnHistory.length
             ? game.winningCombination
             : []
         "
-        :cross-color="store.user.settings.opponentColor"
-        :circle-color="store.user.settings.playerColor"
+        :cross-color="user.settings.opponentColor"
+        :circle-color="user.settings.playerColor"
         :turn-history="leftStack"
         :lines-width="2"
         :board-size="15"
@@ -38,8 +40,9 @@ import { Turn } from "@/shared/types";
 import { reactive } from "vue";
 import BaseButton from "./BaseButton.vue";
 import ChevronsDownIcon from "@/assets/svg/ChevronsDownIcon.vue";
+import { storeToRefs } from "pinia";
 
-const store = useStore();
+const { user } = storeToRefs(useStore());
 
 const props = defineProps<{
   game: Game;

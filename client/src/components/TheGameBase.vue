@@ -9,27 +9,8 @@
     >
       <div class="square flex relative">
         <Gameboard
-          v-if="selectedBoard === GameBoard.Standard"
-          :turn-history="turnHistory"
-          :cross-color="me.playerSymbol === 2 ? myColor : enemyColor"
-          :circle-color="me.playerSymbol === 1 ? myColor : enemyColor"
-          :interactive="currentPlayer.socketID === me.socketID"
-          :winning-combination="winningCombination"
-          :lines-width="1"
-          @game-click="(turn) => emit('gameClick', turn)"
-        />
-        <GameboardModern
-          v-if="selectedBoard === GameBoard.Modern"
-          :turn-history="turnHistory"
-          :cross-color="me.playerSymbol === 2 ? myColor : enemyColor"
-          :circle-color="me.playerSymbol === 1 ? myColor : enemyColor"
-          :interactive="currentPlayer.socketID === me.socketID"
-          :winning-combination="winningCombination"
-          :lines-width="1"
-          @game-click="(turn) => emit('gameClick', turn)"
-        />
-        <GameboardClassic
-          v-if="selectedBoard === GameBoard.Classic"
+          :board-type="user.settings.gameBoard"
+          :board-size="15"
           :turn-history="turnHistory"
           :cross-color="me.playerSymbol === 2 ? myColor : enemyColor"
           :circle-color="me.playerSymbol === 1 ? myColor : enemyColor"
@@ -196,10 +177,7 @@ import {
 import { computed } from "@vue/reactivity";
 import Gameboard from "./Gameboard.vue";
 import ViewBaseResponsive from "./ViewBaseResponsive.vue";
-import { string } from "yup";
-import GameboardModern from "./GameboardModern.vue";
 import { useStore } from "@/store/store";
-import GameboardClassic from "./GameboardClassic.vue";
 const props = defineProps<{
   me: Player;
   opponent: Player;
@@ -227,7 +205,6 @@ const emit = defineEmits<{
 }>();
 const muted = ref(false);
 const { user } = toRefs(useStore());
-const selectedBoard = ref(user.value.settings.gameBoard);
 const slideNotification = computed(() => {
   const notifications = {
     place: false,
