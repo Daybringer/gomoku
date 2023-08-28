@@ -11,6 +11,7 @@
     :interactive="interactive"
     :last-outline-width="lastOutlineWidth"
     :last-outline-color="'#363636'"
+    class="select-none"
     :winning-combination-outline-color="winningCombinationOutlineColor"
     @game-click="(turn) => emit('gameClick', turn)"
   />
@@ -26,6 +27,7 @@
     :interactive="interactive"
     :last-outline-width="lastOutlineWidth"
     :last-outline-color="'#363636'"
+    class="select-none"
     :winning-combination-outline-color="winningCombinationOutlineColor"
     @game-click="(turn) => emit('gameClick', turn)"
   />
@@ -42,6 +44,7 @@
     :last-outline-width="lastOutlineWidth"
     :last-outline-color="'#363636'"
     :winning-combination-outline-color="winningCombinationOutlineColor"
+    class="select-none"
     @game-click="(turn) => emit('gameClick', turn)"
   />
 </template>
