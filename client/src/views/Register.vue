@@ -1,93 +1,55 @@
 <template>
-  <div
-    class="flex justify-center place-items-center bg-gray-100 dark:bg-gray-700 py-12 px-4 sm:px-6 lg:px-8"
-  >
-    <div
-      class="max-w-lg w-full md:p-8 p-4 space-y-8 rounded-lg border-gray-50 dark:bg-gray-600 dark:border-transparent bg-white border-opacity-30 border-t-1 shadow-2xl border-2"
-    >
+  <view-base-responsive>
+    <Container class="xl:mt-8 max-w-lg w-full flex-none">
       <base-high-headline>Register</base-high-headline>
-      <hr class="dark:border-gray-500" />
-      <status-message
-        v-show="showSuccess"
-        :type="'success'"
-        :text="'Please confirm your email to finish the registration.'"
-      ></status-message>
-      <status-message
-        v-show="serverError"
-        :type="'error'"
-        :text="serverError"
-      ></status-message>
-      <form
-        v-show="!showSuccess"
-        @submit.prevent="register"
-        class="flex flex-col p-2 pb-0"
-      >
-        <label for="email" class="text-gray-900 dark:text-gray-200 text-lg"
-          >Email</label
-        >
+      <BaseHRDivider />
+      <form @submit.prevent="register" class="flex flex-col gap-3 p-2 pb-0">
         <input-base
-          v-model="user.email"
-          :name="'email'"
-          :type="'email'"
-          :autocomplete="'email'"
-          :title="'Enter email'"
+          :model-value="user.email"
+          @update:model-value="(e) => (user.email = e)"
+          name="email"
+          type="email"
+          title="Enter email"
+          label="Email"
           :error="errors.email"
-          @blur="validate('email')"
+          @keyup="validate('email')"
         />
-        <label
-          for="username"
-          class="text-gray-900 dark:text-gray-200 text-lg mt-2"
-          >Username</label
-        >
         <input-base
-          v-model="user.username"
+          :model-value="user.username"
+          @update:model-value="(e) => (user.username = e)"
           :name="'username'"
           :type="'text'"
           :title="'Enter username'"
+          label="Username"
           :autocomplete="''"
           :error="errors.username"
-          @blur="validate('username')"
+          @keyup="validate('username')"
         />
-        <label
-          for="password"
-          class="mt-4 text-gray-900 dark:text-gray-200 text-lg"
-          >Password</label
-        >
         <input-base
-          v-model="user.password"
-          :name="'password'"
-          :type="'password'"
-          :title="'Enter password'"
-          :autocomplete="'new-password'"
+          :model-value="user.password"
+          :on-update:model-value="(n) => (user.password = n)"
+          name="password"
+          type="password"
+          label="Password"
+          title="Enter password"
           :error="errors.password"
-          @blur="validate('password')"
+          @keyup="validate('password')"
         />
-        <label
-          for="passwordConfirm"
-          class="mt-2 text-gray-900 dark:text-gray-200 text-lg"
-          >Confirm password</label
-        >
         <input-base
-          v-model="user.passwordConfirm"
-          :name="'passwordConfirm'"
-          :type="'password'"
-          :title="'Confirm password'"
-          :autocomplete="''"
+          :model-value="user.passwordConfirm"
+          @update:model-value="(e) => (user.passwordConfirm = e)"
+          name="passwordConfirm"
+          type="password"
+          title="Confirm password"
+          label="Confirm password"
           :error="errors.passwordConfirm"
-          @blur="validate('passwordConfirm')"
+          @keyup="validate('passwordConfirm')"
         />
-        <!-- Sign in button -->
-        <submit-button type="submit">Register</submit-button>
-        <router-link
-          class="text-right mt-3 -mb-3 text-lg text-gomoku-blue hover:text-gomoku-blue-dark focus:text-gomoku-blue-dark focus:outline-none"
-          to="/login"
-          >Already have an account?</router-link
+        <BaseButton :gomoku-blue="true" class="mt-4">Register</BaseButton>
+        <BaseRouterLink to="/login" class="text-right"
+          >Already have an account?</BaseRouterLink
         >
-        <div
-          class="separator mt-8 flex items-center text-center leading-5 text-gray-700 dark:text-gray-200"
-        >
-          Or continue with
-        </div>
+        <BaseHRWithText>Or continue with</BaseHRWithText>
         <div class="mt-8 flex flex-row justify-around">
           <social-sign-in
             @click="googleLogin"
@@ -96,9 +58,8 @@
           <social-sign-in :type="'facebook'"></social-sign-in>
         </div>
       </form>
-      <div v-show="showSuccess">Some email confirmation, IDK :smile:</div>
-    </div>
-  </div>
+    </Container>
+  </view-base-responsive>
 </template>
 
 <script lang="ts">
@@ -107,11 +68,11 @@ import { throttle } from "throttle-debounce";
 import { defineComponent } from "vue";
 
 // Components
-import SubmitButton from "@/components/FormSubmitButton.vue";
 import InputBase from "@/components/FormInputBase.vue";
 import SocialSignIn from "@/components/FormSocialSignIn.vue";
 import StatusMessage from "@/components/FormStatusMessage.vue";
 import BaseHighHeadline from "@/components/BaseHighHeadline.vue";
+import BaseHRWithText from "@/components/BaseHRWithText.vue";
 
 // Axios repositories
 import { RepositoryFactory } from "@/repositories/RepositoryFactory";
@@ -122,6 +83,11 @@ import { useStore } from "@/store/store";
 
 // yup validation
 import { object, string, ref } from "yup";
+import ViewBaseResponsive from "@/components/ViewBaseResponsive.vue";
+import Container from "@/components/Container.vue";
+import BaseHRDivider from "@/components/BaseHRDivider.vue";
+import BaseButton from "@/components/BaseButton.vue";
+import BaseRouterLink from "@/components/BaseRouterLink.vue";
 const registerFormSchema = object().shape({
   email: string().required("Email is required").email("Invalid email"),
   username: string()
@@ -150,9 +116,14 @@ export default defineComponent({
   components: {
     InputBase,
     SocialSignIn,
-    SubmitButton,
     StatusMessage,
     BaseHighHeadline,
+    ViewBaseResponsive,
+    Container,
+    BaseHRDivider,
+    BaseButton,
+    BaseRouterLink,
+    BaseHRWithText,
   },
   data() {
     return {
@@ -229,6 +200,9 @@ export default defineComponent({
     throttledFunction: throttle(500, (call) => {
       call();
     }),
+    garbageFunction() {
+      console.log(this.$data.user.email);
+    },
     async validate(
       field: "email" | "username" | "password" | "passwordConfirm"
     ) {
@@ -259,18 +233,4 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
-.separator::before,
-.separator::after {
-  content: "";
-  flex: 1;
-  @apply border-current;
-  @apply border-b-2;
-}
-.separator::before {
-  margin-right: 1em;
-}
-.separator::after {
-  margin-left: 1em;
-}
-</style>
+<style scoped></style>

@@ -3,7 +3,7 @@
     class="flex justify-center place-items-center bg-gray-100 dark:bg-gray-700 py-12 px-4 sm:px-6 lg:px-8"
   >
     <div
-      class="max-w-lg w-full md:p-8 p-4  space-y-8 rounded-lg border-gray-50 bg-white dark:bg-gray-600 dark:border-transparent border-opacity-30 border-t-1 shadow-2xl border-2"
+      class="max-w-lg w-full md:p-8 p-4 space-y-8 rounded-lg border-gray-50 bg-white dark:bg-gray-600 dark:border-transparent border-opacity-30 border-t-1 shadow-2xl border-2"
     >
       <h2
         class="text-center text-gray-900 dark:text-gray-100 font-extrabold text-3xl"
@@ -24,7 +24,7 @@
       <form @submit.prevent="login" class="flex flex-col p-2 pb-0">
         <label
           for="usernameOrEmail"
-          class="text-gray-900 dark:text-gray-100  text-lg"
+          class="text-gray-900 dark:text-gray-100 text-lg"
           >Username or Email</label
         >
         <input-base
@@ -56,7 +56,7 @@
             <input
               type="checkbox"
               name="remember"
-              class="align-text-top h-4 w-4 text-gomoku-blue  bg-gray-50 rounded cursor-pointer focus:ring-0 focus:shadow-none focus:outline-none"
+              class="align-text-top h-4 w-4 text-gomoku-blue bg-gray-50 rounded cursor-pointer focus:ring-0 focus:shadow-none focus:outline-none"
             />
             <label
               for="remember"
@@ -66,13 +66,14 @@
           </div>
           <!-- Forgot password -->
           <router-link
-            class="text-gomoku-blue  hover:text-gomoku-blue-dark focus:text-gomoku-blue-dark focus:outline-none"
+            class="text-gomoku-blue hover:text-gomoku-blue-dark focus:text-gomoku-blue-dark focus:outline-none"
             to="/password-reset"
             >Forgot your password?</router-link
           >
         </div>
         <!-- Sign in button -->
-        <submit-button type="submit">Sign in</submit-button>
+        <!-- <submit-button type="submit">Sign in</submit-button> -->
+        <BaseButton />
         <!-- Login router link -->
         <router-link
           class="text-right mt-3 -mb-3 text-lg text-gomoku-blue hover:text-gomoku-blue-dark focus:text-gomoku-blue-dark focus:outline-none"
@@ -85,7 +86,7 @@
       >
         Or continue with
       </div>
-      <div class=" flex flex-row justify-around">
+      <div class="flex flex-row justify-around">
         <social-sign-in @click="googleLogin" :type="'google'"></social-sign-in>
         <social-sign-in :disabled="true" :type="'facebook'"></social-sign-in>
       </div>
@@ -95,10 +96,11 @@
 
 <script lang="ts">
 // Components
-import SubmitButton from "@/components/FormSubmitButton.vue";
+
 import InputBase from "@/components/FormInputBase.vue";
 import SocialSignIn from "@/components/FormSocialSignIn.vue";
 import StatusMessage from "@/components/FormStatusMessage.vue";
+import BaseButton from "@/components/BaseButton.vue";
 
 // Pinia store
 import { useStore } from "@/store/store";
@@ -116,7 +118,7 @@ import { AxiosResponse } from "axios";
 
 export default defineComponent({
   name: "Login",
-  components: { SocialSignIn, InputBase, SubmitButton, StatusMessage },
+  components: { SocialSignIn, InputBase, BaseButton, StatusMessage },
   data() {
     return {
       user: {
