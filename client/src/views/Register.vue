@@ -27,7 +27,7 @@
         />
         <input-base
           :model-value="user.password"
-          :on-update:model-value="(n) => (user.password = n)"
+          @update:model-value="(n) => (user.password = n)"
           name="password"
           type="password"
           label="Password"
@@ -45,7 +45,9 @@
           :error="errors.passwordConfirm"
           @keyup="validate('passwordConfirm')"
         />
-        <BaseButton :gomoku-blue="true" class="mt-4">Register</BaseButton>
+        <BaseButton :gomoku-blue="true" @click="register()" class="mt-4"
+          >Register</BaseButton
+        >
         <BaseRouterLink to="/login" class="text-right"
           >Already have an account?</BaseRouterLink
         >
@@ -62,32 +64,38 @@
   </view-base-responsive>
 </template>
 
-<script lang="ts">
-// Utility
-import { throttle } from "throttle-debounce";
-import { defineComponent } from "vue";
-
-// Components
+<script setup lang="ts">
+// import { throttle } from "throttle-debounce";
 import InputBase from "@/components/FormInputBase.vue";
 import SocialSignIn from "@/components/FormSocialSignIn.vue";
-import StatusMessage from "@/components/FormStatusMessage.vue";
 import BaseHighHeadline from "@/components/BaseHighHeadline.vue";
 import BaseHRWithText from "@/components/BaseHRWithText.vue";
-
-// Axios repositories
 import { RepositoryFactory } from "@/repositories/RepositoryFactory";
 const UsersRepository = RepositoryFactory.getUserRepository;
-
-// Pinia store
 import { useStore } from "@/store/store";
-
-// yup validation
-import { object, string, ref } from "yup";
+import { object, string, ref as refYup } from "yup";
+import { reactive, ref } from "vue";
 import ViewBaseResponsive from "@/components/ViewBaseResponsive.vue";
 import Container from "@/components/Container.vue";
 import BaseHRDivider from "@/components/BaseHRDivider.vue";
 import BaseButton from "@/components/BaseButton.vue";
 import BaseRouterLink from "@/components/BaseRouterLink.vue";
+import router from "@/router";
+import { NotificationType, useNotificationsStore } from "@/store/notifications";
+
+const user = reactive({
+  email: "",
+  username: "",
+  password: "",
+  passwordConfirm: "",
+});
+const errors = reactive({
+  email: "",
+  username: "",
+  password: "",
+  passwordConfirm: "",
+});
+
 const registerFormSchema = object().shape({
   email: string().required("Email is required").email("Invalid email"),
   username: string()
@@ -100,137 +108,98 @@ const registerFormSchema = object().shape({
     ),
   password: string()
     .required("Password is required")
-    .min(4, "Password is too weak")
-    .matches(
-      /((?=.*\d)|(?=.*\W+))(?=.*[A-Z])(?=.*[a-z]).*$/,
-      "Password is too weak \n One uppercase, one lowercase, one number or special character"
-    ),
+    .min(6, "Password is too weak"),
   passwordConfirm: string().oneOf(
-    [ref("password"), null],
+    [refYup("password"), ""],
     "Passwords must match"
   ),
 });
 
-export default defineComponent({
-  name: "Register",
-  components: {
-    InputBase,
-    SocialSignIn,
-    StatusMessage,
-    BaseHighHeadline,
-    ViewBaseResponsive,
-    Container,
-    BaseHRDivider,
-    BaseButton,
-    BaseRouterLink,
-    BaseHRWithText,
-  },
-  data() {
-    return {
-      user: {
-        email: "",
-        username: "",
-        password: "",
-        passwordConfirm: "",
-      },
-      errors: {
-        email: "",
-        username: "",
-        password: "",
-        passwordConfirm: "",
-      },
-      serverError: "",
-      showSuccess: false,
-    };
-  },
-  methods: {
-    async register() {
-      await this.validateAll();
-      const store = useStore();
-      store
-        .register(this.user)
-        .then(() => {
-          this.serverError = "";
-          this.showSuccess = true;
-        })
-        .catch((err) => {
-          this.serverError = "Error has occured whilst registering";
-          console.log(err);
-        });
-    },
-    async googleLogin() {
-      const store = useStore();
-      // @ts-ignore
-      await this.$gAuth
-        .signIn()
-        .then(async (res: any) => {
-          const isNewUser = await store.googleLogin(
-            res.getAuthResponse().id_token
-          );
-          if (isNewUser) {
-            this.$router.push("/set-username");
-          } else {
-            this.$router.push("/");
-          }
-        })
-        .catch((err: string) => (this.serverError = err));
-    },
-    async usernameExists() {
-      UsersRepository.userWithUsernameExists(this.user.username)
-        .then((res) => {
-          if (res.data) {
-            this.errors.username = "Username is already taken";
-          } else {
-            this.errors.username = "";
-          }
-        })
-        .catch(() => (this.errors.username = "Server error"));
-    },
-    async emailExists() {
-      UsersRepository.userWithMailExists(this.user.email)
-        .then((res) => {
-          if (res.data) {
-            this.errors.email = "Email is already taken";
-          } else {
-            this.errors.email = "";
-          }
-        })
-        .catch(() => (this.errors.email = "Server error"));
-    },
-    throttledFunction: throttle(500, (call) => {
-      call();
-    }),
-    garbageFunction() {
-      console.log(this.$data.user.email);
-    },
-    async validate(
-      field: "email" | "username" | "password" | "passwordConfirm"
-    ) {
-      registerFormSchema
-        .validateAt(field, this.user)
-        .then(() => {
-          if (field === "email") {
-            this.throttledFunction(this.emailExists);
-          } else if (field === "username") {
-            this.throttledFunction(this.usernameExists);
-          } else {
-            this.errors[field] = "";
-          }
-        })
-        .catch((err) => {
-          this.errors[field] = err.message;
-        });
-    },
-    async validateAll() {
-      await Promise.all([
-        this.validate("email"),
-        this.validate("username"),
-        this.validate("password"),
-        this.validate("passwordConfirm"),
-      ]);
-    },
-  },
-});
-</script>
+const serverError = ref("");
 
-<style scoped></style>
+const notifications = useNotificationsStore();
+
+const store = useStore();
+
+async function register() {
+  await validateAll();
+  store
+    .register(user)
+    .then(() => {
+      serverError.value = "";
+      notifications.createNotification(
+        NotificationType.Info,
+        "'You've been successfuly registered.\nConfirm your email."
+      );
+    })
+    .catch(() => {
+      notifications.createNotification(
+        NotificationType.Error,
+        "Error has occured whilst registering"
+      );
+    });
+}
+async function googleLogin() {
+  // @ts-ignore
+  await this.$gAuth
+    .signIn()
+    .then(async (res: any) => {
+      const isNewUser = await store.googleLogin(res.getAuthResponse().id_token);
+      if (isNewUser) {
+        router.push("/set-username");
+      } else {
+        router.push("/");
+      }
+    })
+    .catch((err: string) => (serverError.value = err));
+}
+async function usernameExists() {
+  UsersRepository.userWithUsernameExists(user.username)
+    .then((res) => {
+      if (res.data) {
+        errors.username = "Username is already taken";
+      } else {
+        errors.username = "";
+      }
+    })
+    .catch(() => (errors.username = "Server error"));
+}
+async function emailExists() {
+  UsersRepository.userWithMailExists(user.email)
+    .then((res) => {
+      if (res.data) {
+        errors.email = "Email is already taken";
+      } else {
+        errors.email = "";
+      }
+    })
+    .catch(() => (errors.email = "Server error"));
+}
+async function validate(
+  field: "email" | "username" | "password" | "passwordConfirm"
+) {
+  registerFormSchema
+    .validateAt(field, user)
+    .then(() => {
+      if (field === "email") {
+        emailExists();
+      } else if (field === "username") {
+        usernameExists();
+      } else {
+        errors[field] = "";
+      }
+    })
+    .catch((err) => {
+      errors[field] = err.message;
+    });
+}
+
+async function validateAll() {
+  await Promise.all([
+    validate("email"),
+    validate("username"),
+    validate("password"),
+    validate("passwordConfirm"),
+  ]);
+}
+</script>
