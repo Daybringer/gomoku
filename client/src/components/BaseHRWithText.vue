@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="separator mt-8 flex items-center text-center leading-5 text-gray-700 dark:text-gray-200"
-  >
+  <div class="separator flex items-center text-center leading-5">
     <slot></slot>
   </div>
 </template>

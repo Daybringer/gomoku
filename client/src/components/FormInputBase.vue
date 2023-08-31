@@ -33,8 +33,8 @@ const props = defineProps<{
   modelValue: string;
   name: string;
   title: string;
-  error: string;
   type: InputType;
+  error?: string;
   label?: string;
   placeholder?: string;
 }>();

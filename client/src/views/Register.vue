@@ -3,7 +3,7 @@
     <Container class="xl:mt-8 max-w-lg w-full flex-none">
       <base-high-headline>Register</base-high-headline>
       <BaseHRDivider />
-      <form @submit.prevent="register" class="flex flex-col gap-3 p-2 pb-0">
+      <form @submit.prevent="register" class="flex flex-col gap-4 p-2">
         <input-base
           :model-value="user.email"
           @update:model-value="(e) => (user.email = e)"
@@ -45,14 +45,14 @@
           :error="errors.passwordConfirm"
           @keyup="validate('passwordConfirm')"
         />
-        <BaseButton :gomoku-blue="true" @click="register()" class="mt-4"
+        <BaseButton :gomoku-blue="true" @click="register()" class="mt-2"
           >Register</BaseButton
         >
         <BaseRouterLink to="/login" class="text-right"
           >Already have an account?</BaseRouterLink
         >
-        <BaseHRWithText>Or continue with</BaseHRWithText>
-        <div class="mt-8 flex flex-row justify-around">
+        <BaseHRWithText class="my-4">Or continue with</BaseHRWithText>
+        <div class="flex flex-row justify-around">
           <social-sign-in
             @click="googleLogin"
             :type="'google'"

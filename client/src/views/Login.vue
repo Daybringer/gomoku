@@ -1,56 +1,28 @@
 <template>
-  <div
-    class="flex justify-center place-items-center bg-gray-100 dark:bg-gray-700 py-12 px-4 sm:px-6 lg:px-8"
-  >
-    <div
-      class="max-w-lg w-full md:p-8 p-4 space-y-8 rounded-lg border-gray-50 bg-white dark:bg-gray-600 dark:border-transparent border-opacity-30 border-t-1 shadow-2xl border-2"
-    >
-      <h2
-        class="text-center text-gray-900 dark:text-gray-100 font-extrabold text-3xl"
-      >
-        Sign in
-      </h2>
-      <hr class="dark:border-gray-500" />
-      <status-message
-        v-show="showSuccess"
-        :type="'success'"
-        :text="'Successfully logged in'"
-      ></status-message>
-      <status-message
-        v-show="serverError"
-        :type="'error'"
-        :text="serverError"
-      ></status-message>
-      <form @submit.prevent="login" class="flex flex-col p-2 pb-0">
-        <label
-          for="usernameOrEmail"
-          class="text-gray-900 dark:text-gray-100 text-lg"
-          >Username or Email</label
-        >
+  <ViewBaseResponsive>
+    <Container class="xl:mt-8 max-w-lg w-full flex-none">
+      <BaseHighHeadline>Sign in</BaseHighHeadline>
+      <BaseHRDivider />
+      <form @submit.prevent="login" class="flex flex-col p-2 gap-4">
         <input-base
-          v-model="user.usernameOrEmail"
-          :name="'usernameOrEmail'"
-          :type="'text'"
-          :autocomplete="'username'"
-          :title="'Enter email or username'"
+          :model-value="user.usernameOrEmail"
+          @update:model-value="(e) => (user.usernameOrEmail = e)"
+          name="usernameOrEmail"
+          type="text"
+          label="Username or Email"
+          title="Enter email or username"
           :error="errors.usernameOrEmail"
-          @blur="validate('usernameOrEmail')"
         />
-        <label
-          for="password"
-          class="mt-8 text-gray-900 dark:text-gray-100 text-lg"
-          >Password</label
-        >
         <input-base
-          v-model="user.password"
-          :name="'password'"
-          :type="'password'"
-          :autocomplete="'password'"
-          :title="'Enter password'"
+          :model-value="user.password"
+          @update:model-value="(e) => (user.password = e)"
+          name="password"
+          type="password"
+          label="Password"
+          title="Enter password"
           :error="errors.password"
-          @blur="validate('password')"
         />
-        <div class="mt-3 flex flex-row justify-between flex-wrap">
+        <div class="flex flex-row justify-between flex-wrap">
           <!-- Remember me -->
           <div>
             <input
@@ -65,122 +37,101 @@
             >
           </div>
           <!-- Forgot password -->
-          <router-link
-            class="text-gomoku-blue hover:text-gomoku-blue-dark focus:text-gomoku-blue-dark focus:outline-none"
-            to="/password-reset"
-            >Forgot your password?</router-link
+          <BaseRouterLink to="/password-reset"
+            >Forgot your password?</BaseRouterLink
           >
         </div>
         <!-- Sign in button -->
-        <!-- <submit-button type="submit">Sign in</submit-button> -->
-        <BaseButton />
+        <BaseButton :gomoku-blue="true" @click="login()">Sign in</BaseButton>
         <!-- Login router link -->
-        <router-link
-          class="text-right mt-3 -mb-3 text-lg text-gomoku-blue hover:text-gomoku-blue-dark focus:text-gomoku-blue-dark focus:outline-none"
-          to="/register"
-          >No account yet?</router-link
+        <BaseRouterLink class="text-right" to="/register"
+          >No account yet?</BaseRouterLink
         >
+        <BaseHRWithText class="my-4">Or continue with</BaseHRWithText>
+        <div class="flex flex-row justify-around">
+          <social-sign-in
+            @click="googleLogin"
+            :type="'google'"
+          ></social-sign-in>
+          <social-sign-in :disabled="true" :type="'facebook'"></social-sign-in>
+        </div>
       </form>
-      <div
-        class="separator mt-2 flex items-center text-center leading-5 text-gray-700 dark:text-gray-200"
-      >
-        Or continue with
-      </div>
-      <div class="flex flex-row justify-around">
-        <social-sign-in @click="googleLogin" :type="'google'"></social-sign-in>
-        <social-sign-in :disabled="true" :type="'facebook'"></social-sign-in>
-      </div>
-    </div>
-  </div>
+    </Container>
+  </ViewBaseResponsive>
 </template>
 
-<script lang="ts">
-// Components
-
+<script setup lang="ts">
 import InputBase from "@/components/FormInputBase.vue";
 import SocialSignIn from "@/components/FormSocialSignIn.vue";
-import StatusMessage from "@/components/FormStatusMessage.vue";
 import BaseButton from "@/components/BaseButton.vue";
-
-// Pinia store
 import { useStore } from "@/store/store";
-
-// yup validation
 import { object, string } from "yup";
 const loginFormSchema = object().shape({
-  usernameOrEmail: string().required("Field is required"),
+  usernameOrEmail: string().required("Username or email is required"),
   password: string().required("Password is required"),
 });
+import { reactive, ref } from "vue";
+import BaseHighHeadline from "@/components/BaseHighHeadline.vue";
+import Container from "@/components/Container.vue";
+import ViewBaseResponsive from "@/components/ViewBaseResponsive.vue";
+import BaseHRDivider from "@/components/BaseHRDivider.vue";
+import BaseRouterLink from "@/components/BaseRouterLink.vue";
+import BaseHRWithText from "@/components/BaseHRWithText.vue";
+import router from "@/router";
 
-// Utility
-import { defineComponent } from "vue";
-import { AxiosResponse } from "axios";
-
-export default defineComponent({
-  name: "Login",
-  components: { SocialSignIn, InputBase, BaseButton, StatusMessage },
-  data() {
-    return {
-      user: {
-        usernameOrEmail: "",
-        password: "",
-      },
-      errors: {
-        usernameOrEmail: "",
-        password: "",
-      },
-      showSuccess: false,
-      serverError: "",
-    };
-  },
-  methods: {
-    login() {
-      this.validate("usernameOrEmail");
-      this.validate("password");
-
-      if (!this.errors.usernameOrEmail && !this.errors.password) {
-        const store = useStore();
-        store
-          .login(this.user.usernameOrEmail, this.user.password)
-          .then(() => {
-            this.serverError = "";
-            this.showSuccess = true;
-          })
-          .catch((err) => {
-            this.serverError = err;
-          });
-      }
-    },
-    // FIXME Code duplication in Login/Register components
-    async googleLogin() {
-      const store = useStore();
-      // @ts-ignore
-      await this.$gAuth
-        .signIn()
-        .then(async (res: any) => {
-          const isNewUser = await store.googleLogin(
-            res.getAuthResponse().id_token
-          );
-          if (isNewUser) {
-            this.$router.push("/set-username");
-          } else {
-            this.$router.push("/");
-          }
-        })
-        .catch((err: string) => (this.serverError = err));
-    },
-    validate(field: "usernameOrEmail" | "password") {
-      loginFormSchema
-        .validateAt(field, this.user)
-        .then(() => {
-          this.errors[field] = "";
-        })
-        .catch((err) => {
-          this.errors[field] = err.message;
-        });
-    },
-  },
+const user = reactive({
+  usernameOrEmail: "",
+  password: "",
 });
+const errors = reactive({
+  usernameOrEmail: "",
+  password: "",
+});
+const showSuccess = ref(false);
+const serverError = ref("");
+function login() {
+  validate("usernameOrEmail");
+  validate("password");
+
+  if (!errors.usernameOrEmail && errors.password) {
+    const store = useStore();
+    store
+      .login(user.usernameOrEmail, user.password)
+      .then(() => {
+        serverError.value = "";
+        showSuccess.value = true;
+      })
+      .catch((err) => {
+        serverError.value = err;
+      });
+  }
+}
+// FIXME Code duplication in Login/Register components
+async function googleLogin() {
+  const store = useStore();
+  // @ts-ignore
+  await this.$gAuth
+    .signIn()
+    .then(async (res: any) => {
+      const isNewUser = await store.googleLogin(res.getAuthResponse().id_token);
+      if (isNewUser) {
+        router.push("/set-username");
+      } else {
+        router.push("/");
+      }
+    })
+    .catch((err: string) => (serverError.value = err));
+}
+function validate(field: "usernameOrEmail" | "password") {
+  loginFormSchema
+    .validateAt(field, user)
+    .then(() => {
+      errors[field] = "";
+    })
+    .catch((err) => {
+      errors[field] = err.message;
+    });
+}
 </script>
 
 <style scoped>
