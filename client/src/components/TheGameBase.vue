@@ -47,70 +47,13 @@
         ref="chatContainer"
         class="flex-1 min-h-0 min-w-0 w-full flex flex-col p-4 gap-4 relative"
       >
-        <Transition>
-          <div
-            v-if="
-              slideNotification.enemyChoose ||
-              slideNotification.choose ||
-              slideNotification.place ||
-              slideNotification.enemyPlace
-            "
-            class="fancy-background px-4 py-2 rounded-lg flex justify-center place-items-center w-full h-14 md:h-16 mb-4 bg-gray-100"
-          >
-            <div
-              class="flex justify-center place-items-center rounded-lg flex-1 h-full bg-gray-100"
-            >
-              <!-- TODO isolate this to component -->
-              <Transition name="slidetop">
-                <div
-                  class="flex-1 flex flex-row justify-around place-items-center"
-                  v-if="slideNotification.choose"
-                >
-                  <p class="text-lg md:text-xl">Choose a symbol:</p>
-                  <div class="flex self-center gap-8">
-                    <button
-                      @click="$emit('pickGameStone', 1)"
-                      class="border-2 p-1 border-gray-700 dark:border-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-xl"
-                    >
-                      <GameStoneCircle
-                        class="h-8 w-8"
-                        :style="`color:${
-                          mySymbol === Symbol.Circle ? myColor : enemyColor
-                        };`"
-                      />
-                    </button>
-                    <button
-                      @click="$emit('pickGameStone', 2)"
-                      class="border-2 p-1 border-gray-700 dark:border-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-xl"
-                    >
-                      <GameStoneCross
-                        class="h-8 w-8"
-                        :style="`color:${
-                          mySymbol === Symbol.Cross ? myColor : enemyColor
-                        };`"
-                      />
-                    </button>
-                  </div>
-                </div>
-              </Transition>
-              <Transition name="slidetop">
-                <p class="text-lg" v-if="slideNotification.enemyChoose">
-                  Opponent is choosing their symbol
-                </p>
-              </Transition>
-              <Transition name="slidetop">
-                <p class="text-lg" v-if="slideNotification.enemyPlace">
-                  Enemy is placing 3 first stones
-                </p>
-              </Transition>
-              <Transition name="slidetop">
-                <p class="text-lg" v-if="slideNotification.place">
-                  Place 3 first stones
-                </p>
-              </Transition>
-            </div>
-          </div>
-        </Transition>
+        <GameSwapSection
+          :my-color="myComputedColor"
+          :opponent-color="opponentComputedColor"
+          :my-symbol="mySymbol"
+          :phase="swapPhase"
+          @pick-game-stone="(stone) => emit('pickGameStone', stone)"
+        />
         <!-- Social Blades -->
         <div class="flex flex-col">
           <SocialBlade
@@ -161,10 +104,6 @@ import TheAfterGameOverlay from "@/components/TheAfterGameOverlay.vue";
 import SocialBlade from "@/components/GameSocialBlade.vue";
 import Coinflip from "./Coinflip.vue";
 import GameChat from "./GameChat.vue";
-
-// SVGs
-import GameStoneCircle from "@/assets/svg/GameStoneCircle.vue";
-import GameStoneCross from "@/assets/svg/GameStoneCross.vue";
 // Utils
 import {
   EndingType,
@@ -181,6 +120,7 @@ import { computed } from "@vue/reactivity";
 import Gameboard from "./Gameboard.vue";
 import ViewBaseResponsive from "./ViewBaseResponsive.vue";
 import { useStore } from "@/store/store";
+import GameSwapSection from "./GameSwapSection.vue";
 const props = defineProps<{
   me: Player;
   opponent: Player;
@@ -208,32 +148,20 @@ const emit = defineEmits<{
 }>();
 const muted = ref(false);
 const { user } = toRefs(useStore());
-const slideNotification = computed(() => {
-  const notifications = {
-    place: false,
-    enemyPlace: false,
-    choose: false,
-    enemyChoose: false,
-  };
+const swapPhase = computed(() => {
   if (
     props.opening === Opening.Swap1 &&
     props.gameState === GameState.Running
   ) {
     if (props.openingPhase === OpeningPhase.Place3) {
-      if (props.currentPlayer.socketID === props.me.socketID) {
-        notifications.place = true;
-      } else {
-        notifications.enemyPlace = true;
-      }
+      if (props.currentPlayer.socketID === props.me.socketID) return "iPlace";
+      return "opponentPlaces";
     } else if (props.openingPhase === OpeningPhase.PickGameStone) {
-      if (props.currentPlayer.socketID === props.me.socketID) {
-        notifications.choose = true;
-      } else {
-        notifications.enemyChoose = true;
-      }
+      if (props.currentPlayer.socketID === props.me.socketID) return "iChoose";
+      return "opponentChooses";
     }
   }
-  return notifications;
+  return "hidden";
 });
 
 const myComputedColor = computed(() => {
