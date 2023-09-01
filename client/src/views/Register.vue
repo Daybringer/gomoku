@@ -53,11 +53,8 @@
         >
         <BaseHRWithText class="my-4">Or continue with</BaseHRWithText>
         <div class="flex flex-row justify-around">
-          <social-sign-in
-            @click="googleLogin"
-            :type="'google'"
-          ></social-sign-in>
-          <social-sign-in :type="'facebook'"></social-sign-in>
+          <social-sign-in type="google" />
+          <social-sign-in :is-disabled="true" type="facebook" />
         </div>
       </form>
     </Container>
@@ -65,7 +62,6 @@
 </template>
 
 <script setup lang="ts">
-// import { throttle } from "throttle-debounce";
 import InputBase from "@/components/FormInputBase.vue";
 import SocialSignIn from "@/components/FormSocialSignIn.vue";
 import BaseHighHeadline from "@/components/BaseHighHeadline.vue";
@@ -80,7 +76,6 @@ import Container from "@/components/Container.vue";
 import BaseHRDivider from "@/components/BaseHRDivider.vue";
 import BaseButton from "@/components/BaseButton.vue";
 import BaseRouterLink from "@/components/BaseRouterLink.vue";
-import router from "@/router";
 import { NotificationType, useNotificationsStore } from "@/store/notifications";
 
 const user = reactive({
@@ -138,20 +133,6 @@ async function register() {
         "Error has occured whilst registering"
       );
     });
-}
-async function googleLogin() {
-  // @ts-ignore
-  await this.$gAuth
-    .signIn()
-    .then(async (res: any) => {
-      const isNewUser = await store.googleLogin(res.getAuthResponse().id_token);
-      if (isNewUser) {
-        router.push("/set-username");
-      } else {
-        router.push("/");
-      }
-    })
-    .catch((err: string) => (serverError.value = err));
 }
 async function usernameExists() {
   UsersRepository.userWithUsernameExists(user.username)

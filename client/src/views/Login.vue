@@ -24,18 +24,11 @@
         />
         <div class="flex flex-row justify-between flex-wrap">
           <!-- Remember me -->
-          <div>
-            <input
-              type="checkbox"
-              name="remember"
-              class="align-text-top h-4 w-4 text-gomoku-blue bg-gray-50 rounded cursor-pointer focus:ring-0 focus:shadow-none focus:outline-none"
-            />
-            <label
-              for="remember"
-              class="ml-1 pr-3 text-gray-900 dark:text-gray-200"
-              >Remember me</label
-            >
-          </div>
+          <BaseInputCheckbox
+            label="Remember me"
+            :model-value="rememberMe"
+            name="remember"
+          />
           <!-- Forgot password -->
           <BaseRouterLink to="/password-reset"
             >Forgot your password?</BaseRouterLink
@@ -49,11 +42,8 @@
         >
         <BaseHRWithText class="my-4">Or continue with</BaseHRWithText>
         <div class="flex flex-row justify-around">
-          <social-sign-in
-            @click="googleLogin"
-            :type="'google'"
-          ></social-sign-in>
-          <social-sign-in :disabled="true" :type="'facebook'"></social-sign-in>
+          <social-sign-in type="google" />
+          <social-sign-in :is-disabled="true" type="facebook" />
         </div>
       </form>
     </Container>
@@ -77,12 +67,15 @@ import ViewBaseResponsive from "@/components/ViewBaseResponsive.vue";
 import BaseHRDivider from "@/components/BaseHRDivider.vue";
 import BaseRouterLink from "@/components/BaseRouterLink.vue";
 import BaseHRWithText from "@/components/BaseHRWithText.vue";
-import router from "@/router";
+import BaseInputCheckbox from "@/components/BaseInputCheckbox.vue";
 
 const user = reactive({
   usernameOrEmail: "",
   password: "",
 });
+
+const rememberMe = ref(false);
+
 const errors = reactive({
   usernameOrEmail: "",
   password: "",
@@ -106,22 +99,7 @@ function login() {
       });
   }
 }
-// FIXME Code duplication in Login/Register components
-async function googleLogin() {
-  const store = useStore();
-  // @ts-ignore
-  await this.$gAuth
-    .signIn()
-    .then(async (res: any) => {
-      const isNewUser = await store.googleLogin(res.getAuthResponse().id_token);
-      if (isNewUser) {
-        router.push("/set-username");
-      } else {
-        router.push("/");
-      }
-    })
-    .catch((err: string) => (serverError.value = err));
-}
+
 function validate(field: "usernameOrEmail" | "password") {
   loginFormSchema
     .validateAt(field, user)
@@ -133,19 +111,3 @@ function validate(field: "usernameOrEmail" | "password") {
     });
 }
 </script>
-
-<style scoped>
-.separator::before,
-.separator::after {
-  content: "";
-  flex: 1;
-  @apply border-current;
-  @apply border-b-2;
-}
-.separator::before {
-  margin-right: 1em;
-}
-.separator::after {
-  margin-left: 1em;
-}
-</style>
