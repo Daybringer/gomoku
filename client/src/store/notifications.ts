@@ -25,10 +25,16 @@ export const useNotificationsStore = defineStore("notificationsStore", {
     createUUID(length?: number): string {
       const UUIDLength = length || 6;
 
-      return Math.random()
-        .toString(36)
-        .substring(2, UUIDLength);
+      return Math.random().toString(36).substring(2, UUIDLength);
     },
+    /**
+     *
+     * @param type
+     * @param text
+     * @param autoDismiss
+     * @param duration in seconds
+     * @param imageName
+     */
     createNotification(
       type: NotificationType,
       text: string,
