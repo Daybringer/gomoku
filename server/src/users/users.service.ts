@@ -86,7 +86,7 @@ export class UsersService {
   }
 
   async findOneByUsername(username: string): Promise<UserEntity | undefined> {
-    return this.userRepository.findOne({ username });
+    return this.userRepository.findOne({ where: { username } });
   }
 
   isVerificationTimedOut(user: UserEntity): boolean {
@@ -125,7 +125,7 @@ export class UsersService {
   }
 
   async findOneByEmail(email: string): Promise<UserEntity | undefined> {
-    return this.userRepository.findOne({ email });
+    return this.userRepository.findOne({ where: { email } });
   }
 
   async findAll(): Promise<UserEntity[]> {
@@ -150,7 +150,7 @@ export class UsersService {
   }
 
   async findOneByID(id: number): Promise<UserEntity | undefined> {
-    return this.userRepository.findOne({ id });
+    return this.userRepository.findOne({ where: { id } });
   }
 
   async findByEmailOrUsername(
@@ -158,11 +158,15 @@ export class UsersService {
   ): Promise<UserEntity | undefined> {
     if (usernameOrEmail.includes('@')) {
       return this.userRepository.findOne({
-        email: usernameOrEmail.toLowerCase(),
+        where: {
+          email: usernameOrEmail.toLowerCase(),
+        },
       });
     } else {
       return this.userRepository.findOne({
-        username: usernameOrEmail,
+        where: {
+          username: usernameOrEmail,
+        },
       });
     }
   }

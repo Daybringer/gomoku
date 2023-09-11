@@ -12,7 +12,7 @@ cd server
 
 yarn install --ignore-engines
 
-yarn build-new
+yarn build-less
 
 cd ..
 
@@ -34,5 +34,3 @@ cd client
 yarn install --ignore-engines
 
 yarn build
-
-
