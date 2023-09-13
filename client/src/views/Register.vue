@@ -52,9 +52,9 @@
           >Already have an account?</BaseRouterLink
         >
         <BaseHRWithText class="my-4">Or continue with</BaseHRWithText>
-        <div class="flex flex-row justify-around">
-          <social-sign-in type="google" />
-          <social-sign-in :is-disabled="true" type="facebook" />
+        <div class="flex flex-row justify-around place-items-center">
+          <GoogleSignIn />
+          <FacebookSignIn />
         </div>
       </form>
     </Container>
@@ -63,9 +63,10 @@
 
 <script setup lang="ts">
 import InputBase from "@/components/FormInputBase.vue";
-import SocialSignIn from "@/components/FormSocialSignIn.vue";
 import BaseHighHeadline from "@/components/BaseHighHeadline.vue";
 import BaseHRWithText from "@/components/BaseHRWithText.vue";
+import GoogleSignIn from "@/components/GoogleSignIn.vue";
+import FacebookSignIn from "@/components/FacebookSignIn.vue";
 import { RepositoryFactory } from "@/repositories/RepositoryFactory";
 const UsersRepository = RepositoryFactory.getUserRepository;
 import { useStore } from "@/store/store";

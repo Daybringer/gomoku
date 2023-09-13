@@ -22,6 +22,7 @@
           title="Enter password"
           :error="errors.password"
         />
+
         <div class="flex flex-row justify-between flex-wrap">
           <!-- Remember me -->
           <BaseInputCheckbox
@@ -41,9 +42,9 @@
           >No account yet?</BaseRouterLink
         >
         <BaseHRWithText class="my-4">Or continue with</BaseHRWithText>
-        <div class="flex flex-row justify-around">
-          <social-sign-in type="google" />
-          <social-sign-in :is-disabled="true" type="facebook" />
+        <div class="flex flex-row justify-around place-items-center">
+          <GoogleSignIn />
+          <FacebookSignIn />
         </div>
       </form>
     </Container>
@@ -52,7 +53,6 @@
 
 <script setup lang="ts">
 import InputBase from "@/components/FormInputBase.vue";
-import SocialSignIn from "@/components/FormSocialSignIn.vue";
 import BaseButton from "@/components/BaseButton.vue";
 import { useStore } from "@/store/store";
 import { object, string } from "yup";
@@ -68,13 +68,18 @@ import BaseHRDivider from "@/components/BaseHRDivider.vue";
 import BaseRouterLink from "@/components/BaseRouterLink.vue";
 import BaseHRWithText from "@/components/BaseHRWithText.vue";
 import BaseInputCheckbox from "@/components/BaseInputCheckbox.vue";
+import GoogleSignIn from "@/components/GoogleSignIn.vue";
+import FacebookSignIn from "@/components/FacebookSignIn.vue";
 
 const user = reactive({
   usernameOrEmail: "",
   password: "",
 });
 
+// TODO implement remember me -> so far is a dummy
 const rememberMe = ref(false);
+
+const store = useStore();
 
 const errors = reactive({
   usernameOrEmail: "",
@@ -86,8 +91,7 @@ function login() {
   validate("usernameOrEmail");
   validate("password");
 
-  if (!errors.usernameOrEmail && errors.password) {
-    const store = useStore();
+  if (!errors.usernameOrEmail && !errors.password) {
     store
       .login(user.usernameOrEmail, user.password)
       .then(() => {
@@ -98,6 +102,7 @@ function login() {
         serverError.value = err;
       });
   }
+  serverError.value = "TF";
 }
 
 function validate(field: "usernameOrEmail" | "password") {
