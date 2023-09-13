@@ -1,15 +1,18 @@
 <template>
   <ViewBaseResponsive>
     <BaseHighHeadline class="md:my-12 my-6">Leaderboard</BaseHighHeadline>
-    <div class="w-full gap-4 justify-center flex md:flex-row flex-col">
+    <div class="md:w-1/3 w-full justify-center flex items-center flex-col">
       <BaseInput
-        class="md:w-1/3 w-full"
+        class="w-full"
+        type="text"
         :model-value="searchedName"
+        title="Enter searched username"
         placeholder="Search by name"
+        name="leaderBoardUsernameInput"
         @update:model-value="(newValue) => (searchedName = newValue)"
-        @enter-pressed="fetchUsers"
+        @enter="fetchUsers"
       />
-      <BaseButton @click="fetchUsers" class="px-6" :gomoku-blue="true"
+      <BaseButton @click="fetchUsers" class="w-80" :gomoku-blue="true"
         >Search</BaseButton
       >
     </div>
