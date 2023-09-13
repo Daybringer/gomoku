@@ -1,42 +1,35 @@
 <template>
-  <div
-    class="flex justify-center place-items-center bg-gray-100 dark:bg-gray-700 py-12 px-4 sm:px-6 lg:px-8"
-  >
-    <div
-      class="max-w-lg w-full md:p-8 p-4 space-y-6 rounded-lg border-gray-50 bg-white dark:bg-gray-600 dark:border-transparent border-opacity-30 border-t-1 shadow-2xl border-2"
-    >
-      <h2
-        class="text-center text-gray-900 dark:text-gray-100 font-extrabold text-3xl"
+  <ViewBaseResponsive>
+    <Container class="xl:mt-8 mt-4 max-w-xl w-full flex-none">
+      <BaseHighHeadline class="whitespace-nowrap">
+        Set username</BaseHighHeadline
       >
-        Set username
-      </h2>
-      <status-message
-        v-show="formData.errors.username"
-        :type="'error'"
-        :text="formData.errors.username"
-      ></status-message>
-      <form @submit.prevent="setUsername" class="flex flex-col p-2">
-        <input-base
-          v-model="formData.user.username"
-          :name="'username'"
-          :type="'text'"
-          :autocomplete="'none'"
-          :title="'Set username'"
-          :error="formData.errors.username"
-          @update:model-value="validate()"
+      <form @submit.prevent="setUsername" class="flex flex-col mt-4 gap-4">
+        <BaseInput
+          :model-value="newUsername"
+          @keyup="validate"
+          @update:model-value="(e) => (newUsername = e)"
+          name="username"
+          placeholder="New Username"
+          type="text"
+          title="Enter New Username"
+          :error="newUsernameError"
         />
-        <submit-button type="submit">Set username</submit-button>
+        <BaseButton @click="setUsername" :gomoku-blue="true">Submit</BaseButton>
       </form>
-    </div>
-  </div>
+    </Container>
+  </ViewBaseResponsive>
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from "vue";
+import { ref } from "vue";
+import router from "@/router";
 // Components
-import InputBase from "@/components/FormInputBase.vue";
-import SubmitButton from "@/components/FormSubmitButton.vue";
-import StatusMessage from "@/components/FormStatusMessage.vue";
+import Container from "@/components/Container.vue";
+import ViewBaseResponsive from "@/components/ViewBaseResponsive.vue";
+import BaseHighHeadline from "@/components/BaseHighHeadline.vue";
+import BaseInput from "@/components/BaseInput.vue";
+import BaseButton from "@/components/BaseButton.vue";
 // Pinia store
 import { useStore } from "@/store/store";
 import { NotificationType, useNotificationsStore } from "@/store/notifications";
@@ -46,7 +39,6 @@ import { throttle } from "throttle-debounce";
 // Axios repositories
 import { RepositoryFactory } from "@/repositories/RepositoryFactory";
 import { AxiosError } from "axios";
-import router from "@/router";
 const UsersRepository = RepositoryFactory.getUserRepository;
 
 const setUsernameSchema = object().shape({
@@ -60,53 +52,55 @@ const setUsernameSchema = object().shape({
     ),
 });
 // Utility
-const formData = reactive({ user: { username: "" }, errors: { username: "" } });
-const serverError = ref("");
+// const formData = reactive({ user: { username: "" }, errors: { username: "" } });
+const newUsername = ref("");
+const newUsernameError = ref("");
+const notifications = useNotificationsStore();
 
 async function setUsername() {
   await validate();
-  if (!formData.errors.username && formData.user.username) {
-    UsersRepository.changeUsername(formData.user.username)
+  if (!newUsernameError.value && newUsername.value) {
+    UsersRepository.changeUsername(newUsername.value)
       .then(() => {
-        formData.errors.username = "";
-        useStore().setUsername(formData.user.username);
-        serverError.value = "";
+        useStore().setUsername(newUsername.value);
         useNotificationsStore().createNotification(
           NotificationType.Success,
-          `Successfully changed username to <b>${formData.user.username}</b>`
+          `Successfully changed username to <b>${newUsername.value}</b>`
         );
         router.push("/");
       })
       .catch((err: AxiosError) => {
-        if (err.response) serverError.value = err.response.data.message;
+        if (err.response)
+          notifications.createNotification(
+            NotificationType.Error,
+            err.response?.data.message
+          );
       });
-  } else {
-    serverError.value = formData.errors.username;
   }
 }
 async function usernameExists() {
-  UsersRepository.userWithUsernameExists(formData.user.username)
-    .then((res) => {
-      if (res.data) {
-        formData.errors.username = "Username is already taken";
-      } else {
-        formData.errors.username = "";
-      }
-    })
-    .catch(() => (formData.errors.username = "Server error"));
+  // UsersRepository.userWithUsernameExists(formData.user.username)
+  //   .then((res) => {
+  //     if (res.data) {
+  //       formData.errors.username = "Username is already taken";
+  //     } else {
+  //       formData.errors.username = "";
+  //     }
+  //   })
+  //   .catch(() => (formData.errors.username = "Server error"));
 }
 const throttledFunction = throttle(400, (call) => {
   call();
 });
 async function validate() {
-  const field = "username";
   setUsernameSchema
-    .validateAt(field, formData.user)
+    .validate({ username: newUsername.value })
     .then(() => {
       throttledFunction(usernameExists);
+      newUsernameError.value = "";
     })
     .catch((err) => {
-      formData.errors[field] = err.message;
+      newUsernameError.value = err.message;
     });
 }
 </script>
