@@ -4,7 +4,7 @@
       <BaseHighHeadline>Sign in</BaseHighHeadline>
       <BaseHRDivider />
       <form @submit.prevent="login" class="flex flex-col p-2 gap-4">
-        <input-base
+        <BaseInput
           :model-value="user.usernameOrEmail"
           @update:model-value="(e) => (user.usernameOrEmail = e)"
           name="usernameOrEmail"
@@ -13,7 +13,7 @@
           title="Enter email or username"
           :error="errors.usernameOrEmail"
         />
-        <input-base
+        <BaseInput
           :model-value="user.password"
           @update:model-value="(e) => (user.password = e)"
           name="password"
@@ -52,7 +52,7 @@
 </template>
 
 <script setup lang="ts">
-import InputBase from "@/components/FormInputBase.vue";
+import BaseInput from "@/components/BaseInput.vue";
 import BaseButton from "@/components/BaseButton.vue";
 import { useStore } from "@/store/store";
 import { object, string } from "yup";
@@ -70,23 +70,25 @@ import BaseHRWithText from "@/components/BaseHRWithText.vue";
 import BaseInputCheckbox from "@/components/BaseInputCheckbox.vue";
 import GoogleSignIn from "@/components/GoogleSignIn.vue";
 import FacebookSignIn from "@/components/FacebookSignIn.vue";
+import { NotificationType, useNotificationsStore } from "@/store/notifications";
+import router from "@/router";
 
 const user = reactive({
   usernameOrEmail: "",
   password: "",
 });
 
-// TODO implement remember me -> so far is a dummy
+// TODO implement remember me -> so far is just a dummy
 const rememberMe = ref(false);
 
 const store = useStore();
+const notifications = useNotificationsStore();
 
 const errors = reactive({
   usernameOrEmail: "",
   password: "",
 });
 const showSuccess = ref(false);
-const serverError = ref("");
 function login() {
   validate("usernameOrEmail");
   validate("password");
@@ -95,14 +97,21 @@ function login() {
     store
       .login(user.usernameOrEmail, user.password)
       .then(() => {
-        serverError.value = "";
-        showSuccess.value = true;
+        // Handling success log in
+        router.push("/");
+        notifications.createNotification(
+          NotificationType.Success,
+          "Successfully logged in"
+        );
       })
-      .catch((err) => {
-        serverError.value = err;
+      .catch(() => {
+        // Handling server error
+        notifications.createNotification(
+          NotificationType.Error,
+          "Invalid credentials"
+        );
       });
   }
-  serverError.value = "TF";
 }
 
 function validate(field: "usernameOrEmail" | "password") {

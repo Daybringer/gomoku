@@ -4,7 +4,7 @@
       <base-high-headline>Register</base-high-headline>
       <BaseHRDivider />
       <form @submit.prevent="register" class="flex flex-col gap-4 p-2">
-        <input-base
+        <BaseInput
           :model-value="user.email"
           @update:model-value="(e) => (user.email = e)"
           name="email"
@@ -14,7 +14,7 @@
           :error="errors.email"
           @keyup="validate('email')"
         />
-        <input-base
+        <BaseInput
           :model-value="user.username"
           @update:model-value="(e) => (user.username = e)"
           :name="'username'"
@@ -25,7 +25,7 @@
           :error="errors.username"
           @keyup="validate('username')"
         />
-        <input-base
+        <BaseInput
           :model-value="user.password"
           @update:model-value="(n) => (user.password = n)"
           name="password"
@@ -35,7 +35,7 @@
           :error="errors.password"
           @keyup="validate('password')"
         />
-        <input-base
+        <BaseInput
           :model-value="user.passwordConfirm"
           @update:model-value="(e) => (user.passwordConfirm = e)"
           name="passwordConfirm"
@@ -62,7 +62,7 @@
 </template>
 
 <script setup lang="ts">
-import InputBase from "@/components/FormInputBase.vue";
+import BaseInput from "@/components/BaseInput.vue";
 import BaseHighHeadline from "@/components/BaseHighHeadline.vue";
 import BaseHRWithText from "@/components/BaseHRWithText.vue";
 import GoogleSignIn from "@/components/GoogleSignIn.vue";
@@ -78,6 +78,7 @@ import BaseHRDivider from "@/components/BaseHRDivider.vue";
 import BaseButton from "@/components/BaseButton.vue";
 import BaseRouterLink from "@/components/BaseRouterLink.vue";
 import { NotificationType, useNotificationsStore } from "@/store/notifications";
+import router from "@/router";
 
 const user = reactive({
   email: "",
@@ -125,8 +126,9 @@ async function register() {
       serverError.value = "";
       notifications.createNotification(
         NotificationType.Info,
-        "'You've been successfuly registered.\nConfirm your email."
+        "'You've been successfuly registered.\nVerify your email with your email provider."
       );
+      router.push("/login");
     })
     .catch(() => {
       notifications.createNotification(
