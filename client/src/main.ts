@@ -1,20 +1,15 @@
 import { createApp } from "vue";
 import { createPinia } from "pinia";
+import vue3GoogleLogin from "vue3-google-login";
 import App from "@/App.vue";
 import router from "./router";
 
 const app = createApp(App);
 
-// @ts-ignore
-import GAuth from "vue3-google-oauth2";
-
-const GAuthOptions = {
+app.use(vue3GoogleLogin, {
   clientId:
     "1064130338503-0g3bbnb9i03s10mb1douod4oes4kp0th.apps.googleusercontent.com",
-  scope: "email openid",
-  prompt: "consent",
-  fetch_basic_profile: false,
-};
+});
 
 app.directive("click-outside", {
   beforeMount(el, binding, vnode) {
@@ -32,4 +27,4 @@ app.directive("click-outside", {
 
 app.use(createPinia());
 
-app.use(router).use(GAuth, GAuthOptions).mount("#vue-app");
+app.use(router).mount("#vue-app");

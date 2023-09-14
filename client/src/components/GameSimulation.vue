@@ -8,13 +8,14 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted } from "vue";
 import GameSimulation from "../utils/gameSimulation";
-import { useStore } from "@/store/store";
-const store = useStore();
+import { useProfileStore } from "@/store/profile";
+import { storeToRefs } from "pinia";
+const { user } = storeToRefs(useProfileStore());
 const gameSimulation = new GameSimulation({
   drawSpeed: 0.75,
   gridLineWidth: 1,
-  primaryColor: store.user.settings.playerColor,
-  secondaryColor: store.user.settings.opponentColor,
+  primaryColor: user.value.settings.playerColor,
+  secondaryColor: user.value.settings.opponentColor,
   gridColor: "#808080",
   cellSize: 35,
 });

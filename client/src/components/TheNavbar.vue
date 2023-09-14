@@ -292,7 +292,7 @@ import NavbarNavigationLink from "./NavbarNavigationLink.vue";
 import MobileNavbarLink from "./MobileNavbarLink.vue";
 
 // Pinia
-import { useStore } from "@/store/store";
+import { useProfileStore } from "@/store/profile";
 
 // Utility
 import { ref, reactive } from "vue";
@@ -304,10 +304,9 @@ defineProps<{ activeIntersection: string }>();
 
 const burgerDropdownIsToggled = ref(false);
 const profileDropdownIsToggled = ref(false);
-const store = reactive(useStore());
+const store = reactive(useProfileStore());
 function logout() {
   closeProfile();
-  const store = useStore();
   store.logout();
   router.push("/");
 }

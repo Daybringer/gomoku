@@ -54,7 +54,7 @@
 <script setup lang="ts">
 import BaseInput from "@/components/BaseInput.vue";
 import BaseButton from "@/components/BaseButton.vue";
-import { useStore } from "@/store/store";
+import { useProfileStore } from "@/store/profile";
 import { object, string } from "yup";
 const loginFormSchema = object().shape({
   usernameOrEmail: string().required("Username or email is required"),
@@ -81,20 +81,19 @@ const user = reactive({
 // TODO implement remember me -> so far is just a dummy
 const rememberMe = ref(false);
 
-const store = useStore();
+const profileStore = useProfileStore();
 const notifications = useNotificationsStore();
 
 const errors = reactive({
   usernameOrEmail: "",
   password: "",
 });
-const showSuccess = ref(false);
 function login() {
   validate("usernameOrEmail");
   validate("password");
 
   if (!errors.usernameOrEmail && !errors.password) {
-    store
+    profileStore
       .login(user.usernameOrEmail, user.password)
       .then(() => {
         // Handling success log in

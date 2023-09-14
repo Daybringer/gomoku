@@ -19,7 +19,7 @@ import ViewBaseResponsive from "@/components/ViewBaseResponsive.vue";
 import { humanReadableTime } from "@/utils/general";
 import { ref, onMounted, onUnmounted } from "vue";
 import { GameType } from "@/shared/types";
-import { useStore } from "@/store/store";
+import { useProfileStore } from "@/store/profile";
 import {
   SearchQuickGameDTO,
   SearchRankedGameDTO,
@@ -29,7 +29,7 @@ import router from "@/router";
 import { NotificationType, useNotificationsStore } from "@/store/notifications";
 import BaseHighHeadline from "@/components/BaseHighHeadline.vue";
 
-const store = useStore();
+const store = useProfileStore();
 let socket: Socket;
 const interval = ref(0);
 const currentTime = ref(0);

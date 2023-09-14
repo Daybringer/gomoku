@@ -69,7 +69,7 @@ import GoogleSignIn from "@/components/GoogleSignIn.vue";
 import FacebookSignIn from "@/components/FacebookSignIn.vue";
 import { RepositoryFactory } from "@/repositories/RepositoryFactory";
 const UsersRepository = RepositoryFactory.getUserRepository;
-import { useStore } from "@/store/store";
+import { useProfileStore } from "@/store/profile";
 import { object, string, ref as refYup } from "yup";
 import { reactive, ref } from "vue";
 import ViewBaseResponsive from "@/components/ViewBaseResponsive.vue";
@@ -116,11 +116,11 @@ const serverError = ref("");
 
 const notifications = useNotificationsStore();
 
-const store = useStore();
+const profileStore = useProfileStore();
 
 async function register() {
   await validateAll();
-  store
+  profileStore
     .register(user)
     .then(() => {
       serverError.value = "";
@@ -137,6 +137,7 @@ async function register() {
       );
     });
 }
+// FIXME fix naming
 async function usernameExists() {
   UsersRepository.userWithUsernameExists(user.username)
     .then((res) => {
@@ -148,6 +149,7 @@ async function usernameExists() {
     })
     .catch(() => (errors.username = "Server error"));
 }
+// FIXME fix naming
 async function emailExists() {
   UsersRepository.userWithMailExists(user.email)
     .then((res) => {

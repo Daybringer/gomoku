@@ -3,17 +3,16 @@
 </template>
 <script setup lang="ts">
 import { onMounted } from "vue";
-import { useStore } from "@/store/store";
 import ViewBaseResponsive from "@/components/ViewBaseResponsive.vue";
 import { NotificationType, useNotificationsStore } from "@/store/notifications";
 import router from "@/router";
+import authRepository from "@/repositories/authRepository";
 const notificationStore = useNotificationsStore();
 onMounted(() => {
   const urlParams = new URLSearchParams(window.location.search);
   const verificationCode = urlParams.get("code") || "";
   const username = urlParams.get("username") || "";
-  const store = useStore();
-  store
+  authRepository
     .verifyMail(verificationCode, username)
     .then(() => {
       notificationStore.createNotification(
@@ -28,5 +27,3 @@ onMounted(() => {
     });
 });
 </script>
-
-<style scoped></style>

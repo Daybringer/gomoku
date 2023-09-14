@@ -34,7 +34,7 @@
   </ViewBaseResponsive>
 </template>
 <script setup lang="ts">
-import { useStore } from "@/store/store";
+import { useProfileStore } from "@/store/profile";
 import BaseHighHeadline from "./BaseHighHeadline.vue";
 import ViewBaseResponsive from "./ViewBaseResponsive.vue";
 import { storeToRefs } from "pinia";
@@ -46,7 +46,7 @@ import { Ref, computed, onMounted, ref } from "vue";
 import usersRepository from "@/repositories/usersRepository";
 import { User } from "@/shared/interfaces/user.interface";
 
-const { user, isAuthenticated } = storeToRefs(useStore());
+const { user, isAuthenticated } = storeToRefs(useProfileStore());
 const amIInTopThree = computed(
   () =>
     isAuthenticated &&

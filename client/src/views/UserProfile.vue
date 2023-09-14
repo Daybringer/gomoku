@@ -9,12 +9,12 @@ import Container from "@/components/Container.vue";
 // TS
 import { useRoute } from "vue-router";
 import { onBeforeMount, reactive, ref } from "vue";
-import { useStore, userBase } from "@/store/store";
+import { useProfileStore, userBase } from "@/store/profile";
 import usersRepository from "@/repositories/usersRepository";
 import { NotificationType, useNotificationsStore } from "@/store/notifications";
 import router from "@/router";
 
-const store = useStore();
+const profileStore = useProfileStore();
 const userID = useRoute().params.id;
 const areWeVisitingProfile = ref(userID !== undefined);
 const visitedUser = reactive(userBase());
@@ -25,7 +25,7 @@ onBeforeMount(async () => {
     usersRepository
       .getUserProfile(Number(userID))
       .then((response) => {
-        store.copyUser(response.data, visitedUser);
+        profileStore.copyUser(response.data, visitedUser);
         isUserLoaded.value = true;
       })
       .catch(() => {
@@ -50,14 +50,14 @@ onBeforeMount(async () => {
     <div class="xl:w-60 w-full flex-1 flex flex-col gap-6">
       <Container>
         <GeneralProfileSection
-          :user="areWeVisitingProfile ? visitedUser : store.user"
+          :user="areWeVisitingProfile ? visitedUser : profileStore.user"
           :visiting-profile="areWeVisitingProfile"
         />
       </Container>
 
       <Container v-show="isUserLoaded">
         <MatchHistoryProfileSection
-          :userID="areWeVisitingProfile ? Number(userID) : store.user.id"
+          :userID="areWeVisitingProfile ? Number(userID) : profileStore.user.id"
         />
       </Container>
       <Container v-show="!areWeVisitingProfile">

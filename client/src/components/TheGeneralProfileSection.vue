@@ -15,10 +15,10 @@ import {
 import { User } from "@/shared/interfaces/user.interface";
 import { ProfileIcon, profileIconRecords } from "@/shared/icons";
 import { NotificationType, useNotificationsStore } from "@/store/notifications";
-import { useStore } from "@/store/store";
+import { useProfileStore } from "@/store/profile";
 
 defineProps<{ user: User; visitingProfile: boolean }>();
-const store = useStore();
+const store = useProfileStore();
 const notificationsStore = useNotificationsStore();
 
 // <---Functions--->
@@ -26,7 +26,7 @@ async function setIcon(profileIcon: ProfileIcon) {
   if (store.user.settings.availableIcons.includes(profileIcon))
     UsersRepository.selectIcon(profileIcon).then(() => {
       store.user.settings.selectedIcon = profileIcon;
-      store.saveLocalUser();
+      store.saveUserToLocalStorage();
     });
 }
 

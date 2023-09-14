@@ -119,7 +119,7 @@ import {
 import { computed } from "@vue/reactivity";
 import Gameboard from "./Gameboard.vue";
 import ViewBaseResponsive from "./ViewBaseResponsive.vue";
-import { useStore } from "@/store/store";
+import { useProfileStore } from "@/store/profile";
 import GameSwapSection from "./GameSwapSection.vue";
 const props = defineProps<{
   me: Player;
@@ -147,7 +147,7 @@ const emit = defineEmits<{
   (e: "rematchCustom");
 }>();
 const muted = ref(false);
-const { user } = toRefs(useStore());
+const { user } = toRefs(useProfileStore());
 const swapPhase = computed(() => {
   if (
     props.opening === Opening.Swap1 &&

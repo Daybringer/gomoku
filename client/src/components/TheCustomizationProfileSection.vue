@@ -8,14 +8,14 @@ import ProfileBoardPicker from "./ProfileBoardPicker.vue";
 import ProfileColorPicker from "./ProfileColorPicker.vue";
 // TS
 import { GameBoard } from "@/shared/types";
-import { useStore } from "@/store/store";
+import { useProfileStore } from "@/store/profile";
 import UsersRepository from "@/repositories/usersRepository";
 
-const store = useStore();
+const store = useProfileStore();
 async function setGameBoard(gameBoard: GameBoard) {
   UsersRepository.setGameboard(gameBoard).then(() => {
     store.user.settings.gameBoard = gameBoard;
-    store.saveLocalUser();
+    store.saveUserToLocalStorage();
   });
 }
 
@@ -25,7 +25,7 @@ function setColor(isMyColor: boolean, color: string) {
   } else {
     store.user.settings.opponentColor = color;
   }
-  store.saveLocalUser();
+  store.saveUserToLocalStorage();
   UsersRepository.setColors(
     store.user.settings.playerColor!,
     store.user.settings.opponentColor!

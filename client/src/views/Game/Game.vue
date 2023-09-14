@@ -61,7 +61,7 @@ let socket: Socket;
 // Components
 import GameBase from "@/components/TheGameBase.vue";
 // Pinia
-import { useStore } from "@/store/store";
+import { useProfileStore } from "@/store/profile";
 // Utils
 import { computed, ref, Ref, onUnmounted, onMounted } from "vue";
 import { io, Socket } from "socket.io-client";
@@ -105,7 +105,7 @@ const settings: Ref<GameSettingsIdless> = ref({
   timeLimitInSeconds: 120,
 });
 
-const { user, isAuthenticated } = storeToRefs(useStore());
+const { user, isAuthenticated } = storeToRefs(useProfileStore());
 const notificationStore = useNotificationsStore();
 
 function gameClick(position: Position): void {

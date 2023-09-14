@@ -1,5 +1,7 @@
 // Vue router
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
+// Pinia
+import { useProfileStore } from "@/store/profile";
 // Components
 import Home from "../views/Home.vue";
 import Login from "../views/Login.vue";
@@ -10,8 +12,6 @@ import Search from "../views/Game/Search.vue";
 import VerifyMailLanding from "../views/VerifyMailLanding.vue";
 import CreateCustom from "../views/CreateCustom.vue";
 import CustomWaitingRoom from "../views/CustomWaitingRoom.vue";
-// Pinia
-import { useStore } from "@/store/store";
 import MatchOverviewVue from "@/views/MatchOverview.vue";
 import Leaderboard from "@/views/Leaderboard.vue";
 
@@ -126,9 +126,9 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from) => {
-  const store = useStore();
+  const profileStore = useProfileStore();
 
-  if (to.meta.requiresAuth && !store.isAuthenticated) {
+  if (to.meta.requiresAuth && !profileStore.isAuthenticated) {
     return {
       path: "/login",
       // save the location we were at to come back later
@@ -136,7 +136,7 @@ router.beforeEach((to, from) => {
     };
   }
 
-  if (to.meta.prohibitsAuth && store.isAuthenticated) {
+  if (to.meta.prohibitsAuth && profileStore.isAuthenticated) {
     return from;
   }
 });

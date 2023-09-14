@@ -31,7 +31,7 @@ import BaseHighHeadline from "@/components/BaseHighHeadline.vue";
 import BaseInput from "@/components/BaseInput.vue";
 import BaseButton from "@/components/BaseButton.vue";
 // Pinia store
-import { useStore } from "@/store/store";
+import { useProfileStore } from "@/store/profile";
 import { NotificationType, useNotificationsStore } from "@/store/notifications";
 // yup validation
 import { object, string } from "yup";
@@ -56,14 +56,15 @@ const setUsernameSchema = object().shape({
 const newUsername = ref("");
 const newUsernameError = ref("");
 const notifications = useNotificationsStore();
+const profileStore = useProfileStore();
 
 async function setUsername() {
   await validate();
   if (!newUsernameError.value && newUsername.value) {
     UsersRepository.changeUsername(newUsername.value)
       .then(() => {
-        useStore().setUsername(newUsername.value);
-        useNotificationsStore().createNotification(
+        profileStore.setUsername(newUsername.value);
+        notifications.createNotification(
           NotificationType.Success,
           `Successfully changed username to <b>${newUsername.value}</b>`
         );

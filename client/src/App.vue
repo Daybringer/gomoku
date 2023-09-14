@@ -23,20 +23,21 @@
 <script setup lang="ts">
 import { io, Socket } from "socket.io-client";
 import { SocketIOEvents, UpdateActiveUsersDTO } from "@/shared/socketIO";
-import { useStore } from "@/store/store";
+import { useProfileStore } from "@/store/profile";
 import { ref, reactive, onMounted, onBeforeUnmount, onBeforeMount } from "vue";
 import Navbar from "@/components/TheNavbar.vue";
 import BaseToast from "./components/BaseToast.vue";
 import { useNotificationsStore } from "./store/notifications";
 let socket: Socket;
-const store = useStore();
+const profileStore = useProfileStore();
 const notifications = reactive(useNotificationsStore().$state.notifications);
 
-if (store.token) {
-  store.setBearer(store.token);
-  store.fetchOwnProfile();
+// FIXME implement server check whether token is still valid and in case of nonvalid token
+// invalid LOCAL token and logout user
+if (profileStore.token) {
+  profileStore.setBearer(profileStore.token);
+  profileStore.fetchOwnProfile();
 }
-
 const onlineUsers = ref(0);
 const activeIntersection = ref("");
 
@@ -56,7 +57,7 @@ onMounted(() => {
 });
 
 onBeforeMount(() => {
-  if (store.darkModeToggled) {
+  if (profileStore.darkModeToggled) {
     document.documentElement.classList.add("dark");
   } else {
     document.documentElement.classList.remove("dark");

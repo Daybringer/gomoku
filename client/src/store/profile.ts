@@ -43,6 +43,7 @@ export function userBase(): User {
       availableIcons: [ProfileIcon.transparent],
     },
     statistics: {
+      leaderboardPosition: 0,
       id: 0,
       quickLost: 0,
       quickTied: 0,
@@ -71,7 +72,7 @@ function isDarkModePreffered(): boolean {
   );
 }
 
-export const useStore = defineStore("store", {
+export const useProfileStore = defineStore("profileStore", {
   state: () => ({
     user: getLocalUser() || userBase(),
     defaults: {},
@@ -99,11 +100,11 @@ export const useStore = defineStore("store", {
         this.darkModeToggled = true;
       }
     },
+
     /**
-     * Warning: Owerwrites original data.
-     * @returns
-     * Deeply copies source user to destination user.\n\n
-     *
+     * <b>Warning</b>: Owerwrites original data.
+     * <br>
+     * Deeply copies source user to destination user.
      */
     copyUser(src: User, dest: User): void {
       Object.keys(src).forEach((key) => {
@@ -114,6 +115,7 @@ export const useStore = defineStore("store", {
         }
       });
     },
+
     async register(user: {
       username: string;
       email: string;
@@ -132,35 +134,7 @@ export const useStore = defineStore("store", {
           });
       });
     },
-    /**
-     *
-     * @param verificationCode
-     * @param username
-     * @returns
-     */
-    async verifyMail(verificationCode: string, username: string) {
-      return new Promise<any>((resolve, reject) => {
-        AuthRepository.verifyMail(verificationCode, username)
-          .then((res) => resolve(res))
-          .catch((err) => reject(err.response.data.message));
-      });
-    },
-    /**
-     *
-     * @returns
-     */
-    async getRandomName() {
-      return new Promise<string>((resolve, reject) => {
-        UsersRepository.getRandomName()
-          .then((res) => {
-            resolve(res.data);
-          })
-          .catch((err) => {
-            console.log(err);
-            reject(err);
-          });
-      });
-    },
+
     /**
      *
      * @param newUsername
@@ -168,8 +142,9 @@ export const useStore = defineStore("store", {
      */
     setUsername(newUsername: string): void {
       this.user.username = newUsername;
-      this.saveLocalUser();
+      this.saveUserToLocalStorage();
     },
+
     async login(usernameOrEmail: string, password: string) {
       return new Promise((resolve, reject) => {
         AuthRepository.login(usernameOrEmail, password)
@@ -183,6 +158,7 @@ export const useStore = defineStore("store", {
           });
       });
     },
+
     /**
      *
      * @param id_token token extracted from Google login flow
@@ -218,22 +194,22 @@ export const useStore = defineStore("store", {
         .then((res) => {
           const user = res.data;
           this.user = user;
-          this.saveLocalUser();
+          this.saveUserToLocalStorage();
           this.userLoaded = true;
           return user;
         })
-        .catch((err) => console.log(err));
+        .catch();
     },
     consumeAuthPayload(authPayload: AuthenticationPayload): void {
       const token = authPayload.payload.token;
       const user = authPayload.user;
       this.user = user;
-      this.saveLocalUser();
+      this.saveUserToLocalStorage();
       this.userLoaded = true;
 
       this.saveToken(token);
     },
-    saveLocalUser() {
+    saveUserToLocalStorage() {
       const str = JSON.stringify(this.user);
       localStorage.setItem("user", str);
     },
@@ -252,6 +228,7 @@ export const useStore = defineStore("store", {
     },
     logout(): void {
       this.flushUser();
+      this.userLoaded = false;
       localStorage.clear();
       this.token = "";
     },

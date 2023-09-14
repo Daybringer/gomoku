@@ -34,7 +34,7 @@
 
 <script setup lang="ts">
 import { Game } from "@/shared/interfaces/game.interface";
-import { useStore } from "@/store/store";
+import { useProfileStore } from "@/store/profile";
 import Gameboard from "./Gameboard.vue";
 import { Turn } from "@/shared/types";
 import { reactive } from "vue";
@@ -42,7 +42,7 @@ import BaseButton from "./BaseButton.vue";
 import ChevronsDownIcon from "@/assets/svg/ChevronsDownIcon.vue";
 import { storeToRefs } from "pinia";
 
-const { user } = storeToRefs(useStore());
+const { user } = storeToRefs(useProfileStore());
 
 const props = defineProps<{
   game: Game;

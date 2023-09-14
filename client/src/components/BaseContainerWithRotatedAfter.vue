@@ -8,7 +8,7 @@
     "
   >
     <div
-      class="relative p-8 flex-1 flex flex-col justify-center shadow-lg bg-gray-50 dark:bg-gray-900 shadow-lg rounded-xl"
+      class="relative p-8 flex-1 flex flex-col justify-center shadow-lg bg-gray-50 dark:bg-gray-900 rounded-xl"
     >
       <slot></slot>
     </div>

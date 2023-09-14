@@ -37,7 +37,7 @@ import {
   Turn,
 } from "@/shared/types";
 import { GameState } from "@/utils/types.dt";
-import { useStore } from "@/store/store";
+import { useProfileStore } from "@/store/profile";
 import { ProfileIcon } from "@/shared/icons";
 import { GomokuBoard } from "gomoku-game";
 import { GameSettingsIdless } from "@/shared/interfaces/gameSettings.interface";
@@ -46,7 +46,7 @@ import { computed } from "vue";
 
 // ------- Initializing Pinia stores ------- \\
 const campaignStore = useCampaignStore();
-const userStore = useStore();
+const userStore = useProfileStore();
 
 // ------- Setting up Player and AI profiles ------- \\
 const mePlayer: Player = {
