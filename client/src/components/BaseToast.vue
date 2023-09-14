@@ -68,7 +68,6 @@ const toastColor = computed(() => {
   }
 });
 function selfClose() {
-  console.log("lel");
   useNotificationsStore().removeNotification(props.notification.UUID);
 }
 </script>

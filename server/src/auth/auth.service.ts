@@ -5,7 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 
-import { OAuth2Client } from 'google-auth-library';
+import { OAuth2Client, GoogleAuth } from 'google-auth-library';
 import { ConfigService } from '@nestjs/config';
 
 import { UsersService } from 'src/users/users.service';
@@ -160,12 +160,11 @@ export class AuthService {
       });
   }
 
-  async loginGoogle(id_token: string): Promise<UserEntity> {
+  async loginGoogle(accessToken: string): Promise<UserEntity> {
     const client = new OAuth2Client(this.configService.get('GOOGLE_CLIENT_ID'));
-    const ticket = await client.verifyIdToken({ idToken: id_token });
-    const payload = ticket.getPayload()!;
-    const userID = ticket.getUserId()!;
-    const email = payload.email!;
+    const tokenInfo = await client.getTokenInfo(accessToken);
+    const userID = tokenInfo.user_id;
+    const email = tokenInfo.email;
 
     // checking whether user with given email exists
     const user = await this.usersService.findOneByEmail(email);
@@ -175,7 +174,7 @@ export class AuthService {
     if (user) {
       if (user.strategy == LoginStrategy.Google) {
         // Login
-        this.logger.debug(`Login in user with google account;`);
+        this.logger.debug(`Loggin in user with google account;`);
         return user;
       } else {
         // Throw unauthorized error
