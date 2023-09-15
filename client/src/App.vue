@@ -81,6 +81,7 @@ html,
 body {
   margin: 0;
   padding: 0;
+  font-display: swap;
   font-family: "Fira Sans", sans-serif;
   box-sizing: border-box;
   scroll-behavior: smooth;
