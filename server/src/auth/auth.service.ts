@@ -5,7 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 
-import { OAuth2Client, GoogleAuth } from 'google-auth-library';
+import { OAuth2Client } from 'google-auth-library';
 import { ConfigService } from '@nestjs/config';
 
 import { UsersService } from 'src/users/users.service';
@@ -19,14 +19,12 @@ import { SignUpDTO } from './dto/sign-up.dto';
 import { MailService } from '../mail/mail.service';
 
 import { hash, compare } from 'bcrypt';
-import { TokensService } from './token.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly mailService: MailService,
-    private readonly tokenService: TokensService,
     private readonly configService: ConfigService,
   ) {}
 
@@ -105,11 +103,6 @@ export class AuthService {
                   email.toLowerCase(),
                   password,
                 );
-                console.log(
-                  newUser.email,
-                  newUser.username,
-                  newUser.mailVerificationCode,
-                );
                 this.mailService.sendVerificationEmail(
                   newUser.email,
                   newUser.username,
@@ -169,7 +162,6 @@ export class AuthService {
     // checking whether user with given email exists
     const user = await this.usersService.findOneByEmail(email);
 
-    console.log('User is here:', typeof user, user);
     // user exists FLOW
     if (user) {
       if (user.strategy == LoginStrategy.Google) {

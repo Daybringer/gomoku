@@ -1,13 +1,8 @@
 import {
   Body,
   Controller,
-  Get,
-  Param,
   Post,
   Query,
-  Req,
-  UnauthorizedException,
-  UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -16,8 +11,6 @@ import { TokensService } from './token.service';
 import { SignUpDTO } from './dto/sign-up.dto';
 import { LogInDTO } from './dto/log-in.dto';
 import { UserEntity } from 'src/models/user.entity';
-import { AuthGuard } from '@nestjs/passport';
-import { Logger } from '@nestjs/common';
 
 // @Types
 import { AuthenticationPayload } from '../shared/types';
@@ -28,15 +21,14 @@ export class AuthController {
     private readonly authService: AuthService,
     private tokensService: TokensService,
   ) {}
-  private readonly logger = new Logger(AuthController.name);
 
   // Local
   @Post('register')
   @UsePipes(new ValidationPipe())
   async registerLocal(@Body() signUpDTO: SignUpDTO): Promise<UserEntity> {
     const user = await this.authService.registerLocal(signUpDTO);
-
-    return user;
+    const { password, ...safeUser } = user;
+    return safeUser;
   }
 
   @Post('verify')
@@ -60,6 +52,7 @@ export class AuthController {
     return payload;
   }
 
+  // TODO implement
   @Post('reset-password')
   async resetPassword() {}
 
@@ -73,32 +66,6 @@ export class AuthController {
     const payload = this.buildResponsePayload(response, token); //,refresh
 
     return payload;
-  }
-
-  // Google
-  // FIXME zero idea what this code does now :/
-  // @Get('google')
-  // @UseGuards(AuthGuard('google'))
-  // async googleAuth(@Req() req) {}
-
-  // @Get('google/redirect')
-  // @UseGuards(AuthGuard('google'))
-  // googleAuthRedirect(@Req() req) {
-  //   if (!req.user) {
-  //     throw new UnauthorizedException("Google user doesn't exist");
-  //   }
-  //   return req.user;
-  // }
-
-  // Facebook
-  @Get('facebook')
-  @UseGuards(AuthGuard('facebook'))
-  async facebookAuth(@Req() req) {}
-
-  @Get('facebook/redirect')
-  @UseGuards(AuthGuard('facebook'))
-  facebookAuthRedirect(@Req() req) {
-    return req.user;
   }
 
   private buildResponsePayload(

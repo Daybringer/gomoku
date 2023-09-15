@@ -8,15 +8,13 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { TokensService } from './token.service';
 import { ConfigService } from '@nestjs/config';
 import { MailModule } from 'src/mail/mail.module';
-import { GoogleStrategy } from './strategies/google.strategy';
-import { FacebookStrategy } from './strategies/facebook.strategy';
 
 @Module({
   imports: [
     JwtModule.registerAsync({
       useFactory: async (config: ConfigService) => ({
         secret: config.get('JWT_SECRET'),
-        signOptions: { expiresIn: '100h' },
+        signOptions: { expiresIn: '100d' },
       }),
       inject: [ConfigService],
     }),
@@ -24,14 +22,7 @@ import { FacebookStrategy } from './strategies/facebook.strategy';
     MailModule,
   ],
   controllers: [AuthController],
-  providers: [
-    JwtAuthGuard,
-    JwtStrategy,
-    AuthService,
-    TokensService,
-    GoogleStrategy,
-    FacebookStrategy,
-  ],
+  providers: [JwtAuthGuard, JwtStrategy, AuthService, TokensService],
   exports: [AuthService, TokensService],
 })
 export class AuthModule {}

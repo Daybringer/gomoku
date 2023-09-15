@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import { SignOptions } from 'jsonwebtoken';
 import { UserEntity } from 'src/models/user.entity';
@@ -11,10 +10,7 @@ const BASE_OPTIONS: SignOptions = {
 
 @Injectable()
 export class TokensService {
-  constructor(
-    private readonly jwtService: JwtService,
-    private readonly configService: ConfigService,
-  ) {}
+  constructor(private readonly jwtService: JwtService) {}
 
   async generateAccessToken(user: UserEntity): Promise<string> {
     const opts: JwtSignOptions = {
@@ -41,22 +37,4 @@ export class TokensService {
 
     return token;
   }
-
-  // async generateVerificationToken(user: UserEntity) {
-  //   const opts: JwtSignOptions = {
-  //     ...BASE_OPTIONS,
-  //     subject: String(user.id),
-  //     secret: this.configService.get('JWT_VERIFY_SECRET'),
-  //   };
-
-  //   return this.jwtService.signAsync({}, opts);
-  // }
-
-  // async decodeVerificationToken(token: string): Promise<string> {
-  //   const payload = await this.jwtService.verifyAsync(token, {
-  //     secret: this.configService.get('JWT_VERIFY_SECRET'),
-  //   });
-
-  //   return payload.sub;
-  // }
 }
