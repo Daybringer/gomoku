@@ -263,6 +263,18 @@ watch(
     }
   }
 );
+watch(
+  () => props.me.timeLeft,
+  (time) => {
+    if (time === 30 * 1000) {
+      const timeRunningOutSound = new Howl({
+        src: [`/sounds/timeRunningOut.mp3`],
+        volume: 1,
+      });
+      timeRunningOutSound.play();
+    }
+  }
+);
 
 function sendMessage(message: string) {
   emit("sendMessage", message);

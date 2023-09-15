@@ -1,8 +1,8 @@
 <template>
   <div
     class="relative border-4 rounded-full min-h-12 p-1 px-8 flex flex-row items-center justify-around shadow-md"
-    :class="isClassic ? 'classic-background ' : 'bg-white dark:bg-gray-500 '"
     :style="isActive ? `border-color: ${symbolColor};` : ''"
+    :class="borderClasses"
   >
     <GameStoneCross
       class="h-8 w-8"
@@ -20,7 +20,16 @@
       v-show="symbol === Symbol.Circle && !isClassic"
     />
     <DotsIcon class="h-8 w-8" v-show="symbol === Symbol.NotTaken" />
-    <div class="text-xl" :class="isClassic ? 'text-gray-900' : ''">
+    <div
+      class="text-xl"
+      :class="
+        player.timeLeft < 30 * 1000 && hasTimeLimit
+          ? 'text-red-600 dark:text-rose-800 '
+          : isClassic
+          ? 'text-gray-900'
+          : ''
+      "
+    >
       {{ hasTimeLimit ? humanReadableTime(player.timeLeft) : "" }}
       <InfinityIcon class="h-8" v-show="!hasTimeLimit" />
     </div>
@@ -44,8 +53,9 @@ import DotsIcon from "@/assets/svg/DotsIcon.vue";
 import BaseProfileLink from "./BaseProfileLink.vue";
 import { ProfileIcon } from "@/shared/icons";
 import ClassicStone from "@/assets/svg/ClassicStone.vue";
+import { computed } from "vue";
 
-defineProps<{
+const props = defineProps<{
   player: Player;
   symbol: Symbol;
   symbolColor: string;
@@ -53,6 +63,13 @@ defineProps<{
   isActive: boolean;
   isClassic?: boolean;
 }>();
+
+const borderClasses = computed(() => {
+  const background = props.isClassic
+    ? "classic-background "
+    : "bg-white dark:bg-gray-500 ";
+  return background;
+});
 </script>
 <style scoped>
 .classic-background {
