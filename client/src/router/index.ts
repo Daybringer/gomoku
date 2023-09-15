@@ -63,11 +63,6 @@ const routes: Array<RouteRecordRaw> = [
     path: "/profile/:id/achievements",
     component: () => import("../views/Achievements.vue"),
   },
-  {
-    path: "/test",
-    component: () => import("../views/Test.vue"),
-  },
-  { path: "/ai", component: () => import("../views/TestAI.vue") },
   { path: "/campaign", component: () => import("../views/Campaign.vue") },
   {
     path: "/campaign/game",
