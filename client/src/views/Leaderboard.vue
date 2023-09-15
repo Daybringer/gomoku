@@ -1,5 +1,5 @@
 <template>
-  <ViewBaseResponsive>
+  <BaseView>
     <BaseHighHeadline class="md:my-12 my-6">Leaderboard</BaseHighHeadline>
     <div class="md:w-1/3 w-full justify-center flex items-center flex-col">
       <BaseInput
@@ -28,14 +28,14 @@
         :user="user"
       />
     </div>
-  </ViewBaseResponsive>
+  </BaseView>
 </template>
 <script setup lang="ts">
 import BaseButton from "@/components/BaseButton.vue";
 import BaseHighHeadline from "@/components/BaseHighHeadline.vue";
 import BaseInput from "@/components/BaseInput.vue";
 import LeaderBoardProfileBlade from "@/components/LeaderBoardProfileBlade.vue";
-import ViewBaseResponsive from "@/components/ViewBaseResponsive.vue";
+import BaseView from "@/components/BaseView.vue";
 import usersRepository from "@/repositories/usersRepository";
 import { User } from "@/shared/interfaces/user.interface";
 import { Ref, onMounted, ref } from "vue";

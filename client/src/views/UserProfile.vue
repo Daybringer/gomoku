@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // Components
-import ViewBaseResponsive from "@/components/ViewBaseResponsive.vue";
+import BaseView from "@/components/BaseView.vue";
 import GeneralProfileSection from "@/components/TheGeneralProfileSection.vue";
 import MatchHistoryProfileSection from "@/components/TheMatchHistoryProfileSection.vue";
 import CustomizationProfileSection from "@/components/TheCustomizationProfileSection.vue";
@@ -42,7 +42,7 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <ViewBaseResponsive id="Start">
+  <BaseView id="Start">
     <BaseLoadingSpinner
       class="absolute top-1/2 left-1/2 h-24 w-24"
       v-show="!isUserLoaded"
@@ -64,5 +64,5 @@ onBeforeMount(async () => {
         <CustomizationProfileSection />
       </Container>
     </div>
-  </ViewBaseResponsive>
+  </BaseView>
 </template>

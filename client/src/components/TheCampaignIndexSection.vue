@@ -1,5 +1,5 @@
 <template>
-  <ViewBaseResponsive class="min-h-screen bg-gray-200">
+  <BaseView class="min-h-screen bg-gray-200">
     <IntersectionObserver @intersect="$emit('intersect', 'campaign')" />
     <div
       class="flex-1 w-full justify-start place-items-center flex flex-col gap-10 pb-20"
@@ -24,12 +24,12 @@
         alt="Old man asking for help (Start of campaign)"
       />
     </div>
-  </ViewBaseResponsive>
+  </BaseView>
 </template>
 <script setup lang="ts">
 import IntersectionObserver from "./IntersectionObserver.vue";
 import SadManIntroDialog from "@/assets/svg/SadManIntroDialog.vue";
-import ViewBaseResponsive from "./ViewBaseResponsive.vue";
+import BaseView from "./BaseView.vue";
 import BaseButton from "./BaseButton.vue";
 import BaseHighHeadline from "./BaseHighHeadline.vue";
 import BaseSimpleInfoPill from "./BaseSimpleInfoPill.vue";

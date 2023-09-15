@@ -1,5 +1,5 @@
 <template>
-  <view-base-responsive>
+  <BaseView>
     <Container class="xl:mt-8 max-w-lg w-full flex-none">
       <base-high-headline>Register</base-high-headline>
       <BaseHRDivider />
@@ -58,7 +58,7 @@
         </div>
       </form>
     </Container>
-  </view-base-responsive>
+  </BaseView>
 </template>
 
 <script setup lang="ts">
@@ -72,13 +72,13 @@ const UsersRepository = RepositoryFactory.getUserRepository;
 import { useProfileStore } from "@/store/profile";
 import { object, string, ref as refYup } from "yup";
 import { reactive, ref } from "vue";
-import ViewBaseResponsive from "@/components/ViewBaseResponsive.vue";
 import Container from "@/components/Container.vue";
 import BaseHRDivider from "@/components/BaseHRDivider.vue";
 import BaseButton from "@/components/BaseButton.vue";
 import BaseRouterLink from "@/components/BaseRouterLink.vue";
 import { NotificationType, useNotificationsStore } from "@/store/notifications";
 import router from "@/router";
+import BaseView from "@/components/BaseView.vue";
 
 const user = reactive({
   email: "",

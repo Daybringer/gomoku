@@ -1,5 +1,5 @@
 <template>
-  <ViewBaseResponsive>
+  <BaseView>
     <BaseLoadingSpinner v-if="!gameFetched" />
     <div class="xl:w-50 w-full flex-1 flex flex-col gap-6" v-if="gameFetched">
       <Container>
@@ -19,7 +19,7 @@
         ></MatchOverviewBoardRewind>
       </Container>
     </div>
-  </ViewBaseResponsive>
+  </BaseView>
 </template>
 <script setup lang="ts">
 import BaseHighHeadline from "@/components/BaseHighHeadline.vue";
@@ -27,7 +27,7 @@ import BaseLoadingSpinner from "@/components/BaseLoadingSpinner.vue";
 import Container from "@/components/Container.vue";
 import MatchOverviewBoardRewind from "@/components/MatchOverviewBoardRewind.vue";
 import MatchOverviewGeneral from "@/components/MatchOverviewGeneral.vue";
-import ViewBaseResponsive from "@/components/ViewBaseResponsive.vue";
+import BaseView from "@/components/BaseView.vue";
 import gameRepository from "@/repositories/gameRepository";
 import router from "@/router";
 import { Game } from "@/shared/interfaces/game.interface";

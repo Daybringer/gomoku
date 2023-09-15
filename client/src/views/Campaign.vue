@@ -1,5 +1,5 @@
 <template>
-  <ViewBaseResponsive
+  <BaseView
     id="start"
     style="padding-left: 0; padding-right: 0; padding-bottom: 0"
   >
@@ -243,7 +243,7 @@
         </div>
       </BaseModal>
     </div>
-  </ViewBaseResponsive>
+  </BaseView>
 </template>
 <style scope>
 .all-full-opacity {
@@ -288,7 +288,7 @@
 import { Ref, onMounted, ref, reactive } from "vue";
 import { SVG, Element, Runner } from "@svgdotjs/svg.js";
 import CampaignSvg from "@/components/CampaignSvg.vue";
-import ViewBaseResponsive from "@/components/ViewBaseResponsive.vue";
+import BaseView from "@/components/BaseView.vue";
 import BaseModal from "@/components/BaseModal.vue";
 import router from "@/router";
 import BaseButton from "@/components/BaseButton.vue";

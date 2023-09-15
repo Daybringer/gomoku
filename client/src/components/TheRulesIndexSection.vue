@@ -1,5 +1,5 @@
 <template>
-  <ViewBaseResponsive id="rules" class="bg-gray-200 min-h-screen">
+  <BaseView id="rules" class="bg-gray-200 min-h-screen">
     <IntersectionObserver @intersect="emit('intersectionCrossed')" />
     <BaseHighHeadline>Rules</BaseHighHeadline>
     <div
@@ -101,13 +101,13 @@
         </ul>
       </RuleSection>
     </div>
-  </ViewBaseResponsive>
+  </BaseView>
 </template>
 
 <script setup lang="ts">
 import IntersectionObserver from "./IntersectionObserver.vue";
 import RuleSection from "@/components/RulesSection.vue";
-import ViewBaseResponsive from "./ViewBaseResponsive.vue";
+import BaseView from "./BaseView.vue";
 import BaseButton from "./BaseButton.vue";
 import BaseHighHeadline from "./BaseHighHeadline.vue";
 const emit = defineEmits<{

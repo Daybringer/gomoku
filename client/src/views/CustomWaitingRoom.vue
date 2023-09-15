@@ -1,5 +1,5 @@
 <template>
-  <ViewBaseResponsive class="md:flex-row flex-col-reverse">
+  <BaseView class="md:flex-row flex-col-reverse">
     <div class="flex-1 flex flex-col justify-center">
       <SwingAnimation class="w-80 md:w-60 self-center md:self-end" />
     </div>
@@ -29,7 +29,7 @@
         /></BaseButton>
       </div>
     </div>
-  </ViewBaseResponsive>
+  </BaseView>
 </template>
 <script setup lang="ts">
 import io, { Socket } from "socket.io-client";
@@ -47,7 +47,7 @@ import { ref, computed, onMounted, onUnmounted } from "vue";
 import { NotificationType, useNotificationsStore } from "@/store/notifications";
 import { useRoute } from "vue-router";
 import router from "@/router";
-import ViewBaseResponsive from "@/components/ViewBaseResponsive.vue";
+import BaseView from "@/components/BaseView.vue";
 const copyButtonText = ref("Copy link");
 const notification = useNotificationsStore();
 const roomID = computed(() => useRoute().params.roomID as string);

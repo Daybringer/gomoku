@@ -1,5 +1,5 @@
 <template>
-  <ViewBaseResponsive class="pb-32 bg-gray-200">
+  <BaseView class="pb-32 bg-gray-200">
     <IntersectionObserver @intersect="emit('intersect')" />
     <BaseHighHeadline>Leaderboard</BaseHighHeadline>
 
@@ -31,12 +31,12 @@
         >Go to Leaderboard</BaseButton
       >
     </RouterLink>
-  </ViewBaseResponsive>
+  </BaseView>
 </template>
 <script setup lang="ts">
 import { useProfileStore } from "@/store/profile";
 import BaseHighHeadline from "./BaseHighHeadline.vue";
-import ViewBaseResponsive from "./ViewBaseResponsive.vue";
+import BaseView from "./BaseView.vue";
 import { storeToRefs } from "pinia";
 import LeaderBoardProfileBlade from "./LeaderBoardProfileBlade.vue";
 import IntersectionObserver from "./IntersectionObserver.vue";

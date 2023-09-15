@@ -1,5 +1,5 @@
 <template>
-  <ViewBaseResponsive>
+  <BaseView>
     <!-- Background top overlay -->
     <div class="absolute top-16 w-full h-2/6 bg-gray-800 z-0"></div>
     <!-- Main div -->
@@ -91,7 +91,7 @@
         />
       </div>
     </div>
-  </ViewBaseResponsive>
+  </BaseView>
 </template>
 <script setup lang="ts">
 import { onMounted, ref, toRefs, watch } from "vue";
@@ -118,7 +118,7 @@ import {
 } from "@/shared/types";
 import { computed } from "@vue/reactivity";
 import Gameboard from "./Gameboard.vue";
-import ViewBaseResponsive from "./ViewBaseResponsive.vue";
+import BaseView from "./BaseView.vue";
 import { useProfileStore } from "@/store/profile";
 import GameSwapSection from "./GameSwapSection.vue";
 const props = defineProps<{

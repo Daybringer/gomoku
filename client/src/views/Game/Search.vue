@@ -1,5 +1,5 @@
 <template>
-  <ViewBaseResponsive>
+  <BaseView>
     <div class="flex-1 flex flex-col place-items-center">
       <BaseHighHeadline>Searching</BaseHighHeadline>
       <span class="text-gray-800 dark:text-gray-200 text-3xl">{{
@@ -7,14 +7,14 @@
       }}</span>
       <SwingAnimation />
     </div>
-  </ViewBaseResponsive>
+  </BaseView>
 </template>
 <script setup lang="ts">
 // SocketIO
 import io, { Socket } from "socket.io-client";
 // Components
 import SwingAnimation from "@/assets/svg/SwingAnimation.vue";
-import ViewBaseResponsive from "@/components/ViewBaseResponsive.vue";
+import BaseView from "@/components/BaseView.vue";
 // Utils
 import { humanReadableTime } from "@/utils/general";
 import { ref, onMounted, onUnmounted } from "vue";

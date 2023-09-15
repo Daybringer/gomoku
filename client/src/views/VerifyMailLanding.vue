@@ -1,9 +1,9 @@
 <template>
-  <ViewBaseResponsive> </ViewBaseResponsive>
+  <BaseView> </BaseView>
 </template>
 <script setup lang="ts">
 import { onMounted } from "vue";
-import ViewBaseResponsive from "@/components/ViewBaseResponsive.vue";
+import BaseView from "@/components/BaseView.vue";
 import { NotificationType, useNotificationsStore } from "@/store/notifications";
 import router from "@/router";
 import authRepository from "@/repositories/authRepository";

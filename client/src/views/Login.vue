@@ -1,5 +1,5 @@
 <template>
-  <ViewBaseResponsive>
+  <BaseView>
     <Container class="xl:mt-8 max-w-lg w-full flex-none">
       <BaseHighHeadline>Sign in</BaseHighHeadline>
       <BaseHRDivider />
@@ -48,7 +48,7 @@
         </div>
       </form>
     </Container>
-  </ViewBaseResponsive>
+  </BaseView>
 </template>
 
 <script setup lang="ts">
@@ -63,7 +63,7 @@ const loginFormSchema = object().shape({
 import { reactive, ref } from "vue";
 import BaseHighHeadline from "@/components/BaseHighHeadline.vue";
 import Container from "@/components/Container.vue";
-import ViewBaseResponsive from "@/components/ViewBaseResponsive.vue";
+import BaseView from "@/components/BaseView.vue";
 import BaseHRDivider from "@/components/BaseHRDivider.vue";
 import BaseRouterLink from "@/components/BaseRouterLink.vue";
 import BaseHRWithText from "@/components/BaseHRWithText.vue";

@@ -1,5 +1,5 @@
 <template>
-  <ViewBaseResponsive>
+  <BaseView>
     <Container class="xl:mt-8 mt-4 max-w-xl w-full flex-none">
       <BaseHighHeadline class="whitespace-nowrap">
         Set username</BaseHighHeadline
@@ -18,7 +18,7 @@
         <BaseButton @click="setUsername" :gomoku-blue="true">Submit</BaseButton>
       </form>
     </Container>
-  </ViewBaseResponsive>
+  </BaseView>
 </template>
 
 <script setup lang="ts">
@@ -26,7 +26,7 @@ import { ref } from "vue";
 import router from "@/router";
 // Components
 import Container from "@/components/Container.vue";
-import ViewBaseResponsive from "@/components/ViewBaseResponsive.vue";
+import BaseView from "@/components/BaseView.vue";
 import BaseHighHeadline from "@/components/BaseHighHeadline.vue";
 import BaseInput from "@/components/BaseInput.vue";
 import BaseButton from "@/components/BaseButton.vue";

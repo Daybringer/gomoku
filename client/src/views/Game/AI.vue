@@ -1,29 +1,26 @@
 <template>
-  <ViewBaseResponsive>
-    <TheGameBase
-      :me="me"
-      :opponent="ai"
-      :currentPlayer="currentPlayer"
-      :hasTimeLimit="true"
-      :gameState="gameState"
-      :turnHistory="turnHistory"
-      :endingType="endingType"
-      :winner="winner"
-      :opening="settings.openingType"
-      :openingPhase="openingPhase"
-      :myColor="userStore.user.settings.playerColor"
-      :enemyColor="userStore.user.settings.opponentColor"
-      :messages="messages"
-      :gameType="GameType.AI"
-      :winningCombination="winningCombination"
-      @gameClick="gameClick"
-      @sendMessage="sendMessage"
-    />
-  </ViewBaseResponsive>
+  <TheGameBase
+    :me="me"
+    :opponent="ai"
+    :currentPlayer="currentPlayer"
+    :hasTimeLimit="true"
+    :gameState="gameState"
+    :turnHistory="turnHistory"
+    :endingType="endingType"
+    :winner="winner"
+    :opening="settings.openingType"
+    :openingPhase="openingPhase"
+    :myColor="userStore.user.settings.playerColor"
+    :enemyColor="userStore.user.settings.opponentColor"
+    :messages="messages"
+    :gameType="GameType.AI"
+    :winningCombination="winningCombination"
+    @gameClick="gameClick"
+    @sendMessage="sendMessage"
+  />
 </template>
 <script setup lang="ts">
 import TheGameBase from "@/components/TheGameBase.vue";
-import ViewBaseResponsive from "@/components/ViewBaseResponsive.vue";
 import { useCampaignStore } from "@/store/campaign";
 import { Ref, onMounted, ref } from "vue";
 import {

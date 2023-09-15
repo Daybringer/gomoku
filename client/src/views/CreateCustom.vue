@@ -1,5 +1,5 @@
 <template>
-  <ViewBaseResponsive>
+  <BaseView>
     <div
       class="flex-1 w-full py-8 px-4 pt-20 md:pt-8 gap-8 flex flex-col place-items-center"
     >
@@ -71,7 +71,7 @@
         >Create game</BaseButton
       >
     </div>
-  </ViewBaseResponsive>
+  </BaseView>
 </template>
 <script setup lang="ts">
 import io, { Socket } from "socket.io-client";
@@ -90,7 +90,7 @@ import {
   CustomCreatedDTO,
   CreateCustomDTO,
 } from "@/shared/socketIO";
-import ViewBaseResponsive from "@/components/ViewBaseResponsive.vue";
+import BaseView from "@/components/BaseView.vue";
 import router from "@/router";
 
 const opening = ref(Opening.Standard);

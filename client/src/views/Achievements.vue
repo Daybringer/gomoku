@@ -1,5 +1,5 @@
 <template>
-  <view-base-responsive class="bg-red-100">
+  <BaseView class="bg-red-100">
     <div
       class="flex-1 bg-blue-100 flex flex-row justify-center place-items-center flex-wrap gap-6"
     >
@@ -9,28 +9,16 @@
         :key="achievement"
       />
     </div>
-  </view-base-responsive>
+  </BaseView>
 </template>
-<script lang="ts">
-import { Achievement, achievementRecords } from "@/shared/achievements";
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import { Achievement } from "@/shared/achievements";
+import { computed } from "vue";
 // Components
 import ProfileAchievement from "@/components/ProfileAchievement.vue";
-import ViewBaseResponsive from "@/components/ViewBaseResponsive.vue";
-export default defineComponent({
-  name: "Achievements",
-  props: {},
-  components: { ProfileAchievement, ViewBaseResponsive },
-  data(): {} {
-    return {};
-  },
-  computed: {
-    achievementsList(): string[] {
-      return Object.values(Achievement);
-    },
-  },
-  methods: {},
-  mounted() {},
+import BaseView from "@/components/BaseView.vue";
+const achievementsList = computed(() => {
+  return Object.values(Achievement);
 });
 </script>
 <style scoped></style>
