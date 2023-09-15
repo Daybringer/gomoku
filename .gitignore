@@ -4,6 +4,7 @@ node_modules
 new_server
 dist
 ./gameAnim.js
+.unlighthouse
 
 */dist
 shared/dist

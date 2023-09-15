@@ -1,5 +1,9 @@
 <template>
-  <GoogleLogin popup-type="TOKEN" :callback="callback">
+  <GoogleLogin
+    :client-id="'1064130338503-0g3bbnb9i03s10mb1douod4oes4kp0th.apps.googleusercontent.com'"
+    popup-type="TOKEN"
+    :callback="callback"
+  >
     <SocialSignInButton :is-disabled="isDisabled">
       <GoogleIcon class="h-6" />
     </SocialSignInButton>
@@ -18,6 +22,7 @@ defineProps<{ isDisabled?: boolean }>();
 const profileStore = useProfileStore();
 const notificationStore = useNotificationsStore();
 const callback: CallbackTypes.TokenResponseCallback = (response) => {
+  console.log(response);
   // call to API
   profileStore
     .googleLogin(response.access_token)

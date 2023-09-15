@@ -4,13 +4,10 @@ import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import { useProfileStore } from "@/store/profile";
 // Components
 import Home from "../views/Home.vue";
-import Login from "../views/Login.vue";
-import Register from "../views/Register.vue";
 import NotFound from "../views/NotFound.vue";
 import Game from "../views/Game/Game.vue";
 import Search from "../views/Game/Search.vue";
 import VerifyMailLanding from "../views/VerifyMailLanding.vue";
-import CreateCustom from "../views/CreateCustom.vue";
 import CustomWaitingRoom from "../views/CustomWaitingRoom.vue";
 import MatchOverviewVue from "@/views/MatchOverview.vue";
 import Leaderboard from "@/views/Leaderboard.vue";
@@ -32,12 +29,12 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: "/login",
-    component: Login,
+    component: () => import("../views/Login.vue"),
     meta: { prohibitsAuth: true },
   },
   {
     path: "/register",
-    component: Register,
+    component: () => import("../views/Register.vue"),
     meta: { prohibitsAuth: true },
   },
   {
@@ -70,7 +67,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: "/custom",
-    component: CreateCustom,
+    component: () => import("../views/CreateCustom.vue"),
   },
   {
     path: "/custom/:roomID",

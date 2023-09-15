@@ -174,17 +174,14 @@ export const useProfileStore = defineStore("profileStore", {
             this.consumeAuthPayload(res.data);
 
             if (this.user.nameChangeTokens! > 0) {
-              console.log("Store true");
               resolve(true);
             } else {
-              console.log("Store false");
               resolve(false);
             }
           })
           .catch((err) => {
             this.googleIDToken = "";
             this.logout();
-            console.log("2");
             reject(err.response.data ? err.response.data : err);
           });
       });
