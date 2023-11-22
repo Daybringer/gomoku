@@ -6,9 +6,13 @@
   "scripts": {
     "serve": "vite preview",
     "dev": "vite",
-    "build": "vite build"
+    "build": "vite build && cp -r ./dist ../dist/public"
   },
   "dependencies": {
+    "@capacitor/android": "^5.5.1",
+    "@capacitor/cli": "^5.5.1",
+    "@capacitor/core": "^5.5.1",
+    "@capacitor/ios": "^5.5.1",
     "@svgdotjs/svg.js": "^3.2.0",
     "axios": "^0.21.1",
     "gomoku-game": "^0.0.9",

@@ -10,7 +10,7 @@ export default defineConfig({
     vue(),
     // checker({ vueTsc: true })
   ],
-  build: { outDir: "../dist/public" },
+  build: { outDir: "./dist" },
   server: {
     proxy: {
       "/socket.io": {

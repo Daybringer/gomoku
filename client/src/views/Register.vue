@@ -12,8 +12,7 @@
           title="Enter email"
           label="Email"
           :error="errors.email"
-          @keyup="validate('email')"
-        />
+          @keyup="validate('email')" />
         <BaseInput
           :model-value="user.username"
           @update:model-value="(e) => (user.username = e)"
@@ -23,8 +22,7 @@
           label="Username"
           :autocomplete="''"
           :error="errors.username"
-          @keyup="validate('username')"
-        />
+          @keyup="validate('username')" />
         <BaseInput
           :model-value="user.password"
           @update:model-value="(n) => (user.password = n)"
@@ -33,8 +31,7 @@
           label="Password"
           title="Enter password"
           :error="errors.password"
-          @keyup="validate('password')"
-        />
+          @keyup="validate('password')" />
         <BaseInput
           :model-value="user.passwordConfirm"
           @update:model-value="(e) => (user.passwordConfirm = e)"
@@ -43,8 +40,7 @@
           title="Confirm password"
           label="Confirm password"
           :error="errors.passwordConfirm"
-          @keyup="validate('passwordConfirm')"
-        />
+          @keyup="validate('passwordConfirm')" />
         <BaseButton :gomoku-blue="true" @click="register()" class="mt-2"
           >Register</BaseButton
         >
