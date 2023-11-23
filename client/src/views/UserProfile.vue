@@ -45,20 +45,19 @@ onBeforeMount(async () => {
   <BaseView id="Start">
     <BaseLoadingSpinner
       class="absolute top-1/2 left-1/2 h-24 w-24"
-      v-show="!isUserLoaded"
-    ></BaseLoadingSpinner>
+      v-show="!isUserLoaded"></BaseLoadingSpinner>
     <div class="xl:w-60 w-full flex-1 flex flex-col gap-6">
       <Container>
         <GeneralProfileSection
           :user="areWeVisitingProfile ? visitedUser : profileStore.user"
-          :visiting-profile="areWeVisitingProfile"
-        />
+          :visiting-profile="areWeVisitingProfile" />
       </Container>
 
       <Container v-show="isUserLoaded">
         <MatchHistoryProfileSection
-          :userID="areWeVisitingProfile ? Number(userID) : profileStore.user.id"
-        />
+          :userID="
+            areWeVisitingProfile ? Number(userID) : profileStore.user.id
+          " />
       </Container>
       <Container v-show="!areWeVisitingProfile">
         <CustomizationProfileSection />

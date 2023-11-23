@@ -1,10 +1,10 @@
 <template>
   <BaseView>
-    <container class="place-items-center flex-none mt-12 gap-4">
-      <base-high-headline>Site has not been found</base-high-headline>
+    <Container class="place-items-center flex-none mt-12 gap-4">
+      <BaseHighHeadline>Site has not been found</BaseHighHeadline>
       <p class="italic text-xl">Maybe try out other pages</p>
-      <base-button @click="router.push('/')">Go to home page</base-button>
-    </container>
+      <BaseButton link="/">Go to home page</BaseButton>
+    </Container>
   </BaseView>
 </template>
 

@@ -1,8 +1,7 @@
 <template>
   <BaseView
     id="start"
-    style="padding-left: 0; padding-right: 0; padding-bottom: 0"
-  >
+    style="padding-left: 0; padding-right: 0; padding-bottom: 0">
     <BaseButton
       class="mb-8 md:mt-4"
       @click="
@@ -10,8 +9,7 @@
           campaignStore.setCampaignProgress(0);
           setSVGStyles(rootSVG);
         }
-      "
-    >
+      ">
       Reset ALL Progress
     </BaseButton>
     <BaseButton
@@ -28,8 +26,7 @@
       <!-- FIRST CONVERSATION -->
       <BaseModal
         :is-active="conversationModal.start"
-        @close-modal="conversationModal.start = false"
-      >
+        @close-modal="conversationModal.start = false">
         <div class="flex-1 flex flex-col justify-between">
           <CampaignStoryMessage svg="sad_man">
             Heeeelp! I've been robbed.<br />
@@ -37,8 +34,7 @@
             It looked something like this:
             <img
               class="h-12 inline-block"
-              src="../assets/svg/campaign/board.svg"
-            />
+              src="../assets/svg/campaign/board.svg" />
             <br />
             <br />
             Please, could you help me?
@@ -59,8 +55,7 @@
       <!-- SUMO CONVERSATION -->
       <BaseModal
         :is-active="conversationModal.villageFighter"
-        @close-modal="conversationModal.villageFighter = false"
-      >
+        @close-modal="conversationModal.villageFighter = false">
         <div class="flex-1 flex flex-col justify-between gap-8">
           <CampaignStoryMessage svg="sumo">
             What are you doing?<br />
@@ -69,8 +64,7 @@
           <Transition name="slide">
             <CampaignStoryMessage
               svg="sad_man"
-              v-show="conversationModal.rulesSub2"
-            >
+              v-show="conversationModal.rulesSub2">
               Wait my friend! <br />
               Before you fight, you should at least learn basic rules of Gomoku.
               Here is a part from book I got from my dad and he got from his dad
@@ -84,8 +78,7 @@
               conversationModal.rulesSub1 = false;
             "
             v-show="conversationModal.rulesSub1"
-            :gomoku-blue="true"
-          >
+            :gomoku-blue="true">
             Fight
           </BaseButton>
           <BaseButton
@@ -103,19 +96,16 @@
       </BaseModal>
       <BaseModal
         @close-modal="conversationModal.rules1 = false"
-        :is-active="conversationModal.rules1"
-      >
+        :is-active="conversationModal.rules1">
         <div
-          class="flex-1 flex flex-col place-items-center justify-between gap-8"
-        >
+          class="flex-1 flex flex-col place-items-center justify-between gap-8">
           <iframe
             class="h-full w-full"
             src="https://www.youtube.com/embed/-KD743yNDHc?si=b-jT97-r_-G1No2y"
             title="YouTube video player"
             frameborder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowfullscreen
-          ></iframe>
+            allowfullscreen></iframe>
           <BaseButton
             @click="
               () => {
@@ -133,8 +123,7 @@
       <!-- GEISHA CONVERSATION -->
       <BaseModal
         :is-active="conversationModal.geisha"
-        @close-modal="conversationModal.geisha = false"
-      >
+        @close-modal="conversationModal.geisha = false">
         <div class="flex-1 flex flex-col justify-between gap-8">
           <CampaignStoryMessage svg="geisha">
             How inelegant.
@@ -163,8 +152,7 @@
       <!-- NINJA CONVERSATION -->
       <BaseModal
         :is-active="conversationModal.ninja"
-        @close-modal="conversationModal.ninja = false"
-      >
+        @close-modal="conversationModal.ninja = false">
         <div class="flex-1 flex flex-col justify-between gap-8">
           <CampaignStoryMessage svg="ninja">
             Surprise!!! I bet you didn't see me.
@@ -197,8 +185,7 @@
       <!-- MONSTER CONVERSATION -->
       <BaseModal
         :is-active="conversationModal.monster"
-        @close-modal="conversationModal.monster = false"
-      >
+        @close-modal="conversationModal.monster = false">
         <div class="flex-1 flex flex-col justify-between gap-8">
           <CampaignStoryMessage svg="rokorubi">
             Oh, hello. I'm a cursed concubine of The Shogun.
@@ -223,8 +210,7 @@
       <!-- SHOGUN CONVERSATION -->
       <BaseModal
         :is-active="conversationModal.shogun"
-        @close-modal="conversationModal.shogun = false"
-      >
+        @close-modal="conversationModal.shogun = false">
         <div class="flex-1 flex flex-col justify-between gap-8">
           <CampaignStoryMessage svg="sad_man">
             Oh, there's my BOARD. GIVE IT BACK.
@@ -237,7 +223,7 @@
             Show me your skills in your final battle challenger.
           </CampaignStoryMessage>
 
-          <BaseButton @click="router.push('/campaign/game')" :gomoku-blue="true"
+          <BaseButton link="/campaign/game" :gomoku-blue="true"
             >Final battle!</BaseButton
           >
         </div>

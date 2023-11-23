@@ -52,12 +52,10 @@ function fetchMatches() {
       :user-id="userID"
       v-for="game in games"
       :key="game.id"
-      :game="game"
-    />
+      :game="game" />
     <BaseLoadingSpinner v-show="!matchesAreLoaded" />
-    <!-- All matches link -->
-    <RouterLink :to="'/profile/' + userID + '/match-history'">
-      <BaseButton> All matches </BaseButton>
-    </RouterLink>
+    <BaseButton :link="'/profile/' + userID + '/match-history'">
+      All matches
+    </BaseButton>
   </MatchRecordsContainer>
 </template>

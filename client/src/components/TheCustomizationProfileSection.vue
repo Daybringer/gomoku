@@ -35,8 +35,7 @@ function setColor(isMyColor: boolean, color: string) {
 <template>
   <BaseHighHeadline>Customizations</BaseHighHeadline>
   <div
-    class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-0 justify-around"
-  >
+    class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-0 justify-around">
     <!-- Gameboard pickers -->
     <div class="flex-1 flex flex-col">
       <BaseMidHeadline>Gameboard</BaseMidHeadline>
@@ -47,8 +46,7 @@ function setColor(isMyColor: boolean, color: string) {
             :type="GameBoard.Standard"
             :current="store.user.settings.gameBoard"
             :player-color="store.user.settings.playerColor"
-            :opponent-color="store.user.settings.opponentColor"
-          />
+            :opponent-color="store.user.settings.opponentColor" />
         </div>
         <div class="flex flex-col">
           <ProfileBoardPicker
@@ -56,8 +54,7 @@ function setColor(isMyColor: boolean, color: string) {
             :type="GameBoard.Classic"
             :player-color="store.user.settings.playerColor"
             :opponent-color="store.user.settings.opponentColor"
-            :current="store.user.settings.gameBoard"
-          />
+            :current="store.user.settings.gameBoard" />
         </div>
         <div class="flex flex-col">
           <ProfileBoardPicker
@@ -65,8 +62,7 @@ function setColor(isMyColor: boolean, color: string) {
             :current="store.user.settings.gameBoard"
             :player-color="store.user.settings.playerColor"
             :opponent-color="store.user.settings.opponentColor"
-            :type="GameBoard.Modern"
-          />
+            :type="GameBoard.Modern" />
         </div>
       </div>
     </div>
@@ -79,48 +75,22 @@ function setColor(isMyColor: boolean, color: string) {
           <ProfileColorPicker
             :currentColor="store.user.settings.playerColor"
             :isMyColor="true"
-            @setColor="setColor"
-          />
+            @setColor="setColor" />
         </div>
         <div class="flex flex-col items-center">
           <BaseLowHeadline>Enemy's color</BaseLowHeadline>
           <ProfileColorPicker
             :currentColor="store.user.settings.opponentColor"
             :isMyColor="false"
-            @setColor="setColor"
-          />
+            @setColor="setColor" />
         </div>
       </div>
     </div>
   </div>
   <div
-    class="flex flex-1 flex-col md:flex-row justify-around md:items-center mt-4 lg:mt-0 gap-5 p-5"
-  >
-    <BaseButton
-      @click="
-        () => {
-          $router.push('/set-username');
-        }
-      "
-      >Change Username</BaseButton
-    >
-
-    <BaseButton
-      @click="
-        () => {
-          $router.push('/set-email');
-        }
-      "
-      >Change Email</BaseButton
-    >
-
-    <BaseButton
-      @click="
-        () => {
-          $router.push('/set-password');
-        }
-      "
-      >Change Password</BaseButton
-    >
+    class="flex flex-1 flex-col md:flex-row justify-around md:items-center mt-4 lg:mt-0 gap-5 p-5">
+    <BaseButton link="/set-username">Change Username</BaseButton>
+    <BaseButton link="/set-email">Change Email</BaseButton>
+    <BaseButton link="/set-password">Change Password</BaseButton>
   </div>
 </template>

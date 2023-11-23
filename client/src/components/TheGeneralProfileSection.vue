@@ -52,12 +52,10 @@ async function buyIcon(profileIcon: ProfileIcon) {
 <template>
   <div
     class="flex-1 flex flex-col xl:grid gap-5 xl:gap-0 grid-cols-7 grid-rows-3"
-    id="General"
-  >
+    id="General">
     <!-- Trophy -->
     <div
-      class="col-span-2 row-span-2 flex flex-col justify-start items-center gap-2 p-2"
-    >
+      class="col-span-2 row-span-2 flex flex-col justify-start items-center gap-2 p-2">
       <BaseMidHeadline>Rank</BaseMidHeadline>
       <ProfileRankRepresentation :currElo="user.elo" />
       <p>
@@ -81,33 +79,28 @@ async function buyIcon(profileIcon: ProfileIcon) {
         :currentIcon="user.settings.selectedIcon"
         :availableIcons="user.settings.availableIcons"
         @setIcon="setIcon"
-        @buyIcon="buyIcon"
-      />
+        @buyIcon="buyIcon" />
       <!-- koins -->
       <div
         class="flex flex-row place-items-center gap-2 py-4"
-        v-if="!visitingProfile"
-      >
+        v-if="!visitingProfile">
         <span class="text-3xl font-bold">
           {{ user.credit }}
         </span>
         <img
           class="h-10"
           src="../assets/svg/koin.svg"
-          alt="Koin (Gomoku coin)"
-        />
+          alt="Koin (Gomoku coin)" />
         <BaseTooltipWithIcon
           class="place-self-end"
           :content="` Koin is a currency that is used for buying profile icons, backgrounds...
-                     <br> It can be obtained by sheer playing. `"
-        />
+                     <br> It can be obtained by sheer playing. `" />
       </div>
     </div>
 
     <!-- User match statistics -->
     <div
-      class="col-span-2 row-span-2 flex flex-col justify-start items-center gap-2 p-2"
-    >
+      class="col-span-2 row-span-2 flex flex-col justify-start items-center gap-2 p-2">
       <BaseMidHeadline>Statistics</BaseMidHeadline>
       <p class="whitespace-nowrap">
         <span class="text-lg font-medium">Total matches: </span>
@@ -132,9 +125,9 @@ async function buyIcon(profileIcon: ProfileIcon) {
       <div class="flex flex-row justify-around items-center flex-wrap gap-2">
         <ProfileAchievement v-for="item in [0, 1, 2, 3]" class="h-20 w-20" />
       </div>
-      <RouterLink :to="`/profile/${user.id}/achievements`">
-        <BaseButton class="mb-2">See all achievements</BaseButton>
-      </RouterLink>
+      <BaseButton :link="`/profile/${user.id}/achievements`" class="mb-2"
+        >See all achievements</BaseButton
+      >
     </div>
   </div>
 </template>

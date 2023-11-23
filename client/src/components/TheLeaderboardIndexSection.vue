@@ -7,30 +7,24 @@
       <LeaderBoardProfileBlade
         v-for="topUser in topThreeUsers"
         :key="topUser.username"
-        :user="topUser"
-      />
+        :user="topUser" />
       <DotsIcon
         v-show="!amIInTopThree && isAuthenticated"
-        class="h-8 rotate-90"
-      />
+        class="h-8 rotate-90" />
       <LeaderBoardProfileBlade
         v-show="!amIInTopThree && isAuthenticated"
-        :user="user"
-      />
+        :user="user" />
       <p
         v-show="!isAuthenticated"
-        class="text-center italic text-gray-400 text-xl"
-      >
+        class="text-center italic text-gray-400 text-xl">
         Want to be shown here?
         <br />
         Log in, play ranked games and fight your way to the top.
       </p>
     </div>
-    <RouterLink to="/leaderboard">
-      <BaseButton :gomoku-blue="true" class="px-12 py-4"
-        >Go to Leaderboard</BaseButton
-      >
-    </RouterLink>
+    <BaseButton link="/leaderboard" :gomoku-blue="true" class="px-12 py-4"
+      >Go to Leaderboard</BaseButton
+    >
   </BaseView>
 </template>
 <script setup lang="ts">

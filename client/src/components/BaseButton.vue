@@ -1,18 +1,30 @@
 <template>
+  <RouterLink
+    v-if="link"
+    :to="link"
+    class="py-1.5 px-3 shadow-md rounded-lg flex place-items-center justify-center"
+    :class="
+      gomokuBlue
+        ? 'bg-gomoku-blue text-gray-100 hover:bg-gomoku-blue-dark font-medium'
+        : 'bg-gray-300 hover:bg-gray-400 dark:hover:bg-gray-500 dark:bg-gray-600'
+    ">
+    <slot />
+  </RouterLink>
   <button
+    v-else
     type="button"
     class="py-1.5 px-3 shadow-md rounded-lg flex place-items-center justify-center"
     :class="
       gomokuBlue
         ? 'bg-gomoku-blue text-gray-100 hover:bg-gomoku-blue-dark font-medium'
         : 'bg-gray-300 hover:bg-gray-400 dark:hover:bg-gray-500 dark:bg-gray-600'
-    "
-  >
-    <slot></slot>
+    ">
+    <slot />
   </button>
 </template>
 <script setup lang="ts">
 defineProps<{
   gomokuBlue?: boolean;
+  link?: string;
 }>();
 </script>

@@ -3,8 +3,7 @@
     <button
       v-show="!isShown"
       @click="isShown = true"
-      class="absolute top-2 left-2 p-1 rounded-full bg-gray-200 text-gray-900 focus:outline-none"
-    >
+      class="absolute top-2 left-2 p-1 rounded-full bg-gray-200 text-gray-900 focus:outline-none">
       <ChevronsDownIcon class="h-8 w-8 -rotate-45 transform" />
     </button>
 
@@ -17,15 +16,12 @@
               ? 'victory-background'
               : 'defeat-background'
             : 'minimizeAfterGameModal'
-        "
-      >
+        ">
         <div
-          class="w-full h-full rounded-lg p-4 bg-white dark:bg-gray-700 shadow-2xl flex relative justify-between place-items-center flex-col"
-        >
+          class="w-full h-full rounded-lg p-4 bg-white dark:bg-gray-700 shadow-2xl flex relative justify-between place-items-center flex-col">
           <button
             class="absolute top-3 left-3 p-1 rounded-full bg-gray-200 text-gray-800"
-            @click="isShown = false"
-          >
+            @click="isShown = false">
             <CrossIcon class="h-6 sm:h-8" />
           </button>
           <div>
@@ -39,42 +35,40 @@
           <div
             v-show="elo"
             class="text-center border-4 border-opacity-80 px-6 xl:px-12 py-2 xl:text-2xl text-xl font-medium rounded-xl bg-gray-100 dark:bg-gray-600"
-            :class="amIWinner ? 'border-green-500' : 'border-red-500'"
-          >
+            :class="amIWinner ? 'border-green-500' : 'border-red-500'">
             {{ eloGain }}
           </div>
           <img
             v-show="!amIWinner"
             src="../assets/svg/lose.svg"
             class="sad-animation md:w-50 w-1/3 md:p-8"
-            alt=""
-          />
+            alt="" />
           <img
             v-show="amIWinner"
             src="../assets/svg/win.svg"
             class="animation-bounce md:w-50 w-1/3 md:p-8 mt-4"
-            alt=""
-          />
+            alt="" />
           <BaseButton
             v-if="gameType === GameType.Quick || gameType === GameType.Ranked"
             :gomoku-blue="true"
             class="w-full"
-            @click="() => router.push(`/search?type=quick`)"
+            :link="`/search?type=${
+              gameType === GameType.Quick ? 'quick' : 'ranked'
+            }`"
             >Play again
           </BaseButton>
           <BaseButton
             v-if="gameType === GameType.AI"
             :gomoku-blue="true"
             class="w-full"
-            @click="router.back()"
+            link="/campaign"
             >To Campaign
           </BaseButton>
           <BaseButton
             v-if="gameType === GameType.Custom && rematchWaitingRoomID"
             class="w-full"
             :gomoku-blue="true"
-            @click="router.push(`/custom/${rematchWaitingRoomID}`)"
-          >
+            :link="`/custom/${rematchWaitingRoomID}`">
             Opponent asked for rematch. Join ->
           </BaseButton>
           <BaseButton
@@ -96,7 +90,6 @@ import BaseButton from "@/components/BaseButton.vue";
 // SVGs
 import CrossIcon from "@/assets/svg/CrossIcon.vue";
 import ChevronsDownIcon from "@/assets/svg/ChevronsDownIcon.vue";
-import router from "@/router";
 import BaseHighHeadline from "./BaseHighHeadline.vue";
 import BaseLowHeadline from "./BaseLowHeadline.vue";
 const props = defineProps<{

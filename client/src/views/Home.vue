@@ -3,8 +3,7 @@
   <div
     class="w-full min-height-screen-calc flex flex-col bg-gray-200 dark:bg-gray-700 scroll-margin-navbar"
     id="home"
-    ref="home"
-  >
+    ref="home">
     <div class="relative h-20 md:h-24 w-full bg-gray-800 text-center">
       <IntersectionObserver @intersect="intersectionCrossed('home')" />
       <div class="m-auto top-0">
@@ -27,14 +26,12 @@
     <div
       id="mainCard"
       ref="mainCard"
-      class="w-90 h-90 flex flex-1 mb-8 bg-gray-50 dark:bg-gray-700 shadow-xl z-40 m-auto rounded-xl relative md:rounded-2xl overflow-hidden -mt-16 md:-mt-12"
-    >
+      class="w-90 h-90 flex flex-1 mb-8 bg-gray-50 dark:bg-gray-700 shadow-xl z-40 m-auto rounded-xl relative md:rounded-2xl overflow-hidden -mt-16 md:-mt-12">
       <!-- Play button -->
       <div class="m-auto z-20">
         <RouterLink to="/search?type=quick">
           <button
-            class="border-gray-800 bg-white dark:bg-gray-800 dark:border-transparent border-4 text-gray-800 dark:text-gray-200 text-3xl font-bold py-4 px-28 rounded-lg hover:shadow-outline-gray focus:shadow-outline-gray focus:outline-none"
-          >
+            class="border-gray-800 bg-white dark:bg-gray-800 dark:border-transparent border-4 text-gray-800 dark:text-gray-200 text-3xl font-bold py-4 px-28 rounded-lg hover:shadow-outline-gray focus:shadow-outline-gray focus:outline-none">
             Play
           </button>
         </RouterLink>
@@ -46,36 +43,30 @@
   <TheMatchesIndexSection
     id="matches"
     ref="matches"
-    @intersect="intersectionCrossed('matches')"
-  />
+    @intersect="intersectionCrossed('matches')" />
   <TheLeaderboardIndexSection
     id="leaderboard"
     ref="leaderboard"
-    @intersect="intersectionCrossed('leaderboard')"
-  />
+    @intersect="intersectionCrossed('leaderboard')" />
   <!-- Campaign -->
   <TheCampaignIndexSection
     id="campaign"
     ref="campaign"
-    @intersect="intersectionCrossed('campaign')"
-  />
+    @intersect="intersectionCrossed('campaign')" />
   <!-- Rules -->
   <TheRulesIndexSection @intersection-crossed="intersectionCrossed('rules')" />
   <!-- Origins -->
   <div
     ref="origins"
     id="origins"
-    class="w-full min-height-screen-calc flex pb-8 bg-gray-200 dark:bg-gray-700 flex-col scroll-margin-navbar"
-  >
+    class="w-full min-height-screen-calc flex pb-8 bg-gray-200 dark:bg-gray-700 flex-col scroll-margin-navbar">
     <IntersectionObserver @intersect="intersectionCrossed('origins')" />
     <h2
-      class="text-5xl mt-4 md:mt-4 2xl:mt-4 text-gray-800 dark:text-gray-200 font-semibold w-full text-center"
-    >
+      class="text-5xl mt-4 md:mt-4 2xl:mt-4 text-gray-800 dark:text-gray-200 font-semibold w-full text-center">
       Origins
     </h2>
     <div
-      class="w-90 xl:w-8/12 xl:text-base ml-auto mr-auto mt-5 font-normal dark:text-gray-300 leading-8 xl:leading-10"
-    >
+      class="w-90 xl:w-8/12 xl:text-base ml-auto mr-auto mt-5 font-normal dark:text-gray-300 leading-8 xl:leading-10">
       <p>
         Gomoku is said to have originated in China with the name Wu Zi Qi
         (五子棋). The name "Gomoku" is from the Japanese language, in which it
