@@ -4,19 +4,17 @@
 
   <RouterView
     :activeUsers="onlineUsers"
+    :key="route.fullPath"
     class="min-height-screen-calc"
-    @intersectionCrossed="setIntersection"
-  />
+    @intersectionCrossed="setIntersection" />
   <!-- NOTIFICATIONS -->
   <div
-    class="fixed w-full flex flex-col place-items-center z-50 bottom-8 gap-2"
-  >
+    class="fixed w-full flex flex-col place-items-center z-50 bottom-8 gap-2">
     <TransitionGroup name="notification-list">
       <BaseToast
         v-for="notification in notifications"
         :key="notification.UUID"
-        :notification="notification"
-      />
+        :notification="notification" />
     </TransitionGroup>
   </div>
 </template>
@@ -28,9 +26,12 @@ import { ref, reactive, onMounted, onBeforeUnmount, onBeforeMount } from "vue";
 import Navbar from "@/components/TheNavbar.vue";
 import BaseToast from "./components/BaseToast.vue";
 import { useNotificationsStore } from "./store/notifications";
+import { useRoute } from "vue-router";
+
 let socket: Socket;
 const profileStore = useProfileStore();
 const notifications = reactive(useNotificationsStore().$state.notifications);
+const route = ref(useRoute());
 
 // FIXME implement server check whether token is still valid and in case of nonvalid token
 // invalid LOCAL token and logout user
