@@ -1,33 +1,26 @@
 <template>
   <div
-    class="bg-white dark:bg-gray-600 w-full rounded-lg min-h-12 p-2 grid md:grid-cols-2 gap-1 items-stretch md:flex-row md:justify-between shadow-md"
-  >
+    class="bg-white dark:bg-gray-600 w-full rounded-lg min-h-12 p-2 grid md:grid-cols-2 gap-1 items-stretch md:flex-row md:justify-between shadow-md">
     <!-- Names and icons -->
     <div
-      class="grid grid-cols-11 items-center flex-1 gap-2 md:gap-0 mb-2 md:pr-2 md:mb-0"
-    >
+      class="grid grid-cols-11 items-center flex-1 gap-2 md:gap-0 mb-2 md:pr-2 md:mb-0">
       <BaseProfileLink
         class="col-span-5"
-        :is-logged="fUser === undefined"
         :profile-icon="fUser ? fUser.settings.selectedIcon : ProfileIcon.guest"
-        :user-id="fUser ? fUser.id : undefined"
-        :username="fUser ? fUser.username : 'Guest'"
-      />
+        :user-id="fUser?.id"
+        :username="fUser ? fUser.username : 'Guest'" />
       <p class="text-lg text-center">VS</p>
       <BaseProfileLink
         class="col-span-5"
-        :is-logged="sUser !== undefined"
         :profile-icon="sUser ? sUser.settings.selectedIcon : ProfileIcon.guest"
-        :user-id="sUser ? sUser.id : undefined"
-        :username="sUser ? sUser.username : 'Guest'"
-      />
+        :user-id="sUser?.id"
+        :username="sUser ? sUser.username : 'Guest'" />
     </div>
     <div class="grid grid-flow-col-dense items-center justify-around gap-2">
       <ResultIcon
         class="col-span-1"
         :tie="game.typeOfWin === EndingType.Tie"
-        :win="ownGameProfile.isWinner"
-      />
+        :win="ownGameProfile.isWinner" />
       <GameTypeIcon class="col-span-1" :gameType="game.type" />
       <div>{{ eloGain }}</div>
       <div class="text-lg col-span-2">

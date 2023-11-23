@@ -2,23 +2,19 @@
   <div
     class="relative border-4 rounded-full min-h-12 p-1 px-8 flex flex-row items-center justify-around shadow-md"
     :style="isActive ? `border-color: ${symbolColor};` : ''"
-    :class="borderClasses"
-  >
+    :class="borderClasses">
     <GameStoneCross
       class="h-8 w-8"
       :style="`color:${symbolColor};`"
-      v-show="symbol === Symbol.Cross && !isClassic"
-    />
+      v-show="symbol === Symbol.Cross && !isClassic" />
     <ClassicStone
       class="h-8"
       :style="`color:${symbolColor}`"
-      v-show="isClassic"
-    />
+      v-show="isClassic" />
     <GameStoneCircle
       class="h-8 w-8"
       :style="`color:${symbolColor};`"
-      v-show="symbol === Symbol.Circle && !isClassic"
-    />
+      v-show="symbol === Symbol.Circle && !isClassic" />
     <DotsIcon class="h-8 w-8" v-show="symbol === Symbol.NotTaken" />
     <div
       class="text-xl"
@@ -28,18 +24,15 @@
           : isClassic
           ? 'text-gray-900'
           : ''
-      "
-    >
+      ">
       {{ hasTimeLimit ? humanReadableTime(player.timeLeft) : "" }}
       <InfinityIcon class="h-8" v-show="!hasTimeLimit" />
     </div>
     <BaseProfileLink
       class="hover:dark:bg-gray-800"
-      :is-logged="!!player.userID"
       :profile-icon="player.userID ? player.profileIcon : ProfileIcon.guest"
-      :user-id="player.userID"
-      :username="player.username"
-    />
+      :user-id="player?.userID"
+      :username="player.username" />
   </div>
 </template>
 

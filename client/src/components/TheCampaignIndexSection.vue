@@ -2,8 +2,7 @@
   <BaseView class="min-h-screen bg-gray-200">
     <IntersectionObserver @intersect="$emit('intersect', 'campaign')" />
     <div
-      class="flex-1 w-full justify-start place-items-center flex flex-col gap-10 pb-20"
-    >
+      class="flex-1 w-full justify-start place-items-center flex flex-col gap-10 pb-20">
       <BaseHighHeadline> Campaign </BaseHighHeadline>
       <p class="text-center text-xl md:text-2xl">
         Learn basic rules of Gomoku, fight progressively harder AIs and help old
@@ -14,15 +13,15 @@
         <BaseSimpleInfoPill> 12 milestones to conquer</BaseSimpleInfoPill>
         <BaseSimpleInfoPill> Oscarworthy rich story </BaseSimpleInfoPill>
       </div>
-      <RouterLink class="w-full md:w-1/2" to="/campaign#start">
-        <BaseButton class="w-full text-2xl py-4" :gomoku-blue="true"
-          >Start Campaign</BaseButton
-        >
-      </RouterLink>
+      <BaseButton
+        link="/campaign#start"
+        class="w-full md:w-1/2 text-2xl py-4"
+        :gomoku-blue="true"
+        >Start Campaign</BaseButton
+      >
       <SadManIntroDialog
         class="w-full xl:w-1/2 border-0 shadow-2xl bg-white dark:bg-gray-800 pt-12 mt-12 rounded-2xl text-current fill-current"
-        alt="Old man asking for help (Start of campaign)"
-      />
+        alt="Old man asking for help (Start of campaign)" />
     </div>
   </BaseView>
 </template>

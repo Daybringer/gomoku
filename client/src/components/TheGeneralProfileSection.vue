@@ -16,6 +16,7 @@ import { User } from "@/shared/interfaces/user.interface";
 import { ProfileIcon, profileIconRecords } from "@/shared/icons";
 import { NotificationType, useNotificationsStore } from "@/store/notifications";
 import { useProfileStore } from "@/store/profile";
+import LeaderboardPositionBadge from "./LeaderboardPositionBadge.vue";
 
 defineProps<{ user: User; visitingProfile: boolean }>();
 const store = useProfileStore();
@@ -62,9 +63,10 @@ async function buyIcon(profileIcon: ProfileIcon) {
         <span class="text-xl font-medium">ELO: </span
         ><span class="text-lg">{{ user.elo }}</span>
       </p>
-      <p>
-        <span class="text-xl font-medium">Leaderboard: </span
-        ><span class="text-lg">#{{ user.statistics.leaderboardPosition }}</span>
+      <p class="whitespace-nowrap">
+        <span class="text-xl font-medium">Leaderboard: </span>
+        <LeaderboardPositionBadge
+          :position="user.statistics.leaderboardPosition" />
       </p>
     </div>
     <!-- Name, icon, koins -->

@@ -2,7 +2,7 @@
   <div
     @click.self="$emit('closeModal')"
     v-show="isActive"
-    class="fixed z-10 top-0 left-0 flex justify-center items-center h-full overflow-y-auto w-full bg-opacity-60 bg-gray-800">
+    class="fixed z-40 top-0 left-0 flex justify-center items-center h-full overflow-y-auto w-full bg-opacity-60 bg-gray-800">
     <Transition name="zoom">
       <div
         v-show="isActive"

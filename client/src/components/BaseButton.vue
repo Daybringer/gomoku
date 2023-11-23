@@ -1,6 +1,6 @@
 <template>
   <RouterLink
-    v-if="link"
+    v-if="link && !disabled"
     :to="link"
     class="py-1.5 px-3 shadow-md rounded-lg flex place-items-center justify-center"
     :class="
@@ -13,7 +13,8 @@
   <button
     v-else
     type="button"
-    class="py-1.5 px-3 shadow-md rounded-lg flex place-items-center justify-center"
+    :disabled="disabled"
+    class="py-1.5 px-3 shadow-md rounded-lg flex place-items-center justify-center disabled:opacity-80 disabled:cursor-not-allowed"
     :class="
       gomokuBlue
         ? 'bg-gomoku-blue text-gray-100 hover:bg-gomoku-blue-dark font-medium'
@@ -26,5 +27,6 @@
 defineProps<{
   gomokuBlue?: boolean;
   link?: string;
+  disabled?: boolean;
 }>();
 </script>
