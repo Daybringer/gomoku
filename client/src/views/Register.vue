@@ -6,41 +6,57 @@
       <form @submit.prevent="register" class="flex flex-col gap-4 p-2">
         <BaseInput
           :model-value="user.email"
-          @update:model-value="(e) => (user.email = e)"
+          @update:model-value="
+            (e) => {
+              user.email = e;
+              validate('email');
+            }
+          "
           name="email"
           type="email"
           title="Enter email"
           label="Email"
-          :error="errors.email"
-          @keyup="validate('email')" />
+          :error="errors.email" />
         <BaseInput
           :model-value="user.username"
-          @update:model-value="(e) => (user.username = e)"
+          @update:model-value="
+            (e) => {
+              user.username = e;
+              validate('username');
+            }
+          "
           :name="'username'"
           :type="'text'"
           :title="'Enter username'"
           label="Username"
           :autocomplete="''"
-          :error="errors.username"
-          @keyup="validate('username')" />
+          :error="errors.username" />
         <BaseInput
           :model-value="user.password"
-          @update:model-value="(n) => (user.password = n)"
+          @update:model-value="
+            (n) => {
+              user.password = n;
+              validate('password');
+            }
+          "
           name="password"
           type="password"
           label="Password"
           title="Enter password"
-          :error="errors.password"
-          @keyup="validate('password')" />
+          :error="errors.password" />
         <BaseInput
           :model-value="user.passwordConfirm"
-          @update:model-value="(e) => (user.passwordConfirm = e)"
+          @update:model-value="
+            (e) => {
+              user.passwordConfirm = e;
+              validate('passwordConfirm');
+            }
+          "
           name="passwordConfirm"
           type="password"
           title="Confirm password"
           label="Confirm password"
-          :error="errors.passwordConfirm"
-          @keyup="validate('passwordConfirm')" />
+          :error="errors.passwordConfirm" />
         <BaseButton :gomoku-blue="true" @click="register()" class="mt-2"
           >Register</BaseButton
         >
@@ -101,7 +117,7 @@ const registerFormSchema = object().shape({
     ),
   password: string()
     .required("Password is required")
-    .min(6, "Password is too weak"),
+    .min(6, "Password is too weak (at least 6 characters)"),
   passwordConfirm: string().oneOf(
     [refYup("password"), ""],
     "Passwords must match"
@@ -133,8 +149,8 @@ async function register() {
       );
     });
 }
-// FIXME fix naming
-async function usernameExists() {
+
+async function doesUsernameExist() {
   UsersRepository.userWithUsernameExists(user.username)
     .then((res) => {
       if (res.data) {
@@ -145,8 +161,8 @@ async function usernameExists() {
     })
     .catch(() => (errors.username = "Server error"));
 }
-// FIXME fix naming
-async function emailExists() {
+
+async function doesEmailExist() {
   UsersRepository.userWithMailExists(user.email)
     .then((res) => {
       if (res.data) {
@@ -157,6 +173,7 @@ async function emailExists() {
     })
     .catch(() => (errors.email = "Server error"));
 }
+
 async function validate(
   field: "email" | "username" | "password" | "passwordConfirm"
 ) {
@@ -164,9 +181,9 @@ async function validate(
     .validateAt(field, user)
     .then(() => {
       if (field === "email") {
-        emailExists();
+        doesEmailExist();
       } else if (field === "username") {
-        usernameExists();
+        doesUsernameExist();
       } else {
         errors[field] = "";
       }
