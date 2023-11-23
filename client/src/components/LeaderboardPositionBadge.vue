@@ -1,5 +1,5 @@
 <template>
-  <div class="relative flex justify-center items-center h-full">
+  <div class="relative flex justify-center items-center">
     <RosetteFilled
       :class="
         position === 1

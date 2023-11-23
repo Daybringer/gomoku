@@ -63,11 +63,11 @@ async function buyIcon(profileIcon: ProfileIcon) {
         <span class="text-xl font-medium">ELO: </span
         ><span class="text-lg">{{ user.elo }}</span>
       </p>
-      <p class="whitespace-nowrap">
+      <div class="flex flex-row items-center">
         <span class="text-xl font-medium">Leaderboard: </span>
         <LeaderboardPositionBadge
           :position="user.statistics.leaderboardPosition" />
-      </p>
+      </div>
     </div>
     <!-- Name, icon, koins -->
     <div class="col-span-3 row-span-2 flex items-center flex-col gap-2 p-1">
