@@ -65,6 +65,13 @@
             >To Campaign
           </BaseButton>
           <BaseButton
+            v-if="gameType === GameType.CustomLocal"
+            class="w-full"
+            :gomoku-blue="true"
+            @click="router.go(0)">
+            Rematch
+          </BaseButton>
+          <BaseButton
             v-if="gameType === GameType.Custom && rematchWaitingRoomID"
             class="w-full"
             :gomoku-blue="true"
@@ -92,6 +99,8 @@ import CrossIcon from "@/assets/svg/CrossIcon.vue";
 import ChevronsDownIcon from "@/assets/svg/ChevronsDownIcon.vue";
 import BaseHighHeadline from "./BaseHighHeadline.vue";
 import BaseLowHeadline from "./BaseLowHeadline.vue";
+import { useRoute } from "vue-router";
+import router from "@/router";
 const props = defineProps<{
   amIWinner: boolean;
   endingType: EndingType;

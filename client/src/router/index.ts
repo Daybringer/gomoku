@@ -83,6 +83,10 @@ const routes: Array<RouteRecordRaw> = [
     component: Game,
   },
   {
+    path: "/local",
+    component: () => import("../views/Game/LocalGame.vue"),
+  },
+  {
     path: "/game/:id",
     component: MatchOverviewVue,
   },

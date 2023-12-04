@@ -13,8 +13,7 @@
     :last-outline-color="'#363636'"
     class="select-none"
     :winning-combination-outline-color="winningCombinationOutlineColor"
-    @game-click="(turn) => emit('gameClick', turn)"
-  />
+    @game-click="(turn) => emit('gameClick', turn)" />
   <GameboardClassic
     v-if="boardType === GameBoard.Classic"
     ref="gameContainer"
@@ -29,8 +28,7 @@
     :last-outline-color="'#363636'"
     class="select-none"
     :winning-combination-outline-color="winningCombinationOutlineColor"
-    @game-click="(turn) => emit('gameClick', turn)"
-  />
+    @game-click="(turn) => emit('gameClick', turn)" />
   <GameboardModern
     v-if="boardType === GameBoard.Modern"
     ref="gameContainer"
@@ -45,8 +43,7 @@
     :last-outline-color="'#363636'"
     :winning-combination-outline-color="winningCombinationOutlineColor"
     class="select-none"
-    @game-click="(turn) => emit('gameClick', turn)"
-  />
+    @game-click="(turn) => emit('gameClick', turn)" />
 </template>
 
 <script setup lang="ts">
@@ -74,7 +71,7 @@ const props = withDefaults(
     boardSize: 15,
     linesWidth: 2,
     lastOutlineColor: "#363636",
-    lastOutlineWidth: 5,
+    lastOutlineWidth: 3,
     winningCombinationOutlineColor: "#ff2079",
   }
 );

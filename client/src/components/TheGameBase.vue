@@ -5,8 +5,7 @@
     <!-- Main div -->
     <div
       ref="container"
-      class="2xl:w-80 overflow-hidden rounded-lg bg-gray-700 z-10 flex 2xl:flex-row flex-col shadow-2xl"
-    >
+      class="2xl:w-80 overflow-hidden rounded-lg bg-gray-700 z-10 flex 2xl:flex-row flex-col shadow-2xl">
       <div class="square flex relative">
         <Gameboard
           :board-type="user.settings.gameBoard"
@@ -14,21 +13,21 @@
           :turn-history="turnHistory"
           :cross-color="me.playerSymbol === 2 ? myColor : enemyColor"
           :circle-color="me.playerSymbol === 1 ? myColor : enemyColor"
-          :interactive="currentPlayer.socketID === me.socketID"
+          :interactive="
+            currentPlayer.socketID === me.socketID ||
+            gameType === GameType.CustomLocal
+          "
           :winning-combination="winningCombination"
           :lines-width="1"
-          @game-click="(turn) => emit('gameClick', turn)"
-        />
+          @game-click="(turn) => emit('gameClick', turn)" />
         <!-- Coinflip overlay -->
         <div
           class="absolute z-20 h-full w-full flex place-items-center justify-center bg-gray-100 dark:bg-gray-700"
-          v-show="isWaitingOrCoinflip"
-        >
+          v-show="isWaitingOrCoinflip">
           <Coinflip
             :heads-color="myComputedColor"
             :tails-color="opponentComputedColor"
-            :is-heads="currentPlayer.socketID === me.socketID"
-          ></Coinflip>
+            :is-heads="currentPlayer.socketID === me.socketID"></Coinflip>
         </div>
 
         <!-- After game overlay -->
@@ -39,21 +38,18 @@
           :ending-type="endingType"
           :game-type="gameType"
           :elo="eloGain"
-          @ask-for-custom-rematch="emit('rematchCustom')"
-        />
+          @ask-for-custom-rematch="emit('rematchCustom')" />
       </div>
       <!-- Socials container -->
       <div
         ref="chatContainer"
-        class="flex-1 min-h-0 min-w-0 w-full flex flex-col p-4 gap-4 relative"
-      >
+        class="flex-1 min-h-0 min-w-0 w-full flex flex-col p-4 gap-4 relative">
         <GameSwapSection
           :my-color="myComputedColor"
           :opponent-color="opponentComputedColor"
           :my-symbol="mySymbol"
           :phase="swapPhase"
-          @pick-game-stone="(stone) => emit('pickGameStone', stone)"
-        />
+          @pick-game-stone="(stone) => emit('pickGameStone', stone)" />
         <!-- Social Blades -->
         <div class="flex flex-col">
           <SocialBlade
@@ -62,11 +58,9 @@
             :symbolColor="myComputedColor"
             :hasTimeLimit="hasTimeLimit"
             :isActive="currentPlayer.socketID === me.socketID"
-            :is-classic="user.settings.gameBoard === GameBoard.Classic"
-          />
+            :is-classic="user.settings.gameBoard === GameBoard.Classic" />
           <p
-            class="text-center my-3 text-3xl text-white font-semibold md:block hidden"
-          >
+            class="text-center my-3 text-3xl text-white font-semibold md:block hidden">
             VS
           </p>
           <div class="md:hidden block my-2"></div>
@@ -76,8 +70,7 @@
             :symbolColor="opponentComputedColor"
             :hasTimeLimit="hasTimeLimit"
             :isActive="currentPlayer.socketID === opponent.socketID"
-            :is-classic="user.settings.gameBoard === GameBoard.Classic"
-          />
+            :is-classic="user.settings.gameBoard === GameBoard.Classic" />
         </div>
         <!-- Chat container -->
         <GameChat
@@ -87,8 +80,7 @@
           :is-muted="muted"
           :messages="messages"
           :my-color="myComputedColor"
-          :opponent-color="opponentComputedColor"
-        />
+          :opponent-color="opponentComputedColor" />
       </div>
     </div>
   </BaseView>
