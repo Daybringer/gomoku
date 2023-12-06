@@ -16,6 +16,7 @@
     :gameType="GameType.CustomLocal"
     :winningCombination="winningCombination"
     @gameClick="gameClick"
+    @pickGameStone=""
     @sendMessage="() => {}" />
 </template>
 <script setup lang="ts">
@@ -37,8 +38,10 @@ import { ProfileIcon } from "@/shared/icons";
 import { GomokuBoard } from "gomoku-game";
 import { GameSettingsIdless } from "@/shared/interfaces/gameSettings.interface";
 import { COIN_SPIN_DURATION } from "@/shared/constants";
+import { useRoute } from "vue-router";
 
 const userStore = useProfileStore();
+const route = useRoute();
 
 // ------- Setting up Player and AI profiles ------- \\
 const playerOne: Player = {
@@ -63,7 +66,9 @@ const currentPlayer = ref(playerOne);
 
 // ------- Setting up game specific refs ------- \\
 const gameState = ref(GameState.Coinflip);
-const openingPhase = ref(OpeningPhase.Done);
+const openingPhase = ref(
+  route.query.openingType === "SWAP1" ? OpeningPhase.Place3 : OpeningPhase.Done
+);
 const turnHistory: Ref<Turn[]> = ref([]);
 const winningCombination: Ref<Turn[]> = ref([]);
 const endingType = ref(EndingType.Combination);
@@ -73,7 +78,7 @@ const settings: GameSettingsIdless = {
   boardSize: 15,
   doesOverlineCount: true,
   hasTimeLimit: true,
-  openingType: Opening.Standard,
+  openingType: route.query.openingType as Opening,
   winningLineSize: 5,
 };
 const intervalRef = ref(0);
@@ -90,7 +95,8 @@ const gomokuBoard = new GomokuBoard(
 function gameClick(turn: Turn) {
   if (
     !gomokuBoard.isPositionEmpty(...turn) ||
-    gameState.value !== GameState.Running
+    gameState.value !== GameState.Running ||
+    openingPhase.value === OpeningPhase.PickGameStone
   ) {
     return;
   }
@@ -103,16 +109,37 @@ function gameClick(turn: Turn) {
       turn[1],
       playerOne.playerSymbol === Symbol.Circle ? 1 : -1
     );
-    currentPlayer.value = playerTwo;
-    turnHistory.value.push(turn);
+    if (
+      !(
+        openingPhase.value === OpeningPhase.Place3 &&
+        turnHistory.value.length < 2
+      )
+    ) {
+      currentPlayer.value = playerTwo;
+    }
   } else {
     gomokuBoard.setStone(
       turn[0],
       turn[1],
       playerTwo.playerSymbol === Symbol.Circle ? 1 : -1
     );
-    currentPlayer.value = playerOne;
-    turnHistory.value.push(turn);
+    if (
+      !(
+        openingPhase.value === OpeningPhase.Place3 &&
+        turnHistory.value.length < 2
+      )
+    ) {
+      currentPlayer.value = playerOne;
+    }
+  }
+
+  turnHistory.value.push(turn);
+
+  if (
+    turnHistory.value.length === 3 &&
+    openingPhase.value === OpeningPhase.Place3
+  ) {
+    openingPhase.value = OpeningPhase.PickGameStone;
   }
 
   if (

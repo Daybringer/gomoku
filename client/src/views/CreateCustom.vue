@@ -25,6 +25,7 @@
             </BaseToggleButton>
             <BaseToggleButton
               @toggle="opening = Opening.Swap2"
+              disabled
               :toggled="opening === Opening.Swap2">
               <span class="md:text-xl">SWAP2</span>
             </BaseToggleButton>
@@ -106,7 +107,7 @@ onUnmounted(() => {
 // ------- METHODS ------- \\
 function createGame(): void {
   if (isLocal.value) {
-    router.push(`/local`);
+    router.push(`/local?timeLimitInSeconds=${time.value}&openingType=${opening.value}`);
   } else {
     socket = io("/custom", { port: 3001 });
     const createCustomDTO: CreateCustomDTO = {

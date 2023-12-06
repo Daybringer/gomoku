@@ -49,6 +49,7 @@
           :opponent-color="opponentComputedColor"
           :my-symbol="mySymbol"
           :phase="swapPhase"
+          :is-custom-local="gameType === GameType.CustomLocal"
           @pick-game-stone="(stone) => emit('pickGameStone', stone)" />
         <!-- Social Blades -->
         <div class="flex flex-col">
