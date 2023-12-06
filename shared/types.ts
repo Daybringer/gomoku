@@ -22,6 +22,7 @@ enum GameType {
   Quick = "quick",
   Ranked = "ranked",
   Custom = "custom",
+  CustomLocal = "cutomLocal",
   AI = "ai",
 }
 

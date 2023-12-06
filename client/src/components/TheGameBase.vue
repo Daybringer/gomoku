@@ -116,7 +116,7 @@ import GameSwapSection from "./GameSwapSection.vue";
 const props = defineProps<{
   me: Player;
   opponent: Player;
-  winner: Player;
+  winner?: Player;
   myColor: string;
   enemyColor: string;
   currentPlayer: Player;
@@ -184,7 +184,7 @@ const isWaitingOrCoinflip = computed(
     props.gameState === GameState.Waiting ||
     props.gameState === GameState.Coinflip
 );
-const amIWinner = computed(() => props.winner.socketID === props.me.socketID);
+const amIWinner = computed(() => props.winner?.socketID === props.me.socketID);
 watch(
   () => props.gameState,
   (gameState) => {

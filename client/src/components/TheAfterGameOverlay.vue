@@ -25,8 +25,13 @@
             <CrossIcon class="h-6 sm:h-8" />
           </button>
           <div>
-            <BaseHighHeadline class="text-gomoku-blue">
+            <BaseHighHeadline
+              v-if="gameType !== GameType.CustomLocal"
+              class="text-gomoku-blue">
               {{ amIWinner ? "Victory!" : "Defeat!" }}
+            </BaseHighHeadline>
+            <BaseHighHeadline v-else>
+              {{ amIWinner ? "PlayerOne has won" : "PlayerTwo has won" }}
             </BaseHighHeadline>
             <BaseLowHeadline v-show="endingType === EndingType.Surrender">
               Opponent has disconnected
@@ -39,12 +44,12 @@
             {{ eloGain }}
           </div>
           <img
-            v-show="!amIWinner"
+            v-show="!amIWinner && gameType !== GameType.CustomLocal"
             src="../assets/svg/lose.svg"
             class="sad-animation md:w-50 w-1/3 md:p-8"
             alt="" />
           <img
-            v-show="amIWinner"
+            v-show="amIWinner || gameType === GameType.CustomLocal"
             src="../assets/svg/win.svg"
             class="animation-bounce md:w-50 w-1/3 md:p-8 mt-4"
             alt="" />

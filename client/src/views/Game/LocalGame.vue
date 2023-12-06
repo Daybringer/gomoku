@@ -7,7 +7,7 @@
     :gameState="gameState"
     :turnHistory="turnHistory"
     :endingType="endingType"
-    :winner="winner"
+    :winner="winner!"
     :opening="settings.openingType"
     :openingPhase="openingPhase"
     :myColor="userStore.user.settings.playerColor"
@@ -68,7 +68,7 @@ const turnHistory: Ref<Turn[]> = ref([]);
 const winningCombination: Ref<Turn[]> = ref([]);
 const endingType = ref(EndingType.Combination);
 const messages: Ref<GameChatMessage[]> = ref([]);
-const winner = ref(pOne);
+const winner: Ref<undefined | Player> = ref(undefined);
 const settings: GameSettingsIdless = {
   boardSize: 15,
   doesOverlineCount: true,
@@ -94,8 +94,6 @@ function gameClick(turn: Turn) {
   ) {
     return;
   }
-
-  console.log(pOne.value, pTwo.value);
 
   clearInterval(intervalRef.value);
 
