@@ -49,7 +49,7 @@ const playerOne: Player = {
   profileIcon: ProfileIcon.defaultBoy,
   userID: undefined,
   socketID: "one",
-  timeLeft: 300 * 1000,
+  timeLeft: Number(route.query.timeLimitInSeconds) * 1000,
   username: "PlayerOne",
 };
 const playerTwo: Player = {
@@ -57,7 +57,7 @@ const playerTwo: Player = {
   profileIcon: ProfileIcon.defaultBoy,
   userID: undefined,
   socketID: "two",
-  timeLeft: 300 * 1000,
+  timeLeft: Number(route.query.timeLimitInSeconds) * 1000,
   username: "PlayerTwo",
 };
 const pOne = ref(playerOne);
@@ -77,7 +77,7 @@ const winner: Ref<undefined | Player> = ref(undefined);
 const settings: GameSettingsIdless = {
   boardSize: 15,
   doesOverlineCount: true,
-  hasTimeLimit: true,
+  hasTimeLimit: route.query.timeLimitInSeconds !== "0",
   openingType: route.query.openingType as Opening,
   winningLineSize: 5,
 };
@@ -176,9 +176,11 @@ function gameClick(turn: Turn) {
       winner.value = playerOne;
     }
   } else {
-    intervalRef.value = setInterval(() => {
-      deductTime();
-    }, 1000);
+    if (settings.hasTimeLimit) {
+      intervalRef.value = setInterval(() => {
+        deductTime();
+      }, 1000);
+    }
   }
 }
 
@@ -206,9 +208,11 @@ onMounted(() => {
   setTimeout(() => {
     if (gameState.value === GameState.Coinflip)
       gameState.value = GameState.Running;
-    intervalRef.value = setInterval(() => {
-      deductTime();
-    }, 1000);
+    if (settings.hasTimeLimit) {
+      intervalRef.value = setInterval(() => {
+        deductTime();
+      }, 1000);
+    }
   }, COIN_SPIN_DURATION);
 });
 </script>
