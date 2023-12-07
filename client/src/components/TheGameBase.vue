@@ -15,7 +15,7 @@
           :circle-color="me.playerSymbol === 1 ? myColor : enemyColor"
           :interactive="
             currentPlayer.socketID === me.socketID ||
-            gameType === GameType.CustomLocal
+            (gameType === GameType.CustomLocal && openingPhase !== OpeningPhase.PickGameStone)
           "
           :winning-combination="winningCombination"
           :lines-width="1"

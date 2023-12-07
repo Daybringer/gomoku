@@ -16,7 +16,7 @@
     :gameType="GameType.CustomLocal"
     :winningCombination="winningCombination"
     @gameClick="gameClick"
-    @pickGameStone=""
+    @pickGameStone="pickGameStone"
     @sendMessage="() => {}" />
 </template>
 <script setup lang="ts">
@@ -91,6 +91,23 @@ const gomokuBoard = new GomokuBoard(
   !settings.doesOverlineCount
 );
 
+function pickGameStone(gameStone: Symbol) {
+  clearInterval(intervalRef.value);
+  if (gameStone === Symbol.Cross) {
+    pOne.value.playerSymbol = Symbol.Circle;
+    pTwo.value.playerSymbol = Symbol.Cross;
+    currentPlayer.value = playerTwo;
+  } else {
+    pOne.value.playerSymbol = Symbol.Cross;
+    pTwo.value.playerSymbol = Symbol.Circle;
+    currentPlayer.value = playerOne;
+  }
+  openingPhase.value = OpeningPhase.Place3;
+  intervalRef.value = setInterval(() => {
+    deductTime();
+  }, 1000);
+}
+
 // ------- Game flow ------- \\
 function gameClick(turn: Turn) {
   if (
@@ -107,7 +124,7 @@ function gameClick(turn: Turn) {
     gomokuBoard.setStone(
       turn[0],
       turn[1],
-      playerOne.playerSymbol === Symbol.Circle ? 1 : -1
+      turnHistory.value.length % 2 === 0 ? 1 : -1
     );
     if (
       !(
@@ -121,7 +138,7 @@ function gameClick(turn: Turn) {
     gomokuBoard.setStone(
       turn[0],
       turn[1],
-      playerTwo.playerSymbol === Symbol.Circle ? 1 : -1
+      turnHistory.value.length % 2 === 0 ? 1 : -1
     );
     if (
       !(
