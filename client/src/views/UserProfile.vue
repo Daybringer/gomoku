@@ -8,15 +8,19 @@ import BaseLoadingSpinner from "@/components/BaseLoadingSpinner.vue";
 import Container from "@/components/Container.vue";
 // TS
 import { useRoute } from "vue-router";
-import { onBeforeMount, reactive, ref } from "vue";
+import { computed, onBeforeMount, reactive, ref } from "vue";
 import { useProfileStore, userBase } from "@/store/profile";
 import usersRepository from "@/repositories/usersRepository";
 import { NotificationType, useNotificationsStore } from "@/store/notifications";
 import router from "@/router";
+import TheStatisticsUserProfileSection from "@/components/TheStatisticsUserProfileSection.vue";
 
 const profileStore = useProfileStore();
 const userID = useRoute().params.id;
 const areWeVisitingProfile = ref(userID !== undefined);
+const currUserID = computed(() =>
+  areWeVisitingProfile ? Number(userID) : profileStore.user.id
+);
 const visitedUser = reactive(userBase());
 const isUserLoaded = ref(false);
 
@@ -54,10 +58,10 @@ onBeforeMount(async () => {
       </Container>
 
       <Container v-show="isUserLoaded">
-        <MatchHistoryProfileSection
-          :userID="
-            areWeVisitingProfile ? Number(userID) : profileStore.user.id
-          " />
+        <MatchHistoryProfileSection :userID="currUserID" />
+      </Container>
+      <Container v-show="isUserLoaded">
+        <TheStatisticsUserProfileSection :user-id="currUserID" />
       </Container>
       <Container v-show="!areWeVisitingProfile">
         <CustomizationProfileSection />
