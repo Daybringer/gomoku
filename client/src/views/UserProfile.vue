@@ -14,12 +14,13 @@ import usersRepository from "@/repositories/usersRepository";
 import { NotificationType, useNotificationsStore } from "@/store/notifications";
 import router from "@/router";
 import TheStatisticsUserProfileSection from "@/components/TheStatisticsUserProfileSection.vue";
+import { storeToRefs } from "pinia";
 
-const profileStore = useProfileStore();
-const userID = useRoute().params.id;
-const areWeVisitingProfile = ref(userID !== undefined);
+const { user } = storeToRefs(useProfileStore());
+const userID = ref(useRoute().params.id);
+const areWeVisitingProfile = ref(userID.value !== undefined);
 const currUserID = computed(() =>
-  !areWeVisitingProfile ? Number(userID) : profileStore.user.id
+  areWeVisitingProfile.value ? Number(userID.value) : user.value.id
 );
 const visitedUser = reactive(userBase());
 const isUserLoaded = ref(false);
@@ -27,9 +28,9 @@ const isUserLoaded = ref(false);
 onBeforeMount(async () => {
   if (areWeVisitingProfile.value) {
     usersRepository
-      .getUserProfile(Number(userID))
+      .getUserProfile(Number(userID.value))
       .then((response) => {
-        profileStore.copyUser(response.data, visitedUser);
+        useProfileStore().copyUser(response.data, visitedUser);
         isUserLoaded.value = true;
       })
       .catch(() => {
@@ -53,7 +54,7 @@ onBeforeMount(async () => {
     <div class="xl:w-60 w-full flex-1 flex flex-col gap-6">
       <Container>
         <GeneralProfileSection
-          :user="areWeVisitingProfile ? visitedUser : profileStore.user"
+          :user="areWeVisitingProfile ? visitedUser : user"
           :visiting-profile="areWeVisitingProfile" />
       </Container>
 

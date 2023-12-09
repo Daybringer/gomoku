@@ -8,37 +8,32 @@
         class="place-self-center px-16"
         ><ChevronsDownIcon
           :class="hideConstraints ? '' : 'rotate-180'"
-          class="h-8 transition-transform"
-        />
+          class="h-8 transition-transform" />
       </BaseButton>
       <div
         class="gap-4 my-6 flex flex-col place-items-center md:w-60 self-center justify-around md:flex-row"
-        v-show="!hideConstraints"
-      >
+        v-show="!hideConstraints">
         <div class="flex flex-col gap-4">
           <BaseLowHeadline>Match types</BaseLowHeadline>
           <div class="flex flex-row gap-6">
             <BaseTooltip content="Quick">
               <BaseToggleButton
                 @toggle="toggled.type.quick = !toggled.type.quick"
-                :toggled="toggled.type.quick"
-              >
+                :toggled="toggled.type.quick">
                 <MatchQuickIcon />
               </BaseToggleButton>
             </BaseTooltip>
             <BaseTooltip content="Ranked">
               <BaseToggleButton
                 @toggle="toggled.type.ranked = !toggled.type.ranked"
-                :toggled="toggled.type.ranked"
-              >
+                :toggled="toggled.type.ranked">
                 <MatchRankedIcon />
               </BaseToggleButton>
             </BaseTooltip>
             <BaseTooltip content="Custom">
               <BaseToggleButton
                 @toggle="toggled.type.custom = !toggled.type.custom"
-                :toggled="toggled.type.custom"
-              >
+                :toggled="toggled.type.custom">
                 <MatchCustomIcon />
               </BaseToggleButton>
             </BaseTooltip>
@@ -51,24 +46,21 @@
             <BaseTooltip content="Victory">
               <BaseToggleButton
                 @toggle="toggled.result.victory = !toggled.result.victory"
-                :toggled="toggled.result.victory"
-              >
+                :toggled="toggled.result.victory">
                 <VictoryIcon class="text-yellow-400" />
               </BaseToggleButton>
             </BaseTooltip>
             <BaseTooltip content="Defeat">
               <BaseToggleButton
                 @toggle="toggled.result.defeat = !toggled.result.defeat"
-                :toggled="toggled.result.defeat"
-              >
+                :toggled="toggled.result.defeat">
                 <LoseIcon class="text-red-500" />
               </BaseToggleButton>
             </BaseTooltip>
             <BaseTooltip content="Tie">
               <BaseToggleButton
                 @toggle="toggled.result.tie = !toggled.result.tie"
-                :toggled="toggled.result.tie"
-              >
+                :toggled="toggled.result.tie">
                 <TieIcon />
               </BaseToggleButton>
             </BaseTooltip>
@@ -82,24 +74,21 @@
                 @toggle="
                   toggled.ending.combination = !toggled.ending.combination
                 "
-                :toggled="toggled.ending.combination"
-              >
+                :toggled="toggled.ending.combination">
                 <FiveCombinationIcon class="h-8" />
               </BaseToggleButton>
             </BaseTooltip>
             <BaseTooltip content="Time limit">
               <BaseToggleButton
                 @toggle="toggled.ending.timeout = !toggled.ending.timeout"
-                :toggled="toggled.ending.timeout"
-              >
+                :toggled="toggled.ending.timeout">
                 <HourglassIcon class="h-8" />
               </BaseToggleButton>
             </BaseTooltip>
             <BaseTooltip content="Disconnect">
               <BaseToggleButton
                 @toggle="toggled.ending.disconnect = !toggled.ending.disconnect"
-                :toggled="toggled.ending.disconnect"
-              >
+                :toggled="toggled.ending.disconnect">
                 <NoWifiIcon class="h-8" />
               </BaseToggleButton>
             </BaseTooltip>
@@ -116,13 +105,11 @@
             v-for="game in games"
             :key="game.id"
             :game="game"
-            :user-id="userID"
-          />
+            :user-id="userID" />
           <BaseLoadingSpinner v-show="loading" />
           <p
             class="italic text-2xl text-gray-600 dark:text-gray-300"
-            v-show="!loading && games.length == 0"
-          >
+            v-show="!loading && games.length == 0">
             None found. Go and play some.
           </p>
         </MatchRecordsContainer>
@@ -214,6 +201,7 @@ function search(removeOld: boolean) {
     userID,
     take: 15,
     skip: games.value.length,
+    orderFromNewest: true,
     constraints,
   };
   gameRepository

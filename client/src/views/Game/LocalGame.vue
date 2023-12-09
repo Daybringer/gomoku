@@ -102,7 +102,7 @@ function pickGameStone(gameStone: Symbol) {
     pTwo.value.playerSymbol = Symbol.Circle;
     currentPlayer.value = playerOne;
   }
-  openingPhase.value = OpeningPhase.Place3;
+  openingPhase.value = OpeningPhase.Done;
   intervalRef.value = setInterval(() => {
     deductTime();
   }, 1000);

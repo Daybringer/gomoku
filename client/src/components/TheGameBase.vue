@@ -15,7 +15,8 @@
           :circle-color="me.playerSymbol === 1 ? myColor : enemyColor"
           :interactive="
             currentPlayer.socketID === me.socketID ||
-            (gameType === GameType.CustomLocal && openingPhase !== OpeningPhase.PickGameStone)
+            (gameType === GameType.CustomLocal &&
+              openingPhase !== OpeningPhase.PickGameStone)
           "
           :winning-combination="winningCombination"
           :lines-width="1"
@@ -47,6 +48,7 @@
         <GameSwapSection
           :my-color="myComputedColor"
           :opponent-color="opponentComputedColor"
+          :has-classic-gameboard="hasClassicGameboard"
           :my-symbol="mySymbol"
           :phase="swapPhase"
           :is-custom-local="gameType === GameType.CustomLocal"
@@ -141,9 +143,13 @@ const emit = defineEmits<{
 }>();
 const muted = ref(false);
 const { user } = toRefs(useProfileStore());
+const hasClassicGameboard = computed(
+  () => user.value.settings.gameBoard === GameBoard.Classic
+);
 const swapPhase = computed(() => {
   if (
     props.opening === Opening.Swap1 &&
+    props.openingPhase !== OpeningPhase.Done &&
     props.gameState === GameState.Running
   ) {
     if (props.openingPhase === OpeningPhase.Place3) {
@@ -158,14 +164,14 @@ const swapPhase = computed(() => {
 });
 
 const myComputedColor = computed(() => {
-  if (user.value.settings.gameBoard !== GameBoard.Classic) {
+  if (!hasClassicGameboard.value) {
     return props.myColor;
   } else {
     return "#fff9ca";
   }
 });
 const opponentComputedColor = computed(() => {
-  if (user.value.settings.gameBoard !== GameBoard.Classic) {
+  if (!hasClassicGameboard.value) {
     return props.enemyColor;
   } else {
     return "#0e0e0e";

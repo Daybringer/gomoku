@@ -22,6 +22,7 @@ function fetchMatches() {
       userID: props.userID,
       skip: 0,
       take: 5,
+      orderFromNewest: true,
       constraints: {
         allowedAmIWinner: [true, false],
         allowedEndingTypes: [
