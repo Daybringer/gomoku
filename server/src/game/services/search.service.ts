@@ -41,23 +41,27 @@ export class SearchService {
   private removeSocketFromQueue(
     socketID: string,
     queue: QuickQueueMember[] | RankedQueueMember[],
+    isRanked?: boolean,
   ) {
     const indexOfSocket = queue.findIndex(
       (member) => member.socketID === socketID,
     );
     if (indexOfSocket != -1) {
-      this.quickSearchQueue.splice(indexOfSocket, 1);
+      if (isRanked) {
+        clearInterval(
+          (queue[indexOfSocket] as RankedQueueMember).searchIntervalID,
+        );
+      }
+      queue.splice(indexOfSocket, 1);
     }
   }
 
   joinRankedQueue(member: RankedQueueMember) {
     this.rankedSearchQueue.push(member);
-    console.log(this.rankedSearchQueue);
-    3;
   }
 
   leaveRankedQueue(socketID: string) {
-    this.removeSocketFromQueue(socketID, this.rankedSearchQueue);
+    this.removeSocketFromQueue(socketID, this.rankedSearchQueue, true);
   }
 
   tryToMatchPlayersRankedQueue(
@@ -73,10 +77,11 @@ export class SearchService {
           eloToleranceBase * member.numberOfSearchAttempts,
     );
     if (foundOpponent) {
-      this.removeSocketFromQueue(member.socketID, this.rankedSearchQueue);
+      this.removeSocketFromQueue(member.socketID, this.rankedSearchQueue, true);
       this.removeSocketFromQueue(
         foundOpponent.socketID,
         this.rankedSearchQueue,
+        true,
       );
       return [member, foundOpponent];
     } else {
@@ -91,7 +96,6 @@ export class SearchService {
 
   leaveQuickQueue(socketID: string) {
     this.printQueues();
-    console.log('ID that left', socketID);
     this.removeSocketFromQueue(socketID, this.quickSearchQueue);
     this.printQueues();
   }
@@ -120,7 +124,7 @@ export class SearchService {
   }
 
   printQueues() {
-    console.log(this.quickSearchQueue);
-    console.log(this.rankedSearchQueue);
+    console.debug('QUICK:', this.quickSearchQueue);
+    console.debug('RANKED', this.rankedSearchQueue);
   }
 }

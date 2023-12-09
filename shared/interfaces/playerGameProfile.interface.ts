@@ -7,6 +7,7 @@ export interface PlayerGameProfile {
   timeLeft: number;
   isWinner: boolean;
   eloDelta?: number;
+  postGameElo?:number;
   game: Game;
   user?: User;
 }

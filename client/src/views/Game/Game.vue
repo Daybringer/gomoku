@@ -20,8 +20,7 @@
     @gameClick="gameClick"
     @sendMessage="sendMessage"
     @pickGameStone="pickGameStone"
-    @rematchCustom="rematchCustom"
-  />
+    @rematchCustom="rematchCustom" />
 </template>
 <script setup lang="ts">
 // Types

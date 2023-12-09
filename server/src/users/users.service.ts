@@ -218,9 +218,9 @@ export class UsersService {
     return 1 + numberOfUsersWithHigherElo;
   }
 
-  // Runs every hour
+  // Runs every minute
   // Goes through every user ordered by elo and assigns his position
-  @Cron('0 * * * *')
+  @Cron('*/1 * * * *')
   async updateLeaderboardPositionsJob() {
     const users = await this.userRepository.find({
       order: { elo: 'DESC' },

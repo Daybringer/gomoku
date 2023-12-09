@@ -104,7 +104,6 @@ import CrossIcon from "@/assets/svg/CrossIcon.vue";
 import ChevronsDownIcon from "@/assets/svg/ChevronsDownIcon.vue";
 import BaseHighHeadline from "./BaseHighHeadline.vue";
 import BaseLowHeadline from "./BaseLowHeadline.vue";
-import { useRoute } from "vue-router";
 import router from "@/router";
 const props = defineProps<{
   amIWinner: boolean;
@@ -118,9 +117,9 @@ const isShown = ref(true);
 const eloGain = computed(() => {
   if (!props.elo) return "";
   if (props.amIWinner) {
-    return `Gained ${props.elo} ELO`;
+    return `Gained ${Math.abs(props.elo)} ELO`;
   } else {
-    return `Lost -${props.elo} ELO`;
+    return `Lost -${Math.abs(props.elo)} ELO`;
   }
 });
 </script>

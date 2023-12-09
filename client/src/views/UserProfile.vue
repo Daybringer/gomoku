@@ -19,7 +19,7 @@ const profileStore = useProfileStore();
 const userID = useRoute().params.id;
 const areWeVisitingProfile = ref(userID !== undefined);
 const currUserID = computed(() =>
-  areWeVisitingProfile ? Number(userID) : profileStore.user.id
+  !areWeVisitingProfile ? Number(userID) : profileStore.user.id
 );
 const visitedUser = reactive(userBase());
 const isUserLoaded = ref(false);

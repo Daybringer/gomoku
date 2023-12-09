@@ -284,13 +284,13 @@ export class GameRoomService {
     return this.gameRooms[roomID] || null;
   }
 
-  private findRoomIDBySocketID(socketID: string) {
-    let foundRoomID = '';
+  private findRoomIDBySocketID(socketID: string): string | null {
+    let foundRoomID = null;
 
     Object.keys(this.gameRooms).forEach((roomID) => {
       if (
-        this.gameRooms[roomID].players[0].socketID === socketID ||
-        this.gameRooms[roomID].players[1].socketID === socketID
+        this.gameRooms[roomID]?.players[0]?.socketID === socketID ||
+        this.gameRooms[roomID]?.players[1]?.socketID === socketID
       )
         foundRoomID = roomID;
     });
@@ -371,7 +371,7 @@ export class GameRoomService {
     gameEnding: EndingType,
     winner?: Player,
   ) {
-    delete this.gameRooms[roomID];
+    if (this.gameRooms[roomID]) delete this.gameRooms[roomID];
     clearInterval(game.calibrationIntervalHandle);
     game.setGameState(GameState.Ended);
     game.setGameEnding(gameEnding);

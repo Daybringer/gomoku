@@ -22,6 +22,9 @@ export class PlayerGameProfileEntity {
   @Column({ nullable: true })
   eloDelta?: number;
 
+  @Column({ nullable: true })
+  postGameElo?: number;
+
   @Column()
   isWinner: boolean;
 

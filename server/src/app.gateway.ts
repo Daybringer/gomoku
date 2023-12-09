@@ -184,8 +184,6 @@ export class RankedSearchGateway implements OnGatewayDisconnect {
         10,
       );
       if (players) {
-        players[0].socketID;
-        clearInterval(member.searchIntervalID);
         const { roomID } = this.gameRoomService.createGameRoom(GameType.Ranked);
         this.server
           .to(players[0].socketID)

@@ -23,6 +23,7 @@ import {
   PointElement,
 } from "chart.js";
 import { getDateFromDate } from "@/utils/general";
+import { useProfileStore } from "@/store/profile";
 
 ChartJS.register(
   Title,
@@ -35,6 +36,7 @@ ChartJS.register(
   LinearScale
 );
 
+const profileStore = useProfileStore();
 const gameRepository = RepositoryFactory.getGameRepository;
 const props = defineProps<{ userId: number }>();
 const games: Game[] = reactive([]);
@@ -58,6 +60,7 @@ function fetchMatches() {
       userID: props.userId,
       skip: 0,
       take: 1000,
+      orderFromNewest: true,
       constraints: {
         allowedAmIWinner: [true, false],
         allowedEndingTypes: [
@@ -83,11 +86,17 @@ function fetchMatches() {
 const options = reactive({});
 const data = computed(() => {
   return {
-    labels: rankedProfiles.value.map((profile) =>
-      getDateFromDate(profile.createdAt + "")
-    ),
+    labels: rankedProfiles.value
+      .reverse()
+      .map((profile) => getDateFromDate(profile.createdAt + "")),
     datasets: [
-      { data: rankedProfiles.value.map((profile) => profile.eloDelta!) },
+      {
+        label: "ELO",
+        borderWidth: 2,
+        tension: 0.3,
+        borderColor: profileStore.user.settings.playerColor,
+        data: rankedProfiles.value.map((profile) => profile.postGameElo!),
+      },
     ],
   };
 });

@@ -9,7 +9,7 @@ export class GameController {
   constructor(private readonly gameService: GameService) {}
 
   @Post('/by-user-id')
-  async getGameByUsserID(
+  async getGamesByUsserID(
     @Body() req: GetGamesByUserIDDTO,
   ): Promise<GetGameByUserIDDTOResponse> {
     return this.gameService.getGamesByUserID(req);

@@ -41,6 +41,7 @@ export class GameService {
     if (player.userID) {
       const user = await this.usersService.findOneByID(player.userID);
       playerGameProfileEntity.user = user;
+      playerGameProfileEntity.postGameElo = user.elo;
     }
 
     if (eloDiff) {
@@ -209,7 +210,7 @@ export class GameService {
             typeOfWin: In([...dto.constraints.allowedEndingTypes]),
           },
         },
-        order: { id: 'DESC' },
+        order: { id: dto.orderFromNewest ? 'DESC' : 'ASC' },
         skip: dto.skip,
         take: dto.take,
       })
