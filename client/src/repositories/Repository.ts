@@ -2,7 +2,7 @@ import axios from "axios";
 
 const baseDomain = !import.meta.env.PROD
   ? "http://localhost:3000"
-  : "https://gomoku.vanata.dev";
+  : "https://gomokugame.com";
 
 const baseURL = `${baseDomain}/api`;
 
