@@ -5,12 +5,20 @@
         position === 1
           ? 'text-amber-400'
           : position === 2
-          ? 'text-neutral-400'
+          ? 'text-neutral-200'
           : position === 3
           ? 'text-yellow-700'
-          : 'text-slate-800'
+          : 'text-slate-800 dark:text-slate-900'
       " />
-    <p class="text-gray-100 font-medium dark:text-gray-600 absolute z-10">
+    <p
+      class="font-medium dark:text-gray-800 absolute z-10"
+      :class="
+        position === 2
+          ? 'text-gray-500'
+          : position === 4
+          ? 'dark:text-slate-400 text-gray-200'
+          : 'text-gray-100'
+      ">
       #{{ position }}
     </p>
   </div>

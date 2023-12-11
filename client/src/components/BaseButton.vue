@@ -18,7 +18,7 @@
     :class="
       gomokuBlue
         ? 'bg-gomoku-blue text-gray-100 hover:bg-gomoku-blue-dark font-medium'
-        : 'bg-gray-300 hover:bg-gray-400 dark:hover:bg-gray-500 dark:bg-gray-600'
+        : 'bg-gray-300 hover:bg-gray-400 dark:hover:bg-gray-500 dark:bg-gray-700'
     ">
     <slot />
   </button>

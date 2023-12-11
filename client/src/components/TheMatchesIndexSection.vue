@@ -4,9 +4,8 @@
     <div class="w-90 md:w-50 flex items-center flex-col gap-12 mt-12 mb-32">
       <RouterLink
         class="focus:scale-105 hover:scale-105 transition-transform"
-        :to="'/search?type=quick'"
-      >
-        <BaseContainerWithRotatedAfter>
+        :to="'/search?type=quick'">
+        <BaseContainerWithRotatedAfter size="lg">
           <BaseMidHeadline>Quick game</BaseMidHeadline>
           <BaseHRDivider />
           <p class="text-center text-lg my-2">
@@ -20,8 +19,7 @@
             </span>
           </p>
           <div
-            class="flex flex-row flex-wrap justify-center gap-4 md:gap-8 mt-8 dark:bg-gray-800 p-2 rounded-xl"
-          >
+            class="flex flex-row flex-wrap justify-center gap-4 md:gap-8 mt-8 dark:bg-gray-800 p-2 rounded-xl">
             <BaseInfoPill title="Opening">STANDARD</BaseInfoPill>
             <BaseInfoPill title="Time limit">2:30</BaseInfoPill>
             <BaseInfoPill title="Game type"
@@ -32,9 +30,11 @@
       </RouterLink>
       <RouterLink
         class="focus:scale-105 hover:scale-105 transition-transform"
-        :to="'/search?type=ranked'"
-      >
-        <BaseContainerWithRotatedAfter :rotate-left="true">
+        :to="'/search?type=ranked'">
+        <BaseContainerWithRotatedAfter
+          size="lg"
+          color="gomoku-pink"
+          :rotate-left="true">
           <BaseMidHeadline>Ranked game</BaseMidHeadline>
           <BaseHRDivider />
           <p class="text-center text-lg my-2">
@@ -42,8 +42,7 @@
             the leaderboards.
           </p>
           <div
-            class="flex flex-row flex-wrap justify-center gap-4 md:gap-8 mt-8 dark:bg-gray-800 p-2 rounded-xl"
-          >
+            class="flex flex-row flex-wrap justify-center gap-4 md:gap-8 mt-8 dark:bg-gray-800 p-2 rounded-xl">
             <BaseInfoPill title="Opening">SWAP 1</BaseInfoPill>
             <BaseInfoPill title="Time limit">10:00</BaseInfoPill>
             <BaseInfoPill title="Game type"
@@ -54,9 +53,8 @@
       </RouterLink>
       <RouterLink
         class="focus:scale-105 hover:scale-105 transition-transform"
-        :to="'/custom'"
-      >
-        <BaseContainerWithRotatedAfter>
+        :to="'/custom'">
+        <BaseContainerWithRotatedAfter size="lg">
           <BaseMidHeadline>Custom game</BaseMidHeadline>
           <BaseHRDivider />
           <p class="text-center text-lg my-2">
@@ -67,8 +65,7 @@
             and other different settings.
           </p>
           <div
-            class="flex flex-row flex-wrap justify-center gap-4 md:gap-8 mt-8 dark:bg-gray-800 p-2 rounded-xl"
-          >
+            class="flex flex-row flex-wrap justify-center gap-4 md:gap-8 mt-8 dark:bg-gray-800 p-2 rounded-xl">
             <BaseInfoPill title="Opening"
               >UP TO<span
                 class="font-semibold italic text-lg text-gomoku-pink dark:text-gomoku-blue"

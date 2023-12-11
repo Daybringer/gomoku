@@ -1,10 +1,45 @@
 <template>
   <BaseHighHeadline>Statistics</BaseHighHeadline>
+  <div class="flex flew-row justify-center place-items-center gap-4">
+    <BaseToggleButton
+      @toggle="whichStats = 'quick'"
+      :toggled="whichStats === 'quick'"
+      >Quick</BaseToggleButton
+    >
+    <BaseToggleButton
+      :disabled="false"
+      @toggle="whichStats = 'ranked'"
+      :toggled="whichStats === 'ranked'"
+      >Ranked</BaseToggleButton
+    >
+    <BaseToggleButton
+      @toggle="whichStats = 'all'"
+      :toggled="whichStats === 'all'"
+      >All</BaseToggleButton
+    >
+  </div>
+  <div class="mt-3 mb-2 flex flew-row justify-center place-items-center gap-5">
+    <BaseContainerWithRotatedAfter size="sm" color="gomoku-pink" rotate-left>
+      <span class="text-xl font-medium">51% WR</span>
+    </BaseContainerWithRotatedAfter>
+    <BaseContainerWithRotatedAfter color="gray"
+      ><span class="text-xl"><b>51</b> WON</span></BaseContainerWithRotatedAfter
+    >
+    <BaseContainerWithRotatedAfter color="gray"
+      ><span class="text-xl"
+        ><b>12</b> LOST</span
+      ></BaseContainerWithRotatedAfter
+    >
+    <BaseContainerWithRotatedAfter color="gray"
+      ><span class="text-xl"><b>0</b> TIED</span></BaseContainerWithRotatedAfter
+    >
+  </div>
+
   <BaseMidHeadline>Elo graph</BaseMidHeadline>
   <Line :data="data" :options="options" />
 </template>
 <script setup lang="ts">
-import { onMounted, computed, reactive, ref } from "vue";
+import { onMounted, computed, reactive, ref, Ref } from "vue";
 import { Game } from "@/shared/interfaces/game.interface";
 import { EndingType, GameType } from "@/shared/types";
 import BaseHighHeadline from "./BaseHighHeadline.vue";
@@ -24,6 +59,8 @@ import {
 } from "chart.js";
 import { getDateFromDate } from "@/utils/general";
 import { useProfileStore } from "@/store/profile";
+import BaseContainerWithRotatedAfter from "./BaseContainerWithRotatedAfter.vue";
+import BaseToggleButton from "./BaseToggleButton.vue";
 
 ChartJS.register(
   Title,
@@ -41,6 +78,15 @@ const gameRepository = RepositoryFactory.getGameRepository;
 const props = defineProps<{ userId: number }>();
 const games: Game[] = reactive([]);
 const matchesAreLoaded = ref(false);
+const whichStats: Ref<"all" | "ranked" | "quick"> = ref("all");
+const quickGames = computed(() =>
+  games.map(
+    (game) =>
+      game.playerGameProfiles.filter(
+        (profile) => profile.user?.id === props.userId
+      )[0]
+  )
+);
 const rankedProfiles = computed(() =>
   games.map(
     (game) =>
@@ -69,7 +115,7 @@ function fetchMatches() {
           EndingType.Tie,
           EndingType.Time,
         ],
-        allowedGameTypes: [GameType.Ranked],
+        allowedGameTypes: [GameType.Ranked, GameType.Quick],
       },
     })
     .then((res) => {
