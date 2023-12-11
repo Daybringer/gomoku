@@ -37,7 +37,7 @@
         ><b>{{ wonStats }}</b> WON</span
       ></BaseContainerWithRotatedAfter
     >
-    <BaseContainerWithRotatedAfter rotate-left="" color="gomoku-blue"
+    <BaseContainerWithRotatedAfter rotate-left color="gomoku-blue"
       ><span class="text-xl"
         ><b>{{ lostStats }}</b> LOST</span
       ></BaseContainerWithRotatedAfter
