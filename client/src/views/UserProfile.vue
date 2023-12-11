@@ -61,7 +61,7 @@ onBeforeMount(async () => {
       <Container v-show="isUserLoaded">
         <MatchHistoryProfileSection :userID="currUserID" />
       </Container>
-      <Container v-show="isUserLoaded">
+      <Container class="gap-2" v-show="isUserLoaded">
         <TheStatisticsUserProfileSection :user-id="currUserID" />
       </Container>
       <Container v-show="!areWeVisitingProfile">

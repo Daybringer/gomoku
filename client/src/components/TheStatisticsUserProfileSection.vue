@@ -18,25 +18,45 @@
       >All</BaseToggleButton
     >
   </div>
-  <div class="mt-3 mb-2 flex flew-row justify-center place-items-center gap-5">
+  <div
+    class="mt-3 mb-2 flex flew-row flex-wrap justify-center place-items-center gap-5">
     <BaseContainerWithRotatedAfter size="sm" color="gomoku-pink" rotate-left>
-      <span class="text-xl font-medium">51% WR</span>
+      <span class="text-xl"
+        ><b>{{
+          wonStats + lostStats + tiedStats === 0
+            ? 0
+            : Math.round(
+                (wonStats / (wonStats + lostStats + tiedStats)) * 1000
+              ) / 10
+        }}</b
+        >% WR</span
+      >
     </BaseContainerWithRotatedAfter>
-    <BaseContainerWithRotatedAfter color="gray"
-      ><span class="text-xl"><b>51</b> WON</span></BaseContainerWithRotatedAfter
-    >
-    <BaseContainerWithRotatedAfter color="gray"
+    <BaseContainerWithRotatedAfter color="gomoku-blue"
       ><span class="text-xl"
-        ><b>12</b> LOST</span
+        ><b>{{ wonStats }}</b> WON</span
       ></BaseContainerWithRotatedAfter
     >
-    <BaseContainerWithRotatedAfter color="gray"
-      ><span class="text-xl"><b>0</b> TIED</span></BaseContainerWithRotatedAfter
+    <BaseContainerWithRotatedAfter rotate-left="" color="gomoku-blue"
+      ><span class="text-xl"
+        ><b>{{ lostStats }}</b> LOST</span
+      ></BaseContainerWithRotatedAfter
+    >
+    <BaseContainerWithRotatedAfter color="gomoku-blue"
+      ><span class="text-xl"
+        ><b>{{ tiedStats }}</b> TIED</span
+      ></BaseContainerWithRotatedAfter
     >
   </div>
 
-  <BaseMidHeadline>Elo graph</BaseMidHeadline>
-  <Line :data="data" :options="options" />
+  <BaseMidHeadline class="">Elo graph</BaseMidHeadline>
+  <Line
+    v-if="data.datasets[0].data.length !== 0"
+    :data="data"
+    :options="options" />
+  <p v-else class="w-full text-center mt-4 italic text-2xl text-gray-500">
+    No data
+  </p>
 </template>
 <script setup lang="ts">
 import { onMounted, computed, reactive, ref, Ref } from "vue";
@@ -61,6 +81,7 @@ import { getDateFromDate } from "@/utils/general";
 import { useProfileStore } from "@/store/profile";
 import BaseContainerWithRotatedAfter from "./BaseContainerWithRotatedAfter.vue";
 import BaseToggleButton from "./BaseToggleButton.vue";
+import { storeToRefs } from "pinia";
 
 ChartJS.register(
   Title,
@@ -73,22 +94,42 @@ ChartJS.register(
   LinearScale
 );
 
-const profileStore = useProfileStore();
+const { user } = storeToRefs(useProfileStore());
 const gameRepository = RepositoryFactory.getGameRepository;
 const props = defineProps<{ userId: number }>();
-const games: Game[] = reactive([]);
 const matchesAreLoaded = ref(false);
 const whichStats: Ref<"all" | "ranked" | "quick"> = ref("all");
-const quickGames = computed(() =>
-  games.map(
-    (game) =>
-      game.playerGameProfiles.filter(
-        (profile) => profile.user?.id === props.userId
-      )[0]
-  )
+const wonStats = computed(() =>
+  whichStats.value === "quick"
+    ? user.value.statistics.quickWon
+    : whichStats.value === "ranked"
+    ? user.value.statistics.rankedWon
+    : user.value.statistics.quickWon + user.value.statistics.rankedWon
 );
+const lostStats = computed(() =>
+  whichStats.value === "quick"
+    ? user.value.statistics.quickLost
+    : whichStats.value === "ranked"
+    ? user.value.statistics.rankedLost
+    : user.value.statistics.quickLost + user.value.statistics.rankedLost
+);
+const tiedStats = computed(() =>
+  whichStats.value === "quick"
+    ? user.value.statistics.quickTied
+    : whichStats.value === "ranked"
+    ? user.value.statistics.rankedTied
+    : user.value.statistics.quickTied + user.value.statistics.rankedTied
+);
+const games: Game[] = reactive([]);
+const rankedGames = computed(() =>
+  games.filter((game) => game.type === GameType.Ranked)
+);
+const quickGames = computed(() =>
+  games.filter((game) => game.type === GameType.Quick)
+);
+
 const rankedProfiles = computed(() =>
-  games.map(
+  rankedGames.value.map(
     (game) =>
       game.playerGameProfiles.filter(
         (profile) => profile.user?.id === props.userId
@@ -140,7 +181,7 @@ const data = computed(() => {
         label: "ELO",
         borderWidth: 2,
         tension: 0.3,
-        borderColor: profileStore.user.settings.playerColor,
+        borderColor: user.value.settings.playerColor,
         data: rankedProfiles.value.map((profile) => profile.postGameElo!),
       },
     ],

@@ -103,23 +103,7 @@ async function buyIcon(profileIcon: ProfileIcon) {
     <!-- User match statistics -->
     <div
       class="col-span-2 row-span-2 flex flex-col justify-start items-center gap-2 p-2">
-      <BaseMidHeadline>Statistics</BaseMidHeadline>
-      <p class="whitespace-nowrap">
-        <span class="text-lg font-medium">Total matches: </span>
-        <span> {{ getTotalMatches(user) }}</span>
-      </p>
-      <p class="whitespace-nowrap">
-        <span class="text-lg font-medium">Won: </span>
-        <span>{{ getTotalWon(user) }}</span>
-      </p>
-      <p class="whitespace-nowrap">
-        <span class="text-lg font-medium">Lost: </span>
-        <span>{{ getTotalLost(user) }}</span>
-      </p>
-      <p class="whitespace-nowrap">
-        <span class="text-lg font-medium">Tied: </span>
-        <span>{{ getTotalTie(user) }}</span>
-      </p>
+      <BaseMidHeadline>Free space </BaseMidHeadline>
     </div>
     <!-- Achievements -->
     <div class="col-span-full flex flex-col gap-3 items-center">
