@@ -248,11 +248,11 @@ export class UsersService {
       }
     } else if (gameType === GameType.Ranked) {
       if (won) {
-        user.statistics.quickLost += 1;
+        user.statistics.rankedWon += 1;
       } else if (tie) {
-        user.statistics.quickTied += 1;
+        user.statistics.rankedTied += 1;
       } else {
-        user.statistics.quickLost += 1;
+        user.statistics.rankedLost += 1;
       }
     }
 

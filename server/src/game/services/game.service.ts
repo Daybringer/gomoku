@@ -77,23 +77,23 @@ export class GameService {
         game.winner ? game.winner.userID : 0,
       );
 
+      await this.usersService.updateElo(
+        playerOne.userID,
+        elos[playerOne.userID],
+      );
       playerOneProfile = await this.savePlayerGameProfile(
         playerOne,
         game.winner.socketID === playerOne.socketID,
         elos[playerOne.userID],
       );
-      await this.usersService.updateElo(
-        playerOne.userID,
-        elos[playerOne.userID],
-      );
 
+      await this.usersService.updateElo(
+        playerTwo.userID,
+        elos[playerTwo.userID],
+      );
       playerTwoProfile = await this.savePlayerGameProfile(
         playerTwo,
         game.winner.socketID === playerTwo.socketID,
-        elos[playerTwo.userID],
-      );
-      await this.usersService.updateElo(
-        playerTwo.userID,
         elos[playerTwo.userID],
       );
     } else {
