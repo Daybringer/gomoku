@@ -81,7 +81,8 @@ import { getDateFromDate } from "@/utils/general";
 import { useProfileStore } from "@/store/profile";
 import BaseContainerWithRotatedAfter from "./BaseContainerWithRotatedAfter.vue";
 import BaseToggleButton from "./BaseToggleButton.vue";
-import { storeToRefs } from "pinia";
+import { User } from "@/shared/interfaces/user.interface";
+import usersRepository from "@/repositories/usersRepository";
 
 ChartJS.register(
   Title,
@@ -94,33 +95,45 @@ ChartJS.register(
   LinearScale
 );
 
-const { user } = storeToRefs(useProfileStore());
 const gameRepository = RepositoryFactory.getGameRepository;
 const props = defineProps<{ userId: number }>();
 const matchesAreLoaded = ref(false);
 const whichStats: Ref<"all" | "ranked" | "quick"> = ref("all");
-const wonStats = computed(() =>
-  whichStats.value === "quick"
+const wonStats = computed(() => {
+  if (user.value === undefined) {
+    return 0;
+  }
+
+  return whichStats.value === "quick"
     ? user.value.statistics.quickWon
     : whichStats.value === "ranked"
     ? user.value.statistics.rankedWon
-    : user.value.statistics.quickWon + user.value.statistics.rankedWon
-);
-const lostStats = computed(() =>
-  whichStats.value === "quick"
+    : user.value.statistics.quickWon + user.value.statistics.rankedWon;
+});
+const lostStats = computed(() => {
+  if (user.value === undefined) {
+    return 0;
+  }
+
+  return whichStats.value === "quick"
     ? user.value.statistics.quickLost
     : whichStats.value === "ranked"
     ? user.value.statistics.rankedLost
-    : user.value.statistics.quickLost + user.value.statistics.rankedLost
-);
-const tiedStats = computed(() =>
-  whichStats.value === "quick"
+    : user.value.statistics.quickLost + user.value.statistics.rankedLost;
+});
+const tiedStats = computed(() => {
+  if (user.value === undefined) {
+    return 0;
+  }
+
+  return whichStats.value === "quick"
     ? user.value.statistics.quickTied
     : whichStats.value === "ranked"
     ? user.value.statistics.rankedTied
-    : user.value.statistics.quickTied + user.value.statistics.rankedTied
-);
+    : user.value.statistics.quickTied + user.value.statistics.rankedTied;
+});
 const games: Game[] = reactive([]);
+const user: Ref<User | undefined> = ref(undefined);
 const rankedGames = computed(() =>
   games.filter((game) => game.type === GameType.Ranked)
 );
@@ -139,6 +152,9 @@ const rankedProfiles = computed(() =>
 
 onMounted(() => {
   fetchMatches();
+  usersRepository.getUserProfile(props.userId).then((res) => {
+    user.value = res.data;
+  });
 });
 // ------- METHODS ------- \\
 function fetchMatches() {
@@ -181,7 +197,7 @@ const data = computed(() => {
         label: "ELO",
         borderWidth: 2,
         tension: 0.3,
-        borderColor: user.value.settings.playerColor,
+        borderColor: useProfileStore().user.settings.playerColor,
         data: rankedProfiles.value.map((profile) => profile.postGameElo!),
       },
     ],
