@@ -9,7 +9,7 @@
           :model-value="newUsername"
           @keyup="validate"
           @update:model-value="(e) => (newUsername = e)"
-          name="username"
+          name="newUsername"
           placeholder="New Username"
           type="text"
           title="Enter New Username"
@@ -42,7 +42,7 @@ import { AxiosError } from "axios";
 const UsersRepository = RepositoryFactory.getUserRepository;
 
 const setUsernameSchema = object().shape({
-  username: string()
+  newUsername: string()
     .required("Username is required")
     .min(3, "Username is too short (3-20)")
     .max(20, "Username is too long (3-20")
@@ -95,7 +95,7 @@ const throttledFunction = throttle(400, (call) => {
 });
 async function validate() {
   setUsernameSchema
-    .validate({ username: newUsername.value })
+    .validate({ newUsername: newUsername.value })
     .then(() => {
       throttledFunction(usernameExists);
       newUsernameError.value = "";

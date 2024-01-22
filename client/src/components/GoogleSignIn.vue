@@ -26,12 +26,21 @@ const callback: CallbackTypes.TokenResponseCallback = (response) => {
   // call to API
   profileStore
     .googleLogin(response.access_token)
-    .then(() => {
-      router.push("/");
+    .then((isFirstTimeLogin) => {
+
+      if(isFirstTimeLogin){
+      notificationStore.createNotification(
+        NotificationType.Success,
+        "Successfully registred with Google account.<br> Please set your username"
+      );
+        router.push("/set-username");
+      } else {
       notificationStore.createNotification(
         NotificationType.Success,
         "Successfully logged in with Google account"
       );
+        router.push("/");
+      }
     })
     .catch((err) =>
       notificationStore.createNotification(NotificationType.Error, err)
